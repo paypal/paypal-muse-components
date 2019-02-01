@@ -10,7 +10,7 @@ export const BASE_URL_PRODUCTION = 'https://www.paypal.com/tagmanager/pptm.js';
 export const BASE_URL_LOCAL = 'http://localhost.paypal.com:8001/tagmanager/pptm.js';
 
 /*
-Generates a URL for pptm.js, e.g. http://localhost:80001/tagmanager?id=www.merchant-site.com&t=xo&mrid=xyz&client_id=abc
+Generates a URL for pptm.js, e.g. http://localhost:80001/tagmanager/pptm.js?id=www.merchant-site.com&t=xo&mrid=xyz&client_id=abc
 */
 export function getScriptSrc(env : string, mrid : ?string, clientId : ?string, url : string) : string {
     // "xo" is a checkout container
