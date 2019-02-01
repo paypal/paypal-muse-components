@@ -1,3 +1,3 @@
 /* @flow */
 
-export * from './happy';
+export * from './component';
