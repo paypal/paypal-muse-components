@@ -1,6 +1,7 @@
 /* @flow */
 
 import { ENV } from '@paypal/sdk-constants/src';
+import { getVersion } from '@paypal/sdk-client/src';
 import { expect } from 'chai';
 
 import * as component from '../src/component'; // eslint-disable-line import/no-namespace
@@ -17,7 +18,7 @@ describe('muse', () => {
 
         it('should insert pptm.js with client ID and merchant ID', () => {
             const script = document.getElementById(component.PPTM_ID);
-            const expectedUrl = `id=${ window.location.hostname }&t=xo&mrid=xyz&client_id=abc`;
+            const expectedUrl = `id=${ window.location.hostname }&t=xo&v=${ getVersion() }&source=payments_sdk&mrid=xyz&client_id=abc`;
             let src = '';
     
             if (script) {
@@ -33,41 +34,6 @@ describe('muse', () => {
         const mrid = 'abc';
         const clientId = 'xyz';
         const url = 'www.merchant-site.com';
-
-        it('should get the correct test base URL', () => {
-            const env = ENV.TEST;
-            const src = component.getScriptSrc(env, mrid, clientId, url);
-
-            expect(src).to.have.string(component.BASE_URL_LOCAL);
-        });
-
-        it('should get the correct local base URL', () => {
-            const env = ENV.LOCAL;
-            const src = component.getScriptSrc(env, mrid, clientId, url);
-
-            expect(src).to.have.string(component.BASE_URL_LOCAL);
-        });
-
-        it('should get the correct stage base URL', () => {
-            const env = ENV.STAGE;
-            const src = component.getScriptSrc(env, mrid, clientId, url);
-
-            expect(src).to.have.string(component.BASE_URL_STAGE);
-        });
-
-        it('should get the correct sandbox base URL', () => {
-            const env = ENV.SANDBOX;
-            const src = component.getScriptSrc(env, mrid, clientId, url);
-
-            expect(src).to.have.string(component.BASE_URL_SANDBOX);
-        });
-
-        it('should get the correct production base URL', () => {
-            const env = ENV.PRODUCTION;
-            const src = component.getScriptSrc(env, mrid, clientId, url);
-
-            expect(src).to.have.string(component.BASE_URL_PRODUCTION);
-        });
 
         it('should not add mrid param to src if mrid is not present', () => {
             const src = component.getScriptSrc(ENV.TEST, null, clientId, url);
