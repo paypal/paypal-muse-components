@@ -36,13 +36,13 @@ describe('muse', () => {
         const url = 'www.merchant-site.com';
 
         it('should not add mrid param to src if mrid is not present', () => {
-            const src = component.getScriptSrc(ENV.TEST, null, clientId, url);
+            const src = component.getPptmScriptSrc(ENV.TEST, null, clientId, url);
 
             expect(src).to.not.have.string('&mrid=');
         });
 
         it('should not add client_id param to source if client_id is not present', () => {
-            const src = component.getScriptSrc(ENV.TEST, mrid, null, url);
+            const src = component.getPptmScriptSrc(ENV.TEST, mrid, null, url);
 
             expect(src).to.not.have.string('&client_id=');
         });

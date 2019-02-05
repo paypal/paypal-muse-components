@@ -15,3 +15,5 @@ if (body) {
 }
 
 window.paypal = require('../src');
+
+require('../src/component').insertPptm();

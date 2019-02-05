@@ -8,7 +8,7 @@ export const PPTM_ID = 'xo-pptm';
 /*
 Generates a URL for pptm.js, e.g. http://localhost:8001/tagmanager/pptm.js?id=www.merchant-site.com&t=xo&mrid=xyz&client_id=abc
 */
-export function getScriptSrc(paypalDomain : string, mrid : ?string, clientId : ?string, url : string) : string {
+export function getPptmScriptSrc(paypalDomain : string, mrid : ?string, clientId : ?string, url : string) : string {
     // "xo" is a checkout container
     const type = 'xo';
 
@@ -40,6 +40,8 @@ export function getScriptSrc(paypalDomain : string, mrid : ?string, clientId : ?
     return src;
 }
 
+// Inserts the pptm.js script tag. This is the `setupHandler` in __sdk__.js and will be called automatically
+// when the made SDK is initialized.
 export function insertPptm() {
     document.addEventListener('DOMContentLoaded', () => {
         try {
@@ -50,7 +52,7 @@ export function insertPptm() {
             const script = document.createElement('script');
             const head = document.querySelector('head');
 
-            const src = getScriptSrc(paypalDomain, mrid, clientId, url);
+            const src = getPptmScriptSrc(paypalDomain, mrid, clientId, url);
 
             script.src = src;
 
@@ -66,6 +68,3 @@ export function insertPptm() {
         }
     });
 }
-
-// Automatically insert pptm.js script
-insertPptm();
