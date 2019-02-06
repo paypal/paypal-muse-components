@@ -6,6 +6,6 @@ module.exports = {
         entry:           './src/component',
         staticNamespace: '__muse__',
         automatic:        true,
-        setupHandler:    'insertPptm'
+        setupHandler:    'attachPptmDOMLoaded'
     }
 };

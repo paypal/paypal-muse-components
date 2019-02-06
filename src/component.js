@@ -1,7 +1,7 @@
 /* @flow */
 
-import { getClientID, getMerchantID, getEnv, getPayPalDomain, getVersion, getPort } from '@paypal/sdk-client/src';
-import { ENV } from '@paypal/sdk-constants/src';
+import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain } from '@paypal/sdk-client/src';
+import { UNKNOWN } from '@paypal/sdk-constants/src';
 
 export const PPTM_ID = 'xo-pptm';
 
@@ -17,12 +17,7 @@ export function getPptmScriptSrc(paypalDomain : string, mrid : ?string, clientId
 
     const source = 'payments_sdk';
 
-    let baseUrl = `${ paypalDomain }/tagmanager/pptm.js`;
-
-    // For local testing, we need to hit pptm.js on a different port.
-    if (getEnv() === ENV.LOCAL) {
-        baseUrl = baseUrl.replace(`${ getPort() }`, '8001');
-    }
+    const baseUrl = `${ paypalDomain }/tagmanager/pptm.js`;
 
     let src = `${ baseUrl }?id=${ url }&t=${ type }&v=${ version }&source=${ source }`;
 
@@ -40,12 +35,37 @@ export function getPptmScriptSrc(paypalDomain : string, mrid : ?string, clientId
     return src;
 }
 
+function parseMerchantId() : ?string {
+    const merchantId = getMerchantID();
+
+    if (merchantId === UNKNOWN) {
+        return;
+    }
+
+    if (typeof merchantId === 'string') {
+        // Devnote Feb 5 2019: Checkout team says in the future they may allow multiple merchant IDs
+        // to be passed into the script as a comma separated list for multiple payee scenarioes.
+        // For the sake of coding defensively, we'll go ahead and assume this is already the case
+        // and just return the first merchant ID in the list. We may consider inserting multiple
+        // pptm.js script tags instead.
+        return merchantId.split(',')[0];
+    }
+}
+
+function _isPayPalDomain() : boolean {
+    return window.mockDomain === 'mock://www.paypal.com' || isPayPalDomain();
+}
+
 // Inserts the pptm.js script tag. This is the `setupHandler` in __sdk__.js and will be called automatically
 // when the made SDK is initialized.
 export function insertPptm() {
-    document.addEventListener('DOMContentLoaded', () => {
-        try {
-            const mrid = getMerchantID();
+    try {
+        // When merchants use checkout buttons, they'll include the payments SDK on their
+        // website, and then it'll render an iframe from the PayPal domain which will in turn
+        // initialize the SDK again. We don't want to insert another pptm.js on the paypal.com
+        // domain, though.
+        if (!_isPayPalDomain()) {
+            const mrid = parseMerchantId();
             const clientId = getClientID();
             const url = window.location.hostname;
             const paypalDomain = getPayPalDomain();
@@ -63,8 +83,12 @@ export function insertPptm() {
             if (head) {
                 head.appendChild(script);
             }
-        } catch (err) {
-            window.console.error(err);
         }
-    });
+    } catch (err) {
+        window.console.error(err);
+    }
+}
+
+export function attachPptmDOMLoaded() {
+    document.addEventListener('DOMContentLoaded', insertPptm);
 }

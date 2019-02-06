@@ -8,12 +8,20 @@ import * as component from '../src/component'; // eslint-disable-line import/no-
 
 describe('muse', () => {
     describe('DOM', () => {
+        let oldMockDomain;
+
+        beforeEach(() => {
+            oldMockDomain = window.mockDomain;
+        });
+
         afterEach(() => {
             const script = document.getElementById(component.PPTM_ID);
     
             if (script && script.parentNode) {
                 script.parentNode.removeChild(script);
             }
+
+            window.mockDomain = oldMockDomain;
         });
 
         it('should insert pptm.js with client ID and merchant ID', () => {
@@ -27,6 +35,16 @@ describe('muse', () => {
             }
 
             expect(src).to.have.string(expectedUrl);
+        });
+
+        it('should not insert pptm.js if on paypal domain', () => {
+            window.mockDomain = 'mock://www.paypal.com';
+
+            component.insertPptm();
+
+            const script = document.getElementById(component.PPTM_ID);
+
+            expect(script).to.equal(null);
         });
     });
 

@@ -4,7 +4,7 @@ import { getHost, getPath } from '@paypal/sdk-client/src';
 
 const script = document.createElement('script');
 script.setAttribute('type', 'mock/javascript');
-script.setAttribute('src', `https://${ getHost() }${ getPath() }?client-id=abc&merchant-id=xyz`);
+script.setAttribute('src', `https://${ getHost() }${ getPath() }?client-id=abc&merchant-id=xyz,hij,lmno`);
 script.setAttribute('data-client-token', 'TEST');
 script.setAttribute('id', 'sdk');
 
@@ -16,4 +16,4 @@ if (body) {
 
 window.paypal = require('../src');
 
-require('../src/component').insertPptm();
+require('../src/component').attachPptmDOMLoaded();
