@@ -1,19 +1,19 @@
 /* @flow */
 
-import { getHost, getPath } from '@paypal/sdk-client/src';
+import { setupSDK, insertMockSDKScript } from '@paypal/sdk-client/src';
+import { SDK_QUERY_KEYS } from '@paypal/sdk-constants/src';
 
-const script = document.createElement('script');
-script.setAttribute('type', 'mock/javascript');
-script.setAttribute('src', `https://${ getHost() }${ getPath() }?client-id=abc&merchant-id=xyz,hij,lmno`);
-script.setAttribute('data-client-token', 'TEST');
-script.setAttribute('id', 'sdk');
+import * as muse from '../src'; // eslint-disable-line import/no-namespace
 
-const body = document.body;
+insertMockSDKScript({
+    query: {
+        [ SDK_QUERY_KEYS.MERCHANT_ID ]: 'xyz,hij,lmno'
+    }
+});
 
-if (body) {
-    body.appendChild(script);
-}
-
-window.paypal = require('../src');
-
-require('../src/component').attachPptmDOMLoaded();
+setupSDK([
+    {
+        name:     'must',
+        requirer: () => muse
+    }
+]);

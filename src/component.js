@@ -89,6 +89,6 @@ export function insertPptm() {
     }
 }
 
-export function attachPptmDOMLoaded() {
+export function setup() {
     document.addEventListener('DOMContentLoaded', insertPptm);
 }

@@ -3,9 +3,8 @@
 
 module.exports = {
     'muse': {
-        entry:           './src/component',
+        entry:           './src/index',
         staticNamespace: '__muse__',
-        automatic:        true,
-        setupHandler:    'attachPptmDOMLoaded'
+        automatic:        true
     }
 };
