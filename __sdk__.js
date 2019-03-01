@@ -5,11 +5,11 @@ module.exports = {
     'muse': {
         entry:           './src/index',
         staticNamespace: '__muse__',
-        automatic:        true
+        automatic:        false
     },
     'tracker': {
         entry:           './src/tracker',
         staticNamespace: '__tracker__',
-        automatic:        true
+        automatic:        false
     }
 };
