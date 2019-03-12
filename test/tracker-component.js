@@ -1,5 +1,5 @@
-/* @flow */
 /* globals describe before it */
+/* @flow */
 
 import { expect } from 'chai';
 
@@ -64,8 +64,8 @@ describe('paypal.Tracker', () => {
     });
 
     it('should send setCart events', () => {
-        const userID = '__test__userID3';
-        const userName = '__test__userName3';
+        const userID = '__test__userID4';
+        const userName = '__test__userName4';
         const tracker = Tracker({ userID, userName });
         expect(appendChildCalls).to.equal(2);
         const imgLoadPromise = tracker.setCart({
@@ -77,6 +77,19 @@ describe('paypal.Tracker', () => {
             keywords:        [ '__test__' ]
         });
         expect(appendChildCalls).to.equal(3);
+        return testEndToEnd ? imgLoadPromise : undefined;
+    });
+
+    it('should send removeFromCart events', () => {
+        const userID = '__test__userID5';
+        const userName = '__test__userName5';
+        const tracker = Tracker({ userID, userName });
+        expect(appendChildCalls).to.equal(3);
+        const imgLoadPromise = tracker.removeFromCart({
+            cartId: '__test__cartId',
+            items:  [ { id: '__test__productId' } ]
+        });
+        expect(appendChildCalls).to.equal(4);
         return testEndToEnd ? imgLoadPromise : undefined;
     });
 });
