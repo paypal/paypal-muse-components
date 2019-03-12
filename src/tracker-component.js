@@ -2,9 +2,37 @@
 
 import { getClientID } from '@paypal/sdk-client/src';
 
+type TrackingType = 'view' | 'cartEvent' | 'purchase';
+
+type CartEventType = 'addToCart' | 'setCart' | 'removeFromCart';
+
+type Product = {|
+    id : string,
+    sku? : string,
+    name? : string,
+    url? : string,
+    description? : string,
+    imgUrl? : string,
+    otherImages? : $ReadOnlyArray<string>
+|};
+
+type Cart = {|
+    cartId? : string,
+    items : $ReadOnlyArray<Product>,
+    emailCampaignId? : string,
+    price? : number,
+    currencyCode? : string,
+    keywords? : $ReadOnlyArray<string>
+|};
+
+type RemoveCart = {|
+    cartId? : string,
+    items : $ReadOnlyArray<{ id : string }>
+|};
+
 const user = { id: undefined, name: undefined };
 
-const track = (trackingType, trackingData) => {
+const track = <T>(trackingType : TrackingType, trackingData : T) : Promise<void> => {
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
 
     return new Promise((resolve, reject) => {
@@ -18,23 +46,25 @@ const track = (trackingType, trackingData) => {
                 clientId: getClientID()
             }
         ) }`;
-        img.addEventListener('load', resolve);
+        img.addEventListener('load', () => resolve());
         img.addEventListener('error', reject);
-        document.body.appendChild(img);
+        if (document.body) {
+            document.body.appendChild(img);
+        }
     });
 };
 
-const trackCartEvent = (cartEventType, trackingData) =>
+const trackCartEvent = <T>(cartEventType : CartEventType, trackingData : T) : Promise<void> =>
     track('cartEvent', { ...trackingData, cartEventType });
 
 export const Tracker = {
-    setUser: data => {
+    setUser: (data : { user : { id : string, name : string } }) => {
         user.id = data.user.id;
         user.name = data.user.name;
     },
-    view:           track.bind(0, 'view'),
-    addToCart:      trackCartEvent.bind(0, 'addToCart'),
-    setCart:        trackCartEvent.bind(0, 'setCart'),
-    removeFromCart: trackCartEvent.bind(0, 'removeFromCart'),
-    purchase:       track.bind(0, 'purchase')
+    view:           (data : { pageUrl : string }) => track('view', data),
+    addToCart:      (data : Cart) => trackCartEvent('addToCart', data),
+    setCart:        (data : Cart) => trackCartEvent('setCart', data),
+    removeFromCart: (data : RemoveCart) => trackCartEvent('removeFromCart', data),
+    purchase:       (data : { cartId : string }) => track('purchase', data)
 };
