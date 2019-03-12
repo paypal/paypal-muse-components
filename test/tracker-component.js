@@ -92,4 +92,16 @@ describe('paypal.Tracker', () => {
         expect(appendChildCalls).to.equal(4);
         return testEndToEnd ? imgLoadPromise : undefined;
     });
+
+    it('should send purchase events', () => {
+        const userID = '__test__userID6';
+        const userName = '__test__userName6';
+        const tracker = Tracker({ userID, userName });
+        expect(appendChildCalls).to.equal(4);
+        const imgLoadPromise = tracker.purchase({
+            cartId: '__test__cartId'
+        });
+        expect(appendChildCalls).to.equal(5);
+        return testEndToEnd ? imgLoadPromise : undefined;
+    });
 });
