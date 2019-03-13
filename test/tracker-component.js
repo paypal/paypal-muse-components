@@ -5,11 +5,6 @@ import { expect } from 'chai';
 
 import { Tracker } from '../src/tracker-component';
 
-// We probably don't want to be sending events to Keen all the time so I'm
-// adding this boolean here which will make it so we only send events to Keen
-// if it's set to true.
-const testEndToEnd = false;
-
 describe('paypal.Tracker', () => {
     let appendChildCalls = 0;
     const appendChild = () => {
@@ -39,11 +34,10 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName2';
         const tracker = Tracker({ user: { id: userID, name: userName } });
         expect(appendChildCalls).to.equal(0);
-        const imgLoadPromise = tracker.view({
+        tracker.view({
             pageUrl: 'https://example.com/test2'
         });
         expect(appendChildCalls).to.equal(1);
-        return testEndToEnd ? imgLoadPromise : undefined;
     });
 
     it('should send addToCart events', () => {
@@ -51,7 +45,7 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName3';
         const tracker = Tracker({ user: { id: userID, name: userName } });
         expect(appendChildCalls).to.equal(1);
-        const imgLoadPromise = tracker.addToCart({
+        tracker.addToCart({
             cartId: '__test__cartId',
             items:  [
                 {
@@ -65,7 +59,6 @@ describe('paypal.Tracker', () => {
             keywords:        [ '__test__' ]
         });
         expect(appendChildCalls).to.equal(2);
-        return testEndToEnd ? imgLoadPromise : undefined;
     });
 
     it('should send setCart events', () => {
@@ -73,7 +66,7 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName4';
         const tracker = Tracker({ user: { id: userID, name: userName } });
         expect(appendChildCalls).to.equal(2);
-        const imgLoadPromise = tracker.setCart({
+        tracker.setCart({
             cartId: '__test__cartId',
             items:  [
                 {
@@ -87,7 +80,6 @@ describe('paypal.Tracker', () => {
             keywords:        [ '__test__' ]
         });
         expect(appendChildCalls).to.equal(3);
-        return testEndToEnd ? imgLoadPromise : undefined;
     });
 
     it('should send removeFromCart events', () => {
@@ -95,7 +87,7 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName5';
         const tracker = Tracker({ user: { id: userID, name: userName } });
         expect(appendChildCalls).to.equal(3);
-        const imgLoadPromise = tracker.removeFromCart({
+        tracker.removeFromCart({
             cartId: '__test__cartId',
             items:  [
                 {
@@ -105,7 +97,6 @@ describe('paypal.Tracker', () => {
             ]
         });
         expect(appendChildCalls).to.equal(4);
-        return testEndToEnd ? imgLoadPromise : undefined;
     });
 
     it('should send purchase events', () => {
@@ -113,11 +104,10 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName6';
         const tracker = Tracker({ user: { id: userID, name: userName } });
         expect(appendChildCalls).to.equal(4);
-        const imgLoadPromise = tracker.purchase({
+        tracker.purchase({
             cartId: '__test__cartId'
         });
         expect(appendChildCalls).to.equal(5);
-        return testEndToEnd ? imgLoadPromise : undefined;
     });
 
     it('should call paramsToBeaconUrl to create the url if you pass in paramsToBeaconUrl function', () => {
@@ -133,7 +123,7 @@ describe('paypal.Tracker', () => {
             paramsToBeaconUrl
         });
         expect(appendChildCalls).to.equal(5);
-        const imgLoadPromise = tracker.purchase({
+        tracker.purchase({
             cartId: '__test__cartId'
         });
         expect(appendChildCalls).to.equal(6);
@@ -154,8 +144,5 @@ describe('paypal.Tracker', () => {
                 }
             ])
         );
-        return testEndToEnd ? imgLoadPromise.catch(() => {
-            // silence error for untrusted image request
-        }) : undefined;
     });
 });

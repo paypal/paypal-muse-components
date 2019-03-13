@@ -66,8 +66,7 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
         if (config.paramsToBeaconUrl) {
             img.src = config.paramsToBeaconUrl({ trackingType, data });
         } else {
-            img.src = `https://api.keen.io/3.0/projects/5b903f6ec9e77c00013bc6a7/events/${ trackingType }?api_key=700B56FBE7A2A6BD845B82F9014ED6628943091AD5B0A5751C3027CFE8C5555448C6E11302BD769FCC5BDD003C3DE8282C4FC8FE279A0AAC866F2C97010468197B98779B872EFD7EE980D2986503B843DA3797C750DAA00017DC8186078EADA6&data=${ encodeData(data) }`;
-            // img.src = `https://paypal.com/targeting/track?trackingType=${ trackingType }&data=${ encodeData(data) }`;
+            img.src = `https://www.targetingnodeweb19125146982616.qa.paypal.com/targeting/track/${ trackingType }?data=${ encodeData(data) }`;
         }
 
         img.addEventListener('load', () => resolve());
