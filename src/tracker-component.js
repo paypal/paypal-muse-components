@@ -78,51 +78,6 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
     });
 };
 
-const exit = () => { // returns true if modal was shown
-    // TODO: if identified - do nothing
-    const email = localStorage.getItem('paypal-cr-user');
-    if (email !== null) {
-        console.log('[exit] no email');
-        return false;
-    }
-    // TODO: does user have no items in cart - do nothing
-    const cart = JSON.parse(localStorage.getItem('paypal-cr-cart') || '{}')
-    if (!cart.items) {
-        console.log('[exit] no items');
-        return false;
-    }
-    console.log('cart:', cart)
-    // TODO: has this been shown in past 7 days - do nothing
-    const sevenDays = 1000 * 60 * 60 * 24 * 7;
-    const lastSeen = Number(localStorage.getItem('paypal-cr-lastseen')) || 0;
-    if (Date.now() - lastSeen < sevenDays) {
-        console.log('[exit] seen < 7 days ago');
-        return false;
-    }
-    // TODO: render experience
-    console.log('render experience....');
-    return true;
-}
-
-const debounce = (f, ms) => {
-    let timeoutId;
-    return (...args) => {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => f(...args), ms);
-    };
-};
-
-const start = () => {
-    const exitIntentListener = debounce(e => {
-        if (e.screenY <= 150) {
-            exit();
-        }
-    }, 100);
-    if (document.body) {
-        document.body.addEventListener('mousemove', exitIntentListener);
-    }
-};
-
 const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) : Promise<void> =>
     track(config, 'cartEvent', { ...trackingData, cartEventType });
 
@@ -136,6 +91,5 @@ export const Tracker = (config : Config) => ({
         config.user.id = data.user.id;
         config.user.name = data.user.name;
         config.user.email = data.user.email;
-    },
-    start
+    }
 });
