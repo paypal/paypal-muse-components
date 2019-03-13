@@ -86,7 +86,7 @@ const exit = () => { // returns true if modal was shown
         return false;
     }
     // TODO: does user have no items in cart - do nothing
-    const cart = JSON.parse(localStorage.getItem('paypal-cr-cart') || {})
+    const cart = JSON.parse(localStorage.getItem('paypal-cr-cart') || '{}')
     if (!cart.items) {
         console.log('[exit] no items');
         return false;
