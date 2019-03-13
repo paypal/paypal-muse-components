@@ -86,7 +86,7 @@ const exit = () => { // returns true if modal was shown
         return false;
     }
     // TODO: does user have no items in cart - do nothing
-    const cart = JSON.parse(localStorage.getItem('paypal-cr-cart'))
+    const cart = JSON.parse(localStorage.getItem('paypal-cr-cart') || {})
     if (!cart.items) {
         console.log('[exit] no items');
         return false;
@@ -94,7 +94,7 @@ const exit = () => { // returns true if modal was shown
     console.log('cart:', cart)
     // TODO: has this been shown in past 7 days - do nothing
     const sevenDays = 1000 * 60 * 60 * 24 * 7;
-    const lastSeen = localStorage.getItem('paypal-cr-lastseen');
+    const lastSeen = Number(localStorage.getItem('paypal-cr-lastseen')) || 0;
     if (Date.now() - lastSeen < sevenDays) {
         console.log('[exit] seen < 7 days ago');
         return false;
