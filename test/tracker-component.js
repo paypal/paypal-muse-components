@@ -1,5 +1,5 @@
-/* @flow */
 /* globals describe before it */
+/* @flow */
 
 import { expect } from 'chai';
 
@@ -25,7 +25,7 @@ describe('paypal.Tracker', () => {
     it('should be a function that returns a tracker', () => {
         const userID = '__test__userID';
         const userName = '__test__userName';
-        const tracker = Tracker({ userID, userName });
+        const tracker = Tracker({ user: { id: userID, name: userName } });
         expect(tracker).to.have.property('view');
         expect(tracker).to.have.property('addToCart');
         expect(tracker).to.have.property('setCart');
@@ -37,7 +37,7 @@ describe('paypal.Tracker', () => {
     it('should send view events', () => {
         const userID = '__test__userID2';
         const userName = '__test__userName2';
-        const tracker = Tracker({ userID, userName });
+        const tracker = Tracker({ user: { id: userID, name: userName } });
         expect(appendChildCalls).to.equal(0);
         const imgLoadPromise = tracker.view({
             pageUrl: 'https://example.com/test2'
@@ -49,11 +49,16 @@ describe('paypal.Tracker', () => {
     it('should send addToCart events', () => {
         const userID = '__test__userID3';
         const userName = '__test__userName3';
-        const tracker = Tracker({ userID, userName });
+        const tracker = Tracker({ user: { id: userID, name: userName } });
         expect(appendChildCalls).to.equal(1);
         const imgLoadPromise = tracker.addToCart({
-            cartId:          '__test__cartId',
-            items:           [ { id: '__test__productId' } ],
+            cartId: '__test__cartId',
+            items:  [
+                {
+                    id:  '__test__productId',
+                    url: 'https://example.com/__test__productId'
+                }
+            ],
             emailCampaignId: '__test__emailCampaignId',
             price:           12345.67,
             currencyCode:    'USD',
@@ -64,13 +69,18 @@ describe('paypal.Tracker', () => {
     });
 
     it('should send setCart events', () => {
-        const userID = '__test__userID3';
-        const userName = '__test__userName3';
-        const tracker = Tracker({ userID, userName });
+        const userID = '__test__userID4';
+        const userName = '__test__userName4';
+        const tracker = Tracker({ user: { id: userID, name: userName } });
         expect(appendChildCalls).to.equal(2);
         const imgLoadPromise = tracker.setCart({
-            cartId:          '__test__cartId',
-            items:           [ { id: '__test__productId' } ],
+            cartId: '__test__cartId',
+            items:  [
+                {
+                    id:  '__test__productId',
+                    url: 'https://example.com/__test__productId'
+                }
+            ],
             emailCampaignId: '__test__emailCampaignId',
             price:           12345.67,
             currencyCode:    'USD',
@@ -78,5 +88,74 @@ describe('paypal.Tracker', () => {
         });
         expect(appendChildCalls).to.equal(3);
         return testEndToEnd ? imgLoadPromise : undefined;
+    });
+
+    it('should send removeFromCart events', () => {
+        const userID = '__test__userID5';
+        const userName = '__test__userName5';
+        const tracker = Tracker({ user: { id: userID, name: userName } });
+        expect(appendChildCalls).to.equal(3);
+        const imgLoadPromise = tracker.removeFromCart({
+            cartId: '__test__cartId',
+            items:  [
+                {
+                    id:  '__test__productId',
+                    url: 'https://example.com/__test__productId'
+                }
+            ]
+        });
+        expect(appendChildCalls).to.equal(4);
+        return testEndToEnd ? imgLoadPromise : undefined;
+    });
+
+    it('should send purchase events', () => {
+        const userID = '__test__userID6';
+        const userName = '__test__userName6';
+        const tracker = Tracker({ user: { id: userID, name: userName } });
+        expect(appendChildCalls).to.equal(4);
+        const imgLoadPromise = tracker.purchase({
+            cartId: '__test__cartId'
+        });
+        expect(appendChildCalls).to.equal(5);
+        return testEndToEnd ? imgLoadPromise : undefined;
+    });
+
+    it('should call paramsToBeaconUrl to create the url if you pass in paramsToBeaconUrl function', () => {
+        const userID = '__test__userID6';
+        const userName = '__test__userName6';
+        let calledArgs;
+        const paramsToBeaconUrl = (...args) => {
+            calledArgs = args;
+            return 'https://example.com/picture';
+        };
+        const tracker = Tracker({
+            user: { id: userID, name: userName },
+            paramsToBeaconUrl
+        });
+        expect(appendChildCalls).to.equal(5);
+        const imgLoadPromise = tracker.purchase({
+            cartId: '__test__cartId'
+        });
+        expect(appendChildCalls).to.equal(6);
+        expect(JSON.stringify(calledArgs)).to.deep.equal(
+            JSON.stringify([
+                {
+                    trackingType: 'purchase',
+                    data:         {
+                        cartId: '__test__cartId',
+                        user:   {
+                            id:   '__test__userID6',
+                            name: '__test__userName6'
+                        },
+                        trackingType: 'purchase',
+                        clientId:     'abcxyz123',
+                        merchantId:   'xyz,hij,lmno'
+                    }
+                }
+            ])
+        );
+        return testEndToEnd ? imgLoadPromise.catch(() => {
+            // silence error for untrusted image request
+        }) : undefined;
     });
 });
