@@ -8,7 +8,7 @@ import { Tracker } from '../src/tracker-component';
 // We probably don't want to be sending events to Keen all the time so I'm
 // adding this boolean here which will make it so we only send events to Keen
 // if it's set to true.
-const testEndToEnd = true;
+const testEndToEnd = false;
 
 describe('paypal.Tracker', () => {
     let appendChildCalls = 0;
