@@ -114,7 +114,6 @@ const debounce = (f, ms) => {
 
 const start = () => {
     const exitIntentListener = debounce(e => {
-        // DEBOUNCE
         if (e.screenY <= 150) {
             exit();
         }
