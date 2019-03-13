@@ -6,6 +6,8 @@ type TrackingType = 'view' | 'cartEvent' | 'purchase';
 
 type CartEventType = 'addToCart' | 'setCart' | 'removeFromCart';
 
+type Environment = 'stage' | 'sandbox' | 'production';
+
 type Product = {|
     id : string,
     url : string,
@@ -44,7 +46,8 @@ type Config = {|
     property? : {
         id : string
     },
-    paramsToBeaconUrl? : ParamsToBeaconUrl
+    paramsToBeaconUrl? : ParamsToBeaconUrl,
+    env? : Environment
 |};
 
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) : Promise<void> => {
@@ -66,7 +69,12 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
         if (config.paramsToBeaconUrl) {
             img.src = config.paramsToBeaconUrl({ trackingType, data });
         } else {
-            img.src = `https://www.targetingnodeweb19125146982616.qa.paypal.com/targeting/track/${ trackingType }?data=${ encodeData(data) }`;
+            const envToUrl = {
+                stage:      'https://www.targetingnodeweb19125146982616.qa.paypal.com',
+                sandbox:    'https://sandbox.paypal.com',
+                production: 'https://www.paypal.com'
+            };
+            img.src = `${ envToUrl[config.env || 'production'] }/targeting/track/${ trackingType }?data=${ encodeData(data) }`;
         }
 
         img.addEventListener('load', () => resolve());
