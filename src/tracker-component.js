@@ -118,18 +118,20 @@ const start = () => {
             exit();
         }
     }, 100);
-    document.body.addEventListener('mousemove', exitIntentListener);
+    if (document.body) {
+        document.body.addEventListener('mousemove', exitIntentListener);
+    }
 };
 
 const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) : Promise<void> =>
     track(config, 'cartEvent', { ...trackingData, cartEventType });
 
-export const Tracker = (userData : UserData) => ({
-    view:           (data : { pageUrl : string }) => track(userData, 'view', data),
-    addToCart:      (data : Cart) => trackCartEvent(userData, 'addToCart', data),
-    setCart:        (data : Cart) => trackCartEvent(userData, 'setCart', data),
-    removeFromCart: (data : RemoveCart) => trackCartEvent(userData, 'removeFromCart', data),
-    purchase:       (data : { cartId : string }) => track(userData, 'purchase', data),
+export const Tracker = (config : Config) => ({
+    view:           (data : { pageUrl : string }) => track(config, 'view', data),
+    addToCart:      (data : Cart) => trackCartEvent(config, 'addToCart', data),
+    setCart:        (data : Cart) => trackCartEvent(config, 'setCart', data),
+    removeFromCart: (data : RemoveCart) => trackCartEvent(config, 'removeFromCart', data),
+    purchase:       (data : { cartId : string }) => track(config, 'purchase', data),
     setUser:        (data : { user : { id : string, name? : string, email? : string } }) => {
         config.user.id = data.user.id;
         config.user.name = data.user.name;
