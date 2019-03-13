@@ -52,8 +52,13 @@ describe('paypal.Tracker', () => {
         const tracker = Tracker({ user: { id: userID, name: userName } });
         expect(appendChildCalls).to.equal(1);
         const imgLoadPromise = tracker.addToCart({
-            cartId:          '__test__cartId',
-            items:           [ { id: '__test__productId', url: 'https://example.com/__test__productId' } ],
+            cartId: '__test__cartId',
+            items:  [
+                {
+                    id:  '__test__productId',
+                    url: 'https://example.com/__test__productId'
+                }
+            ],
             emailCampaignId: '__test__emailCampaignId',
             price:           12345.67,
             currencyCode:    'USD',
@@ -69,8 +74,13 @@ describe('paypal.Tracker', () => {
         const tracker = Tracker({ user: { id: userID, name: userName } });
         expect(appendChildCalls).to.equal(2);
         const imgLoadPromise = tracker.setCart({
-            cartId:          '__test__cartId',
-            items:           [ { id: '__test__productId', url: 'https://example.com/__test__productId' } ],
+            cartId: '__test__cartId',
+            items:  [
+                {
+                    id:  '__test__productId',
+                    url: 'https://example.com/__test__productId'
+                }
+            ],
             emailCampaignId: '__test__emailCampaignId',
             price:           12345.67,
             currencyCode:    'USD',
@@ -87,7 +97,12 @@ describe('paypal.Tracker', () => {
         expect(appendChildCalls).to.equal(3);
         const imgLoadPromise = tracker.removeFromCart({
             cartId: '__test__cartId',
-            items:  [ { id: '__test__productId', url: 'https://example.com/__test__productId' } ]
+            items:  [
+                {
+                    id:  '__test__productId',
+                    url: 'https://example.com/__test__productId'
+                }
+            ]
         });
         expect(appendChildCalls).to.equal(4);
         return testEndToEnd ? imgLoadPromise : undefined;
@@ -103,5 +118,44 @@ describe('paypal.Tracker', () => {
         });
         expect(appendChildCalls).to.equal(5);
         return testEndToEnd ? imgLoadPromise : undefined;
+    });
+
+    it('should call paramsToBeaconUrl to create the url if you pass in paramsToBeaconUrl function', () => {
+        const userID = '__test__userID6';
+        const userName = '__test__userName6';
+        let calledArgs;
+        const paramsToBeaconUrl = (...args) => {
+            calledArgs = args;
+            return 'https://example.com/picture';
+        };
+        const tracker = Tracker({
+            user: { id: userID, name: userName },
+            paramsToBeaconUrl
+        });
+        expect(appendChildCalls).to.equal(5);
+        const imgLoadPromise = tracker.purchase({
+            cartId: '__test__cartId'
+        });
+        expect(appendChildCalls).to.equal(6);
+        expect(JSON.stringify(calledArgs)).to.deep.equal(
+            JSON.stringify([
+                {
+                    trackingType: 'purchase',
+                    data:         {
+                        cartId: '__test__cartId',
+                        user:   {
+                            id:   '__test__userID6',
+                            name: '__test__userName6'
+                        },
+                        trackingType: 'purchase',
+                        clientId:     'abcxyz123',
+                        merchantId:   'xyz,hij,lmno'
+                    }
+                }
+            ])
+        );
+        return testEndToEnd ? imgLoadPromise.catch(() => {
+            // silence error for untrusted image request
+        }) : undefined;
     });
 });
