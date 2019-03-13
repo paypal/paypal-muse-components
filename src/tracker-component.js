@@ -86,13 +86,22 @@ const exit = () => { // returns true if modal was shown
     return true;
 }
 
+const debounce = (f, ms) => {
+    let timeoutId;
+    return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => f(...args), ms);
+    };
+};
+
 const start = () => {
-    document.body.addEventListener('mousemove', e => {
+    const exitIntentListener = debounce(e => {
         // DEBOUNCE
         if (e.screenY <= 150) {
             exit();
         }
-    });
+    }, 100);
+    document.body.addEventListener('mousemove', exitIntentListener);
 };
 
 const trackCartEvent = <T>(userData : UserData, cartEventType : CartEventType, trackingData : T) : Promise<void> =>
