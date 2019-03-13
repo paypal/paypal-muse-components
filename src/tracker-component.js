@@ -6,21 +6,6 @@ type TrackingType = 'view' | 'cartEvent' | 'purchase';
 
 type CartEventType = 'addToCart' | 'setCart' | 'removeFromCart';
 
-// $FlowFixMe
-type ParamsToBeaconUrl<T> = ({ trackingType : TrackingType, data : T }) => string;
-
-type Config = {|
-    user : {
-        id : string,
-        email? : string, // mandatory if unbranded cart recovery
-        name? : string
-    },
-    property? : {
-        id : string
-    },
-    paramsToBeaconUrl? : ParamsToBeaconUrl
-|};
-
 type Product = {|
     id : string,
     url : string,
@@ -43,6 +28,23 @@ type Cart = {|
 type RemoveCart = {|
     cartId? : string,
     items : $ReadOnlyArray<{ id : string }>
+|};
+
+type ParamsToBeaconUrl = ({
+    trackingType : TrackingType,
+    data : Cart | RemoveCart | { cartId : string } | { pageUrl : string }
+}) => string;
+
+type Config = {|
+    user : {
+        id : string,
+        email? : string, // mandatory if unbranded cart recovery
+        name? : string
+    },
+    property? : {
+        id : string
+    },
+    paramsToBeaconUrl? : ParamsToBeaconUrl
 |};
 
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) : Promise<void> => {
