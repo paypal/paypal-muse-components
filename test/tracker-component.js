@@ -5,6 +5,14 @@ import { expect } from 'chai';
 
 import { Tracker } from '../src/tracker-component';
 
+const decode = (encodedDataParam : string) : string => {
+    return JSON.parse(atob(decodeURIComponent(encodedDataParam)));
+};
+
+const extractDataParam = (url : string) : string => {
+    return decode((url.match(/\?data=(.+)$/) || [ '', encodeURIComponent(btoa(JSON.stringify({}))) ])[1]);
+};
+
 describe('paypal.Tracker', () => {
     let appendChildCalls = 0;
     const appendChild = () => {
@@ -62,6 +70,13 @@ describe('paypal.Tracker', () => {
             pageUrl: 'https://example.com/test2'
         });
         expect(imgMock.src).to.equal('https://www.paypal.com/targeting/track/view?data=eyJwYWdlVXJsIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS90ZXN0MiIsInVzZXIiOnsiaWQiOiJfX3Rlc3RfX3VzZXJJRDIiLCJuYW1lIjoiX190ZXN0X191c2VyTmFtZTIifSwidHJhY2tpbmdUeXBlIjoidmlldyIsImNsaWVudElkIjoiYWJjeHl6MTIzIiwibWVyY2hhbnRJZCI6Inh5eixoaWosbG1ubyJ9');
+        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(JSON.stringify({
+            pageUrl:      'https://example.com/test2',
+            user:         { id: '__test__userID2', name: '__test__userName2' },
+            trackingType: 'view',
+            clientId:     'abcxyz123',
+            merchantId:   'xyz,hij,lmno'
+        }));
         expect(appendChildCalls).to.equal(1);
     });
 

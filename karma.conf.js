@@ -32,6 +32,9 @@ export default (karma : Object) => {
 
     karma.set({
         ...karmaConfig,
+        client: {
+            captureConsole: true
+        },
         files: [
             {
                 pattern:  'test/paypal.js',
