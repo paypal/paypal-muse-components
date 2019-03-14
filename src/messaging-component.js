@@ -126,7 +126,7 @@ const showExitModal = ({ cartRecovery }) => { // returns true if modal was shown
     }
     if (!isRendered) {
         console.log('render experience....');
-        modal.render('#modal');
+        modal.render('body');
         isRendered = true
         return true
     }
