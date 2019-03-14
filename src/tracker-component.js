@@ -91,5 +91,12 @@ export const Tracker = (config : Config) => ({
         config.user.id = data.user.id;
         config.user.name = data.user.name;
         config.user.email = data.user.email;
+        const today = new Date();
+        const expires = new Date(
+            today.getFullYear() + 1,
+            today.getMonth(),
+            today.getDate()
+        ).toGMTString()
+        document.cookie = `paypal-cr-user=${data.user.email};expires=${expires}`
     }
 });

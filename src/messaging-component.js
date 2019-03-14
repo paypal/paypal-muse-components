@@ -1,19 +1,88 @@
-import { create } from 'zoid/src';
+/* @flow */
+import { create, EVENT } from 'zoid/src';
+import { destroyElement } from 'belter/src'
+
+const CLASS = {
+    VISIBLE:   'visible',
+    INVISIBLE: 'invisible'
+};
+
+let isRendered = false;
 
 const modal = create({
-    tag: 'paypal-cart-recovery-modal',
+    tag:  'paypal-cart-recovery-modal',
     url: 'http://localhost:8001/cartrecovery/modal',
-    defaultContext: 'popup',
-    containerTemplate: function containerTemplate({ uid, doc, frame, prerenderFrame }) {
-        return node('div', { id: uid, class: 'container' },
-            node('style', null, `
-                #${ uid }.container {
-                    border: 5px solid red;
-                }
-            `),
-            node('node', { el: frame }),
-            node('node', { el: prerenderFrame })
-        ).render(dom({ doc }));
+    containerTemplate: ({ uid, frame, prerenderFrame, doc, event, dimensions : { width, height } }) => {
+        if (!frame || !prerenderFrame) {
+            return;
+        }
+        const div = doc.createElement('div');
+        div.setAttribute('id', uid);
+        const style = doc.createElement('style');
+    
+        style.appendChild(doc.createTextNode(`
+            #${ uid } {
+                background-color: rgba(50, 50, 50, 0.8);
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            #${ uid } > iframe {
+                width: ${ width };
+                height: ${ height };
+                display: block;
+                margin: 10vh auto;
+                transition: opacity .2s ease-in-out;
+            }
+            #${ uid } > iframe.${ CLASS.INVISIBLE } {
+                opacity: 0;
+            }
+            #${ uid } > iframe.${ CLASS.VISIBLE } {
+                opacity: 1;
+        }
+        `));
+    
+        div.appendChild(frame);
+        div.appendChild(prerenderFrame);
+        div.appendChild(style);
+
+        prerenderFrame.classList.add(CLASS.VISIBLE);
+        frame.classList.add(CLASS.INVISIBLE);
+    
+        event.on(EVENT.RENDERED, () => {
+            prerenderFrame.classList.remove(CLASS.VISIBLE);
+            prerenderFrame.classList.add(CLASS.INVISIBLE);
+    
+            frame.classList.remove(CLASS.INVISIBLE);
+            frame.classList.add(CLASS.VISIBLE);
+    
+            setTimeout(() => {
+                destroyElement(prerenderFrame);
+            }, 1);
+        });    
+        return div;
+    },
+    dimensions: {
+        width: '704px',
+        height: '390px'
+    }
+})({
+    setLastSeen: () => {
+        localStorage.setItem('paypal-cr-lastseen', String(Date.now()))
+    },
+    closeModal: () => {
+        isRendered = false;
+        modal.close();
+    },
+    submitEmail: (email) => {
+        // TODO: set email to cart
     }
 });
 
@@ -26,35 +95,39 @@ const debounce = (f, ms) => {
 };
 
 const showExitModal = ({ cartRecovery }) => { // returns true if modal was shown
-    // TODO: if identified - do nothing
+    // don't show modal if cartRecovery is not enabled
     if (!cartRecovery) {
         console.log('cartRecovery option not enabled')
         return false;
     }
-    modal().render('#modal');
+    // don't show modal if user is identified
     const email = localStorage.getItem('paypal-cr-user');
     if (email !== null) {
         console.log('[exit] no email');
         return false;
     }
-    // TODO: does user have no items in cart - do nothing
+    // don't show modal if user has no cart items
     const cart = JSON.parse(localStorage.getItem('paypal-cr-cart') || '{}')
     if (!cart.items) {
         console.log('[exit] no items');
         return false;
     }
     console.log('cart:', cart)
-    // TODO: has this been shown in past 7 days - do nothing
+    // don't show modal if user has seen in last 7 days
     const sevenDays = 1000 * 60 * 60 * 24 * 7;
     const lastSeen = Number(localStorage.getItem('paypal-cr-lastseen')) || 0;
     if (Date.now() - lastSeen < sevenDays) {
         console.log('[exit] seen < 7 days ago');
         return false;
     }
-    // TODO: render experience
-    console.log('render experience....');
-    return true;
-}
+    if (!isRendered) {
+        console.log('render experience....');
+        modal.render('#modal');
+        isRendered = true
+        return true
+    }
+    return false
+};
 
 const init = (...args) => {
     const exitIntentListener = debounce(e => {
@@ -62,8 +135,17 @@ const init = (...args) => {
             showExitModal(...args);
         }
     }, 100);
+    
+    const resetIdle = debounce(() => {
+        showExitModal(...args);
+    }, 300000);
+
     if (document.body) {
         document.body.addEventListener('mousemove', exitIntentListener);
+        document.body.addEventListener('mousemove', resetIdle);
+        document.body.addEventListener('mousedown', resetIdle);
+        document.body.addEventListener('touchstart', resetIdle);
+        document.body.addEventListener('onclick', resetIdle);
     }
 };
 
