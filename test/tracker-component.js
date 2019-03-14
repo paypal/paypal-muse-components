@@ -1,4 +1,4 @@
-/* globals describe before it */
+/* globals describe before after afterEach it */
 /* @flow */
 
 import { expect } from 'chai';
@@ -21,6 +21,10 @@ describe('paypal.Tracker', () => {
     after(() => {
         // $FlowFixMe
         document.body.appendChild = originalDocumentBodyAppendChild;
+    });
+
+    afterEach(() => {
+        appendChildCalls = 0;
     });
 
     it('should be a function that returns a tracker', () => {
@@ -50,7 +54,7 @@ describe('paypal.Tracker', () => {
         const userID = '__test__userID3';
         const userName = '__test__userName3';
         const tracker = Tracker({ user: { id: userID, name: userName } });
-        expect(appendChildCalls).to.equal(1);
+        expect(appendChildCalls).to.equal(0);
         tracker.addToCart({
             cartId: '__test__cartId',
             items:  [
@@ -64,14 +68,14 @@ describe('paypal.Tracker', () => {
             currencyCode:    'USD',
             keywords:        [ '__test__' ]
         });
-        expect(appendChildCalls).to.equal(2);
+        expect(appendChildCalls).to.equal(1);
     });
 
     it('should send setCart events', () => {
         const userID = '__test__userID4';
         const userName = '__test__userName4';
         const tracker = Tracker({ user: { id: userID, name: userName } });
-        expect(appendChildCalls).to.equal(2);
+        expect(appendChildCalls).to.equal(0);
         tracker.setCart({
             cartId: '__test__cartId',
             items:  [
@@ -85,14 +89,14 @@ describe('paypal.Tracker', () => {
             currencyCode:    'USD',
             keywords:        [ '__test__' ]
         });
-        expect(appendChildCalls).to.equal(3);
+        expect(appendChildCalls).to.equal(1);
     });
 
     it('should send removeFromCart events', () => {
         const userID = '__test__userID5';
         const userName = '__test__userName5';
         const tracker = Tracker({ user: { id: userID, name: userName } });
-        expect(appendChildCalls).to.equal(3);
+        expect(appendChildCalls).to.equal(0);
         tracker.removeFromCart({
             cartId: '__test__cartId',
             items:  [
@@ -102,18 +106,18 @@ describe('paypal.Tracker', () => {
                 }
             ]
         });
-        expect(appendChildCalls).to.equal(4);
+        expect(appendChildCalls).to.equal(1);
     });
 
     it('should send purchase events', () => {
         const userID = '__test__userID6';
         const userName = '__test__userName6';
         const tracker = Tracker({ user: { id: userID, name: userName } });
-        expect(appendChildCalls).to.equal(4);
+        expect(appendChildCalls).to.equal(0);
         tracker.purchase({
             cartId: '__test__cartId'
         });
-        expect(appendChildCalls).to.equal(5);
+        expect(appendChildCalls).to.equal(1);
     });
 
     it('should call paramsToBeaconUrl to create the url if you pass in paramsToBeaconUrl function', () => {
@@ -128,11 +132,11 @@ describe('paypal.Tracker', () => {
             user: { id: userID, name: userName },
             paramsToBeaconUrl
         });
-        expect(appendChildCalls).to.equal(5);
+        expect(appendChildCalls).to.equal(0);
         tracker.purchase({
             cartId: '__test__cartId'
         });
-        expect(appendChildCalls).to.equal(6);
+        expect(appendChildCalls).to.equal(1);
         expect(JSON.stringify(calledArgs)).to.deep.equal(
             JSON.stringify([
                 {
