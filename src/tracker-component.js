@@ -6,6 +6,8 @@ type TrackingType = 'view' | 'cartEvent' | 'purchase';
 
 type CartEventType = 'addToCart' | 'setCart' | 'removeFromCart';
 
+type Environment = 'stage' | 'sandbox' | 'production';
+
 type Product = {|
     id : string,
     url : string,
@@ -44,7 +46,8 @@ type Config = {|
     property? : {
         id : string
     },
-    paramsToBeaconUrl? : ParamsToBeaconUrl
+    paramsToBeaconUrl? : ParamsToBeaconUrl,
+    env? : Environment
 |};
 
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) : Promise<void> => {
@@ -63,11 +66,18 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
             merchantId: getMerchantID()
         };
 
+        // paramsToBeaconUrl is a function that gives you the ability to override the beacon url
+        // to whatever you want it to be based on the trackingType string and data object.
+        // This can be useful for testing.
         if (config.paramsToBeaconUrl) {
             img.src = config.paramsToBeaconUrl({ trackingType, data });
         } else {
-            img.src = `https://api.keen.io/3.0/projects/5b903f6ec9e77c00013bc6a7/events/${ trackingType }?api_key=700B56FBE7A2A6BD845B82F9014ED6628943091AD5B0A5751C3027CFE8C5555448C6E11302BD769FCC5BDD003C3DE8282C4FC8FE279A0AAC866F2C97010468197B98779B872EFD7EE980D2986503B843DA3797C750DAA00017DC8186078EADA6&data=${ encodeData(data) }`;
-            // img.src = `https://paypal.com/targeting/track?trackingType=${ trackingType }&data=${ encodeData(data) }`;
+            const envToUrl = {
+                stage:      'https://www.targetingnodeweb19125146982616.qa.paypal.com',
+                sandbox:    'https://sandbox.paypal.com',
+                production: 'https://www.paypal.com'
+            };
+            img.src = `${ envToUrl[config.env || 'production'] }/targeting/track/${ trackingType }?data=${ encodeData(data) }`;
         }
 
         img.addEventListener('load', () => resolve());
