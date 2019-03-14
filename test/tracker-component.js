@@ -11,20 +11,34 @@ describe('paypal.Tracker', () => {
         appendChildCalls += 1;
     };
 
+    const imgMock = { src: '', style: {}, addEventListener: () => { /* empty */ } };
+
+    const createElement = (elementType : string) => {
+        expect(elementType).to.equal('img');
+        return imgMock;
+    };
+
     // $FlowFixMe
     const originalDocumentBodyAppendChild = document.body.appendChild;
+    // $FlowFixMe
+    const originalDocumentCreateElement = document.createElement;
     before(() => {
         // $FlowFixMe
         document.body.appendChild = appendChild;
+        // $FlowFixMe
+        document.createElement = createElement;
     });
 
     after(() => {
         // $FlowFixMe
         document.body.appendChild = originalDocumentBodyAppendChild;
+        // $FlowFixMe
+        document.createElement = originalDocumentCreateElement;
     });
 
     afterEach(() => {
         appendChildCalls = 0;
+        imgMock.src = '';
     });
 
     it('should be a function that returns a tracker', () => {
@@ -47,6 +61,7 @@ describe('paypal.Tracker', () => {
         tracker.view({
             pageUrl: 'https://example.com/test2'
         });
+        expect(imgMock.src).to.equal('https://www.paypal.com/targeting/track/view?data=eyJwYWdlVXJsIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS90ZXN0MiIsInVzZXIiOnsiaWQiOiJfX3Rlc3RfX3VzZXJJRDIiLCJuYW1lIjoiX190ZXN0X191c2VyTmFtZTIifSwidHJhY2tpbmdUeXBlIjoidmlldyIsImNsaWVudElkIjoiYWJjeHl6MTIzIiwibWVyY2hhbnRJZCI6Inh5eixoaWosbG1ubyJ9');
         expect(appendChildCalls).to.equal(1);
     });
 
