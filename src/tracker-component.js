@@ -38,7 +38,7 @@ type ParamsToBeaconUrl = ({
 }) => string;
 
 type Config = {|
-    user : {
+    user? : {
         id : string,
         email? : string, // mandatory if unbranded cart recovery
         name? : string
@@ -68,7 +68,7 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
 
         // paramsToBeaconUrl is a function that gives you the ability to override the beacon url
         // to whatever you want it to be based on the trackingType string and data object.
-        // This can be useful for testing.
+        // This can be useful for testing purposes, this feature won't be used by merchants.
         if (config.paramsToBeaconUrl) {
             img.src = config.paramsToBeaconUrl({ trackingType, data });
         } else {
@@ -91,13 +91,16 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
 const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) : Promise<void> =>
     track(config, 'cartEvent', { ...trackingData, cartEventType });
 
-export const Tracker = (config : Config) => ({
+const generateId = () : string => Math.random().toString(16).slice(2);
+
+export const Tracker = (config? : Config = { user: { id: generateId() } }) => ({
     view:           (data : { pageUrl : string }) => track(config, 'view', data),
     addToCart:      (data : Cart) => trackCartEvent(config, 'addToCart', data),
     setCart:        (data : Cart) => trackCartEvent(config, 'setCart', data),
     removeFromCart: (data : RemoveCart) => trackCartEvent(config, 'removeFromCart', data),
     purchase:       (data : { cartId : string }) => track(config, 'purchase', data),
     setUser:        (data : { user : { id : string, email : string, name? : string } }) => {
+        config.user = config.user || { id: data.user.id };
         config.user.id = data.user.id;
         config.user.name = data.user.name;
         config.user.email = data.user.email;
