@@ -108,12 +108,11 @@ describe('paypal.Tracker', () => {
                 }
             ],
             emailCampaignId: '__test__emailCampaignId',
-            price:           12345.67,
-            currencyCode:    'USD',
-            keywords:        [ '__test__' ]
+            total:           '12345.67',
+            currencyCode:    'USD'
         });
         expect(imgMock.src).to.equal(
-            'https://www.paypal.com/targeting/track/cartEvent?data=eyJjYXJ0SWQiOiJfX3Rlc3RfX2NhcnRJZCIsIml0ZW1zIjpbeyJpZCI6Il9fdGVzdF9fcHJvZHVjdElkIiwidXJsIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9fX3Rlc3RfX3Byb2R1Y3RJZCJ9XSwiZW1haWxDYW1wYWlnbklkIjoiX190ZXN0X19lbWFpbENhbXBhaWduSWQiLCJwcmljZSI6MTIzNDUuNjcsImN1cnJlbmN5Q29kZSI6IlVTRCIsImtleXdvcmRzIjpbIl9fdGVzdF9fIl0sImNhcnRFdmVudFR5cGUiOiJhZGRUb0NhcnQiLCJ1c2VyIjp7ImlkIjoiX190ZXN0X191c2VySUQzIiwibmFtZSI6Il9fdGVzdF9fdXNlck5hbWUzIn0sInRyYWNraW5nVHlwZSI6ImNhcnRFdmVudCIsImNsaWVudElkIjoiYWJjeHl6MTIzIiwibWVyY2hhbnRJZCI6Inh5eixoaWosbG1ubyJ9'
+            'https://www.paypal.com/targeting/track/cartEvent?data=eyJjYXJ0SWQiOiJfX3Rlc3RfX2NhcnRJZCIsIml0ZW1zIjpbeyJpZCI6Il9fdGVzdF9fcHJvZHVjdElkIiwidXJsIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9fX3Rlc3RfX3Byb2R1Y3RJZCJ9XSwiZW1haWxDYW1wYWlnbklkIjoiX190ZXN0X19lbWFpbENhbXBhaWduSWQiLCJ0b3RhbCI6IjEyMzQ1LjY3IiwiY3VycmVuY3lDb2RlIjoiVVNEIiwiY2FydEV2ZW50VHlwZSI6ImFkZFRvQ2FydCIsInVzZXIiOnsiaWQiOiJfX3Rlc3RfX3VzZXJJRDMiLCJuYW1lIjoiX190ZXN0X191c2VyTmFtZTMifSwidHJhY2tpbmdUeXBlIjoiY2FydEV2ZW50IiwiY2xpZW50SWQiOiJhYmN4eXoxMjMiLCJtZXJjaGFudElkIjoieHl6LGhpaixsbW5vIn0%3D'
         );
         expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
             JSON.stringify({
@@ -125,9 +124,8 @@ describe('paypal.Tracker', () => {
                     }
                 ],
                 emailCampaignId: '__test__emailCampaignId',
-                price:           12345.67,
+                total:           '12345.67',
                 currencyCode:    'USD',
-                keywords:        [ '__test__' ],
                 cartEventType:   'addToCart',
                 user:            { id: '__test__userID3', name: '__test__userName3' },
                 trackingType:    'cartEvent',
@@ -152,12 +150,11 @@ describe('paypal.Tracker', () => {
                 }
             ],
             emailCampaignId: '__test__emailCampaignId',
-            price:           12345.67,
-            currencyCode:    'USD',
-            keywords:        [ '__test__' ]
+            total:           '12345.67',
+            currencyCode:    'USD'
         });
         expect(imgMock.src).to.equal(
-            'https://www.paypal.com/targeting/track/cartEvent?data=eyJjYXJ0SWQiOiJfX3Rlc3RfX2NhcnRJZCIsIml0ZW1zIjpbeyJpZCI6Il9fdGVzdF9fcHJvZHVjdElkIiwidXJsIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9fX3Rlc3RfX3Byb2R1Y3RJZCJ9XSwiZW1haWxDYW1wYWlnbklkIjoiX190ZXN0X19lbWFpbENhbXBhaWduSWQiLCJwcmljZSI6MTIzNDUuNjcsImN1cnJlbmN5Q29kZSI6IlVTRCIsImtleXdvcmRzIjpbIl9fdGVzdF9fIl0sImNhcnRFdmVudFR5cGUiOiJzZXRDYXJ0IiwidXNlciI6eyJpZCI6Il9fdGVzdF9fdXNlcklENCIsIm5hbWUiOiJfX3Rlc3RfX3VzZXJOYW1lNCJ9LCJ0cmFja2luZ1R5cGUiOiJjYXJ0RXZlbnQiLCJjbGllbnRJZCI6ImFiY3h5ejEyMyIsIm1lcmNoYW50SWQiOiJ4eXosaGlqLGxtbm8ifQ%3D%3D'
+            'https://www.paypal.com/targeting/track/cartEvent?data=eyJjYXJ0SWQiOiJfX3Rlc3RfX2NhcnRJZCIsIml0ZW1zIjpbeyJpZCI6Il9fdGVzdF9fcHJvZHVjdElkIiwidXJsIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9fX3Rlc3RfX3Byb2R1Y3RJZCJ9XSwiZW1haWxDYW1wYWlnbklkIjoiX190ZXN0X19lbWFpbENhbXBhaWduSWQiLCJ0b3RhbCI6IjEyMzQ1LjY3IiwiY3VycmVuY3lDb2RlIjoiVVNEIiwiY2FydEV2ZW50VHlwZSI6InNldENhcnQiLCJ1c2VyIjp7ImlkIjoiX190ZXN0X191c2VySUQ0IiwibmFtZSI6Il9fdGVzdF9fdXNlck5hbWU0In0sInRyYWNraW5nVHlwZSI6ImNhcnRFdmVudCIsImNsaWVudElkIjoiYWJjeHl6MTIzIiwibWVyY2hhbnRJZCI6Inh5eixoaWosbG1ubyJ9'
         );
         expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
             JSON.stringify({
@@ -169,9 +166,8 @@ describe('paypal.Tracker', () => {
                     }
                 ],
                 emailCampaignId: '__test__emailCampaignId',
-                price:           12345.67,
+                total:           '12345.67',
                 currencyCode:    'USD',
-                keywords:        [ '__test__' ],
                 cartEventType:   'setCart',
                 user:            { id: '__test__userID4', name: '__test__userName4' },
                 trackingType:    'cartEvent',
