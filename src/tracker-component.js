@@ -66,6 +66,9 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
             merchantId: getMerchantID()
         };
 
+        // paramsToBeaconUrl is a function that gives you the ability to override the beacon url
+        // to whatever you want it to be based on the trackingType string and data object.
+        // This can be useful for testing.
         if (config.paramsToBeaconUrl) {
             img.src = config.paramsToBeaconUrl({ trackingType, data });
         } else {
