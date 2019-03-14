@@ -69,7 +69,6 @@ describe('paypal.Tracker', () => {
         expect(tracker).to.have.property('setCart');
         expect(tracker).to.have.property('removeFromCart');
         expect(tracker).to.have.property('purchase');
-        expect(tracker).to.not.have.property('purchases');
     });
 
     it('should send view events', () => {
