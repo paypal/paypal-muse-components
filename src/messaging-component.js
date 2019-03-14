@@ -4,7 +4,8 @@ import { destroyElement } from 'belter/src'
 
 const CLASS = {
     VISIBLE:   'visible',
-    INVISIBLE: 'invisible'
+    INVISIBLE: 'invisible',
+    PRERENDER: 'prerender'
 };
 
 let isRendered = false;
@@ -16,10 +17,13 @@ const modal = create({
         if (!frame || !prerenderFrame) {
             return;
         }
+        const container = doc.createElement('div')
         const div = doc.createElement('div');
+        container.appendChild(div);
+        container.classList.add('hidden');
         div.setAttribute('id', uid);
         const style = doc.createElement('style');
-    
+
         style.appendChild(doc.createTextNode(`
             #${ uid } {
                 background-color: rgba(50, 50, 50, 0.8);
@@ -46,28 +50,28 @@ const modal = create({
             }
             #${ uid } > iframe.${ CLASS.VISIBLE } {
                 opacity: 1;
-        }
+            }
+            .hidden {
+                display: none;
+            }
         `));
-    
         div.appendChild(frame);
         div.appendChild(prerenderFrame);
         div.appendChild(style);
-
         prerenderFrame.classList.add(CLASS.VISIBLE);
         frame.classList.add(CLASS.INVISIBLE);
     
         event.on(EVENT.RENDERED, () => {
+            container.classList.remove('hidden')
             prerenderFrame.classList.remove(CLASS.VISIBLE);
             prerenderFrame.classList.add(CLASS.INVISIBLE);
-    
             frame.classList.remove(CLASS.INVISIBLE);
             frame.classList.add(CLASS.VISIBLE);
-    
             setTimeout(() => {
                 destroyElement(prerenderFrame);
             }, 1);
         });    
-        return div;
+        return container;
     },
     dimensions: {
         width: '704px',
