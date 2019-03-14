@@ -10,11 +10,17 @@ describe('paypal.Tracker', () => {
     const appendChild = () => {
         appendChildCalls += 1;
     };
+
+    // $FlowFixMe
+    const originalDocumentBodyAppendChild = document.body.appendChild;
     before(() => {
         // $FlowFixMe
-        document.body = document.body || {};
-        // $FlowFixMe
         document.body.appendChild = appendChild;
+    });
+
+    after(() => {
+        // $FlowFixMe
+        document.body.appendChild = originalDocumentBodyAppendChild;
     });
 
     it('should be a function that returns a tracker', () => {
