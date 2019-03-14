@@ -97,7 +97,7 @@ export const Tracker = (config : Config) => ({
     setCart:        (data : Cart) => trackCartEvent(config, 'setCart', data),
     removeFromCart: (data : RemoveCart) => trackCartEvent(config, 'removeFromCart', data),
     purchase:       (data : { cartId : string }) => track(config, 'purchase', data),
-    setUser:        (data : { user : { id : string, name? : string, email? : string } }) => {
+    setUser:        (data : { user : { id : string, email : string, name? : string } }) => {
         config.user.id = data.user.id;
         config.user.name = data.user.name;
         config.user.email = data.user.email;
