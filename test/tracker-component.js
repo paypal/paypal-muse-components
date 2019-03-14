@@ -277,4 +277,29 @@ describe('paypal.Tracker', () => {
             ])
         );
     });
+
+    it('should set the user', () => {
+        const userID = '__test__userID9';
+        const userName = '__test__userName9';
+        const email = '__test__email9';
+        const tracker = Tracker({ user: { id: userID } });
+        tracker.setUser({ user: { id: userID, userName, email } });
+        expect(appendChildCalls).to.equal(0);
+        tracker.view({
+            pageUrl: 'https://example.com/test2'
+        });
+        expect(imgMock.src).to.equal(
+            'https://www.paypal.com/targeting/track/view?data=eyJwYWdlVXJsIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS90ZXN0MiIsInVzZXIiOnsiaWQiOiJfX3Rlc3RfX3VzZXJJRDkiLCJlbWFpbCI6Il9fdGVzdF9fZW1haWw5In0sInRyYWNraW5nVHlwZSI6InZpZXciLCJjbGllbnRJZCI6ImFiY3h5ejEyMyIsIm1lcmNoYW50SWQiOiJ4eXosaGlqLGxtbm8ifQ%3D%3D'
+        );
+        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
+            JSON.stringify({
+                pageUrl:      'https://example.com/test2',
+                user:         { id: '__test__userID9', email: '__test__email9' },
+                trackingType: 'view',
+                clientId:     'abcxyz123',
+                merchantId:   'xyz,hij,lmno'
+            })
+        );
+        expect(appendChildCalls).to.equal(1);
+    });
 });
