@@ -281,18 +281,22 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName9';
         const email = '__test__email9';
         const tracker = Tracker({ user: { id: userID } });
-        tracker.setUser({ user: { id: userID, userName, email } });
+        tracker.setUser({ user: { id: userID, name: userName, email } });
         expect(appendChildCalls).to.equal(0);
         tracker.view({
             page: '/test2'
         });
         expect(imgMock.src).to.equal(
-            'https://www.paypal.com/targeting/track/view?data=eyJwYWdlIjoiL3Rlc3QyIiwidXNlciI6eyJpZCI6Il9fdGVzdF9fdXNlcklEOSIsImVtYWlsIjoiX190ZXN0X19lbWFpbDkifSwidHJhY2tpbmdUeXBlIjoidmlldyIsImNsaWVudElkIjoiYWJjeHl6MTIzIiwibWVyY2hhbnRJZCI6Inh5eixoaWosbG1ubyJ9'
+            'https://www.paypal.com/targeting/track/view?data=eyJwYWdlIjoiL3Rlc3QyIiwidXNlciI6eyJpZCI6Il9fdGVzdF9fdXNlcklEOSIsImVtYWlsIjoiX190ZXN0X19lbWFpbDkiLCJuYW1lIjoiX190ZXN0X191c2VyTmFtZTkifSwidHJhY2tpbmdUeXBlIjoidmlldyIsImNsaWVudElkIjoiYWJjeHl6MTIzIiwibWVyY2hhbnRJZCI6Inh5eixoaWosbG1ubyJ9'
         );
         expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
             JSON.stringify({
-                page:         '/test2',
-                user:         { id: '__test__userID9', email: '__test__email9' },
+                page: '/test2',
+                user: {
+                    id:    '__test__userID9',
+                    email: '__test__email9',
+                    name:  '__test__userName9'
+                },
                 trackingType: 'view',
                 clientId:     'abcxyz123',
                 merchantId:   'xyz,hij,lmno'
