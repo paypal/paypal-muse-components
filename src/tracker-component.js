@@ -99,5 +99,8 @@ export const Tracker = (config? : Config = { user: { id: generateId() } }) => ({
         config.user.firstName = data.user.firstName;
         config.user.lastName = data.user.lastName;
         config.user.email = data.user.email;
+    },
+    setProperty:    (data : { property : { id : string } }) => {
+        config.property = { id: data.property.id };
     }
 });
