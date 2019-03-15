@@ -40,7 +40,8 @@ type Config = {|
     user? : {
         id : string,
         email? : string, // mandatory if unbranded cart recovery
-        name? : string
+        firstName? : string,
+        lastName? : string
     },
     property? : {
         id : string
@@ -92,10 +93,11 @@ export const Tracker = (config? : Config = { user: { id: generateId() } }) => ({
     setCart:        (data : Cart) => trackCartEvent(config, 'setCart', data),
     removeFromCart: (data : RemoveCart) => trackCartEvent(config, 'removeFromCart', data),
     purchase:       (data : { cartId : string }) => track(config, 'purchase', data),
-    setUser:        (data : { user : { id : string, email : string, name? : string } }) => {
+    setUser:        (data : { user : { id : string, email : string, firstName? : string, lastName? : string } }) => {
         config.user = config.user || { id: data.user.id };
         config.user.id = data.user.id;
-        config.user.name = data.user.name;
+        config.user.firstName = data.user.firstName;
+        config.user.lastName = data.user.lastName;
         config.user.email = data.user.email;
     }
 });
