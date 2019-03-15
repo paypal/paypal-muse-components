@@ -304,4 +304,14 @@ describe('paypal.Tracker', () => {
         );
         expect(appendChildCalls).to.equal(1);
     });
+
+    it('should allow you to instantiate for anonymous users', () => {
+        const tracker = Tracker();
+        tracker.view({ page: '/hello/page' });
+        const dataParamObject = extractDataParam(imgMock.src);
+        // $FlowFixMe
+        expect(dataParamObject.page).to.equal('/hello/page');
+        // $FlowFixMe
+        expect(dataParamObject.trackingType).to.equal('view');
+    });
 });

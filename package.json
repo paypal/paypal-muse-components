@@ -11,8 +11,7 @@
     "flow-typed": "flow-typed install",
     "flow": "flow",
     "flow:build": "flow gen-flow-files ./src/index.js --out-dir ./dist/module",
-    "lint": "eslint src/ test/ *.js",
-    "lint:fix": "npm run lint -- --fix",
+    "lint": "eslint src/ test/ *.js --fix",
     "test": "npm run lint && npm run flow-typed && npm run flow && npm run karma",
     "karma": "cross-env NODE_ENV=test babel-node $(npm bin)/karma start"
   },

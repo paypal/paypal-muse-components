@@ -87,12 +87,12 @@ const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, track
 const generateId = () : string => Math.random().toString(16).slice(2);
 
 export const Tracker = (config? : Config = { user: { id: generateId() } }) => ({
-    view:           (data : { page : string, title? : string }) => track(config, 'view', data),
+    view:           (data : {| page : string, title? : string |}) => track(config, 'view', data),
     addToCart:      (data : Cart) => trackCartEvent(config, 'addToCart', data),
     setCart:        (data : Cart) => trackCartEvent(config, 'setCart', data),
     removeFromCart: (data : RemoveCart) => trackCartEvent(config, 'removeFromCart', data),
-    purchase:       (data : { cartId : string }) => track(config, 'purchase', data),
-    setUser:        (data : { user : { id : string, email : string, name? : string } }) => {
+    purchase:       (data : {| cartId : string |}) => track(config, 'purchase', data),
+    setUser:        (data : {| user : {| id : string, email : string, name? : string |} |}) => {
         config.user = config.user || { id: data.user.id };
         config.user.id = data.user.id;
         config.user.email = data.user.email;
