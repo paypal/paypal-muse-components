@@ -18,7 +18,9 @@ type Product = {|
     quantity? : string
 |};
 
-type Cart = {|
+type ViewData = {| page : string, title? : string |};
+
+type CartData = {|
     cartId? : string,
     items : $ReadOnlyArray<Product>,
     emailCampaignId? : string,
@@ -26,14 +28,30 @@ type Cart = {|
     currencyCode? : string
 |};
 
-type RemoveCart = {|
+type RemoveCartData = {|
     cartId? : string,
     items : $ReadOnlyArray<{ id : string }>
 |};
 
+type PurchaseData = {| cartId : string |};
+
+type UserData = {|
+    user : {|
+        id : string,
+        email : string,
+        name? : string
+    |}
+|};
+
+type PropertyData = {|
+    property : {|
+        id : string
+    |}
+|};
+
 type ParamsToBeaconUrl = ({
     trackingType : TrackingType,
-    data : Cart | RemoveCart | { cartId : string } | { pageUrl : string }
+    data : ViewData | CartData | RemoveCartData | PurchaseData
 }) => string;
 
 type Config = {|
@@ -83,18 +101,18 @@ const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, track
 const generateId = () : string => Math.random().toString(16).slice(2);
 
 export const Tracker = (config? : Config = { user: { id: generateId() } }) => ({
-    view:           (data : {| page : string, title? : string |}) => track(config, 'view', data),
-    addToCart:      (data : Cart) => trackCartEvent(config, 'addToCart', data),
-    setCart:        (data : Cart) => trackCartEvent(config, 'setCart', data),
-    removeFromCart: (data : RemoveCart) => trackCartEvent(config, 'removeFromCart', data),
-    purchase:       (data : {| cartId : string |}) => track(config, 'purchase', data),
-    setUser:        (data : {| user : {| id : string, email : string, name? : string |} |}) => {
+    view:           (data : ViewData) => track(config, 'view', data),
+    addToCart:      (data : CartData) => trackCartEvent(config, 'addToCart', data),
+    setCart:        (data : CartData) => trackCartEvent(config, 'setCart', data),
+    removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
+    purchase:       (data : PurchaseData) => track(config, 'purchase', data),
+    setUser:        (data : UserData) => {
         config.user = config.user || { id: data.user.id };
         config.user.id = data.user.id;
         config.user.email = data.user.email;
         config.user.name = data.user.name;
     },
-    setProperty:    (data : { property : { id : string } }) => {
+    setProperty:    (data : PropertyData) => {
         config.property = { id: data.property.id };
     }
 });
