@@ -1,6 +1,8 @@
 /* @flow */
 import { create, EVENT } from 'zoid/src';
 import { destroyElement } from 'belter/src';
+
+import { Tracker } from './tracker-component';
 import checkIfMobile from './lib/mobile-check';
 
 const CLASS = {
@@ -12,6 +14,7 @@ const CLASS = {
 const isMobile = checkIfMobile();
 
 let isRendered = false;
+let userId = '';
 
 const modal = create({
     tag:               'paypal-cart-recovery-modal',
@@ -74,7 +77,7 @@ const modal = create({
             setTimeout(() => {
                 destroyElement(prerenderFrame);
             }, 1);
-        });    
+        });
         return container;
     },
     dimensions: {
@@ -90,7 +93,21 @@ const modal = create({
         modal.close();
     },
     submitEmail: (email) => {
-        // TODO: set email to cart
+        Tracker({
+            property: {
+                // figure out how to get this
+                id: '2d716c47-ffc3-4720-93d6-1ca7e55b315b'
+            },
+            user: {
+                id: userId
+            }
+        });
+        Tracker.setUser({
+            user: {
+                id: userId,
+                email
+            }
+        });
     },
     isMobile
 });
@@ -106,39 +123,36 @@ const debounce = (f, ms) => {
 const showExitModal = ({ cartRecovery }) => { // returns true if modal was shown
     // don't show modal if cartRecovery is not enabled
     if (!cartRecovery) {
-        console.log('cartRecovery option not enabled')
         return false;
     }
     // don't show modal if user is identified
     const email = localStorage.getItem('paypal-cr-user');
     if (email !== null) {
-        console.log('[exit] no email');
         return false;
     }
     // don't show modal if user has no cart items
     const cart = JSON.parse(localStorage.getItem('paypal-cr-cart') || '{}');
     if (!cart.items) {
-        console.log('[exit] no items');
         return false;
     }
-    console.log('cart:', cart)
     // don't show modal if user has seen in last 7 days
     const sevenDays = 1000 * 60 * 60 * 24 * 7;
     const lastSeen = Number(localStorage.getItem('paypal-cr-lastseen')) || 0;
     if (Date.now() - lastSeen < sevenDays) {
-        console.log('[exit] seen < 7 days ago');
         return false;
     }
     if (!isRendered) {
-        console.log('render experience....');
         modal.render('body');
-        isRendered = true
-        return true
+        isRendered = true;
     }
     return isRendered;
 };
 
 const init = (...args) => {
+    const config = args[0];
+    if (config.cartRecovery) {
+        userId = config.cartRecovery.userId;
+    }
     const exitIntentListener = debounce(e => {
         if (e.screenY <= 150) {
             showExitModal(...args);
@@ -147,8 +161,7 @@ const init = (...args) => {
     
     const resetIdle = debounce(() => {
         showExitModal(...args);
-        // TODO: make this variable depend on isMobile or not (mobile: 30 seconds, desktop: 5 minutes)
-    }, 5000);
+    }, isMobile ? 30000 : 300000);
 
     if (document.body) {
         document.body.addEventListener('mousemove', exitIntentListener);
@@ -161,4 +174,4 @@ const init = (...args) => {
 
 export const Messaging = {
     init
-}
+};
