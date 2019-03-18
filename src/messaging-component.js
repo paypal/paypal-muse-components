@@ -1,6 +1,7 @@
 /* @flow */
 import { create, EVENT } from 'zoid/src';
-import { destroyElement } from 'belter/src'
+import { destroyElement } from 'belter/src';
+import checkIfMobile from './lib/mobile-check';
 
 const CLASS = {
     VISIBLE:   'visible',
@@ -8,11 +9,13 @@ const CLASS = {
     PRERENDER: 'prerender'
 };
 
+const isMobile = checkIfMobile();
+
 let isRendered = false;
 
 const modal = create({
-    tag:  'paypal-cart-recovery-modal',
-    url: 'http://localhost:8001/cartrecovery/modal',
+    tag:               'paypal-cart-recovery-modal',
+    url:               'http://localhost:8001/cartrecovery/modal',
     containerTemplate: ({ uid, frame, prerenderFrame, doc, event, dimensions : { width, height } }) => {
         if (!frame || !prerenderFrame) {
             return;
@@ -27,8 +30,9 @@ const modal = create({
         style.appendChild(doc.createTextNode(`
             #${ uid } {
                 background-color: rgba(50, 50, 50, 0.8);
-                width: 100%;
-                height: 100%;
+                width: 100vw;
+                margin: 0;
+                height: 100vh;
                 position: absolute;
                 top: 0;
                 left: 0;
@@ -42,7 +46,7 @@ const modal = create({
                 width: ${ width };
                 height: ${ height };
                 display: block;
-                margin: 10vh auto;
+                margin: 0 auto;
                 transition: opacity .2s ease-in-out;
             }
             #${ uid } > iframe.${ CLASS.INVISIBLE } {
@@ -74,12 +78,12 @@ const modal = create({
         return container;
     },
     dimensions: {
-        width: '704px',
-        height: '390px'
+        width:  isMobile ? '100%' : '704px',
+        height: isMobile ? '100%' : '390px'
     }
 })({
     setLastSeen: () => {
-        localStorage.setItem('paypal-cr-lastseen', String(Date.now()))
+        localStorage.setItem('paypal-cr-lastseen', String(Date.now()));
     },
     closeModal: () => {
         isRendered = false;
@@ -87,7 +91,8 @@ const modal = create({
     },
     submitEmail: (email) => {
         // TODO: set email to cart
-    }
+    },
+    isMobile
 });
 
 const debounce = (f, ms) => {
@@ -111,7 +116,7 @@ const showExitModal = ({ cartRecovery }) => { // returns true if modal was shown
         return false;
     }
     // don't show modal if user has no cart items
-    const cart = JSON.parse(localStorage.getItem('paypal-cr-cart') || '{}')
+    const cart = JSON.parse(localStorage.getItem('paypal-cr-cart') || '{}');
     if (!cart.items) {
         console.log('[exit] no items');
         return false;
@@ -130,7 +135,7 @@ const showExitModal = ({ cartRecovery }) => { // returns true if modal was shown
         isRendered = true
         return true
     }
-    return false
+    return isRendered;
 };
 
 const init = (...args) => {
@@ -142,7 +147,8 @@ const init = (...args) => {
     
     const resetIdle = debounce(() => {
         showExitModal(...args);
-    }, 300000);
+        // TODO: make this variable depend on isMobile or not (mobile: 30 seconds, desktop: 5 minutes)
+    }, 5000);
 
     if (document.body) {
         document.body.addEventListener('mousemove', exitIntentListener);
