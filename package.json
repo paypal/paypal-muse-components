@@ -36,7 +36,6 @@
     "mocha": "^4"
   },
   "dependencies": {
-    "@paypal/sdk-client": "^4.0.1",
-    "zoid": "^9.0.21"
+    "@paypal/sdk-client": "^4.0.1"
   }
 }
