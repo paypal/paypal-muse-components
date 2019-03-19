@@ -18,7 +18,7 @@ let userId = '';
 
 const modal = create({
     tag:               'paypal-cart-recovery-modal',
-    url:               'http://localhost:8001/cartrecovery/modal',
+    url:               'https://localhost:8001/cartrecovery/modal',
     containerTemplate: ({ uid, frame, prerenderFrame, doc, event, dimensions : { width, height } }) => {
         if (!frame || !prerenderFrame) {
             return;
