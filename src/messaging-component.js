@@ -3,7 +3,7 @@ import { create, EVENT } from 'zoid/src';
 import { destroyElement } from 'belter/src';
 
 import { Tracker } from './tracker-component';
-import checkIfMobile from './lib/mobile-check';
+import { checkIfMobile } from './lib/mobile-check';
 
 const CLASS = {
     VISIBLE:   'visible',
