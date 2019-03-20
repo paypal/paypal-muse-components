@@ -105,7 +105,10 @@ const generateId = () : string =>
 
 export const Tracker = (config? : Config = { user: { id: generateId() } }) => ({
     view:           (data : ViewData) => track(config, 'view', data),
-    addToCart:      (data : CartData) => trackCartEvent(config, 'addToCart', data),
+    addToCart:      (data : CartData) => {
+        localStorage.setItem('paypal-cr-cart', JSON.stringify(data));
+        return trackCartEvent(config, 'addToCart', data);
+    },
     setCart:        (data : CartData) => trackCartEvent(config, 'setCart', data),
     removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
     purchase:       (data : PurchaseData) => track(config, 'purchase', data),
