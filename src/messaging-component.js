@@ -76,8 +76,8 @@ const showExitModal = ({ cartRecovery }) => {
             command:    'SHOW_OVERLAY',
             visitorId:  userId
         });
-        const lastSeen = String(Date.now());
-        localStorage.setItem('paypal-cr-lastseen', lastSeen);
+        const timestamp = String(Date.now());
+        localStorage.setItem('paypal-cr-lastseen', timestamp);
         isRendered = true;
     }
     return isRendered;
