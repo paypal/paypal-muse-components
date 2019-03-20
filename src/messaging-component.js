@@ -9,6 +9,7 @@ const museSdkUrl = 'https://ppsong.c0d3.com/cdn/assets/modal/sdk.js';
 loadJavascript(museSdkUrl);
 
 let userId = '';
+let isRendered = false;
 
 // $FlowFixMe
 ppq('showExperience', 'https://www.paypalobjects.com/muse/cart-recovery-0.3/', 'body', {
@@ -48,12 +49,38 @@ const debounce = (f, ms) => {
     };
 };
 
-const showExitModal = () => {
-    // $FlowFixMe
-    ppq('updateExperience', {
-        command:    'SHOW_OVERLAY',
-        visitorId:  userId
-    });
+const showExitModal = ({ cartRecovery }) => {
+    // don't show modal if cartRecovery is not enabled
+    if (!cartRecovery) {
+        return false;
+    }
+    // don't show modal if user is identified
+    const email = localStorage.getItem('paypal-cr-user');
+    if (email !== null) {
+        return false;
+    }
+    // don't show modal if user has no cart items
+    const cart = JSON.parse(localStorage.getItem('paypal-cr-cart') || '{}');
+    if (!cart.items) {
+        return false;
+    }
+    // don't show modal if user has seen in last 7 days
+    const sevenDays = 1000 * 60 * 60 * 24 * 7;
+    const lastSeen = Number(localStorage.getItem('paypal-cr-lastseen')) || 0;
+    if (Date.now() - lastSeen < sevenDays) {
+        return false;
+    }
+    if (!isRendered) {
+        // $FlowFixMe
+        ppq('updateExperience', {
+            command:    'SHOW_OVERLAY',
+            visitorId:  userId
+        });
+        const lastSeen = String(Date.now());
+        localStorage.setItem('paypal-cr-lastseen', lastSeen);
+        isRendered = true;
+    }
+    return isRendered;
 };
 
 const init = (...args : $ReadOnlyArray<{ cartRecovery : { userId : string } }>) => {
