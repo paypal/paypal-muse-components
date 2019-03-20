@@ -281,8 +281,22 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName9';
         const email = '__test__email9';
         const tracker = Tracker({ user: { id: userID } });
-        tracker.setUser({ user: { id: userID, name: userName, email } });
         expect(appendChildCalls).to.equal(0);
+        tracker.setUser({ user: { id: userID, name: userName, email } });
+        expect(appendChildCalls).to.equal(1);
+        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
+            JSON.stringify({
+                oldUserId: '__test__userID9',
+                user:      {
+                    id:    '__test__userID9',
+                    email: '__test__email9',
+                    name:  '__test__userName9'
+                },
+                trackingType: 'setUser',
+                clientId:     'abcxyz123',
+                merchantId:   'xyz,hij,lmno'
+            })
+        );
         tracker.view({
             page: '/test2'
         });
@@ -302,7 +316,7 @@ describe('paypal.Tracker', () => {
                 merchantId:   'xyz,hij,lmno'
             })
         );
-        expect(appendChildCalls).to.equal(1);
+        expect(appendChildCalls).to.equal(2);
     });
 
     it('should allow you to instantiate for anonymous users', () => {
@@ -313,5 +327,38 @@ describe('paypal.Tracker', () => {
         expect(dataParamObject.page).to.equal('/hello/page');
         // $FlowFixMe
         expect(dataParamObject.trackingType).to.equal('view');
+    });
+
+    it('should allow you to instantiate a user and then set the user', () => {
+        const tracker = Tracker({
+            user: {
+                id:    '__test__oldUserId',
+                email: '__test__oldEmail@gmail.com'
+            }
+        });
+        expect(appendChildCalls).to.equal(0);
+        tracker.setUser({
+            user: {
+                id:    '__test__newUserId',
+                email: '__test__email@gmail.com',
+                name:  '__test__name'
+            }
+        });
+        expect(appendChildCalls).to.equal(1);
+        const dataParamObject = extractDataParam(imgMock.src);
+        // $FlowFixMe
+        expect(JSON.stringify(dataParamObject)).to.equal(
+            JSON.stringify({
+                oldUserId: '__test__oldUserId',
+                user:      {
+                    id:    '__test__newUserId',
+                    email: '__test__email@gmail.com',
+                    name:  '__test__name'
+                },
+                trackingType: 'setUser',
+                clientId:     'abcxyz123',
+                merchantId:   'xyz,hij,lmno'
+            })
+        );
     });
 });
