@@ -2,7 +2,7 @@
 
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
-type TrackingType = 'view' | 'cartEvent' | 'purchase';
+type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
 
 type CartEventType = 'addToCart' | 'setCart' | 'removeFromCart';
 
@@ -98,7 +98,10 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
 const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) =>
     track(config, 'cartEvent', { ...trackingData, cartEventType });
 
-const generateId = () : string => Math.random().toString(16).slice(2);
+const generateId = () : string =>
+    Math.random()
+        .toString(16)
+        .slice(2);
 
 export const Tracker = (config? : Config = { user: { id: generateId() } }) => ({
     view:           (data : ViewData) => track(config, 'view', data),
@@ -107,12 +110,14 @@ export const Tracker = (config? : Config = { user: { id: generateId() } }) => ({
     removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
     purchase:       (data : PurchaseData) => track(config, 'purchase', data),
     setUser:        (data : UserData) => {
+        const oldUserId = config.user ? config.user.id : undefined;
         config.user = config.user || { id: data.user.id };
-        config.user.id = data.user.id;
-        config.user.email = data.user.email;
-        config.user.name = data.user.name;
+        config.user.id = data.user.id || config.user.id;
+        config.user.email = data.user.email || config.user.email;
+        config.user.name = data.user.name || config.user.name;
+        track(config, 'setUser', { oldUserId });
     },
-    setProperty:    (data : PropertyData) => {
+    setProperty: (data : PropertyData) => {
         config.property = { id: data.property.id };
     }
 });
