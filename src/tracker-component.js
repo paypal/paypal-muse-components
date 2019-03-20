@@ -87,7 +87,7 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
     if (config.paramsToBeaconUrl) {
         img.src = config.paramsToBeaconUrl({ trackingType, data });
     } else {
-        img.src = `https://www.paypal.com/targeting/track/${ trackingType }?data=${ encodeData(data) }`;
+        img.src = `https://targetingnodeweb19125146982616.qa.paypal.com/targeting/track/${ trackingType }?data=${ encodeData(data) }`;
     }
 
     if (document.body) {
@@ -115,8 +115,10 @@ export const Tracker = (config? : Config = { user: { id: generateId() } }) => ({
             today.getFullYear() + 1,
             today.getMonth(),
             today.getDate()
+            // $FlowFixMe
         ).toGMTString();
         document.cookie = `paypal-cr-user=${ data.user.email };expires=${ expires }`;
+        // $FlowFixMe
         config.user.name = data.user.name;
     },
     setProperty:    (data : PropertyData) => {

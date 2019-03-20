@@ -1,3 +1,4 @@
+/* globals ppq */
 /* @flow */
 
 import { Tracker } from './tracker-component';
@@ -9,8 +10,8 @@ loadJavascript(museSdkUrl);
 
 let userId = '';
 
-// eslint-disable-next-line no-undef
-ppq('showExperience', 'https://www.paypalobjects.com/muse/cart-recovery-0.2/', 'body', {
+// $FlowFixMe
+ppq('showExperience', 'https://www.paypalobjects.com/muse/cart-recovery-0.3/', 'body', {
     sessionId:          'BOND007',
     variant:            'modal',
     flow:               'cart-recovery',
@@ -23,11 +24,13 @@ ppq('showExperience', 'https://www.paypalobjects.com/muse/cart-recovery-0.2/', '
     dismissCookieAge:   0,
     isPpUserExclusive:  false,
     handleEvents:       ({ data, email }) => {
+        if (!data) {
+            return;
+        }
         if (data.includes('CR_EMAIL_RECEIVED')) {
             Tracker({
                 user: { id: userId }
-            });
-            Tracker.setUser({
+            }).setUser({
                 user: {
                     id: userId,
                     email
@@ -39,26 +42,27 @@ ppq('showExperience', 'https://www.paypalobjects.com/muse/cart-recovery-0.2/', '
 
 const debounce = (f, ms) => {
     let timeoutId;
-    return (...args) => {
+    return (...args : $ReadOnlyArray<mixed>) => {
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => f(...args), ms);
     };
 };
 
 const showExitModal = () => {
-    // eslint-disable-next-line no-undef
+    // $FlowFixMe
     ppq('updateExperience', {
         command:    'SHOW_OVERLAY',
         visitorId:  userId
     });
 };
 
-const init = (...args) => {
+const init = (...args : $ReadOnlyArray<{ cartRecovery : { userId : string } }>) => {
     const config = args[0];
     if (config.cartRecovery) {
         userId = config.cartRecovery.userId;
     }
     const exitIntentListener = debounce(e => {
+        // $FlowFixMe
         if (e.screenY <= 150) {
             showExitModal(...args);
         }
@@ -68,12 +72,19 @@ const init = (...args) => {
         showExitModal(...args);
     }, checkIfMobile() ? 30000 : 300000);
 
-    if (document.body) {
-        document.body.addEventListener('mousemove', exitIntentListener);
-        document.body.addEventListener('mousemove', resetIdle);
-        document.body.addEventListener('mousedown', resetIdle);
-        document.body.addEventListener('touchstart', resetIdle);
-        document.body.addEventListener('onclick', resetIdle);
+    if (document && document.body) {
+        document.addEventListener('DOMContentLoaded', () => {
+            // $FlowFixMe
+            document.body.addEventListener('mousemove', exitIntentListener);
+            // $FlowFixMe
+            document.body.addEventListener('mousemove', resetIdle);
+            // $FlowFixMe
+            document.body.addEventListener('mousedown', resetIdle);
+            // $FlowFixMe
+            document.body.addEventListener('touchstart', resetIdle);
+            // $FlowFixMe
+            document.body.addEventListener('onclick', resetIdle);
+        });
     }
 };
 

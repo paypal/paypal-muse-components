@@ -18,6 +18,7 @@ const extractDataParam = (url : string) : string => {
     );
 };
 
+// $FlowFixMe
 describe('paypal.Tracker', () => {
     let appendChildCalls = 0;
     const appendChild = () => {
@@ -33,6 +34,7 @@ describe('paypal.Tracker', () => {
     };
 
     const createElement = (elementType : string) => {
+        // $FlowFixMe
         expect(elementType).to.equal('img');
         return imgMock;
     };
@@ -41,6 +43,7 @@ describe('paypal.Tracker', () => {
     const originalDocumentBodyAppendChild = document.body.appendChild;
     // $FlowFixMe
     const originalDocumentCreateElement = document.createElement;
+    // $FlowFixMe
     before(() => {
         // $FlowFixMe
         document.body.appendChild = appendChild;
@@ -48,6 +51,7 @@ describe('paypal.Tracker', () => {
         document.createElement = createElement;
     });
 
+    // $FlowFixMe
     after(() => {
         // $FlowFixMe
         document.body.appendChild = originalDocumentBodyAppendChild;
@@ -55,11 +59,13 @@ describe('paypal.Tracker', () => {
         document.createElement = originalDocumentCreateElement;
     });
 
+    // $FlowFixMe
     afterEach(() => {
         appendChildCalls = 0;
         imgMock.src = '';
     });
 
+    // $FlowFixMe
     it('should be a function that returns a tracker', () => {
         const userID = '__test__userID';
         const userName = '__test__userName';
@@ -71,10 +77,12 @@ describe('paypal.Tracker', () => {
         expect(tracker).to.have.property('purchase');
     });
 
+    // $FlowFixMe
     it('should send view events', () => {
         const userID = '__test__userID2';
         const userName = '__test__userName2';
         const tracker = Tracker({ user: { id: userID, name: userName } });
+        // $FlowFixMe
         expect(appendChildCalls).to.equal(0);
         tracker.view({
             page:  '/test2/apples',
