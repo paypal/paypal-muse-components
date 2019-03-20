@@ -123,8 +123,11 @@ export const Tracker = (config? : Config = { user: { id: generateId() } }) => ({
             // $FlowFixMe
         ).toGMTString();
         document.cookie = `paypal-cr-user=${ data.user.email };expires=${ expires }`;
-        config.user.id = data.user.id || config.user.id;
+        // $FlowFixMe
+        config.user.id = (data.user && data.user.id) || (config.user && config.user.id);
+        // $FlowFixMe
         config.user.email = data.user.email || config.user.email;
+        // $FlowFixMe
         config.user.name = data.user.name || config.user.name;
         track(config, 'setUser', { oldUserId });
     },
