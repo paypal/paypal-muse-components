@@ -87,7 +87,7 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
     if (config.paramsToBeaconUrl) {
         img.src = config.paramsToBeaconUrl({ trackingType, data });
     } else {
-        img.src = `https://targetingnodeweb19125146982616.qa.paypal.com/targeting/track/${ trackingType }?data=${ encodeData(data) }`;
+        img.src = `https://paypal.com/targeting/track/${ trackingType }?data=${ encodeData(data) }`;
     }
 
     if (document.body) {
