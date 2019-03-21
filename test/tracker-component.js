@@ -387,4 +387,37 @@ describe('paypal.Tracker', () => {
             })
         );
     });
+
+    it('should use localStorage value if it exists', () => {
+        localStorage.setItem('user-id', 'generated-user-id-123');
+        const tracker = Tracker();
+        tracker.addToCart({
+            cartId: '__test__cartId',
+            items:  [
+                {
+                    id:  '__test__productId',
+                    url: 'https://example.com/__test__productId'
+                }
+            ],
+            emailCampaignId: '__test__emailCampaignId',
+            total:           '12345.67',
+            currencyCode:    'USD'
+        });
+        const dataParamObject = extractDataParam(imgMock.src);
+        // $FlowFixMe
+        expect(JSON.stringify(dataParamObject)).to.equal(
+            JSON.stringify({
+                cartId:          '__test__cartId',
+                items:           [ { id: '__test__productId', url: 'https://example.com/__test__productId' } ],
+                emailCampaignId: '__test__emailCampaignId',
+                total:           '12345.67',
+                currencyCode:    'USD',
+                cartEventType:   'addToCart',
+                user:            { id: 'generated-user-id-123' },
+                trackingType:    'cartEvent',
+                clientId:        'abcxyz123',
+                merchantId:      'xyz,hij,lmno'
+            })
+        );
+    });
 });
