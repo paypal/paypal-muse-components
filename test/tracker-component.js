@@ -423,7 +423,7 @@ describe('paypal.Tracker', () => {
 
     it('should use document.cookie value if it exists, not localStorage value', () => {
         localStorage.setItem('user-id', 'generated-user-id-123');
-        document.cookie = 'cookie-id';
+        document.cookie = 'paypal-cr-user=test-cookie-id';
         const tracker = Tracker();
         tracker.addToCart({
             cartId: '__test__cartId',
@@ -447,7 +447,7 @@ describe('paypal.Tracker', () => {
                 total:           '12345.67',
                 currencyCode:    'USD',
                 cartEventType:   'addToCart',
-                user:            { id: 'cookie-id' },
+                user:            { id: 'test-cookie-id' },
                 trackingType:    'cartEvent',
                 clientId:        'abcxyz123',
                 merchantId:      'xyz,hij,lmno'

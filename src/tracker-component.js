@@ -66,11 +66,19 @@ type Config = {|
     paramsToBeaconUrl? : ParamsToBeaconUrl
 |};
 
-const getUserId = () => {
-    return document.cookie ? document.cookie : localStorage.getItem('user-id');
+const getUserIdCookie = () : ?string => {
+    const userCookie = document.cookie.split(';').find(x => x.startsWith('paypal-cr-user'));
+    if (!userCookie) {
+        return;
+    }
+    return userCookie.split('=')[1];
 };
 
-const setRandomUserId = () => {
+const getUserId = () : ?string => {
+    return getUserIdCookie() || localStorage.getItem('user-id');
+};
+
+const setRandomUserId = () : void => {
     localStorage.setItem('user-id', generateId());
 };
 
