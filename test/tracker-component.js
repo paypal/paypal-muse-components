@@ -389,7 +389,7 @@ describe('paypal.Tracker', () => {
     });
 
     it('should use localStorage value if it exists', () => {
-        localStorage.setItem('user-id', 'generated-user-id-123');
+        localStorage.setItem('paypal-user-id', 'generated-user-id-123');
         const tracker = Tracker();
         tracker.addToCart({
             cartId: '__test__cartId',
@@ -422,7 +422,7 @@ describe('paypal.Tracker', () => {
     });
 
     it('should use document.cookie value if it exists, not localStorage value', () => {
-        localStorage.setItem('user-id', 'generated-user-id-123');
+        localStorage.setItem('paypal-user-id', 'generated-user-id-123');
         document.cookie = 'paypal-cr-user=test-cookie-id';
         const tracker = Tracker();
         tracker.addToCart({

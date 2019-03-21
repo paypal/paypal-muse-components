@@ -75,11 +75,11 @@ const getUserIdCookie = () : ?string => {
 };
 
 const getUserId = () : ?string => {
-    return getUserIdCookie() || localStorage.getItem('user-id');
+    return getUserIdCookie() || localStorage.getItem('paypal-user-id');
 };
 
 const setRandomUserId = () : void => {
-    localStorage.setItem('user-id', generateId());
+    localStorage.setItem('paypal-user-id', generateId());
 };
 
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
@@ -135,7 +135,7 @@ export const Tracker = (config? : Config = { user: { email: undefined, name: und
             email: data.user.email || ((config && config.user) || {}).email,
             name:  data.user.name || ((config && config.user) || {}).name
         };
-        track(config, 'setUser', { oldUserId: localStorage.getItem('user-id') });
+        track(config, 'setUser', { oldUserId: localStorage.getItem('paypal-user-id') });
     },
     setProperty: (data : PropertyData) => {
         config.property = { id: data.property.id };
