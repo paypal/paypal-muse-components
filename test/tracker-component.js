@@ -42,11 +42,7 @@ describe('paypal.Tracker', () => {
     const originalDocumentBodyAppendChild = document.body.appendChild;
     // $FlowFixMe
     const originalDocumentCreateElement = document.createElement;
-<<<<<<< HEAD
-    // $FlowFixMe
-=======
     const originalGenerateId = generateIdModule.generateId;
->>>>>>> f8f5aaa3d24c7c6315ab5c55bbb9f7c838ca61bf
     before(() => {
         // $FlowFixMe
         document.body.appendChild = appendChild;
