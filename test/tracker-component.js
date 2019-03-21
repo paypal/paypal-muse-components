@@ -356,7 +356,7 @@ describe('paypal.Tracker', () => {
 
     it('should send last user set with setUser', () => {
         const tracker = Tracker();
-        tracker.setUser({ user: { email: '__test__email1' } });
+        tracker.setUser({ user: { email: '__test__email1', name: '__test__name1' } });
         tracker.setUser({ user: { email: '__test__email2' } });
         tracker.addToCart({
             cartId: '__test__cartId',
@@ -380,7 +380,7 @@ describe('paypal.Tracker', () => {
                 total:           '12345.67',
                 currencyCode:    'USD',
                 cartEventType:   'addToCart',
-                user:            { email: '__test__email2', id: 'abc123' },
+                user:            { email: '__test__email2', name: '__test__name1', id: 'abc123' },
                 trackingType:    'cartEvent',
                 clientId:        'abcxyz123',
                 merchantId:      'xyz,hij,lmno'
