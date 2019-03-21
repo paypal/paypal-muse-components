@@ -29,13 +29,8 @@ ppq('showExperience', 'https://www.paypalobjects.com/muse/cart-recovery-0.3/', '
             return;
         }
         if (data.includes('CR_EMAIL_RECEIVED')) {
-            Tracker({
-                user: { id: userId }
-            }).setUser({
-                user: {
-                    id: userId,
-                    email
-                }
+            Tracker().setUser({
+                user: { email }
             });
         }
     }
