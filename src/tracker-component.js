@@ -2,6 +2,8 @@
 
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
+import { generateId } from './generate-id';
+
 type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
 
 type CartEventType = 'addToCart' | 'setCart' | 'removeFromCart';
@@ -37,7 +39,6 @@ type PurchaseData = {| cartId : string |};
 
 type UserData = {|
     user : {|
-        id : string,
         email : string,
         name? : string
     |}
@@ -56,7 +57,6 @@ type ParamsToBeaconUrl = ({
 
 type Config = {|
     user? : {|
-        id : string,
         email? : string, // mandatory if unbranded cart recovery
         name? : string
     |},
@@ -66,15 +66,40 @@ type Config = {|
     paramsToBeaconUrl? : ParamsToBeaconUrl
 |};
 
+const getUserIdCookie = () : ?string => {
+    const userCookie = document.cookie.split(';').find(x => x.startsWith('paypal-cr-user'));
+    if (!userCookie) {
+        return;
+    }
+    return userCookie.split('=')[1];
+};
+
+const getUserId = () : ?string => {
+    return getUserIdCookie() || localStorage.getItem('user-id');
+};
+
+const setRandomUserId = () : void => {
+    localStorage.setItem('user-id', generateId());
+};
+
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
 
     const img = document.createElement('img');
     img.style.display = 'none';
 
+    if (!getUserId()) {
+        setRandomUserId();
+    }
+
+    const user = {
+        ...config.user,
+        id: getUserId()
+    };
+
     const data = {
         ...trackingData,
-        user:       config.user,
+        user,
         property:   config.property,
         trackingType,
         clientId:   getClientID(),
@@ -98,12 +123,7 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
 const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) =>
     track(config, 'cartEvent', { ...trackingData, cartEventType });
 
-const generateId = () : string =>
-    Math.random()
-        .toString(16)
-        .slice(2);
-
-export const Tracker = (config? : Config = { user: { id: generateId() } }) => ({
+export const Tracker = (config? : Config = { user: { email: undefined, name: undefined } }) => ({
     view:           (data : ViewData) => track(config, 'view', data),
     addToCart:      (data : CartData) => {
         localStorage.setItem('paypal-cr-cart', JSON.stringify(data));
@@ -113,23 +133,12 @@ export const Tracker = (config? : Config = { user: { id: generateId() } }) => ({
     removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
     purchase:       (data : PurchaseData) => track(config, 'purchase', data),
     setUser:        (data : UserData) => {
-        const oldUserId = config.user ? config.user.id : undefined;
-        config.user = config.user || { id: data.user.id };
-        const today = new Date();
-        const expires = new Date(
-            today.getFullYear() + 1,
-            today.getMonth(),
-            today.getDate()
-            // $FlowFixMe
-        ).toGMTString();
-        document.cookie = `paypal-cr-user=${ data.user.email };expires=${ expires }`;
-        // $FlowFixMe
-        config.user.id = (data.user && data.user.id) || (config.user && config.user.id);
-        // $FlowFixMe
-        config.user.email = data.user.email || config.user.email;
-        // $FlowFixMe
-        config.user.name = data.user.name || config.user.name;
-        track(config, 'setUser', { oldUserId });
+        config.user = {
+            ...config.user,
+            email: data.user.email || ((config && config.user) || {}).email,
+            name:  data.user.name || ((config && config.user) || {}).name
+        };
+        track(config, 'setUser', { oldUserId: localStorage.getItem('user-id') });
     },
     setProperty: (data : PropertyData) => {
         config.property = { id: data.property.id };
