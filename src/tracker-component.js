@@ -130,10 +130,13 @@ export const Tracker = (config? : Config = { user: { email: undefined, name: und
     removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
     purchase:       (data : PurchaseData) => track(config, 'purchase', data),
     setUser:        (data : UserData) => {
-        config.user = {
-            ...config.user,
-            email: data.user.email || ((config && config.user) || {}).email,
-            name:  data.user.name || ((config && config.user) || {}).name
+        config = {
+            ...config,
+            user: {
+                ...config.user,
+                email: data.user.email || ((config && config.user) || {}).email,
+                name:  data.user.name || ((config && config.user) || {}).name
+            }
         };
         track(config, 'setUser', { oldUserId: localStorage.getItem('paypal-user-id') });
     },
