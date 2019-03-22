@@ -4,37 +4,11 @@
 import { Tracker } from './tracker-component';
 import { checkIfMobile } from './lib/mobile-check';
 import { loadJavascript } from './lib/load-js';
+import { getCookieValue, setCookie } from './lib/cookie';
 
 const museSdkUrl = 'https://ppsong.c0d3.com/cdn/assets/modal/sdk.js';
-loadJavascript(museSdkUrl);
-
 let userId = '';
 let isRendered = false;
-
-// $FlowFixMe
-ppq('showExperience', 'https://www.paypalobjects.com/muse/cart-recovery-0.3/', 'body', {
-    sessionId:          'BOND007',
-    variant:            'modal',
-    flow:               'cart-recovery',
-    mobileVariant:      'modal',
-    mobileFlow:         'cart-recovery',
-    isMobileEnabled:    'true',
-    isDesktopEnabled:   'true',
-    mrid:               'FY8HBGU6Y2MWW',
-    iframeId:           '__cr',
-    dismissCookieAge:   0,
-    isPpUserExclusive:  false,
-    handleEvents:       ({ data, email }) => {
-        if (!data) {
-            return;
-        }
-        if (data.includes('CR_EMAIL_RECEIVED')) {
-            Tracker().setUser({
-                user: { email }
-            });
-        }
-    }
-});
 
 const debounce = (f, ms) => {
     let timeoutId;
@@ -50,18 +24,18 @@ const showExitModal = ({ cartRecovery }) => {
         return false;
     }
     // don't show modal if user is identified
-    const email = localStorage.getItem('paypal-cr-user');
+    const email = getCookieValue('paypal-cr-user');
     if (email !== null) {
         return false;
     }
     // don't show modal if user has no cart items
-    const cart = JSON.parse(localStorage.getItem('paypal-cr-cart') || '{}');
+    const cart = JSON.parse(getCookieValue('paypal-cr-cart') || '{}');
     if (!cart.items) {
         return false;
     }
     // don't show modal if user has seen in last 7 days
     const sevenDays = 1000 * 60 * 60 * 24 * 7;
-    const lastSeen = Number(localStorage.getItem('paypal-cr-lastseen')) || 0;
+    const lastSeen = Number(getCookieValue('paypal-cr-lastseen')) || 0;
     if (Date.now() - lastSeen < sevenDays) {
         return false;
     }
@@ -72,7 +46,7 @@ const showExitModal = ({ cartRecovery }) => {
             visitorId:  userId
         });
         const timestamp = String(Date.now());
-        localStorage.setItem('paypal-cr-lastseen', timestamp);
+        setCookie('paypal-cr-lastseen', timestamp);
         isRendered = true;
     }
     return isRendered;
@@ -113,3 +87,31 @@ const init = (...args : $ReadOnlyArray<{ cartRecovery : { userId : string } }>) 
 export const Messaging = {
     init
 };
+
+export function setup() {
+    loadJavascript(museSdkUrl);
+    // $FlowFixMe
+    ppq('showExperience', 'https://www.paypalobjects.com/muse/cart-recovery-0.3/', 'body', {
+        sessionId:          'BOND007',
+        variant:            'modal',
+        flow:               'cart-recovery',
+        mobileVariant:      'modal',
+        mobileFlow:         'cart-recovery',
+        isMobileEnabled:    'true',
+        isDesktopEnabled:   'true',
+        mrid:               'FY8HBGU6Y2MWW',
+        iframeId:           '__cr',
+        dismissCookieAge:   0,
+        isPpUserExclusive:  false,
+        handleEvents:       ({ data, email }) => {
+            if (!data) {
+                return;
+            }
+            if (data.includes('CR_EMAIL_RECEIVED')) {
+                Tracker().setUser({
+                    user: { email }
+                });
+            }
+        }
+    });
+}

@@ -3,6 +3,7 @@
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 import { generateId } from './generate-id';
+import { getCookieValue, setCookie } from './lib/cookie';
 
 type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
 
@@ -66,20 +67,12 @@ type Config = {|
     paramsToBeaconUrl? : ParamsToBeaconUrl
 |};
 
-const getUserIdCookie = () : ?string => {
-    const userCookie = document.cookie.split(';').find(x => x.startsWith('paypal-cr-user'));
-    if (!userCookie) {
-        return;
-    }
-    return userCookie.split('=')[1];
-};
-
 const getUserId = () : ?string => {
-    return getUserIdCookie() || localStorage.getItem('user-id');
+    return getCookieValue('user-id');
 };
 
 const setRandomUserId = () : void => {
-    localStorage.setItem('user-id', generateId());
+    setCookie('user-id', generateId());
 };
 
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
@@ -126,7 +119,7 @@ const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, track
 export const Tracker = (config? : Config = { user: { email: undefined, name: undefined } }) => ({
     view:           (data : ViewData) => track(config, 'view', data),
     addToCart:      (data : CartData) => {
-        localStorage.setItem('paypal-cr-cart', JSON.stringify(data));
+        setCookie('paypal-cr-cart', JSON.stringify(data));
         return trackCartEvent(config, 'addToCart', data);
     },
     setCart:        (data : CartData) => trackCartEvent(config, 'setCart', data),
@@ -138,7 +131,7 @@ export const Tracker = (config? : Config = { user: { email: undefined, name: und
             email: data.user.email || ((config && config.user) || {}).email,
             name:  data.user.name || ((config && config.user) || {}).name
         };
-        track(config, 'setUser', { oldUserId: localStorage.getItem('user-id') });
+        track(config, 'setUser', { oldUserId: getCookieValue('user-id') });
     },
     setProperty: (data : PropertyData) => {
         config.property = { id: data.property.id };
