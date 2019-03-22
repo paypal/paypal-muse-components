@@ -1,10 +1,6 @@
 /* @flow */
 export const getCookieValue = (cookieName : string) => {
     const cookie = document.cookie.split(';').find(x => x.startsWith(cookieName));
-    // eslint-disable-next-line no-console
-    console.log('---------------------------------------');
-    // eslint-disable-next-line no-console
-    console.log('cookie:', cookie);
     if (cookie !== undefined) {
         return cookie.split('=')[1].split(' ')[0];
     }
