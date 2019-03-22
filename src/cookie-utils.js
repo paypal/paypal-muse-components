@@ -1,23 +1,23 @@
 /* @flow */
 
-export const getCookie = (cname : string) : string => {
-    const name = `${ cname }=`;
-    const ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') {
-            c = c.substring(1);
+export const getCookie = (cookieName : string) : string => {
+    const name = `${ cookieName }=`;
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        while (cookie.charAt(0) === ' ') {
+            cookie = cookie.slice(1);
         }
-        if (c.indexOf(name) === 0) {
-            return c.substring(name.length, c.length);
+        if (cookie.indexOf(name) === 0) {
+            return cookie.slice(name.length, name.length + cookie.length);
         }
     }
     return '';
 };
 
-export const setCookie = (cname : string, cvalue : string, exMilliseconds : number) : void => {
+export const setCookie = (cookieName : string, cookieValue : string, expirationMilliseconds : number) : void => {
     const d = new Date();
-    d.setTime(d.getTime() + exMilliseconds);
+    d.setTime(d.getTime() + expirationMilliseconds);
     const expires = `expires=${ d.toUTCString() }`;
-    document.cookie = `${ cname }=${ cvalue }; Path=/; ${ expires }`;
+    document.cookie = `${ cookieName }=${ cookieValue }; Path=/; ${ expires }`;
 };
