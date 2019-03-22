@@ -4,11 +4,12 @@
 import { Tracker } from './tracker-component';
 import { checkIfMobile } from './lib/mobile-check';
 import { loadJavascript } from './lib/load-js';
-import { getCookieValue, setCookie } from './lib/cookie';
+import { getCookie, setCookie } from './lib/cookie-util';
 
 const museSdkUrl = 'https://ppsong.c0d3.com/cdn/assets/modal/sdk.js';
 let userId = '';
 let isRendered = false;
+const sevenDays = 6.048e+8;
 
 const debounce = (f, ms) => {
     let timeoutId;
@@ -24,19 +25,18 @@ const showExitModal = ({ cartRecovery }) => {
         return false;
     }
     // don't show modal if user is identified
-    const email = getCookieValue('paypal-cr-user');
-    if (email !== null) {
+    const email = getCookie('paypal-cr-user');
+    if (email) {
         return false;
     }
     // don't show modal if user has no cart items
-    const cart = JSON.parse(getCookieValue('paypal-cr-cart') || '{}');
+    const cart = JSON.parse(getCookie('paypal-cr-cart') || '{}');
     if (!cart.items) {
         return false;
     }
     // don't show modal if user has seen in last 7 days
-    const sevenDays = 1000 * 60 * 60 * 24 * 7;
-    const lastSeen = Number(getCookieValue('paypal-cr-lastseen')) || 0;
-    if (Date.now() - lastSeen < sevenDays) {
+    const lastSeen = Boolean(getCookie('paypal-cr-lastseen'));
+    if (lastSeen) {
         return false;
     }
     if (!isRendered) {
@@ -45,8 +45,7 @@ const showExitModal = ({ cartRecovery }) => {
             command:    'SHOW_OVERLAY',
             visitorId:  userId
         });
-        const timestamp = String(Date.now());
-        setCookie('paypal-cr-lastseen', timestamp);
+        setCookie('paypal-cr-lastseen', 'true', sevenDays);
         isRendered = true;
     }
     return isRendered;

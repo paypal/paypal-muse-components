@@ -3,7 +3,7 @@
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 import { generateId } from './generate-id';
-import { getCookieValue, setCookie } from './lib/cookie';
+import { getCookie, setCookie } from './lib/cookie-util';
 
 type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
 
@@ -67,12 +67,14 @@ type Config = {|
     paramsToBeaconUrl? : ParamsToBeaconUrl
 |};
 
+const sevenDays = 6.048e+8;
+
 const getUserId = () : ?string => {
-    return getCookieValue('user-id');
+    return getCookie('user-id');
 };
 
 const setRandomUserId = () : void => {
-    setCookie('user-id', generateId());
+    setCookie('user-id', generateId(), sevenDays);
 };
 
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
@@ -119,7 +121,7 @@ const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, track
 export const Tracker = (config? : Config = { user: { email: undefined, name: undefined } }) => ({
     view:           (data : ViewData) => track(config, 'view', data),
     addToCart:      (data : CartData) => {
-        setCookie('paypal-cr-cart', JSON.stringify(data));
+        setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
         return trackCartEvent(config, 'addToCart', data);
     },
     setCart:        (data : CartData) => trackCartEvent(config, 'setCart', data),
@@ -131,7 +133,7 @@ export const Tracker = (config? : Config = { user: { email: undefined, name: und
             email: data.user.email || ((config && config.user) || {}).email,
             name:  data.user.name || ((config && config.user) || {}).name
         };
-        track(config, 'setUser', { oldUserId: getCookieValue('user-id') });
+        track(config, 'setUser', { oldUserId: getCookie('user-id') });
     },
     setProperty: (data : PropertyData) => {
         config.property = { id: data.property.id };
