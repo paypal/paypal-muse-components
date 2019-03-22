@@ -3,6 +3,7 @@
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 import { generateId } from './generate-id';
+import { getCookie, setCookie } from './cookie-utils';
 
 type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
 
@@ -67,19 +68,12 @@ type Config = {|
 |};
 
 const getUserIdCookie = () : ?string => {
-    const userCookie = document.cookie.split(';').find(x => x.startsWith('paypal-cr-user'));
-    if (!userCookie) {
-        return;
-    }
-    return userCookie.split('=')[1];
+    return getCookie('paypal-user-id') || null;
 };
 
-const getUserId = () : ?string => {
-    return getUserIdCookie() || localStorage.getItem('paypal-user-id');
-};
-
-const setRandomUserId = () : void => {
-    localStorage.setItem('paypal-user-id', generateId());
+const setRandomUserIdCookie = () : void => {
+    const ONE_MONTH_IN_MILLISECONDS = 30 * 24 * 60 * 60 * 1000;
+    setCookie('paypal-user-id', generateId(), ONE_MONTH_IN_MILLISECONDS);
 };
 
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
@@ -88,13 +82,13 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
     const img = document.createElement('img');
     img.style.display = 'none';
 
-    if (!getUserId()) {
-        setRandomUserId();
+    if (!getUserIdCookie()) {
+        setRandomUserIdCookie();
     }
 
     const user = {
         ...config.user,
-        id: getUserId()
+        id: getUserIdCookie()
     };
 
     const data = {
@@ -138,7 +132,7 @@ export const Tracker = (config? : Config = { user: { email: undefined, name: und
                 name:  data.user.name || ((config && config.user) || {}).name
             }
         };
-        track(config, 'setUser', { oldUserId: localStorage.getItem('paypal-user-id') });
+        track(config, 'setUser', { oldUserId: getUserIdCookie() });
     },
     setProperty: (data : PropertyData) => {
         config.property = { id: data.property.id };
