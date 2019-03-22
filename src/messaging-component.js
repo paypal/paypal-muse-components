@@ -4,7 +4,7 @@
 import { Tracker } from './tracker-component';
 import { checkIfMobile } from './lib/mobile-check';
 import { loadJavascript } from './lib/load-js';
-import { getCookie, setCookie } from './lib/cookie-util';
+import { getCookie, setCookie } from './lib/cookie-utils';
 
 const museSdkUrl = 'https://ppsong.c0d3.com/cdn/assets/modal/sdk.js';
 let userId = '';
