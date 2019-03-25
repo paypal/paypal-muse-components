@@ -3,7 +3,7 @@
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 import { generateId } from './generate-id';
-import { getCookie, setCookie } from './cookie-utils';
+import { getCookie, setCookie } from './lib/cookie-utils';
 
 type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
 
