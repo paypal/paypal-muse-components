@@ -69,12 +69,13 @@ type Config = {|
 
 const sevenDays = 6.048e+8;
 
-const getUserId = () : ?string => {
-    return getCookie('user-id');
+const getUserIdCookie = () : ?string => {
+    return getCookie('paypal-user-id') || null;
 };
 
-const setRandomUserId = () : void => {
-    setCookie('user-id', generateId(), sevenDays);
+const setRandomUserIdCookie = () : void => {
+    const ONE_MONTH_IN_MILLISECONDS = 30 * 24 * 60 * 60 * 1000;
+    setCookie('paypal-user-id', generateId(), ONE_MONTH_IN_MILLISECONDS);
 };
 
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
@@ -83,13 +84,13 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
     const img = document.createElement('img');
     img.style.display = 'none';
 
-    if (!getUserId()) {
-        setRandomUserId();
+    if (!getUserIdCookie()) {
+        setRandomUserIdCookie();
     }
 
     const user = {
         ...config.user,
-        id: getUserId()
+        id: getUserIdCookie()
     };
 
     const data = {
@@ -128,12 +129,15 @@ export const Tracker = (config? : Config = { user: { email: undefined, name: und
     removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
     purchase:       (data : PurchaseData) => track(config, 'purchase', data),
     setUser:        (data : UserData) => {
-        config.user = {
-            ...config.user,
-            email: data.user.email || ((config && config.user) || {}).email,
-            name:  data.user.name || ((config && config.user) || {}).name
+        config = {
+            ...config,
+            user: {
+                ...config.user,
+                email: data.user.email || ((config && config.user) || {}).email,
+                name:  data.user.name || ((config && config.user) || {}).name
+            }
         };
-        track(config, 'setUser', { oldUserId: getCookie('user-id') });
+        track(config, 'setUser', { oldUserId: getUserIdCookie() });
     },
     setProperty: (data : PropertyData) => {
         config.property = { id: data.property.id };

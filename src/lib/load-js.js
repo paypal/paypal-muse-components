@@ -1,6 +1,19 @@
 /* @flow */
-
 export const loadJavascript = (url : string) => {
-    // eslint-disable-next-line func-names, max-statements-per-line, block-spacing, no-unused-expressions, max-params, space-before-blocks, flowtype/no-unused-expressions, comma-spacing, no-sequences
-    return !(function(e, t, n, s, a, c, o){e.PaypalOffersObject = n, e[n] = e[n] || function() { (e[n].q = e[n].q || []).push(arguments);}, e[n].l = Number(new Date()), c = t.createElement(s), o = t.getElementsByTagName(s)[0], c.async = true,c.src = a; if (o.parentNode) {o.parentNode.insertBefore(c, o); }}(window, document, 'ppq', 'script', url));
+    // eslint-disable-next-line func-names, max-params
+    return !(function (window, document, global, tag, src, newScriptEl, firstScriptEl) {
+        window.PaypalOffersObject = global;
+        // eslint-disable-next-line func-names
+        window[global] = window[global] || function () {
+            (window[global].q = window[global].q || []).push(arguments);
+        };
+        window[global].l = Number(new Date());
+        newScriptEl = document.createElement(tag);
+        firstScriptEl = document.getElementsByTagName(tag)[0];
+        newScriptEl.async = true;
+        newScriptEl.src = src;
+        if (firstScriptEl.parentNode) {
+            firstScriptEl.parentNode.insertBefore(newScriptEl, firstScriptEl);
+        }
+    }(window, document, 'ppq', 'script', url));
 };

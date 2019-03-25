@@ -6,7 +6,7 @@ import { checkIfMobile } from './lib/mobile-check';
 import { loadJavascript } from './lib/load-js';
 import { getCookie, setCookie } from './lib/cookie-utils';
 
-const museSdkUrl = 'https://ppsong.c0d3.com/cdn/assets/modal/sdk.js';
+const museSdkUrl = 'https://www.paypalobjects.com/muse/cart-recovery-0.3/sdk.js';
 let userId = '';
 let isRendered = false;
 const sevenDays = 6.048e+8;

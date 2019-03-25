@@ -1,2 +1,2 @@
 /* @flow */
-export { Messaging } from './messaging-component';
+export { Messaging, setup } from './messaging-component';
