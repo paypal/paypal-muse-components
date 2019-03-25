@@ -3,7 +3,7 @@
 
 import { expect } from 'chai';
 
-import { getCookie, setCookie } from '../src/cookie-utils';
+import { getCookie, setCookie } from '../src/lib/cookie-utils';
 
 describe('cookieUtils', () => {
     it('set the cookie you want to set', () => {

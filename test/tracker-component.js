@@ -467,7 +467,6 @@ describe('paypal.Tracker', () => {
                 currencyCode:    'USD',
                 cartEventType:   'addToCart',
                 user:            { id: '__test__cookie-id' },
->>>>>>> master
                 trackingType:    'cartEvent',
                 clientId:        'abcxyz123',
                 merchantId:      'xyz,hij,lmno'
