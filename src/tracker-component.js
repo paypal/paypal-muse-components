@@ -2,6 +2,9 @@
 
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
+import { generateId } from './generate-id';
+import { getCookie, setCookie } from './cookie-utils';
+
 type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
 
 type CartEventType = 'addToCart' | 'setCart' | 'removeFromCart';
@@ -37,7 +40,6 @@ type PurchaseData = {| cartId : string |};
 
 type UserData = {|
     user : {|
-        id : string,
         email : string,
         name? : string
     |}
@@ -56,7 +58,6 @@ type ParamsToBeaconUrl = ({
 
 type Config = {|
     user? : {|
-        id : string,
         email? : string, // mandatory if unbranded cart recovery
         name? : string
     |},
@@ -66,15 +67,33 @@ type Config = {|
     paramsToBeaconUrl? : ParamsToBeaconUrl
 |};
 
+const getUserIdCookie = () : ?string => {
+    return getCookie('paypal-user-id') || null;
+};
+
+const setRandomUserIdCookie = () : void => {
+    const ONE_MONTH_IN_MILLISECONDS = 30 * 24 * 60 * 60 * 1000;
+    setCookie('paypal-user-id', generateId(), ONE_MONTH_IN_MILLISECONDS);
+};
+
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
 
     const img = document.createElement('img');
     img.style.display = 'none';
 
+    if (!getUserIdCookie()) {
+        setRandomUserIdCookie();
+    }
+
+    const user = {
+        ...config.user,
+        id: getUserIdCookie()
+    };
+
     const data = {
         ...trackingData,
-        user:       config.user,
+        user,
         property:   config.property,
         trackingType,
         clientId:   getClientID(),
@@ -98,24 +117,22 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
 const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) =>
     track(config, 'cartEvent', { ...trackingData, cartEventType });
 
-const generateId = () : string =>
-    Math.random()
-        .toString(16)
-        .slice(2);
-
-export const Tracker = (config? : Config = { user: { id: generateId() } }) => ({
+export const Tracker = (config? : Config = { user: { email: undefined, name: undefined } }) => ({
     view:           (data : ViewData) => track(config, 'view', data),
     addToCart:      (data : CartData) => trackCartEvent(config, 'addToCart', data),
     setCart:        (data : CartData) => trackCartEvent(config, 'setCart', data),
     removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
     purchase:       (data : PurchaseData) => track(config, 'purchase', data),
     setUser:        (data : UserData) => {
-        const oldUserId = config.user ? config.user.id : undefined;
-        config.user = config.user || { id: data.user.id };
-        config.user.id = data.user.id || config.user.id;
-        config.user.email = data.user.email || config.user.email;
-        config.user.name = data.user.name || config.user.name;
-        track(config, 'setUser', { oldUserId });
+        config = {
+            ...config,
+            user: {
+                ...config.user,
+                email: data.user.email || ((config && config.user) || {}).email,
+                name:  data.user.name || ((config && config.user) || {}).name
+            }
+        };
+        track(config, 'setUser', { oldUserId: getUserIdCookie() });
     },
     setProperty: (data : PropertyData) => {
         config.property = { id: data.property.id };
