@@ -67,6 +67,8 @@ type Config = {|
     paramsToBeaconUrl? : ParamsToBeaconUrl
 |};
 
+const sevenDays = 6.048e+8;
+
 const getUserIdCookie = () : ?string => {
     return getCookie('paypal-user-id') || null;
 };

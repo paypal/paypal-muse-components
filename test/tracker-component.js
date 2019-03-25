@@ -4,7 +4,7 @@
 import { expect } from 'chai';
 
 import { Tracker } from '../src/tracker-component';
-import { setCookie } from '../src/cookie-utils';
+import { setCookie } from '../src/lib/cookie-utils';
 // eslint-disable-next-line import/no-namespace
 import * as generateIdModule from '../src/generate-id';
 
