@@ -4,7 +4,7 @@
 import { expect } from 'chai';
 
 import { Tracker } from '../src/tracker-component';
-import { setCookie } from '../src/cookie-utils';
+import { setCookie } from '../src/lib/cookie-utils';
 // eslint-disable-next-line import/no-namespace
 import * as generateIdModule from '../src/generate-id';
 
@@ -21,6 +21,7 @@ const extractDataParam = (url : string) : string => {
     );
 };
 
+// $FlowFixMe
 describe('paypal.Tracker', () => {
     let appendChildCalls = 0;
     const appendChild = () => {
@@ -36,6 +37,7 @@ describe('paypal.Tracker', () => {
     };
 
     const createElement = (elementType : string) => {
+        // $FlowFixMe
         expect(elementType).to.equal('img');
         return imgMock;
     };
@@ -54,6 +56,7 @@ describe('paypal.Tracker', () => {
         generateIdModule.generateId = () => 'abc123'; // eslint-disable-line import/namespace
     });
 
+    // $FlowFixMe
     after(() => {
         // $FlowFixMe
         document.body.appendChild = originalDocumentBodyAppendChild;
@@ -63,11 +66,13 @@ describe('paypal.Tracker', () => {
         generateIdModule.generateId = originalGenerateId; // eslint-disable-line import/namespace
     });
 
+    // $FlowFixMe
     afterEach(() => {
         appendChildCalls = 0;
         imgMock.src = '';
     });
 
+    // $FlowFixMe
     it('should be a function that returns a tracker', () => {
         const tracker = Tracker();
         expect(tracker).to.have.property('view');
@@ -77,6 +82,7 @@ describe('paypal.Tracker', () => {
         expect(tracker).to.have.property('purchase');
     });
 
+    // $FlowFixMe
     it('should send view events', () => {
         const email = '__test__email2@gmail.com';
         const userName = '__test__userName2';

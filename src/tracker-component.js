@@ -3,7 +3,7 @@
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 import { generateId } from './generate-id';
-import { getCookie, setCookie } from './cookie-utils';
+import { getCookie, setCookie } from './lib/cookie-utils';
 
 type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
 
@@ -67,6 +67,8 @@ type Config = {|
     paramsToBeaconUrl? : ParamsToBeaconUrl
 |};
 
+const sevenDays = 6.048e+8;
+
 const getUserIdCookie = () : ?string => {
     return getCookie('paypal-user-id') || null;
 };
@@ -119,7 +121,10 @@ const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, track
 
 export const Tracker = (config? : Config = { user: { email: undefined, name: undefined } }) => ({
     view:           (data : ViewData) => track(config, 'view', data),
-    addToCart:      (data : CartData) => trackCartEvent(config, 'addToCart', data),
+    addToCart:      (data : CartData) => {
+        setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
+        return trackCartEvent(config, 'addToCart', data);
+    },
     setCart:        (data : CartData) => trackCartEvent(config, 'setCart', data),
     removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
     purchase:       (data : PurchaseData) => track(config, 'purchase', data),
