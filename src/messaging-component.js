@@ -51,7 +51,7 @@ const showExitModal = ({ cartRecovery }) => {
     return isRendered;
 };
 
-const init = (...args : $ReadOnlyArray<{ cartRecovery : { userId : string } }>) => {
+export const Messaging = (...args : $ReadOnlyArray<{ cartRecovery : { userId : string } }>) => {
     const config = args[0];
     if (config.cartRecovery) {
         userId = config.cartRecovery.userId;
@@ -81,11 +81,7 @@ const init = (...args : $ReadOnlyArray<{ cartRecovery : { userId : string } }>) 
             document.body.addEventListener('onclick', resetIdle);
         });
     }
-};
-
-export const Messaging = {
-    init
-};
+}; 
 
 export function setup() {
     loadJavascript(museSdkUrl);
