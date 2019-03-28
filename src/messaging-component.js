@@ -67,7 +67,7 @@ export const Messaging = (...args : $ReadOnlyArray<{ cartRecovery : { userId : s
         showExitModal(...args);
     }, checkIfMobile() ? 30000 : 300000);
 
-    if (document && document.body) {
+    const bindEventListeners = () => {
         // $FlowFixMe
         document.body.addEventListener('mousemove', exitIntentListener);
         // $FlowFixMe
@@ -78,8 +78,20 @@ export const Messaging = (...args : $ReadOnlyArray<{ cartRecovery : { userId : s
         document.body.addEventListener('touchstart', resetIdle);
         // $FlowFixMe
         document.body.addEventListener('onclick', resetIdle);
+    };
+
+    if (document && document.body) {
+        if (document.readyState === 'complete') {
+            bindEventListeners();
+        } else {
+            document.addEventListener('readystatechange', () => {
+                if (document.readyState === 'complete') {
+                    bindEventListeners();
+                }
+            });
+        }
     }
-}; 
+};
 
 export function setup() {
     loadJavascript(museSdkUrl);
