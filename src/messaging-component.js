@@ -68,18 +68,16 @@ export const Messaging = (...args : $ReadOnlyArray<{ cartRecovery : { userId : s
     }, checkIfMobile() ? 30000 : 300000);
 
     if (document && document.body) {
-        document.addEventListener('DOMContentLoaded', () => {
-            // $FlowFixMe
-            document.body.addEventListener('mousemove', exitIntentListener);
-            // $FlowFixMe
-            document.body.addEventListener('mousemove', resetIdle);
-            // $FlowFixMe
-            document.body.addEventListener('mousedown', resetIdle);
-            // $FlowFixMe
-            document.body.addEventListener('touchstart', resetIdle);
-            // $FlowFixMe
-            document.body.addEventListener('onclick', resetIdle);
-        });
+        // $FlowFixMe
+        document.body.addEventListener('mousemove', exitIntentListener);
+        // $FlowFixMe
+        document.body.addEventListener('mousemove', resetIdle);
+        // $FlowFixMe
+        document.body.addEventListener('mousedown', resetIdle);
+        // $FlowFixMe
+        document.body.addEventListener('touchstart', resetIdle);
+        // $FlowFixMe
+        document.body.addEventListener('onclick', resetIdle);
     }
 }; 
 
