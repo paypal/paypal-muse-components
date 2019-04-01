@@ -67,21 +67,31 @@ export const Messaging = (...args : $ReadOnlyArray<{ cartRecovery : { userId : s
         showExitModal(...args);
     }, checkIfMobile() ? 30000 : 300000);
 
+    const bindEventListeners = () => {
+        // $FlowFixMe
+        document.body.addEventListener('mousemove', exitIntentListener);
+        // $FlowFixMe
+        document.body.addEventListener('mousemove', resetIdle);
+        // $FlowFixMe
+        document.body.addEventListener('mousedown', resetIdle);
+        // $FlowFixMe
+        document.body.addEventListener('touchstart', resetIdle);
+        // $FlowFixMe
+        document.body.addEventListener('onclick', resetIdle);
+    };
+
     if (document && document.body) {
-        document.addEventListener('DOMContentLoaded', () => {
-            // $FlowFixMe
-            document.body.addEventListener('mousemove', exitIntentListener);
-            // $FlowFixMe
-            document.body.addEventListener('mousemove', resetIdle);
-            // $FlowFixMe
-            document.body.addEventListener('mousedown', resetIdle);
-            // $FlowFixMe
-            document.body.addEventListener('touchstart', resetIdle);
-            // $FlowFixMe
-            document.body.addEventListener('onclick', resetIdle);
-        });
+        if (document.readyState === 'complete') {
+            bindEventListeners();
+        } else {
+            document.addEventListener('readystatechange', () => {
+                if (document.readyState === 'complete') {
+                    bindEventListeners();
+                }
+            });
+        }
     }
-}; 
+};
 
 export function setup() {
     loadJavascript(museSdkUrl);
