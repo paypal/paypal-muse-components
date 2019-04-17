@@ -65,7 +65,7 @@ type Config = {|
         id : string
     |},
     paramsToBeaconUrl? : ParamsToBeaconUrl,
-    isPaypalUser : boolean
+    isPaypalUser? : boolean
 |};
 
 const sevenDays = 6.048e+8;
