@@ -38,18 +38,11 @@ export function getPptmScriptSrc(paypalDomain : string, mrid : ?string, clientId
 function parseMerchantId() : ?string {
     const merchantId = getMerchantID();
 
-    if (merchantId === UNKNOWN) {
+    if (!merchantId.length || merchantId[0] === UNKNOWN) {
         return;
     }
 
-    if (typeof merchantId === 'string') {
-        // Devnote Feb 5 2019: Checkout team says in the future they may allow multiple merchant IDs
-        // to be passed into the script as a comma separated list for multiple payee scenarioes.
-        // For the sake of coding defensively, we'll go ahead and assume this is already the case
-        // and just return the first merchant ID in the list. We may consider inserting multiple
-        // pptm.js script tags instead.
-        return merchantId.split(',')[0];
-    }
+    return merchantId[0];
 }
 
 function _isPayPalDomain() : boolean {

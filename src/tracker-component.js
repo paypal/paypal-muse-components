@@ -99,7 +99,7 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
         property:   config.property,
         trackingType,
         clientId:   getClientID(),
-        merchantId: getMerchantID()
+        merchantId: getMerchantID().join(',')
     };
 
     // paramsToBeaconUrl is a function that gives you the ability to override the beacon url
