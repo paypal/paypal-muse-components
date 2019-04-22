@@ -84,4 +84,15 @@ export function insertPptm() {
 
 export function setup() {
     document.addEventListener('DOMContentLoaded', insertPptm);
+
+    const clientId = getClientID();
+    const merchantId = parseMerchantId();
+    if (!merchantId) {
+        // get clientId from mrid
+    }
+    const src = ''
+    const query = `${encodeURIComponent(clientId)}=${encodeURIComponent(merchantId)}`
+
+    const beaconImage = new window.Image()
+    beaconImage.src = `${src}?${query}`
 }
