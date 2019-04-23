@@ -1,7 +1,7 @@
 /* @flow */
 
-import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain } from '@paypal/sdk-client/src';
-import { UNKNOWN } from '@paypal/sdk-constants/src';
+import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain, getEnv } from '@paypal/sdk-client/src';
+import { UNKNOWN, ENV } from '@paypal/sdk-constants/src';
 
 export const PPTM_ID = 'xo-pptm';
 
@@ -92,7 +92,12 @@ export function setup() {
     const merchantIdQuery = merchantId ? `merchantId=${ encodeURIComponent(merchantId) }` : '';
     const ampersand = clientId && merchantId ? '&' : '';
 
-    const src = decodeURIComponent(new URLSearchParams(location.search).get('musenodewebUri')) || 'www.paypal.com/muse/api/merchant-list/add';
+    const env = getEnv();
+    const musenodewebUri = env !== ENV.PRODUCTION && env !== ENV.SANDBOX
+        ? decodeURIComponent(new URLSearchParams(location.search).get('musenodewebUri'))
+        : undefined;
+
+    const src =  musenodewebUri ? musenodewebUri : 'www.paypal.com/muse/api/merchant-list/add';
     const query = `${ clientIdQuery }${ ampersand }${ merchantIdQuery }`;
     const beaconImage = new window.Image();
 
