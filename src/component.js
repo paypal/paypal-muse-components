@@ -1,7 +1,7 @@
 /* @flow */
 
 import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain, getEnv } from '@paypal/sdk-client/src';
-import { UNKNOWN } from '@paypal/sdk-constants/src';
+import { UNKNOWN, ENV } from '@paypal/sdk-constants/src';
 
 export const PPTM_ID = 'xo-pptm';
 
@@ -92,8 +92,8 @@ export function setup() {
     const merchantIdQuery = merchantId ? `merchantId=${ encodeURIComponent(merchantId) }` : '';
     const ampersand = clientId && merchantId ? '&' : '';
 
-    const env = getEnv().toLowerCase();
-    const musenodewebUri = env !== 'production' || env !== 'sandbox'
+    const env = getEnv();
+    const musenodewebUri = env !== ENV.PRODUCTION || env !== ENV.SANDBOX
         ? decodeURIComponent(new URLSearchParams(location.search).get('musenodewebUri'))
         : undefined;
 
