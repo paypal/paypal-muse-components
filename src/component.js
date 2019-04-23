@@ -87,8 +87,14 @@ export function setup() {
 
     const clientId = getClientID();
     const merchantId = parseMerchantId();
-    const src = decodeURIComponent(new URLSearchParams(location.search).get('musenodeweb')) || 'www.paypal.com';
-    const query = `${ encodeURIComponent(clientId) }=${ encodeURIComponent(merchantId) }`;
+
+    const clientIdQuery = clientId ? `clientId=${ encodeURIComponent(clientId) }` : '';
+    const merchantIdQuery = merchantId ? `merchantId=${ encodeURIComponent(merchantId) }` : '';
+    const ampersand = clientId && merchantId ? '&' : '';
+
+    const src = decodeURIComponent(new URLSearchParams(location.search).get('musenodewebUri')) || 'www.paypal.com/muse/api/merchant-list/add';
+    const query = `${ clientIdQuery }${ ampersand }${ merchantIdQuery }`;
     const beaconImage = new window.Image();
+
     beaconImage.src = `${ src }?${ query }`;
 }
