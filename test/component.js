@@ -74,5 +74,12 @@ describe('muse', () => {
             // $FlowFixMe
             expect(src).to.not.have.string('&client_id=');
         });
+
+        // testing for query param
+        it('test for query param', () => {
+            window.location = 'www.paypal.com?musenodeweb=localhost.paypal.com';
+            const src = component.getPptmScriptSrc(ENV.TEST, mrid, null, url);
+            expect(src).to.have.string('musenodeweb');
+        });
     });
 });

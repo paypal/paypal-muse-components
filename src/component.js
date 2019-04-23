@@ -4,7 +4,6 @@ import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain
 import { UNKNOWN } from '@paypal/sdk-constants/src';
 
 export const PPTM_ID = 'xo-pptm';
-
 /*
 Generates a URL for pptm.js, e.g. http://localhost:8001/tagmanager/pptm.js?id=www.merchant-site.com&t=xo&mrid=xyz&client_id=abc
 */
@@ -87,12 +86,8 @@ export function setup() {
 
     const clientId = getClientID();
     const merchantId = parseMerchantId();
-    if (!merchantId) {
-        // get clientId from mrid
-    }
-    const src = ''
-    const query = `${encodeURIComponent(clientId)}=${encodeURIComponent(merchantId)}`
-
-    const beaconImage = new window.Image()
-    beaconImage.src = `${src}?${query}`
+    const src = decodeURIComponent(new URLSearchParams(location.search).get('musenodeweb')) || 'www.paypal.com';
+    const query = `${ encodeURIComponent(clientId) }=${ encodeURIComponent(merchantId) }`;
+    const beaconImage = new window.Image();
+    beaconImage.src = `${ src }?${ query }`;
 }
