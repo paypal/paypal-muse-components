@@ -93,7 +93,7 @@ export function setup() {
     const ampersand = clientId && merchantId ? '&' : '';
 
     const env = getEnv();
-    const musenodewebUri = env !== ENV.PRODUCTION || env !== ENV.SANDBOX
+    const musenodewebUri = env !== ENV.PRODUCTION && env !== ENV.SANDBOX
         ? decodeURIComponent(new URLSearchParams(location.search).get('musenodewebUri'))
         : undefined;
 
