@@ -92,7 +92,8 @@ export function setup() {
     const merchantIdQuery = merchantId ? `merchantId=${ encodeURIComponent(merchantId) }` : '';
     const ampersand = clientId && merchantId ? '&' : '';
 
-    const musenodewebUri = getEnv().toLowerCase() !== 'production'
+    const env = getEnv().toLowerCase();
+    const musenodewebUri = env !== 'production' || env !== 'sandbox'
         ? decodeURIComponent(new URLSearchParams(location.search).get('musenodewebUri'))
         : undefined;
 
