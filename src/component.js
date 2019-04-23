@@ -4,6 +4,7 @@ import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain
 import { UNKNOWN } from '@paypal/sdk-constants/src';
 
 export const PPTM_ID = 'xo-pptm';
+
 /*
 Generates a URL for pptm.js, e.g. http://localhost:8001/tagmanager/pptm.js?id=www.merchant-site.com&t=xo&mrid=xyz&client_id=abc
 */
