@@ -119,27 +119,42 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
 const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) =>
     track(config, 'cartEvent', { ...trackingData, cartEventType });
 
-export const Tracker = (config? : Config = { user: { email: undefined, name: undefined } }) => ({
-    view:           (data : ViewData) => track(config, 'view', data),
-    addToCart:      (data : CartData) => {
-        setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
-        return trackCartEvent(config, 'addToCart', data);
-    },
-    setCart:        (data : CartData) => trackCartEvent(config, 'setCart', data),
-    removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
-    purchase:       (data : PurchaseData) => track(config, 'purchase', data),
-    setUser:        (data : UserData) => {
-        config = {
-            ...config,
-            user: {
-                ...config.user,
-                email: data.user.email || ((config && config.user) || {}).email,
-                name:  data.user.name || ((config && config.user) || {}).name
+export const Tracker = (config? : Config = { user: { email: undefined, name: undefined }, jetlore: { type: undefined, payload: undefined } }) => {
+    const jetlorePresent = config.jetlore;
+    if (jetlorePresent) { /* Bring in JL */ }
+    return {
+        view:           (data : ViewData) => track(config, 'view', data),
+        addToCart:      (data : CartData) => {
+            setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
+            return trackCartEvent(config, 'addToCart', data);
+        },
+        setCart:        (data : CartData) => trackCartEvent(config, 'setCart', data),
+        removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
+        purchase:       (data : PurchaseData) => track(config, 'purchase', data),
+        setUser:        (data : UserData) => {
+            config = {
+                ...config,
+                user: {
+                    ...config.user,
+                    email: data.user.email || ((config && config.user) || {}).email,
+                    name:  data.user.name || ((config && config.user) || {}).name
+                }
+            };
+            track(config, 'setUser', { oldUserId: getUserIdCookie() });
+        },
+        setProperty: (data : PropertyData) => {
+            config.property = { id: data.property.id };
+        },
+        track:          (data : Object) => {
+            // Data can be any object, but if it fits the JL style we should use it as so...
+            if (jetlorePresent && data.type && data.payload) {
+                const { type, payload } = data;
+                // TODO: What should this be?
+                PPMS('track', {
+                    type,
+                    payload
+                });
             }
-        };
-        track(config, 'setUser', { oldUserId: getUserIdCookie() });
-    },
-    setProperty: (data : PropertyData) => {
-        config.property = { id: data.property.id };
-    }
-});
+        }
+    };
+};
