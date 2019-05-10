@@ -2,7 +2,7 @@
 /* @flow */
 
 import { ENV } from '@paypal/sdk-constants/src';
-import { getVersion } from '@paypal/sdk-client/src';
+import { getVersion, getEventEmitter } from '@paypal/sdk-client/src';
 import { expect } from 'chai';
 
 import * as component from '../src/component'; // eslint-disable-line import/no-namespace
@@ -52,6 +52,20 @@ describe('muse', () => {
 
             // $FlowFixMe
             expect(script).to.equal(null);
+        });
+
+        // $FlowFixMe
+        it('should push one and only one `paypalButtonRender` event to paypalDDL when button is rendered', () => {
+            component.setup();
+
+            // mock the case that paypal button renders multiple times
+            getEventEmitter().trigger('button_render');
+            getEventEmitter().trigger('button_render');
+
+            const renderEventQueue = window.paypalDDL.filter(e => e.event === 'paypalButtonRender');
+
+            // $FlowFixMe
+            expect(renderEventQueue.length).to.equal(1);
         });
     });
 
