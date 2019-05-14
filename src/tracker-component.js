@@ -2,8 +2,10 @@
 
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
-import { generateId } from './generate-id';
+// $FlowFixMe
+import { generateId } from './generate-id'; // eslint-disable-line import/named
 import { getCookie, setCookie } from './lib/cookie-utils';
+import JL from './lib/jetlore';
 
 type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
 
@@ -56,6 +58,14 @@ type ParamsToBeaconUrl = ({
     data : ViewData | CartData | RemoveCartData | PurchaseData
 }) => string;
 
+type JetloreConfig = {|
+    user_id : string,
+    cid : string,
+    feed_id : string,
+    div? : string,
+    lang? : string
+|};
+
 type Config = {|
     user? : {|
         email? : string, // mandatory if unbranded cart recovery
@@ -64,7 +74,14 @@ type Config = {|
     property? : {|
         id : string
     |},
-    paramsToBeaconUrl? : ParamsToBeaconUrl
+    paramsToBeaconUrl? : ParamsToBeaconUrl,
+    jetlore? : {|
+        user_id : string,
+        access_token : string,
+        feed_id : string,
+        div? : string,
+        lang? : string
+    |}
 |};
 
 const sevenDays = 6.048e+8;
@@ -119,12 +136,46 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
 const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) =>
     track(config, 'cartEvent', { ...trackingData, cartEventType });
 
-export const Tracker = (config? : Config = { user: { email: undefined, name: undefined }, jetlore: { type: undefined, payload: undefined } }) => {
-    const jetlorePresent = config.jetlore;
-    if (jetlorePresent) { /* Bring in JL */ }
-    return {
-        view:           (data : ViewData) => track(config, 'view', data),
-        addToCart:      (data : CartData) => {
+const defaultTrackerConfig = { user: { email: undefined, name: undefined } };
+
+export const Tracker = (config? : Config = defaultTrackerConfig) => {
+    const jetloreTrackTypes = [
+        'view',
+        'addToCart',
+        'removeFromCart',
+        'purchase',
+        'search',
+        'browse_section',
+        'addToWishList',
+        'removeFromWishList',
+        'addToFavorites',
+        'removeFromFavorites',
+        'track'
+    ];
+    if (config.jetlore) {
+        const {
+            user_id,
+            access_token,
+            feed_id,
+            div,
+            lang
+        } = config && config.jetlore;
+        const trackingConfig : JetloreConfig = {
+            cid: access_token,
+            user_id,
+            feed_id
+        };
+        if (!div) {
+            trackingConfig.div = div;
+        }
+        if (!lang) {
+            trackingConfig.lang = lang;
+        }
+        JL.tracking(trackingConfig);
+    }
+    const trackers = {
+        view:       (data : ViewData) => track(config, 'view', data),
+        addToCart:  (data : CartData) => {
             setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
             return trackCartEvent(config, 'addToCart', data);
         },
@@ -144,17 +195,22 @@ export const Tracker = (config? : Config = { user: { email: undefined, name: und
         },
         setProperty: (data : PropertyData) => {
             config.property = { id: data.property.id };
-        },
-        track:          (data : Object) => {
-            // Data can be any object, but if it fits the JL style we should use it as so...
-            if (jetlorePresent && data.type && data.payload) {
-                const { type, payload } = data;
-                // TODO: What should this be?
-                PPMS('track', {
-                    type,
-                    payload
-                });
-            }
         }
+    };
+    const trackEvent = (type : string, crData : Object, jlData : Object) => {
+        const isJetloreType = config.jetlore
+            ? jetloreTrackTypes.includes(type)
+            : false;
+        if (config.jetlore && isJetloreType && jlData) {
+            JL.tracker[type](jlData);
+        }
+        if (trackers[type]) {
+            trackers[type](crData);
+        }
+    };
+    return {
+        // bringing in tracking functions for backwards compatibility
+        ...trackers,
+        track: trackEvent
     };
 };
