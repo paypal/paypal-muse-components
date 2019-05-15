@@ -6,7 +6,7 @@ import { expect } from 'chai';
 import { Tracker } from '../src/tracker-component';
 import { setCookie } from '../src/lib/cookie-utils';
 // $FlowFixMe
-import * as generateIdModule from '../src/generate-id'; // eslint-disable-line import/no-namespace
+import generateIdModule from '../src/generate-id';
 
 const decode = (encodedDataParam : string) : string => {
     return JSON.parse(atob(decodeURIComponent(encodedDataParam)));
@@ -46,14 +46,14 @@ describe('paypal.Tracker', () => {
     const originalDocumentBodyAppendChild = document.body.appendChild;
     // $FlowFixMe
     const originalDocumentCreateElement = document.createElement;
-    const originalGenerateId = generateIdModule.generateId; // eslint-disable-line import/namespace
+    const originalGenerateId = generateIdModule.generateId;
     before(() => {
         // $FlowFixMe
         document.body.appendChild = appendChild;
         // $FlowFixMe
         document.createElement = createElement;
         // $FlowFixMe
-        generateIdModule.generateId = () => 'abc123'; // eslint-disable-line import/namespace
+        generateIdModule.generateId = () => 'abc123';
         // generateIdModule.set(() => 'abc123');
     });
 
@@ -64,7 +64,7 @@ describe('paypal.Tracker', () => {
         // $FlowFixMe
         document.createElement = originalDocumentCreateElement;
         // $FlowFixMe
-        generateIdModule.generateId = originalGenerateId; // eslint-disable-line import/namespace
+        generateIdModule.generateId = originalGenerateId;
     });
 
     // $FlowFixMe

@@ -3,7 +3,7 @@
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 // $FlowFixMe
-import { generateId } from './generate-id'; // eslint-disable-line import/named
+import generate from './generate-id';
 import { getCookie, setCookie } from './lib/cookie-utils';
 import JL from './lib/jetlore';
 
@@ -92,7 +92,53 @@ const getUserIdCookie = () : ?string => {
 
 const setRandomUserIdCookie = () : void => {
     const ONE_MONTH_IN_MILLISECONDS = 30 * 24 * 60 * 60 * 1000;
-    setCookie('paypal-user-id', generateId(), ONE_MONTH_IN_MILLISECONDS);
+    setCookie('paypal-user-id', generate.generateId(), ONE_MONTH_IN_MILLISECONDS);
+};
+
+
+export const getJetlorePayload = (type : string, payload : Object) : Object => {
+    switch (type) {
+    case 'addToCart':
+    case 'removeFromCart':
+    case 'purchase':
+        return {
+            deal_id:   payload.deal_id,
+            option_id: payload.option_id,
+            count:     payload.count
+        };
+    case 'search':
+        return {
+            text: payload.text
+        };
+    case 'view':
+    case 'browse_section':
+        return {
+            name:        payload.name,
+            refinements: payload.refinements
+        };
+    case 'browse_promo':
+        return {
+            name: payload.name,
+            id:   payload.id
+        };
+    case 'addToWishList':
+    case 'removeFromWishList':
+    case 'addToFavorites':
+    case 'removeFromFavorites':
+        return payload.payload;
+    case 'track':
+        return {
+            event:      payload.event,
+            deal_id:    payload.deal_id,
+            count:      payload.count,
+            price:      payload.price,
+            title:      payload.title,
+            option_id:  payload.option_id,
+            text:       payload.text
+        };
+    default:
+        return {};
+    }
 };
 
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
@@ -100,16 +146,13 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
 
     const img = document.createElement('img');
     img.style.display = 'none';
-
     if (!getUserIdCookie()) {
         setRandomUserIdCookie();
     }
-
     const user = {
         ...config.user,
         id: getUserIdCookie()
     };
-
     const data = {
         ...trackingData,
         user,
@@ -197,15 +240,16 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             config.property = { id: data.property.id };
         }
     };
-    const trackEvent = (type : string, crData : Object, jlData : Object) => {
+    const trackEvent = (type : string, data : Object) => {
         const isJetloreType = config.jetlore
             ? jetloreTrackTypes.includes(type)
             : false;
-        if (config.jetlore && isJetloreType && jlData) {
+        if (config.jetlore && isJetloreType && data) {
+            const jlData = getJetlorePayload(type, data);
             JL.tracker[type](jlData);
         }
         if (trackers[type]) {
-            trackers[type](crData);
+            trackers[type](data);
         }
     };
     return {

@@ -2,7 +2,7 @@
 /* @flow */
 import { expect } from 'chai';
 
-import { Tracker } from '../src/tracker-component';
+import { Tracker, getJetlorePayload } from '../src/tracker-component';
 import JL from '../src/lib/jetlore';
 
 /*
@@ -10,7 +10,7 @@ import JL from '../src/lib/jetlore';
 ** - had to mock everything manually because sinon/rewire cannot be imported.
 **   was getting error "Uncaught Error: Module build failed: Error: Final loader (./node_modules/imports/index.js) didn't return a Buffer or String"
 */
-describe.only('Tracker.track function', () => {
+describe('Tracker.track function', () => {
     let initTrackerOpts;
     let originalJLTracking;
     let createMock;
@@ -54,7 +54,7 @@ describe.only('Tracker.track function', () => {
         delete JL.tracker;
     });
 
-    it.only('should call jetlore view function', () => {
+    it('should call jetlore view function', () => {
         const operation = 'view';
         const trackingCalls = getMockObj();
         const trackerCalls = getMockObj();
@@ -63,7 +63,7 @@ describe.only('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {}, {});
+        tracker.track(operation, {});
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -79,7 +79,7 @@ describe.only('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {}, {});
+        tracker.track(operation, {});
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -95,7 +95,7 @@ describe.only('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {}, {});
+        tracker.track(operation, {});
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -111,7 +111,7 @@ describe.only('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {}, {});
+        tracker.track(operation, {});
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -127,7 +127,7 @@ describe.only('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {}, {});
+        tracker.track(operation, {});
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -143,7 +143,7 @@ describe.only('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {}, {});
+        tracker.track(operation, {});
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -159,7 +159,7 @@ describe.only('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {}, {});
+        tracker.track(operation, {});
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -175,7 +175,7 @@ describe.only('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {}, {});
+        tracker.track(operation, {});
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -191,7 +191,7 @@ describe.only('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {}, {});
+        tracker.track(operation, {});
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -207,7 +207,7 @@ describe.only('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {}, {});
+        tracker.track(operation, {});
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -223,10 +223,53 @@ describe.only('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {}, {});
+        tracker.track(operation, {});
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
         expect(actualJLInitObj).to.deep.equal(expectedJLInitObj);
+    });
+
+    it('should get correct jetlore payload based on type', () => {
+        const payload = {
+            deal_id:     '6',
+            option_id:   '7',
+            count:        8,
+            text:        'yes',
+            name:        'muse',
+            refinements: [ {
+                name:   'hello',
+                value:  'world'
+            } ],
+            id:         '2245332',
+            payload: {
+                name:   'paypal shopping',
+                value:  'muse'
+            },
+            event:      'event1',
+            price:      100,
+            title:      'the title'
+        };
+        const expectedCartPayload = {
+            deal_id:    payload.deal_id,
+            option_id:  payload.option_id,
+            count:      payload.count
+        };
+        const expectedSearchPayload = {
+            text: payload.text
+        };
+        const expectedViewBrowsePayload = {
+            name:        payload.name,
+            refinements: payload.refinements
+        };
+        const getPayload = type => {
+            return getJetlorePayload(type, payload);
+        };
+        expect(getPayload('addToCart')).to.deep.equal(expectedCartPayload);
+        expect(getPayload('removeFromCart')).to.deep.equal(expectedCartPayload);
+        expect(getPayload('purchase')).to.deep.equal(expectedCartPayload);
+        expect(getPayload('search')).to.deep.equal(expectedSearchPayload);
+        expect(getPayload('view')).to.deep.equal(expectedViewBrowsePayload);
+        expect(getPayload('browse_section')).to.deep.equal(expectedViewBrowsePayload);
     });
 });
