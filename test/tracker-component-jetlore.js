@@ -2,7 +2,7 @@
 /* @flow */
 import { expect } from 'chai';
 
-import { Tracker, getJetlorePayload } from '../src/tracker-component';
+import { Tracker } from '../src/tracker-component';
 import JL from '../src/lib/jetlore';
 
 /*
@@ -262,8 +262,9 @@ describe('Tracker.track function', () => {
             name:        payload.name,
             refinements: payload.refinements
         };
+        const tracker = Tracker(initTrackerOpts);
         const getPayload = type => {
-            return getJetlorePayload(type, payload);
+            return tracker.getJetlorePayload(type, payload);
         };
         expect(getPayload('addToCart')).to.deep.equal(expectedCartPayload);
         expect(getPayload('removeFromCart')).to.deep.equal(expectedCartPayload);

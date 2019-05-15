@@ -96,7 +96,7 @@ const setRandomUserIdCookie = () : void => {
 };
 
 
-export const getJetlorePayload = (type : string, payload : Object) : Object => {
+const getJetlorePayload = (type : string, payload : Object) : Object => {
     switch (type) {
     case 'addToCart':
     case 'removeFromCart':
@@ -255,6 +255,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     return {
         // bringing in tracking functions for backwards compatibility
         ...trackers,
-        track: trackEvent
+        track: trackEvent,
+        getJetlorePayload
     };
 };

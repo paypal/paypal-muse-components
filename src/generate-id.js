@@ -1,4 +1,5 @@
 /* @flow */
+import { uniqueID } from 'belter/src';
 
 /*
 ** the reason this is exported as a default object is to get rid of error
@@ -8,6 +9,5 @@
 
 // eslint-disable-next-line import/no-default-export
 export default {
-    generateId: () : string =>
-        [ Math.random(), Math.random() ].map(x => x.toString(16).slice(2)).join('')
+    generateId: uniqueID
 };
