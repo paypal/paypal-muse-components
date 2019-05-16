@@ -3,6 +3,8 @@
 .*/node_modules/npm
 .*/node_modules/jsonlint
 .*/dist/module
+[untyped]
+.*/src/lib/jetlore
 [include]
 [libs]
 flow-typed
