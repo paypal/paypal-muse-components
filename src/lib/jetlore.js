@@ -1,22 +1,370 @@
 /* @flow */
+let JL
 const getJetlore = () => {
-    // code is being pulled from let JL = {};
-    let JL = {}
-    !(function() { function o(o) { const t = this; t.access_token = o.cid, t.user_id = void 0 !== o.user_id && o.user_id != null && o.user_id !== '' && o.user_id.indexOf('/') < 0 ? o.user_id : 'undefined', t.feed_id = void 0 === o.feed_id || o.feed_id == '' ? 'any_feed' : o.feed_id, t.div = o.div, t.lang = o.lang, t.clicked = typeof o.clicked === 'function' ? o.clicked : function(o) {}, t.purchased = typeof o.purchased === 'function' ? o.purchased : function(o) {}, t.logToConsoleCookieName = 'Tracker_log_to_console', t.logToConsole = e._isConsoleCookieExists(t.logToConsoleCookieName), t.setCookies = void 0 !== o.setCookies && o.setCookies != null && o.setCookies, t.autoPageView = void 0 !== o.autoPageView && typeof o.autoPageView === 'boolean' && o.autoPageView, t.log(`Tracking initialized with parameters\n\t - access token:${ t.access_token  }\n\t - user id     :${  t.user_id  }\n\t - feed id     :${  t.feed_id  }\n\t - div         :${  t.div  }\n\t - lang        :${  t.lang }`), t.autoPageView && t.page_view(); }JL = { tracking(e) { JL.tracker = new o(e); } }, o.prototype.track = function(o) { const e = this,
-        t = o.event; e.log(`${ t } action initiated`), e.log(o); const i = t == 'search' ? e.convertTextData : e.convertDealData; e.performAction(i, t, o); }, o.prototype.view = function(o) { const e = this; e.log('Click action initiated'), e.performAction(e.convertDealData, e.a_click, o); }, o.prototype.click = function(o) { const e = this; e.log('Click action initiated'), e.performAction(e.convertDealData, e.a_click, o); }, o.prototype.purchase = function(o) { const e = this; e.log('Purchase action initiated'), e.performAction(e.convertDealData, e.a_purchase, o); }, o.prototype.addToCart = function(o) { const e = this; e.log('AddToCart action initiated'), e.performAction(e.convertDealData, e.a_add_to_cart, o); }, o.prototype.removeFromCart = function(o) { const e = this; e.log('RemoveFromCart action initiated'), e.performAction(e.convertDealData, e.a_remove_from_cart, o); }, o.prototype.addToWishList = function(o) { const e = this; e.log('AddToWishList action initiated'), e.performAction(e.convertDealData, e.a_add_to_wishlist, o); }, o.prototype.removeFromWishList = function(o) { const e = this; e.log('RemoveFromWishList action initiated'), e.performAction(e.convertDealData, e.a_remove_from_wishlist, o); }, o.prototype.addToFavorites = function(o) { const e = this; e.log('AddToFavorites action initiated'), e.performAction(e.convertDealData, e.a_add_to_favorites, o); }, o.prototype.removeFromFavorites = function(o) { const e = this; e.log('RemoveFromFavorites action initiated'), e.performAction(e.convertDealData, e.a_remove_from_favorites, o); }, o.prototype.browse_promo = function(o) { const e = this; e.log('BrowsePromo action initiated'), e.performAction(e.convertTextData, e.a_browse_promo, o); }, o.prototype.browse_catalog = function(o) { const e = this; e.log('BrowseCatalog action initiated'), e.performAction(e.convertTextData, e.a_browse_catalog, o); }, o.prototype.browse_section = function(o) { const e = this; e.log('BrowseSection action initiated'), e.performAction(e.convertBrowseSectionData, e.a_browse_section, o); }, o.prototype.search = function(o) { const e = this; e.log('Search action initiated'), e.performAction(e.convertTextData, e.a_search, o); }, o.prototype.page_view = function() { const o = this; o.log('Page view action initiated'), o.performAction(o.convertTextData, o.a_page_view, []); }, o.prototype.performAction = function(o, e, t) { const i = this; t ? t.constructor === Array ? i.action(o, e, t) : void 0 !== t.deal_id && t.deal_id != null && t.deal_id != '' || void 0 !== t.text && t.text != null && t.text != '' || void 0 !== t.id && t.id != null && t.id != '' || void 0 !== t.name && t.name != null && t.name != '' ? i.action(o, e, [ t ]) : i.log('Action skipped. Provided data object is not Array or does not have \'deal_id\' or \'text\' property') : i.log('Action skipped. No \'data\' provided'); }, o.prototype.urlQuery = function() { for (var o = {}, e = window.location.search.substring(1).split('&'), t = 0; t < e.length; t++) { const i = e[t].split('='); if (void 0 === o[i[0]]) { o[i[0]] = i[1]; } else if (typeof o[i[0]] === 'string') { const r = [ o[i[0]], i[1] ]; o[i[0]] = r; } else { o[i[0]].push(i[1]); } } return o; }, o.prototype.action = function(o, t, i) { const r = this,
-        a = r.urlQuery(),
-        n = `${ r.api_url  }/${  t  }/${  r.user_id }`,
-        s = `${ typeof did !== 'undefined' ? `${ n  }/${  did }` : n  }?access_token=${  r.access_token  }&data=${  r.serialize(o, i)  }&feed=${  r.feed_id }`,
-        c = void 0 !== r.div && r.div != '' ? `${ s  }&div=${  r.div }` : s,
-        l = void 0 !== r.lang && r.lang != '' ? `${ c  }&lang=${  r.lang }` : c,
-        d = a.jl_ctx,
-        p = void 0 !== a.jl_labels && a.jl_labels != '' ? `${ l  }&jl_labels=${  a.jl_labels }` : l,
-        _ = void 0 !== d && d != '' ? `${ p  }&jl_ctx=${  d }` : p,
-        v = `${ void 0 !== r.setCookies && r.setCookies ? `${ _  }&set_cookies=${  r.setCookies }` : _  }&r_source=${  window.location.host  }${ window.location.pathname }`; r.log(`About to sent JSONP request: ${ v }`), e._jsonp(r, v); }, o.prototype.convertDealData = function(o) { for (var t, i = [], r = 0; r < o.length; r++) { t = {}, e._traverseObject(o[r], (e, i) => { switch (e) { case 'deal_id':t.pid = i; break; case 'count':t.count = typeof o[r].count === 'number' ? i : 1; break; default:t[e] = i; } }), i.push(t); } return i; }, o.prototype.convertBrowseSectionData = function(o) { for (var t = [], i = 0; i < o.length; i++) { const r = o[i],
-        a = r.name,
-        n = r.refinements,
-        s = []; if (void 0 != n) { for (let c = 0; c < n.length; c++) { var l = {}; e._traverseObject(n[c], (o, e) => { l[o] = e; }), s.push(l); } }t.push({ name: a, refinements: s }); } return t; }, o.prototype.convertTextData = function(o) { return o; }, o.prototype.serialize = function(o, e) { const t = JSON.stringify(o(e)); return this.log(`Data object converted to string: ${ t }`), encodeURIComponent(t); }, o.prototype.enableLog = function() { this.logToConsole = !0, this.log('Stored enable log to console \'marker\' cookie. Will expire in 1800000 milliseconds'), e._setCookie(this.logToConsoleCookieName, (new Date()).getTime(), 18e5), this.log('JL logging Enabled'); }, o.prototype.disableLog = function() { const o = this; o.log('Removed enable log to console \'marker\' cookie'), o.logToConsole = !1, o.log('Stored enable log to console \'marker\' cookie. Will expire in -1800000 milliseconds'), e._setCookie(o.logToConsoleCookieName, (new Date()).getTime(), -18e5), o.log('JL logging Disabled'); }, o.prototype.log = function(o) { this.logToConsole && window.console && window.console.log && console.log(o); }; var e = { _traverseObject(o, e) { for (const t in o) { o.hasOwnProperty(t) && e(t, o[t]); } }, _deepCopyObject(o) { const e = {}; return this._traverseObject(o, (o, t) => { e[o] = t; }), e; }, _objectToQueryString(o) { let e = ''; return this._traverseObject(o, (o, t) => { const i = typeof t === 'object' ? JSON.stringify(t) : t; e += `${ encodeURIComponent(o)  }=${  encodeURIComponent(i)  }&`; }), e; }, _jsonp(o, e) { const t = document.createElement('script'); t.type = 'text/javascript', t.src = e, t.async = !0, document.getElementsByTagName('head')[0].appendChild(t), o.log(`SENT JSONP request: ${ e }`); }, _getUTCTime() { return new Date(this.getUTCFullYear(), this.getUTCMonth(), this.getUTCDate(), this.getUTCHours(), this.getUTCMinutes(), this.getUTCSeconds()).getTime(); }, _getCookie(o) { for (let e = `${ o  }=`, t = document.cookie.split(';'), i = 0; i < t.length; i++) { for (var r = t[i]; r.charAt(0) === ' ';) { r = r.substring(1); } if (r.indexOf(e) === 0) { return r.substring(e.length, r.length); } } return ''; }, _setCookie(o, e, t) { const i = new Date(); i.setTime(i.getTime() + t); const r = `expires=${  i.toUTCString() }`; document.cookie = `${ o  }=${  e  }; Path=/; ${  r }`; }, _isConsoleCookieExists(o) { return e._getCookie(o) !== ''; } }; o.prototype.a_purchase = 'purch', o.prototype.a_click = 'click', o.prototype.a_add_to_cart = 'add_to_cart', o.prototype.a_remove_from_cart = 'remove_from_cart', o.prototype.a_add_to_wishlist = 'add_to_wishlist', o.prototype.a_remove_from_wishlist = 'remove_from_wishlist', o.prototype.a_add_to_favorites = 'add_to_favorites', o.prototype.a_remove_from_favorites = 'remove_from_favorites', o.prototype.a_browse_promo = 'browse_promo', o.prototype.a_browse_catalog = 'browse_catalog', o.prototype.a_browse_section = 'browse_section', o.prototype.api_url = 'https://api.jetlore.com/track', o.prototype.a_search = 'search', o.prototype.a_page_view = 'page_view'; }());
-    return JL;
+  if (JL) return JL;
+
+    JL = {
+        tracking: function(init_data) { JL.tracker = new Tracker(init_data) }
+    }
+    
+    function Tracker(init_data) {
+        var tracker = this;
+        tracker.access_token = init_data.cid;
+        tracker.user_id = (typeof init_data.user_id !== 'undefined' && init_data.user_id != null && init_data.user_id !== "" && init_data.user_id.indexOf("/") < 0) ? init_data.user_id : "undefined";
+        tracker.feed_id = typeof init_data.feed_id === 'undefined' || init_data.feed_id == "" ? "any_feed" : init_data.feed_id;
+        tracker.div = init_data.div;
+        tracker.lang = init_data.lang;
+        tracker.clicked = typeof init_data.clicked === "function" ? init_data.clicked : function(data){};
+        tracker.purchased = typeof init_data.purchased === "function" ? init_data.purchased : function(data){};
+        tracker.logToConsoleCookieName = "Tracker_log_to_console";
+        tracker.logToConsole = JL_UTIL._isConsoleCookieExists(tracker.logToConsoleCookieName);
+        tracker.setCookies = (typeof init_data.setCookies !== 'undefined' && init_data.setCookies != null) ? init_data.setCookies : false;
+        tracker.autoPageView = (typeof init_data.autoPageView !== 'undefined' && typeof init_data.autoPageView === "boolean") ? init_data.autoPageView : false;
+    
+        tracker.log("Tracking initialized with parameters\n" +
+                          "\t - access token:" + tracker.access_token + "\n" +
+                          "\t - user id     :" + tracker.user_id + "\n" +
+                          "\t - feed id     :" + tracker.feed_id  + "\n" +
+                          "\t - div         :" + tracker.div + "\n" +
+                          "\t - lang        :" + tracker.lang);
+        if (tracker.autoPageView) {
+          tracker.page_view();
+        }
+    }
+    
+    Tracker.prototype.track = function(data) {
+        var tracker = this;
+        var event = data.event;
+        tracker.log(event + " action initiated");
+        tracker.log(data);
+        var convertData = event == 'search' ? tracker.convertTextData : tracker.convertDealData;
+        tracker.performAction(convertData, event, data);
+    }
+    
+    Tracker.prototype.view = function(data) {
+        var tracker = this;
+        tracker.log("Click action initiated");
+        tracker.performAction(tracker.convertDealData, tracker.a_click, data);
+    }
+    
+    Tracker.prototype.click = function(data) {
+        var tracker = this;
+        tracker.log("Click action initiated");
+        tracker.performAction(tracker.convertDealData, tracker.a_click, data);
+    }
+    
+    Tracker.prototype.purchase = function(data) {
+        var tracker = this;
+        tracker.log("Purchase action initiated");
+        tracker.performAction(tracker.convertDealData, tracker.a_purchase, data);
+    }
+    
+    Tracker.prototype.addToCart = function(data) {
+        var tracker = this;
+        tracker.log("AddToCart action initiated");
+        tracker.performAction(tracker.convertDealData, tracker.a_add_to_cart, data);
+    }
+    
+    Tracker.prototype.removeFromCart = function(data) {
+        var tracker = this;
+        tracker.log("RemoveFromCart action initiated");
+        tracker.performAction(tracker.convertDealData, tracker.a_remove_from_cart, data);
+    }
+    
+    Tracker.prototype.addToWishList = function(data) {
+        var tracker = this;
+        tracker.log("AddToWishList action initiated");
+        tracker.performAction(tracker.convertDealData, tracker.a_add_to_wishlist, data);
+    }
+    
+    Tracker.prototype.removeFromWishList = function(data) {
+        var tracker = this;
+        tracker.log("RemoveFromWishList action initiated");
+        tracker.performAction(tracker.convertDealData, tracker.a_remove_from_wishlist, data);
+    }
+    
+    Tracker.prototype.addToFavorites = function(data) {
+        var tracker = this;
+        tracker.log("AddToFavorites action initiated");
+        tracker.performAction(tracker.convertDealData, tracker.a_add_to_favorites, data);
+    }
+    
+    Tracker.prototype.removeFromFavorites = function(data) {
+        var tracker = this;
+        tracker.log("RemoveFromFavorites action initiated");
+        tracker.performAction(tracker.convertDealData, tracker.a_remove_from_favorites, data);
+    }
+    
+    Tracker.prototype.browse_promo = function(data) {
+        var tracker = this;
+        tracker.log("BrowsePromo action initiated");
+        tracker.performAction(tracker.convertTextData, tracker.a_browse_promo, data);
+    }
+    
+    Tracker.prototype.browse_catalog = function(data) {
+        var tracker = this;
+        tracker.log("BrowseCatalog action initiated");
+        tracker.performAction(tracker.convertTextData, tracker.a_browse_catalog, data);
+    }
+    
+    Tracker.prototype.browse_section = function(data) {
+        var tracker = this;
+        tracker.log("BrowseSection action initiated");
+        tracker.performAction(tracker.convertBrowseSectionData, tracker.a_browse_section, data);
+    }
+    
+    Tracker.prototype.search = function(data) {
+        var tracker = this;
+        tracker.log("Search action initiated");
+        tracker.performAction(tracker.convertTextData, tracker.a_search, data);
+    }
+    
+    Tracker.prototype.page_view = function() {
+        var tracker = this;
+        tracker.log("Page view action initiated");
+        tracker.performAction(tracker.convertTextData, tracker.a_page_view, []);
+    }
+    
+    Tracker.prototype.performAction = function(convertData, action, data) {
+        var tracker = this;
+        if(data){
+            //ignore if data is undefined or null
+            if(data.constructor === Array) {
+                  tracker.action(convertData, action, data);
+            } else {
+                if((typeof data.deal_id !== "undefined" && data.deal_id != null && data.deal_id != "") ||
+                    (typeof data.text !== "undefined" && data.text != null && data.text != "") ||
+                    (typeof data.id !== "undefined" && data.id != null && data.id != "") ||
+                    (typeof data.name !== "undefined" && data.name != null && data.name != "")
+                ) {
+                    //ignore if deal_id/text is undefined, null of empty string
+                    tracker.action(convertData, action, [data]);
+                } else {
+                    tracker.log("Action skipped. Provided data object is not Array or does not have 'deal_id' or 'text' property");
+                }
+            }
+        } else {
+            tracker.log("Action skipped. No 'data' provided");
+        }
+    }
+    
+    Tracker.prototype.urlQuery = function() {
+        // This function is anonymous, is executed immediately and
+        // the return value is assigned to QueryString!
+        var query_string = {};
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+                // If first entry with this name
+            if (typeof query_string[pair[0]] === "undefined") {
+                query_string[pair[0]] = pair[1];
+                // If second entry with this name
+            } else if (typeof query_string[pair[0]] === "string") {
+                var arr = [ query_string[pair[0]], pair[1] ];
+                query_string[pair[0]] = arr;
+                // If third or later entry with this name
+            } else {
+                query_string[pair[0]].push(pair[1]);
+            }
+        }
+        return query_string;
+    }
+    
+    Tracker.prototype.action = function(convertData, action, data) {
+        var tracker = this;
+        var urlQuery = tracker.urlQuery();
+    
+        var url_w_user = tracker.api_url + "/" + action + "/" + tracker.user_id;
+        var url_w_did = typeof did !== "undefined" ? url_w_user + "/" + did : url_w_user
+        var url_w_token = url_w_did + "?access_token=" + tracker.access_token
+    
+        var url_w_data = url_w_token + "&data=" + tracker.serialize(convertData, data)
+    
+        var url_w_feed = url_w_data + "&feed=" + tracker.feed_id;
+    
+        var url_w_div = typeof tracker.div !== 'undefined' && tracker.div != "" ? url_w_feed + "&div=" + tracker.div : url_w_feed;
+    
+        var url_w_lang = typeof tracker.lang !== 'undefined' && tracker.lang != "" ? url_w_div + "&lang=" + tracker.lang : url_w_div;
+    
+        var jlCtx = urlQuery.jl_ctx;
+    
+        var url_w_labels = typeof urlQuery.jl_labels !== 'undefined' && urlQuery.jl_labels != "" ? url_w_lang + "&jl_labels=" + urlQuery.jl_labels : url_w_lang;
+    
+        var url_w_ctx = typeof jlCtx !== 'undefined' && jlCtx != "" ? url_w_labels + "&jl_ctx=" + jlCtx : url_w_labels;
+    
+        var url_w_set_cookies = typeof tracker.setCookies !== 'undefined' && tracker.setCookies ? url_w_ctx + "&set_cookies=" + tracker.setCookies : url_w_ctx;
+    
+        var url_w_location = url_w_set_cookies + "&r_source=" + window.location.host + window.location.pathname;
+    
+        tracker.log("About to sent JSONP request: " + url_w_location);
+        JL_UTIL._jsonp(tracker, url_w_location);
+    }
+    
+    Tracker.prototype.convertDealData = function(data) {
+        var tracker = this;
+        var arr = [];
+        var obj;
+        for (var i=0; i<data.length; i++) {
+            obj = {}
+            JL_UTIL._traverseObject(data[i], function(key, value){
+                switch(key) {
+                    case 'deal_id':
+                        obj['pid'] = value;
+                        break;
+                    case 'count':
+                        obj['count'] = typeof data[i].count === "number" ? value : 1;
+                        break;
+                    default:
+                        obj[key] = value;
+    
+                }
+    
+            })
+            arr.push(obj);
+        }
+        return arr;
+    }
+    
+    Tracker.prototype.convertBrowseSectionData = function(data) {
+        var arr = [];
+        for (var i = 0; i < data.length; i++) {
+            var browse_section_data = data[i];
+            var name = browse_section_data.name;
+            var refinements = browse_section_data.refinements;
+            var refinements_arr = [];
+            if (refinements != undefined) {
+                for (var j = 0; j < refinements.length; j++) {
+                    var obj = {};
+                    JL_UTIL._traverseObject(refinements[j], function(key, value){ obj[key] = value; });
+                    refinements_arr.push(obj);
+                }
+            }
+            arr.push({"name": name, "refinements": refinements_arr});
+        }
+        return arr;
+    }
+    
+    Tracker.prototype.convertTextData = function(data) {
+        return data;
+    }
+    
+    Tracker.prototype.serialize = function(convertData, data) {
+        var tracker = this;
+        var serializedObj = JSON.stringify( convertData( data ) );
+        tracker.log("Data object converted to string: " + serializedObj);
+        return encodeURIComponent(serializedObj);
+    }
+    Tracker.prototype.enableLog = function() {
+        var self = this;
+        self.logToConsole = true;
+        self.log("Stored enable log to console 'marker' cookie. Will expire in " + 30*60*1000 + " milliseconds");
+        JL_UTIL._setCookie(self.logToConsoleCookieName, (new Date()).getTime(), 30*60*1000);
+        self.log("JL logging Enabled");
+    }
+    
+    Tracker.prototype.disableLog = function() {
+        var self = this;
+        self.log("Removed enable log to console 'marker' cookie");
+        self.logToConsole = false;
+        self.log("Stored enable log to console 'marker' cookie. Will expire in " + -30*60*1000 + " milliseconds");
+        JL_UTIL._setCookie(self.logToConsoleCookieName, (new Date()).getTime(), -30*60*1000);
+        self.log("JL logging Disabled");
+    }
+    
+    Tracker.prototype.log = function(text) {
+        var self = this;
+        if (self.logToConsole && window.console && window.console.log ) {
+          console.log(text);
+        }
+    }
+    
+    var JL_UTIL = {
+      _traverseObject: function(obj, func){
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                func(prop, obj[prop]);
+            }
+        }
+      },
+    
+      _deepCopyObject: function(src){
+        var obj = {};
+        this._traverseObject(src, function(key, value){
+          obj[key] = value;
+        });
+        return obj;
+      },
+    
+      _objectToQueryString: function(obj){
+        var builder = "";
+    
+        this._traverseObject(obj, function(prop, value) {
+          var strValue = typeof value == "object" ? JSON.stringify(value) : value;
+          builder += encodeURIComponent(prop) + "=" + encodeURIComponent(strValue) + "&";
+        })
+    
+        return builder;
+      },
+    
+      _jsonp: function(self, url) {
+          var scriptTag = document.createElement("script");
+          scriptTag.type = "text/javascript";
+          scriptTag.src=url;
+          scriptTag.async = true;
+          document.getElementsByTagName("head")[0].appendChild(scriptTag);
+          self.log("SENT JSONP request: " + url)
+      },
+    
+      _getUTCTime: function(){
+        return new Date(
+            this.getUTCFullYear(),
+            this.getUTCMonth(),
+            this.getUTCDate(),
+            this.getUTCHours(),
+            this.getUTCMinutes(),
+            this.getUTCSeconds()
+        ).getTime();
+      },
+    
+      _getCookie: function(cname) {
+          var name = cname + "=";
+          var ca = document.cookie.split(';');
+          for(var i = 0; i < ca.length; i++) {
+                  var c = ca[i];
+                  while (c.charAt(0) === ' ') c = c.substring(1);
+                  if (c.indexOf(name) === 0) return c.substring(name.length,c.length);
+          }
+          return "";
+      },
+    
+      _setCookie: function(cname, cvalue, exMilliseconds) {
+          var d = new Date();
+          d.setTime(d.getTime() + exMilliseconds);
+          var expires = "expires="+d.toUTCString();
+          document.cookie = cname + "=" + cvalue + "; Path=/; " + expires;
+      },
+    
+      _isConsoleCookieExists: function(cookieName) {
+          return "" !== JL_UTIL._getCookie(cookieName);
+      }
+    }
+    Tracker.prototype.a_purchase='purch'
+    Tracker.prototype.a_click='click'
+    Tracker.prototype.a_add_to_cart='add_to_cart'
+    Tracker.prototype.a_remove_from_cart='remove_from_cart'
+    Tracker.prototype.a_add_to_wishlist='add_to_wishlist'
+    Tracker.prototype.a_remove_from_wishlist='remove_from_wishlist'
+    Tracker.prototype.a_add_to_favorites='add_to_favorites'
+    Tracker.prototype.a_remove_from_favorites='remove_from_favorites'
+    Tracker.prototype.a_browse_promo='browse_promo'
+    Tracker.prototype.a_browse_catalog='browse_catalog'
+    Tracker.prototype.a_browse_section='browse_section'
+    Tracker.prototype.api_url='https://api.jetlore.com/track'
+    Tracker.prototype.a_search='search'
+    Tracker.prototype.a_page_view='page_view'
+
+    return JL
 }
 
-export default getJetlore();
+export default getJetlore;

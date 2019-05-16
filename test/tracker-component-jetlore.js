@@ -3,7 +3,7 @@
 import { expect } from 'chai';
 
 import { Tracker } from '../src/tracker-component';
-import JL from '../src/lib/jetlore';
+import getJetlore from '../src/lib/jetlore';
 
 /*
 ** moved into it's own file due to eslint max file size rule
@@ -16,8 +16,10 @@ describe('Tracker.track function', () => {
     let createMock;
     let getMockObj;
     let expectedJLInitObj;
+    let JL;
 
     before(() => {
+        JL = getJetlore();
         originalJLTracking = JL.tracking;
         initTrackerOpts = {
             user: {

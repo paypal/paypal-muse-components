@@ -5,7 +5,7 @@ import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 // $FlowFixMe
 import generate from './generate-id';
 import { getCookie, setCookie } from './lib/cookie-utils';
-import JL from './lib/jetlore';
+import getJetlore from './lib/jetlore';
 
 type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
 
@@ -182,6 +182,7 @@ const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, track
 const defaultTrackerConfig = { user: { email: undefined, name: undefined } };
 
 export const Tracker = (config? : Config = defaultTrackerConfig) => {
+    const JL = getJetlore();
     const jetloreTrackTypes = [
         'view',
         'addToCart',
