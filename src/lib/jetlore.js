@@ -1,4 +1,7 @@
 /* @flow */
+/*
+** this is jetlore's code, it was pulled from http://api.jetlore.com/js_sdk/js_tracker?jl_cid=5b65ffa59603ca748a8f107a8843b695
+*/
 let JL
 const getJetlore = () => {
   if (JL) return JL;
