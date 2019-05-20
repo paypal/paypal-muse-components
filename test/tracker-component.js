@@ -71,6 +71,7 @@ describe('paypal.Tracker', () => {
     afterEach(() => {
         appendChildCalls = 0;
         imgMock.src = '';
+        document.cookie = 'paypal-cr-cart={}';
     });
 
     // $FlowFixMe
@@ -157,6 +158,45 @@ describe('paypal.Tracker', () => {
             })
         );
         expect(appendChildCalls).to.equal(1);
+        tracker.addToCart({
+            cartId: '__test__cartId0',
+            items:  [
+                {
+                    id:  '__test__productId0',
+                    url: 'https://example.com/__test__productId0'
+                }
+            ],
+            emailCampaignId: '__test__emailCampaignId0',
+            total:           '102345.67',
+            currencyCode:    'USD'
+        });
+        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
+            JSON.stringify({
+                cartId: '__test__cartId0',
+                items:  [
+                    {
+                        id:  '__test__productId',
+                        url: 'https://example.com/__test__productId'
+                    },
+                    {
+                        id:  '__test__productId0',
+                        url: 'https://example.com/__test__productId0'
+                    }
+                ],
+                emailCampaignId: '__test__emailCampaignId0',
+                total:           '102345.67',
+                currencyCode:    'USD',
+                cartEventType:   'addToCart',
+                user:            {
+                    email: '__test__email3@gmail.com',
+                    name:  '__test__userName3',
+                    id:    'abc123'
+                },
+                trackingType: 'cartEvent',
+                clientId:     'abcxyz123',
+                merchantId:   'xyz,hij,lmno'
+            })
+        );
     });
 
     it('should send setCart events', () => {
@@ -164,6 +204,18 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName4';
         const tracker = Tracker({ user: { email, name: userName } });
         expect(appendChildCalls).to.equal(0);
+        tracker.addToCart({
+            cartId: '__test__cartId0',
+            items:  [
+                {
+                    id:  '__test__productId0',
+                    url: 'https://example.com/__test__productId0'
+                }
+            ],
+            emailCampaignId: '__test__emailCampaignId0',
+            total:           '102345.67',
+            currencyCode:    'USD'
+        });
         tracker.setCart({
             cartId: '__test__cartId',
             items:  [
@@ -202,7 +254,7 @@ describe('paypal.Tracker', () => {
                 merchantId:   'xyz,hij,lmno'
             })
         );
-        expect(appendChildCalls).to.equal(1);
+        expect(appendChildCalls).to.equal(2);
     });
 
     it('should send removeFromCart events', () => {

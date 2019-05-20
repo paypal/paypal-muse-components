@@ -95,6 +95,20 @@ const setRandomUserIdCookie = () : void => {
     setCookie('paypal-user-id', generate.generateId(), ONE_MONTH_IN_MILLISECONDS);
 };
 
+const setCartCookie = (type, data) : void => {
+    const currentCookie = getCookie('paypal-cr-cart');
+    if (type === 'add' && currentCookie !== '') {
+        const parsedCookie = JSON.parse(currentCookie);
+        const currentItems = parsedCookie && parsedCookie.items;
+        if (currentItems && currentItems.length) {
+            data.items = [
+                ...currentItems,
+                ...data.items
+            ];
+        }
+    }
+    setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
+};
 
 const getJetlorePayload = (type : string, payload : Object) : Object => {
     switch (type) {
@@ -220,10 +234,13 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     const trackers = {
         view:       (data : ViewData) => track(config, 'view', data),
         addToCart:  (data : CartData) => {
-            setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
+            setCartCookie('add', data);
             return trackCartEvent(config, 'addToCart', data);
         },
-        setCart:        (data : CartData) => trackCartEvent(config, 'setCart', data),
+        setCart:        (data : CartData) => {
+            setCartCookie('set', data);
+            return trackCartEvent(config, 'setCart', data);
+        },
         removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
         purchase:       (data : PurchaseData) => track(config, 'purchase', data),
         setUser:        (data : UserData) => {
