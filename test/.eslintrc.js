@@ -4,6 +4,7 @@ module.exports = {
     'extends': '../.eslintrc.js',
 
     'rules': {
-        'import/export': 'off'
+        'import/export': 'off',
+        'max-lines': 'off'
     }
 };
