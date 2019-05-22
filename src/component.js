@@ -1,6 +1,6 @@
 /* @flow */
 
-import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain, getEnv } from '@paypal/sdk-client/src';
+import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain, getEnv, getEventEmitter } from '@paypal/sdk-client/src';
 import { UNKNOWN, ENV } from '@paypal/sdk-constants/src';
 
 export const PPTM_ID = 'xo-pptm';
@@ -82,8 +82,19 @@ export function insertPptm() {
     }
 }
 
+function listenForButtonRender() {
+    getEventEmitter().on('button_render', () => {
+        window.paypalDDL = window.paypalDDL || [];
+        const buttonRenderEvent = window.paypalDDL.filter(e => e.event === 'paypalButtonRender');
+        if (buttonRenderEvent.length === 0) {
+            window.paypalDDL.push({ event: 'paypalButtonRender' });
+        }
+    });
+}
+
 export function setup() {
     document.addEventListener('DOMContentLoaded', insertPptm);
+    listenForButtonRender();
 
     const clientId = getClientID();
     const merchantId = parseMerchantId();
