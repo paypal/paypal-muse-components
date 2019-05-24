@@ -155,6 +155,39 @@ const getJetlorePayload = (type : string, payload : Object) : Object => {
     }
 };
 
+const getDeviceInfo = () => {
+    const browserWidth = Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.documentElement.clientWidth
+    );
+    const browserHeight = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight,
+        document.documentElement.clientHeight
+    );
+    let deviceType;
+    if (navigator.userAgent.match(/mobile/i)) {
+        deviceType = 'Mobile';
+    } else if (navigator.userAgent.match(/iPad|Android|Touch/i)) {
+        deviceType = 'Tablet';
+    } else {
+        deviceType = 'Desktop';
+    }
+    return {
+        screenWidth:  screen.width,
+        screenHeight: screen.height,
+        colorDepth:   screen.colorDepth,
+        deviceType,
+        browserHeight,
+        browserWidth
+    };
+};
+
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
 
@@ -167,13 +200,15 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
         ...config.user,
         id: getUserIdCookie()
     };
+    const deviceInfo = getDeviceInfo();
     const data = {
         ...trackingData,
         user,
         property:   config.property,
         trackingType,
         clientId:   getClientID(),
-        merchantId: getMerchantID().join(',')
+        merchantId: getMerchantID().join(','),
+        deviceInfo
     };
 
     // paramsToBeaconUrl is a function that gives you the ability to override the beacon url
