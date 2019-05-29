@@ -14,7 +14,7 @@ const _roundOffPerfTimer = num => {
 };
 
 const getBrowserHeight = () => {
-    let elem = window.parent && window.parent.document;
+    let elem = window && window.document;
     let a = 'inner';
     if (!('innerWidth' in elem)) {
         a = 'client';
@@ -24,7 +24,7 @@ const getBrowserHeight = () => {
 };
 
 const getBrowserWidth = () => {
-    let elem = window.parent && window.parent.document;
+    let elem = window && window.document;
     let a = 'inner';
     if (!('innerWidth' in elem)) {
         a = 'client';
@@ -41,7 +41,7 @@ const getDeviceHeight = () => {
     let h = _roundOffPerfTimer(screen.height * ratio);
 
     if (Math.abs(window.orientation) === 90) {
-        let temp = w;
+        const temp = w;
         w = h;
         h = temp;
     }
@@ -65,22 +65,26 @@ const getDeviceWidth = () => {
 };
 
 export const getDeviceInfo = () => {
-    const browserWidth = getBrowserWidth();
-    const browserHeight = getBrowserHeight();
-    let deviceType;
-    if (navigator.userAgent.match(/mobile/i)) {
-        deviceType = 'Mobile';
-    } else if (navigator.userAgent.match(/iPad|Android|Touch/i)) {
-        deviceType = 'Tablet';
-    } else {
-        deviceType = 'Desktop';
+    try {
+        const browserWidth = getBrowserWidth();
+        const browserHeight = getBrowserHeight();
+        let deviceType;
+        if (navigator.userAgent.match(/mobile/i)) {
+            deviceType = 'Mobile';
+        } else if (navigator.userAgent.match(/iPad|Android|Touch/i)) {
+            deviceType = 'Tablet';
+        } else {
+            deviceType = 'Desktop';
+        }
+        return {
+            screenWidth:  getDeviceWidth(),
+            screenHeight: getDeviceHeight(),
+            colorDepth:   screen && screen.colorDepth,
+            deviceType,
+            browserHeight,
+            browserWidth
+        };
+    } catch () {
+        return {};
     }
-    return {
-        screenWidth:  getDeviceWidth(),
-        screenHeight: getDeviceHeight(),
-        colorDepth:   screen && screen.colorDepth,
-        deviceType,
-        browserHeight,
-        browserWidth
-    };
 };
