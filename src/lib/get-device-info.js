@@ -20,7 +20,7 @@ const getBrowserHeight = () => {
         a = 'client';
         elem = elem.documentElement || elem.body;
     }
-    return elem[`${ a }Height`];
+    return elem && elem[`${ a }Height`];
 };
 
 const getBrowserWidth = () => {
@@ -30,7 +30,7 @@ const getBrowserWidth = () => {
         a = 'client';
         elem = document.documentElement || document.body;
     }
-    return elem[`${ a }Width`];
+    return elem && elem[`${ a }Width`];
 };
 
 const getDeviceHeight = () => {
@@ -84,7 +84,7 @@ export const getDeviceInfo = () => {
             browserHeight,
             browserWidth
         };
-    } catch () {
+    } catch (err) {
         return {};
     }
 };
