@@ -13,25 +13,9 @@ const _roundOffPerfTimer = num => {
     return roundOffNumber;
 };
 
-const getBrowserHeight = () => {
-    let elem = window && window.document;
-    let a = 'inner';
-    if (!('innerWidth' in elem)) {
-        a = 'client';
-        elem = elem.documentElement || elem.body;
-    }
-    return elem && elem.getAttribute(`${ a }Height`);
-};
+const getBrowserHeight = () => window.innerHeight;
 
-const getBrowserWidth = () => {
-    let elem = window && window.document;
-    let a = 'inner';
-    if (!('innerWidth' in elem)) {
-        a = 'client';
-        elem = document.documentElement || document.body;
-    }
-    return elem && elem.getAttribute(`${ a }Width`);
-};
+const getBrowserWidth = () => window.innerWidth;
 
 const getDeviceHeight = () => {
     const screen = window.screen || {};
