@@ -73,4 +73,9 @@ const getDeviceInfo = () => {
     }
 };
 
-module.exports = { getDeviceInfo }
+/*
+** cannot use export default because it can't be overwritten by our tests
+** (which currently can't bring in sinon or it will error so this is the
+** only option)
+*/
+module.exports = { getDeviceInfo }; // eslint-disable-line import/no-commonjs
