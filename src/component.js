@@ -105,7 +105,7 @@ export function setup() {
 
     const env = getEnv();
     const musenodewebUri = env !== ENV.PRODUCTION && env !== ENV.SANDBOX
-        ? decodeURIComponent(new URLSearchParams(location.search).get('musenodewebUri'))
+        ? decodeURIComponent(new URLSearchParams(location.search).get('musenodewebUri') || '')
         : undefined;
 
     const src =  musenodewebUri ? musenodewebUri : 'www.paypal.com/muse/api/merchant-list/add';

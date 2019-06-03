@@ -48,7 +48,7 @@ const getDeviceWidth = () => {
     return w;
 };
 
-export const getDeviceInfo = () => {
+const getDeviceInfo = () => {
     try {
         const browserWidth = getBrowserWidth();
         const browserHeight = getBrowserHeight();
@@ -72,3 +72,5 @@ export const getDeviceInfo = () => {
         return {};
     }
 };
+
+module.exports = { getDeviceInfo }
