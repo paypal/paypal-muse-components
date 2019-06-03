@@ -48,6 +48,9 @@ describe('paypal.Tracker', () => {
     const originalDocumentCreateElement = document.createElement;
     const originalGenerateId = generateIdModule.generateId;
     before(() => {
+        const deviceLib = require('../src/lib/get-device-info');
+        // $FlowFixMe
+        deviceLib.getDeviceInfo = () => {}; // eslint-disable-line no-empty-function
         // $FlowFixMe
         document.body.appendChild = appendChild;
         // $FlowFixMe

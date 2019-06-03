@@ -6,6 +6,7 @@ import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 import generate from './generate-id';
 import { getCookie, setCookie } from './lib/cookie-utils';
 import getJetlore from './lib/jetlore';
+import { getDeviceInfo } from './lib/get-device-info';
 
 type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
 
@@ -167,13 +168,15 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
         ...config.user,
         id: getUserIdCookie()
     };
+    const deviceInfo = getDeviceInfo();
     const data = {
         ...trackingData,
         user,
         property:   config.property,
         trackingType,
         clientId:   getClientID(),
-        merchantId: getMerchantID().join(',')
+        merchantId: getMerchantID().join(','),
+        deviceInfo
     };
 
     // paramsToBeaconUrl is a function that gives you the ability to override the beacon url
