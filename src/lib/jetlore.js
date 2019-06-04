@@ -313,7 +313,11 @@ const getJetlore = () => {
       _jsonp: function(self, url) {
         var imgTag = document.createElement("img");
         imgTag.src=url;
-        imgTag.style.display = 'none'
+        imgTag.height = '1'
+        imgTag.width = '1'
+        imgTag.style.position = 'fixed'
+        imgTag.style.top = '0'
+        imgTag.style.left = '0'
         document.getElementsByTagName("body")[0].appendChild(imgTag);
         self.log("SENT JSONP request: " + url)
       },
