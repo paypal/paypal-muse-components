@@ -318,7 +318,7 @@ const getJetlore = () => {
         imgTag.style.position = 'fixed'
         imgTag.style.top = '0'
         imgTag.style.left = '0'
-        document.getElementsByTagName("body")[0].appendChild(imgTag);
+        document.body.appendChild(imgTag);
         self.log("SENT JSONP request: " + url)
       },
     
