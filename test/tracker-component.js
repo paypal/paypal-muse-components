@@ -28,6 +28,15 @@ describe('paypal.Tracker', () => {
         appendChildCalls += 1;
     };
 
+    const deviceInfo = {
+        screenWidth:    '1000',
+        screenHeight:   '750',
+        colorDepth:     '300',
+        deviceType:     'desktop',
+        browserHeight:  '400',
+        browserWidth:   '400'
+    };
+
     const imgMock = {
         src:              '',
         style:            {},
@@ -50,7 +59,7 @@ describe('paypal.Tracker', () => {
     before(() => {
         const deviceLib = require('../src/lib/get-device-info');
         // $FlowFixMe
-        deviceLib.getDeviceInfo = () => {}; // eslint-disable-line no-empty-function
+        deviceLib.getDeviceInfo = () => deviceInfo;
         // $FlowFixMe
         document.body.appendChild = appendChild;
         // $FlowFixMe
@@ -97,9 +106,6 @@ describe('paypal.Tracker', () => {
             page:  '/test2/apples',
             title: 'apples'
         });
-        expect(imgMock.src).to.equal(
-            'https://www.paypal.com/targeting/track/view?data=eyJwYWdlIjoiL3Rlc3QyL2FwcGxlcyIsInRpdGxlIjoiYXBwbGVzIiwidXNlciI6eyJlbWFpbCI6Il9fdGVzdF9fZW1haWwyQGdtYWlsLmNvbSIsIm5hbWUiOiJfX3Rlc3RfX3VzZXJOYW1lMiIsImlkIjoiYWJjMTIzIn0sInRyYWNraW5nVHlwZSI6InZpZXciLCJjbGllbnRJZCI6ImFiY3h5ejEyMyIsIm1lcmNoYW50SWQiOiJ4eXosaGlqLGxtbm8ifQ%3D%3D'
-        );
         expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
             JSON.stringify({
                 page:  '/test2/apples',
@@ -111,7 +117,8 @@ describe('paypal.Tracker', () => {
                 },
                 trackingType: 'view',
                 clientId:     'abcxyz123',
-                merchantId:   'xyz,hij,lmno'
+                merchantId:   'xyz,hij,lmno',
+                deviceInfo
             })
         );
         expect(appendChildCalls).to.equal(1);
@@ -134,9 +141,6 @@ describe('paypal.Tracker', () => {
             total:           '12345.67',
             currencyCode:    'USD'
         });
-        expect(imgMock.src).to.equal(
-            'https://www.paypal.com/targeting/track/cartEvent?data=eyJjYXJ0SWQiOiJfX3Rlc3RfX2NhcnRJZCIsIml0ZW1zIjpbeyJpZCI6Il9fdGVzdF9fcHJvZHVjdElkIiwidXJsIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9fX3Rlc3RfX3Byb2R1Y3RJZCJ9XSwiZW1haWxDYW1wYWlnbklkIjoiX190ZXN0X19lbWFpbENhbXBhaWduSWQiLCJ0b3RhbCI6IjEyMzQ1LjY3IiwiY3VycmVuY3lDb2RlIjoiVVNEIiwiY2FydEV2ZW50VHlwZSI6ImFkZFRvQ2FydCIsInVzZXIiOnsiZW1haWwiOiJfX3Rlc3RfX2VtYWlsM0BnbWFpbC5jb20iLCJuYW1lIjoiX190ZXN0X191c2VyTmFtZTMiLCJpZCI6ImFiYzEyMyJ9LCJ0cmFja2luZ1R5cGUiOiJjYXJ0RXZlbnQiLCJjbGllbnRJZCI6ImFiY3h5ejEyMyIsIm1lcmNoYW50SWQiOiJ4eXosaGlqLGxtbm8ifQ%3D%3D'
-        );
         expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
             JSON.stringify({
                 cartId: '__test__cartId',
@@ -157,7 +161,8 @@ describe('paypal.Tracker', () => {
                 },
                 trackingType: 'cartEvent',
                 clientId:     'abcxyz123',
-                merchantId:   'xyz,hij,lmno'
+                merchantId:   'xyz,hij,lmno',
+                deviceInfo
             })
         );
         expect(appendChildCalls).to.equal(1);
@@ -197,7 +202,8 @@ describe('paypal.Tracker', () => {
                 },
                 trackingType: 'cartEvent',
                 clientId:     'abcxyz123',
-                merchantId:   'xyz,hij,lmno'
+                merchantId:   'xyz,hij,lmno',
+                deviceInfo
             })
         );
     });
@@ -231,9 +237,6 @@ describe('paypal.Tracker', () => {
             total:           '12345.67',
             currencyCode:    'USD'
         });
-        expect(imgMock.src).to.equal(
-            'https://www.paypal.com/targeting/track/cartEvent?data=eyJjYXJ0SWQiOiJfX3Rlc3RfX2NhcnRJZCIsIml0ZW1zIjpbeyJpZCI6Il9fdGVzdF9fcHJvZHVjdElkIiwidXJsIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9fX3Rlc3RfX3Byb2R1Y3RJZCJ9XSwiZW1haWxDYW1wYWlnbklkIjoiX190ZXN0X19lbWFpbENhbXBhaWduSWQiLCJ0b3RhbCI6IjEyMzQ1LjY3IiwiY3VycmVuY3lDb2RlIjoiVVNEIiwiY2FydEV2ZW50VHlwZSI6InNldENhcnQiLCJ1c2VyIjp7ImVtYWlsIjoiX190ZXN0X19lbWFpbDRAZ21haWwuY29tIiwibmFtZSI6Il9fdGVzdF9fdXNlck5hbWU0IiwiaWQiOiJhYmMxMjMifSwidHJhY2tpbmdUeXBlIjoiY2FydEV2ZW50IiwiY2xpZW50SWQiOiJhYmN4eXoxMjMiLCJtZXJjaGFudElkIjoieHl6LGhpaixsbW5vIn0%3D'
-        );
         expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
             JSON.stringify({
                 cartId: '__test__cartId',
@@ -254,7 +257,8 @@ describe('paypal.Tracker', () => {
                 },
                 trackingType: 'cartEvent',
                 clientId:     'abcxyz123',
-                merchantId:   'xyz,hij,lmno'
+                merchantId:   'xyz,hij,lmno',
+                deviceInfo
             })
         );
         expect(appendChildCalls).to.equal(2);
@@ -274,9 +278,6 @@ describe('paypal.Tracker', () => {
                 }
             ]
         });
-        expect(imgMock.src).to.equal(
-            'https://www.paypal.com/targeting/track/cartEvent?data=eyJjYXJ0SWQiOiJfX3Rlc3RfX2NhcnRJZCIsIml0ZW1zIjpbeyJpZCI6Il9fdGVzdF9fcHJvZHVjdElkIiwidXJsIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9fX3Rlc3RfX3Byb2R1Y3RJZCJ9XSwiY2FydEV2ZW50VHlwZSI6InJlbW92ZUZyb21DYXJ0IiwidXNlciI6eyJlbWFpbCI6Il9fdGVzdF9fZW1haWw1QGdtYWlsLmNvbSIsIm5hbWUiOiJfX3Rlc3RfX3VzZXJOYW1lNSIsImlkIjoiYWJjMTIzIn0sInRyYWNraW5nVHlwZSI6ImNhcnRFdmVudCIsImNsaWVudElkIjoiYWJjeHl6MTIzIiwibWVyY2hhbnRJZCI6Inh5eixoaWosbG1ubyJ9'
-        );
         expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
             JSON.stringify({
                 cartId: '__test__cartId',
@@ -294,7 +295,8 @@ describe('paypal.Tracker', () => {
                 },
                 trackingType: 'cartEvent',
                 clientId:     'abcxyz123',
-                merchantId:   'xyz,hij,lmno'
+                merchantId:   'xyz,hij,lmno',
+                deviceInfo
             })
         );
         expect(appendChildCalls).to.equal(1);
@@ -308,9 +310,6 @@ describe('paypal.Tracker', () => {
         tracker.purchase({
             cartId: '__test__cartId'
         });
-        expect(imgMock.src).to.equal(
-            'https://www.paypal.com/targeting/track/purchase?data=eyJjYXJ0SWQiOiJfX3Rlc3RfX2NhcnRJZCIsInVzZXIiOnsiZW1haWwiOiJfX3Rlc3RfX2VtYWlsNkBnbWFpbC5jb20iLCJuYW1lIjoiX190ZXN0X191c2VyTmFtZTYiLCJpZCI6ImFiYzEyMyJ9LCJ0cmFja2luZ1R5cGUiOiJwdXJjaGFzZSIsImNsaWVudElkIjoiYWJjeHl6MTIzIiwibWVyY2hhbnRJZCI6Inh5eixoaWosbG1ubyJ9'
-        );
         expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
             JSON.stringify({
                 cartId: '__test__cartId',
@@ -321,7 +320,8 @@ describe('paypal.Tracker', () => {
                 },
                 trackingType: 'purchase',
                 clientId:     'abcxyz123',
-                merchantId:   'xyz,hij,lmno'
+                merchantId:   'xyz,hij,lmno',
+                deviceInfo
             })
         );
         expect(appendChildCalls).to.equal(1);
@@ -357,7 +357,8 @@ describe('paypal.Tracker', () => {
                         },
                         trackingType: 'purchase',
                         clientId:     'abcxyz123',
-                        merchantId:   'xyz,hij,lmno'
+                        merchantId:   'xyz,hij,lmno',
+                        deviceInfo
                     }
                 }
             ])
@@ -381,15 +382,13 @@ describe('paypal.Tracker', () => {
                 },
                 trackingType: 'setUser',
                 clientId:     'abcxyz123',
-                merchantId:   'xyz,hij,lmno'
+                merchantId:   'xyz,hij,lmno',
+                deviceInfo
             })
         );
         tracker.view({
             page: '/test2'
         });
-        expect(imgMock.src).to.equal(
-            'https://www.paypal.com/targeting/track/view?data=eyJwYWdlIjoiL3Rlc3QyIiwidXNlciI6eyJlbWFpbCI6Il9fdGVzdF9fZW1haWw5IiwibmFtZSI6Il9fdGVzdF9fdXNlck5hbWU5IiwiaWQiOiJhYmMxMjMifSwidHJhY2tpbmdUeXBlIjoidmlldyIsImNsaWVudElkIjoiYWJjeHl6MTIzIiwibWVyY2hhbnRJZCI6Inh5eixoaWosbG1ubyJ9'
-        );
         expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
             JSON.stringify({
                 page: '/test2',
@@ -400,7 +399,8 @@ describe('paypal.Tracker', () => {
                 },
                 trackingType: 'view',
                 clientId:     'abcxyz123',
-                merchantId:   'xyz,hij,lmno'
+                merchantId:   'xyz,hij,lmno',
+                deviceInfo
             })
         );
         expect(appendChildCalls).to.equal(2);
@@ -442,7 +442,8 @@ describe('paypal.Tracker', () => {
                 },
                 trackingType: 'setUser',
                 clientId:     'abcxyz123',
-                merchantId:   'xyz,hij,lmno'
+                merchantId:   'xyz,hij,lmno',
+                deviceInfo
             })
         );
     });
@@ -487,7 +488,8 @@ describe('paypal.Tracker', () => {
                 },
                 trackingType: 'cartEvent',
                 clientId:     'abcxyz123',
-                merchantId:   'xyz,hij,lmno'
+                merchantId:   'xyz,hij,lmno',
+                deviceInfo
             })
         );
     });
@@ -525,7 +527,8 @@ describe('paypal.Tracker', () => {
                 user:            { id: '__test__cookie-id' },
                 trackingType:    'cartEvent',
                 clientId:        'abcxyz123',
-                merchantId:      'xyz,hij,lmno'
+                merchantId:      'xyz,hij,lmno',
+                deviceInfo
             })
         );
     });
