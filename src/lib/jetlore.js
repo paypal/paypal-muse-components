@@ -311,12 +311,11 @@ const getJetlore = () => {
       },
     
       _jsonp: function(self, url) {
-          var scriptTag = document.createElement("script");
-          scriptTag.type = "text/javascript";
-          scriptTag.src=url;
-          scriptTag.async = true;
-          document.getElementsByTagName("head")[0].appendChild(scriptTag);
-          self.log("SENT JSONP request: " + url)
+        var imgTag = document.createElement("img");
+        imgTag.src=url;
+        imgTag.style.display = 'none'
+        document.getElementsByTagName("body")[0].appendChild(imgTag);
+        self.log("SENT JSONP request: " + url)
       },
     
       _getUTCTime: function(){
