@@ -49,9 +49,7 @@ type UserData = {|
 |};
 
 type PropertyData = {|
-    property : {|
-        id : string
-    |}
+    properties : Object
 |};
 
 type ParamsToBeaconUrl = ({
@@ -72,9 +70,7 @@ type Config = {|
         email? : string, // mandatory if unbranded cart recovery
         name? : string
     |},
-    property? : {|
-        id : string
-    |},
+    properties? : Object, 
     paramsToBeaconUrl? : ParamsToBeaconUrl,
     jetlore? : {|
         user_id : string,
@@ -172,7 +168,7 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
     const data = {
         ...trackingData,
         user,
-        property:   config.property,
+        properties:   config.properties,
         trackingType,
         clientId:   getClientID(),
         merchantId: getMerchantID().join(','),
@@ -258,7 +254,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             track(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
         setProperty: (data : PropertyData) => {
-            config.property = { id: data.property.id };
+            config.properties = { ...config.properties, ...data };
         }
     };
     const trackEvent = (type : string, data : Object) => {
