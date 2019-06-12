@@ -178,9 +178,9 @@ const getJetlore = () => {
         var tracker = this;
         var urlQuery = tracker.urlQuery();
     
-        var url_w_user = tracker.api_url + "/" + action + "/" + tracker.user_id;
-        var url_w_did = typeof did !== "undefined" ? url_w_user + "/" + did : url_w_user
-        var url_w_token = url_w_did + "?access_token=" + tracker.access_token
+        var url_w_user = tracker.api_url + "?action=" + action + "&id=" + tracker.user_id;
+        var url_w_did = typeof did !== "undefined" ? url_w_user + "&did=" + did : url_w_user
+        var url_w_token = url_w_did + "&access_token=" + tracker.access_token
     
         var url_w_data = url_w_token + "&data=" + tracker.serialize(convertData, data)
     
@@ -311,11 +311,14 @@ const getJetlore = () => {
       },
     
       _jsonp: function(self, url) {
-          var scriptTag = document.createElement("script");
-          scriptTag.type = "text/javascript";
-          scriptTag.src=url;
-          scriptTag.async = true;
-          document.getElementsByTagName("head")[0].appendChild(scriptTag);
+          var imgTag = document.createElement("img");
+          imgTag.src=url;
+          imgTag.height = '1px'
+          imgTag.width = '1px'
+          imgTag.style.position = 'fixed'
+          imgTag.style.top = '0'
+          imgTag.style.left = '0'
+          document.body.appendChild(imgTag);
           self.log("SENT JSONP request: " + url)
       },
     
@@ -363,7 +366,7 @@ const getJetlore = () => {
     Tracker.prototype.a_browse_promo='browse_promo'
     Tracker.prototype.a_browse_catalog='browse_catalog'
     Tracker.prototype.a_browse_section='browse_section'
-    Tracker.prototype.api_url='https://api.jetlore.com/track'
+    Tracker.prototype.api_url='https://api.jetlore.com/track.png'
     Tracker.prototype.a_search='search'
     Tracker.prototype.a_page_view='page_view'
 
