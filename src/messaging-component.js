@@ -58,7 +58,7 @@ export const Messaging = (...args : $ReadOnlyArray<{ cartRecovery : { userId : s
     }
     const exitIntentListener = debounce(e => {
         // $FlowFixMe
-        if (e.clientY <= 10 || e.clientY >= window.innerHeight - 10 || e.clientX <= 10 || e.clientX >= window.innerWidth - 10) {
+        if (e.clientY <= 10) {
             showExitModal(...args);
         }
     }, 100);
