@@ -318,7 +318,18 @@ const getJetlore = () => {
           imgTag.style.position = 'fixed'
           imgTag.style.top = '0'
           imgTag.style.left = '0'
+          imgTag.style.opacity = '0.01'
+          imgTag.style.pointerEvents = 'none'
           document.body.appendChild(imgTag);
+          var removeTag = function() {
+            try {
+              imgTag.remove()
+            } catch(e) {
+              self.log("cannot remove image pixel")
+            }
+          }
+          imgTag.onload = removeTag;
+          imgTag.onerror = removeTag;
           self.log("SENT JSONP request: " + url)
       },
     
