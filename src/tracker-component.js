@@ -151,6 +151,7 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
 
+  // TODO: remove img tag to prevent issues with merchant DOM: https://github.com/paypal/paypal-muse-components/pull/21/files
     const img = document.createElement('img');
     img.style.display = 'none';
     if (!getUserIdCookie()) {
