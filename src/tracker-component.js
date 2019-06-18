@@ -48,10 +48,6 @@ type UserData = {|
     |}
 |};
 
-type PropertyData = {|
-    properties : Object
-|};
-
 type ParamsToBeaconUrl = ({
     trackingType : TrackingType,
     data : ViewData | CartData | RemoveCartData | PurchaseData
@@ -253,8 +249,8 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             };
             track(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
-        setProperty: (data : PropertyData) => {
-            config.properties = { ...config.properties, ...data };
+        setPropertyId: (id : String) => {
+            config.propertyId = id;
         }
     };
     const trackEvent = (type : string, data : Object) => {
