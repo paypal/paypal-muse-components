@@ -58,6 +58,8 @@ type ParamsToBeaconUrl = ({
     data : ViewData | CartData | RemoveCartData | PurchaseData
 }) => string;
 
+type ParamsToTokenUrl = () => string;
+
 type JetloreConfig = {|
     user_id : string,
     cid : string,
@@ -72,7 +74,8 @@ type Config = {|
         name? : string
     |},
     properties? : Object,
-    paramsToBeaconUrl? : ParamsToBeaconUrl,
+paramsToBeaconUrl? : ParamsToBeaconUrl,
+    paramsToTokenUrl? : ParamsToTokenUrl,
     jetlore? : {|
         user_id : string,
         access_token : string,
