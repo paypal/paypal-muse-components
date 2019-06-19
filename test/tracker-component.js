@@ -557,8 +557,8 @@ describe('paypal.Tracker', () => {
                     clientId:   'abcxyz123'
                 }));
                 expect(data).to.deep.equal({
-                    status: 204,
-                    hello:  'hi'
+                    hello:   'hi',
+                    success: true
                 });
                 done();
             } catch (err) {
@@ -580,8 +580,8 @@ describe('paypal.Tracker', () => {
                 const params = fetchCalls.pop();
                 expect(params[0]).to.equal(tokenUrl);
                 expect(data).to.deep.equal({
-                    hello:  'hi',
-                    status: 204
+                    hello:   'hi',
+                    success: true
                 });
                 done();
             } catch (err) {

@@ -285,12 +285,12 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             })
         }).then(res => {
             if (res.status !== 204) {
-                return cb({ status: res.status });
+                return cb({ success: false });
             }
             const data = res.json();
             cb({
                 ...data,
-                status: res.status
+                success: true
             });
         });
     };
