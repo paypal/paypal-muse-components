@@ -27,6 +27,16 @@ describe('paypal.Tracker', () => {
     const appendChild = () => {
         appendChildCalls += 1;
     };
+    let fetchCalls = [];
+    window.fetch = (url, options) => {
+        fetchCalls.push([ url, options ]);
+        return Promise.resolve({
+            url,
+            body:   options.body,
+            status: 204,
+            json:   () => ({ hello: 'hi' })
+        });
+    };
 
     const deviceInfo = {
         screenWidth:    '1000',
@@ -84,6 +94,7 @@ describe('paypal.Tracker', () => {
         appendChildCalls = 0;
         imgMock.src = '';
         document.cookie = 'paypal-cr-cart={}';
+        fetchCalls = [];
     });
 
     // $FlowFixMe
@@ -531,5 +542,51 @@ describe('paypal.Tracker', () => {
                 deviceInfo
             })
         );
+    });
+
+    it('should hit partner-token route when identity method is invoked', done => {
+        const email = '__test__email3@gmail.com';
+        const userName = '__test__userName3';
+        const tracker = Tracker({ user: { email, name: userName } });
+        tracker.identity(data => {
+            try {
+                const params = fetchCalls.pop();
+                expect(params[0]).to.equal('https://paypal.com/muse/api/partner-token');
+                expect(params[1].body).to.equal(JSON.stringify({
+                    merchantId: 'xyz',
+                    clientId:   'abcxyz123'
+                }));
+                expect(data).to.deep.equal({
+                    status: 204,
+                    hello:  'hi'
+                });
+                done();
+            } catch (err) {
+                done(err);
+            }
+        });
+    });
+
+    it('should hit partner-token route defined with paramsToTokenUrl when identity method is invoked', done => {
+        const email = '__test__email3@gmail.com';
+        const userName = '__test__userName3';
+        const tokenUrl = 'www.blah.xyz';
+        const tracker = Tracker({
+            user:             { email, name: userName },
+            paramsToTokenUrl: () => tokenUrl
+        });
+        tracker.identity(data => {
+            try {
+                const params = fetchCalls.pop();
+                expect(params[0]).to.equal(tokenUrl);
+                expect(data).to.deep.equal({
+                    hello:  'hi',
+                    status: 204
+                });
+                done();
+            } catch (err) {
+                done(err);
+            }
+        });
     });
 });

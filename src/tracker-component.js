@@ -1,4 +1,5 @@
 /* @flow */
+import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
@@ -70,7 +71,7 @@ type Config = {|
         email? : string, // mandatory if unbranded cart recovery
         name? : string
     |},
-    properties? : Object, 
+    properties? : Object,
     paramsToBeaconUrl? : ParamsToBeaconUrl,
     jetlore? : {|
         user_id : string,
@@ -265,10 +266,39 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             trackers[type](data);
         }
     };
+    const identity = (cb : function) => {
+        let url;
+        if (config.paramsToTokenUrl) {
+            url = config.paramsToTokenUrl();
+        } else {
+            url = 'https://paypal.com/muse/api/partner-token';
+        }
+        window.fetch(url, {
+            method:      'POST',
+            credentials: 'include',
+            headers:     {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                merchantId: getMerchantID()[0],
+                clientId:   getClientID()
+            })
+        }).then(res => {
+            if (res.status !== 204) {
+                return cb({ status: res.status });
+            }
+            const data = res.json();
+            cb({
+                ...data,
+                status: res.status
+            });
+        });
+    };
     return {
         // bringing in tracking functions for backwards compatibility
         ...trackers,
         track: trackEvent,
+        identity,
         getJetlorePayload
     };
 };
