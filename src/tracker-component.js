@@ -160,7 +160,7 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
     const data = {
         ...trackingData,
         user,
-        properties:   config.properties,
+        propertyId:   config.propertyId,
         trackingType,
         clientId:   getClientID(),
         merchantId: getMerchantID().join(','),
