@@ -289,8 +289,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
                 clientId:   getClientID()
             })
         });
-        // return promise if no callback, else use callback
-        return cb ? undefined : resp.then(res => {
+        return resp.then(res => {
             const failurePayload = { success: false };
             if (res.status !== 204) {
                 return cb ? cb(failurePayload) : failurePayload;
