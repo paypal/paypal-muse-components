@@ -269,7 +269,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             trackers[type](data);
         }
     };
-    const identity = (cb : function) => {
+    const identify = (cb : function) => {
         let url;
         if (config.paramsToTokenUrl) {
             url = config.paramsToTokenUrl();
@@ -306,7 +306,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         // bringing in tracking functions for backwards compatibility
         ...trackers,
         track: trackEvent,
-        identity,
+        identify,
         getJetlorePayload
     };
 };
