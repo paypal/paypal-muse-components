@@ -37,6 +37,7 @@
     "sinon": "^7.3.2"
   },
   "dependencies": {
-    "@paypal/sdk-client": "^4.0.1"
+    "@paypal/sdk-client": "^4.0.1",
+    "whatwg-fetch": "^3.0.0"
   }
 }
