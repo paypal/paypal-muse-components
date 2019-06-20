@@ -245,7 +245,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             };
             track(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
-        setPropertyId: (id : String) => {
+        setPropertyId: (id : string) => {
             config.propertyId = id;
         }
     };
