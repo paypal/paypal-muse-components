@@ -66,7 +66,7 @@ type Config = {|
         email? : string, // mandatory if unbranded cart recovery
         name? : string
     |},
-    properties? : Object, 
+    propertyId? : string, 
     paramsToBeaconUrl? : ParamsToBeaconUrl,
     jetlore? : {|
         user_id : string,
