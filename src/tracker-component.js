@@ -74,7 +74,7 @@ type Config = {|
         name? : string
     |},
     properties? : Object,
-paramsToBeaconUrl? : ParamsToBeaconUrl,
+    paramsToBeaconUrl? : ParamsToBeaconUrl,
     paramsToTokenUrl? : ParamsToTokenUrl,
     jetlore? : {|
         user_id : string,
@@ -288,9 +288,14 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             })
         }).then(res => {
             if (res.status !== 204) {
-                return cb({ success: false });
+                cb({ success: false });
+                return null;
             }
-            const data = res.json();
+            return res.json();
+        }).then(data => {
+            if (!data) {
+                return null;
+            }
             cb({
                 ...data,
                 success: true
