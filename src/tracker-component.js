@@ -273,7 +273,6 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     };
     const identify = (cb? : function) => {
         let url;
-        const failurePayload = { success: false };
         if (config.paramsToTokenUrl) {
             url = config.paramsToTokenUrl();
         } else {
@@ -291,12 +290,13 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             })
         }).then(res => {
             if (res.status !== 200) {
-                return cb ? cb(failurePayload) : false;
+                return false;
             }
             return res.json();
         }).then(data => {
             if (!data) {
-                return failurePayload;
+                const failurePayload = { success: false };
+                return cb ? cb(failurePayload) : false;
             }
             const identityPayload = {
                 ...data,
