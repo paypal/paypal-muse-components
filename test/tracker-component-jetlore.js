@@ -254,11 +254,12 @@ describe('Tracker.track function', () => {
                 title:      'the title'
             }
         };
-        const { deal_id, option_id, count, text, name, refinements } = payload.payload;
+        const { deal_id, option_id, count, text, name, refinements, price } = payload.payload;
         const expectedCartPayload = {
             deal_id,
             option_id,
-            count
+            count,
+            price
         };
         const expectedSearchPayload = { text };
         const expectedViewPayload = {
