@@ -103,7 +103,8 @@ const setCartCookie = (type, data) : void => {
     setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
 };
 
-const getJetlorePayload = (type : string, payload : Object) : Object => {
+const getJetlorePayload = (type : string, options : Object) : Object => {
+    const { payload } = options;
     switch (type) {
     case 'addToCart':
     case 'removeFromCart':
@@ -118,6 +119,10 @@ const getJetlorePayload = (type : string, payload : Object) : Object => {
             text: payload.text
         };
     case 'view':
+        return {
+            deal_id:   payload.deal_id,
+            option_id: payload.option_id
+        };
     case 'browse_section':
         return {
             name:        payload.name,
@@ -132,17 +137,8 @@ const getJetlorePayload = (type : string, payload : Object) : Object => {
     case 'removeFromWishList':
     case 'addToFavorites':
     case 'removeFromFavorites':
-        return payload.payload;
     case 'track':
-        return {
-            event:      payload.event,
-            deal_id:    payload.deal_id,
-            count:      payload.count,
-            price:      payload.price,
-            title:      payload.title,
-            option_id:  payload.option_id,
-            text:       payload.text
-        };
+        return payload;
     default:
         return {};
     }

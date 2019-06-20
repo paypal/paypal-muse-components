@@ -65,7 +65,7 @@ describe('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {});
+        tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -81,7 +81,7 @@ describe('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {});
+        tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -97,7 +97,7 @@ describe('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {});
+        tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -113,7 +113,7 @@ describe('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {});
+        tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -129,7 +129,7 @@ describe('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {});
+        tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -145,7 +145,7 @@ describe('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {});
+        tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -161,7 +161,7 @@ describe('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {});
+        tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -177,7 +177,7 @@ describe('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {});
+        tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -193,7 +193,7 @@ describe('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {});
+        tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -209,7 +209,7 @@ describe('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {});
+        tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -225,7 +225,7 @@ describe('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, {});
+        tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);
@@ -234,35 +234,40 @@ describe('Tracker.track function', () => {
 
     it('should get correct jetlore payload based on type', () => {
         const payload = {
-            deal_id:     '6',
-            option_id:   '7',
-            count:        8,
-            text:        'yes',
-            name:        'muse',
-            refinements: [ {
-                name:   'hello',
-                value:  'world'
-            } ],
-            id:         '2245332',
             payload: {
-                name:   'paypal shopping',
-                value:  'muse'
-            },
-            event:      'event1',
-            price:      100,
-            title:      'the title'
+                deal_id:     '6',
+                option_id:   '7',
+                count:        8,
+                text:        'yes',
+                name:        'muse',
+                refinements: [ {
+                    name:   'hello',
+                    value:  'world'
+                } ],
+                id:         '2245332',
+                payload: {
+                    name:   'paypal shopping',
+                    value:  'muse'
+                },
+                event:      'event1',
+                price:      100,
+                title:      'the title'
+            }
         };
+        const { deal_id, option_id, count, text, name, refinements } = payload.payload;
         const expectedCartPayload = {
-            deal_id:    payload.deal_id,
-            option_id:  payload.option_id,
-            count:      payload.count
+            deal_id,
+            option_id,
+            count
         };
-        const expectedSearchPayload = {
-            text: payload.text
+        const expectedSearchPayload = { text };
+        const expectedViewPayload = {
+            deal_id,
+            option_id
         };
-        const expectedViewBrowsePayload = {
-            name:        payload.name,
-            refinements: payload.refinements
+        const expectedBrowsePayload = {
+            name,
+            refinements
         };
         const tracker = Tracker(initTrackerOpts);
         const getPayload = type => {
@@ -272,7 +277,7 @@ describe('Tracker.track function', () => {
         expect(getPayload('removeFromCart')).to.deep.equal(expectedCartPayload);
         expect(getPayload('purchase')).to.deep.equal(expectedCartPayload);
         expect(getPayload('search')).to.deep.equal(expectedSearchPayload);
-        expect(getPayload('view')).to.deep.equal(expectedViewBrowsePayload);
-        expect(getPayload('browse_section')).to.deep.equal(expectedViewBrowsePayload);
+        expect(getPayload('view')).to.deep.equal(expectedViewPayload);
+        expect(getPayload('browse_section')).to.deep.equal(expectedBrowsePayload);
     });
 });
