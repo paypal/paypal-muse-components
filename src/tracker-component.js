@@ -271,14 +271,14 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             trackers[type](data);
         }
     };
-    const identify = (cb : function) => {
+    const identify = (cb? : function) => {
         let url;
         if (config.paramsToTokenUrl) {
             url = config.paramsToTokenUrl();
         } else {
             url = 'https://paypal.com/muse/api/partner-token';
         }
-        window.fetch(url, {
+        const resp = window.fetch(url, {
             method:      'POST',
             credentials: 'include',
             headers:     {
@@ -288,20 +288,23 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
                 merchantId: getMerchantID()[0],
                 clientId:   getClientID()
             })
-        }).then(res => {
+        });
+        // return promise if no callback, else use callback
+        return cb ? undefined : resp.then(res => {
+            const failurePayload = { success: false };
             if (res.status !== 204) {
-                cb({ success: false });
-                return null;
+                return cb ? cb(failurePayload) : failurePayload;
             }
             return res.json();
         }).then(data => {
             if (!data) {
                 return null;
             }
-            cb({
+            const identityPayload = {
                 ...data,
                 success: true
-            });
+            };
+            return cb ?  cb(identityPayload) : identityPayload;
         });
     };
     return {
