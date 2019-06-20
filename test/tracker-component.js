@@ -544,11 +544,11 @@ describe('paypal.Tracker', () => {
         );
     });
 
-    it('should hit partner-token route when identity method is invoked', done => {
+    it('should hit partner-token route when identify method is invoked', done => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
         const tracker = Tracker({ user: { email, name: userName } });
-        tracker.identity(data => {
+        tracker.identify(data => {
             try {
                 const params = fetchCalls.pop();
                 expect(params[0]).to.equal('https://paypal.com/muse/api/partner-token');
@@ -567,7 +567,7 @@ describe('paypal.Tracker', () => {
         });
     });
 
-    it('should hit partner-token route defined with paramsToTokenUrl when identity method is invoked', done => {
+    it('should hit partner-token route defined with paramsToTokenUrl when identify method is invoked', done => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
         const tokenUrl = 'www.blah.xyz';
@@ -575,7 +575,7 @@ describe('paypal.Tracker', () => {
             user:             { email, name: userName },
             paramsToTokenUrl: () => tokenUrl
         });
-        tracker.identity(data => {
+        tracker.identify(data => {
             try {
                 const params = fetchCalls.pop();
                 expect(params[0]).to.equal(tokenUrl);
@@ -588,5 +588,22 @@ describe('paypal.Tracker', () => {
                 done(err);
             }
         });
+    });
+
+    it('should return promise from identify call', done => {
+        const email = '__test__email3@gmail.com';
+        const userName = '__test__userName3';
+        const tracker = Tracker({ user: { email, name: userName } });
+        try {
+            tracker.identify().then(data => {
+                expect(data).to.deep.equal({
+                    hello:   'hi',
+                    success: true
+                });
+                done();
+            });
+        } catch (err) {
+            done(err);
+        }
     });
 });
