@@ -108,6 +108,12 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
     switch (type) {
     case 'addToCart':
     case 'removeFromCart':
+        return {
+            deal_id:   payload.deal_id,
+            option_id: payload.option_id,
+            count:     payload.count,
+            price:     payload.price
+        };
     case 'purchase':
         return {
             deal_id:   payload.deal_id,
