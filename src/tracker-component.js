@@ -273,12 +273,13 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     };
     const identify = (cb? : function) => {
         let url;
+        const failurePayload = { success: false };
         if (config.paramsToTokenUrl) {
             url = config.paramsToTokenUrl();
         } else {
             url = 'https://paypal.com/muse/api/partner-token';
         }
-        const resp = window.fetch(url, {
+        return window.fetch(url, {
             method:      'POST',
             credentials: 'include',
             headers:     {
@@ -288,16 +289,14 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
                 merchantId: getMerchantID()[0],
                 clientId:   getClientID()
             })
-        });
-        return resp.then(res => {
-            const failurePayload = { success: false };
-            if (res.status !== 202) {
-                return cb ? cb(failurePayload) : failurePayload;
+        }).then(res => {
+            if (res.status !== 200) {
+                return cb ? cb(failurePayload) : false;
             }
             return res.json();
         }).then(data => {
             if (!data) {
-                return null;
+                return failurePayload;
             }
             const identityPayload = {
                 ...data,
