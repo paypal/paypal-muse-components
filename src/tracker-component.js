@@ -1,4 +1,5 @@
 /* @flow */
+import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
@@ -53,6 +54,8 @@ type ParamsToBeaconUrl = ({
     data : ViewData | CartData | RemoveCartData | PurchaseData
 }) => string;
 
+type ParamsToTokenUrl = () => string;
+
 type JetloreConfig = {|
     user_id : string,
     cid : string,
@@ -66,8 +69,9 @@ type Config = {|
         email? : string, // mandatory if unbranded cart recovery
         name? : string
     |},
-    propertyId? : string, 
+    propertyId? : string,
     paramsToBeaconUrl? : ParamsToBeaconUrl,
+    paramsToTokenUrl? : ParamsToTokenUrl,
     jetlore? : {|
         user_id : string,
         access_token : string,
@@ -267,10 +271,45 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             trackers[type](data);
         }
     };
+    const identify = (cb? : function) => {
+        let url;
+        if (config.paramsToTokenUrl) {
+            url = config.paramsToTokenUrl();
+        } else {
+            url = 'https://paypal.com/muse/api/partner-token';
+        }
+        return window.fetch(url, {
+            method:      'POST',
+            credentials: 'include',
+            headers:     {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                merchantId: getMerchantID()[0],
+                clientId:   getClientID()
+            })
+        }).then(res => {
+            if (res.status !== 200) {
+                return false;
+            }
+            return res.json();
+        }).then(data => {
+            if (!data) {
+                const failurePayload = { success: false };
+                return cb ? cb(failurePayload) : failurePayload;
+            }
+            const identityPayload = {
+                ...data,
+                success: true
+            };
+            return cb ?  cb(identityPayload) : identityPayload;
+        });
+    };
     return {
         // bringing in tracking functions for backwards compatibility
         ...trackers,
         track: trackEvent,
+        identify,
         getJetlorePayload
     };
 };
