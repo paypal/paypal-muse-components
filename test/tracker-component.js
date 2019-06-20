@@ -33,7 +33,7 @@ describe('paypal.Tracker', () => {
         return Promise.resolve({
             url,
             body:   options.body,
-            status: 204,
+            status: 202,
             json:   () => ({ hello: 'hi' })
         });
     };

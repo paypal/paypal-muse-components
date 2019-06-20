@@ -291,7 +291,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         });
         return resp.then(res => {
             const failurePayload = { success: false };
-            if (res.status !== 204) {
+            if (res.status !== 202) {
                 return cb ? cb(failurePayload) : failurePayload;
             }
             return res.json();
