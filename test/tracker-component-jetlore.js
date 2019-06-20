@@ -261,6 +261,11 @@ describe('Tracker.track function', () => {
             count,
             price
         };
+        const expectedCartPurchasePayload = {
+            deal_id,
+            option_id,
+            count
+        };
         const expectedSearchPayload = { text };
         const expectedViewPayload = {
             deal_id,
@@ -276,7 +281,7 @@ describe('Tracker.track function', () => {
         };
         expect(getPayload('addToCart')).to.deep.equal(expectedCartPayload);
         expect(getPayload('removeFromCart')).to.deep.equal(expectedCartPayload);
-        expect(getPayload('purchase')).to.deep.equal(expectedCartPayload);
+        expect(getPayload('purchase')).to.deep.equal(expectedCartPurchasePayload);
         expect(getPayload('search')).to.deep.equal(expectedSearchPayload);
         expect(getPayload('view')).to.deep.equal(expectedViewPayload);
         expect(getPayload('browse_section')).to.deep.equal(expectedBrowsePayload);
