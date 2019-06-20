@@ -296,7 +296,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         }).then(data => {
             if (!data) {
                 const failurePayload = { success: false };
-                return cb ? cb(failurePayload) : false;
+                return cb ? cb(failurePayload) : failurePayload;
             }
             const identityPayload = {
                 ...data,
