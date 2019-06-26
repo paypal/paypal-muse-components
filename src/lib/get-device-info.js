@@ -48,6 +48,24 @@ const getDeviceWidth = () => {
     return w;
 };
 
+const getRosettaLanguage = () => {
+    if (window.navigator.languages) {
+        return window.navigator.languages.join(',');
+    }
+    if (window.navigator.userLanguage) {
+        return window.navigator.userLanguage;
+    }
+    if (window.navigator.language) {
+        return window.navigator.language;
+    }
+    if (window.navigator.browserLanguage) {
+        return window.navigator.browserLanguage;
+    }
+    if (window.navigator.systemLanguage) {
+        return window.navigator.systemLanguage;
+    }
+};
+
 const getDeviceInfo = () => {
     try {
         const browserWidth = getBrowserWidth();
@@ -64,6 +82,7 @@ const getDeviceInfo = () => {
             screenWidth:  getDeviceWidth(),
             screenHeight: getDeviceHeight(),
             colorDepth:   screen && screen.colorDepth,
+            rosettaLanguage: getRosettaLanguage(),
             deviceType,
             browserHeight,
             browserWidth
