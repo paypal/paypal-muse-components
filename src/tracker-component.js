@@ -52,6 +52,11 @@ type PropertyData = {|
     properties : Object
 |};
 
+type IdentityData = {|
+    mrid : string,
+    clientId : string
+|}
+
 type ParamsToBeaconUrl = ({
     trackingType : TrackingType,
     data : ViewData | CartData | RemoveCartData | PurchaseData
@@ -106,6 +111,26 @@ const setCartCookie = (type, data) : void => {
     }
     setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
 };
+
+const getAccessToken = (url: string, data : Object) : string => {
+    return fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            mrid: data.mrid,
+            clientId: data.clientId
+        })
+    }).then(r => r.json()).then(data => {
+        console.log('Created partner token', data)
+        return data
+    }).catch(err => {
+        console.log('Error creating partner token', err)
+        return err
+    })
+}
 
 const getJetlorePayload = (type : string, options : Object) : Object => {
     const { payload } = options;
@@ -251,6 +276,18 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         },
         setProperty: (data : PropertyData) => {
             config.properties = { ...config.properties, ...data };
+        },
+        getIdentity: (data: IdentityData) => {
+            const url = 'https://localhost.paypal.com:8443/muse/api/partner-token'
+            const accessToken = data.getAccessToken(url, data)
+            config = {
+                ...config,
+                user: {
+                    ...config.user,
+                    accessToken: accessToken
+                }
+            }
+            // save for that specific user?
         }
     };
     const trackEvent = (type : string, data : Object) => {
@@ -259,7 +296,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             : false;
         if (config.jetlore && isJetloreType && data) {
             const jlData = getJetlorePayload(type, data);
-            JL.tracker[type](jlData);
+            JL.tracker[type](jlD ata);
         }
         if (trackers[type]) {
             trackers[type](data);
