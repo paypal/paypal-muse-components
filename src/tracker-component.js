@@ -49,6 +49,11 @@ type UserData = {|
     |}
 |};
 
+type IdentityData = {|
+    mrid : string,
+    clientId : string
+|}
+
 type ParamsToBeaconUrl = ({
     trackingType : TrackingType,
     data : ViewData | CartData | RemoveCartData | PurchaseData
@@ -106,6 +111,26 @@ const setCartCookie = (type, data) : void => {
     }
     setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
 };
+
+const getAccessToken = (url: string, data : Object) : string => {
+    return fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            mrid: data.mrid,
+            clientId: getClientID()
+        })
+    }).then(r => r.json()).then(data => {
+        console.log('Created partner token', data)
+        return data
+    }).catch(err => {
+        console.log('Error creating partner token', err)
+        return err
+    })
+}
 
 const getJetlorePayload = (type : string, options : Object) : Object => {
     const { payload } = options;
@@ -257,6 +282,10 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         },
         setPropertyId: (id : string) => {
             config.propertyId = id;
+        },
+        getIdentity: (data: IdentityData, url?: string) => {
+            const accessToken = getAccessToken(url, data)
+            return data.onIdentification(accessToken)
         }
     };
     const trackEvent = (type : string, data : Object) => {
