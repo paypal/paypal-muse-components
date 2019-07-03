@@ -278,6 +278,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             config.properties = { ...config.properties, ...data };
         },
         getIdentity: (data: IdentityData) => {
+            // make url different for different envs later
             const url = 'https://localhost.paypal.com:8443/muse/api/partner-token'
             const accessToken = data.getAccessToken(url, data)
             config = {
