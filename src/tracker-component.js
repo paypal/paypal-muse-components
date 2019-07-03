@@ -51,7 +51,7 @@ type UserData = {|
 
 type IdentityData = {|
     mrid : string,
-    clientId : string
+    onIdentification : Function
 |}
 
 type ParamsToBeaconUrl = ({
