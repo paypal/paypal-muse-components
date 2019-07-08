@@ -284,7 +284,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             config.propertyId = id;
         },
         getIdentity: (data: IdentityData, url?: string) => {
-            const accessToken = getAccessToken(url, data)
+            const accessToken = getAccessToken(url, data.mrid)
             return data.onIdentification(accessToken)
         }
     };
