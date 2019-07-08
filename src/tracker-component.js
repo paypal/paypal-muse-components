@@ -54,6 +54,11 @@ type IdentityData = {|
     onIdentification : Function
 |}
 
+type IdentityData = {|
+    mrid : string,
+    onIdentification : Function
+|}
+
 type ParamsToBeaconUrl = ({
     trackingType : TrackingType,
     data : ViewData | CartData | RemoveCartData | PurchaseData
