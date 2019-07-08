@@ -279,7 +279,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         },
         getIdentity: (data: IdentityData, url?: string) => {
             const accessToken = getAccessToken(url, data.mrid)
-            data.onIdentification(accessToken)
+            return data.onIdentification(accessToken)
         }
     };
     const trackEvent = (type : string, data : Object) => {
@@ -288,7 +288,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             : false;
         if (config.jetlore && isJetloreType && data) {
             const jlData = getJetlorePayload(type, data);
-            JL.tracker[type](jlD ata);
+            JL.tracker[type](jlData);
         }
         if (trackers[type]) {
             trackers[type](data);
