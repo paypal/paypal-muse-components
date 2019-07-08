@@ -112,7 +112,7 @@ const setCartCookie = (type, data) : void => {
     setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
 };
 
-const getAccessToken = (url: string, data : Object) : string => {
+const getAccessToken = (url: string, mrid : string) : string => {
     return fetch(url, {
         method: 'POST',
         credentials: 'include',
@@ -120,7 +120,7 @@ const getAccessToken = (url: string, data : Object) : string => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            mrid: data.mrid,
+            mrid,
             clientId: getClientID()
         })
     }).then(r => r.json()).then(data => {
