@@ -54,7 +54,7 @@ type PropertyData = {|
 
 type IdentityData = {|
     mrid : string,
-    clientId : string
+    onIdentification : Function
 |}
 
 type ParamsToBeaconUrl = ({
@@ -112,7 +112,7 @@ const setCartCookie = (type, data) : void => {
     setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
 };
 
-const getAccessToken = (url: string, data : Object) : string => {
+const getAccessToken = (url: string, mrid : string) : string => {
     return fetch(url, {
         method: 'POST',
         credentials: 'include',
@@ -120,8 +120,8 @@ const getAccessToken = (url: string, data : Object) : string => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            mrid: data.mrid,
-            clientId: data.clientId
+            mrid,
+            clientId: getClientID()
         })
     }).then(r => r.json()).then(data => {
         console.log('Created partner token', data)
@@ -280,15 +280,8 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         getIdentity: (data: IdentityData) => {
             // make url different for different envs later
             const url = 'https://localhost.paypal.com:8443/muse/api/partner-token'
-            const accessToken = data.getAccessToken(url, data)
-            config = {
-                ...config,
-                user: {
-                    ...config.user,
-                    accessToken: accessToken
-                }
-            }
-            // save for that specific user?
+            const accessToken = getAccessToken(url, data.mrid)
+            data.onIdentification(accessToken)
         }
     };
     const trackEvent = (type : string, data : Object) => {
