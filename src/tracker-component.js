@@ -125,10 +125,7 @@ const getAccessToken = (url: string, mrid : string) : string => {
         })
     }).then(r => r.json()).then(data => {
         console.log('Created partner token', data)
-        return data
-    }).catch(err => {
-        console.log('Error creating partner token', err)
-        return err
+        return data.cr_token
     })
 }
 
@@ -284,8 +281,11 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             config.propertyId = id;
         },
         getIdentity: (data: IdentityData, url?: string) => {
-            const accessToken = getAccessToken(url, data.mrid)
-            return data.onIdentification(accessToken)
+            return getAccessToken(url, data.mrid)
+            .then(accessToken => data.onIdentification(accessToken))
+            .catch(err => {
+                console.log('Error creating partner token', err)
+            })
         }
     };
     const trackEvent = (type : string, data : Object) => {
