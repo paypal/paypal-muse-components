@@ -106,6 +106,7 @@ describe('paypal.Tracker', () => {
         expect(tracker).to.have.property('removeFromCart');
         expect(tracker).to.have.property('purchase');
         expect(tracker).to.have.property('track');
+        expect(tracker).to.have.property('getIdentity');
     });
 
     // $FlowFixMe
@@ -605,5 +606,38 @@ describe('paypal.Tracker', () => {
         } catch (err) {
             done(err);
         }
+    });
+
+    it('should call getIdentity function with url passed in', done => {
+        const email = '__test__email3@gmail.com';
+        const userName = '__test__userName3';
+        const tracker = Tracker({ user: { email, name: userName } });
+
+        const data = {
+            mrid:             'NA4JBW4FWCUQL',
+            onIdentification: identityData => identityData
+        };
+        const url = 'https://www.paypal.com/muse/api/partner-token';
+        const result = tracker.getIdentity(data, url).then(accessToken => {
+            expect(accessToken).to.be.a('string');
+        });
+        expect(result).to.be.a('promise');
+        done();
+    });
+
+    it('should call getIdentity function with no url passed in', done => {
+        const email = '__test__email3@gmail.com';
+        const userName = '__test__userName3';
+        const tracker = Tracker({ user: { email, name: userName } });
+
+        const data = {
+            mrid:             'NA4JBW4FWCUQL',
+            onIdentification: identityData => identityData
+        };
+        const result = tracker.getIdentity(data).then(accessToken => {
+            expect(accessToken).to.be.a('string');
+        });
+        expect(result).to.be.a('promise');
+        done();
     });
 });
