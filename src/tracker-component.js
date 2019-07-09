@@ -52,7 +52,7 @@ type UserData = {|
 type IdentityData = {|
     mrid : string,
     onIdentification : Function
-|}
+|};
 
 type ParamsToBeaconUrl = ({
     trackingType : TrackingType,
@@ -114,11 +114,11 @@ const setCartCookie = (type, data) : void => {
     setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
 };
 
-const getAccessToken = (url: string, mrid : string) : string => {
+const getAccessToken = (url : string, mrid : string) : string => {
     return fetch(url, {
-        method: 'POST',
+        method:      'POST',
         credentials: 'include',
-        headers: {
+        headers:     {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -126,10 +126,10 @@ const getAccessToken = (url: string, mrid : string) : string => {
             clientId: getClientID()
         })
     }).then(r => r.json()).then(data => {
-        console.log('Created partner token', data)
-        return data.cr_token
-    })
-}
+        console.log('Created partner token', data);
+        return data.cr_token;
+    });
+};
 
 const getJetlorePayload = (type : string, options : Object) : Object => {
     const { payload } = options;
@@ -282,17 +282,17 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         setPropertyId: (id : string) => {
             config.propertyId = id;
         },
-        getIdentity: (data: IdentityData, url?: string = accessTokenUrl) : string => {
+        getIdentity: (data : IdentityData, url? : string = accessTokenUrl) : string => {
             return getAccessToken(url, data.mrid)
-            .then(accessToken => {
-                if (data.onIdentification) {
-                    data.onIdentification({ getAccessToken: () => accessToken });
-                }
-                return accessToken;
-            })
-            .catch(err => {
-                console.log('Error creating partner token', err);
-            })
+                .then(accessToken => {
+                    if (data.onIdentification) {
+                        data.onIdentification({ getAccessToken: () => accessToken });
+                    }
+                    return accessToken;
+                })
+                .catch(err => {
+                    console.log('Error creating partner token', err);
+                });
         }
     };
     const trackEvent = (type : string, data : Object) => {
