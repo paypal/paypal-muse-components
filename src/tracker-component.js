@@ -88,6 +88,8 @@ type Config = {|
 
 const sevenDays = 6.048e+8;
 
+const accessTokenUrl = 'https://localhost.paypal.com:8443/muse/api/partner-token';
+
 const getUserIdCookie = () : ?string => {
     return getCookie('paypal-user-id') || null;
 };
@@ -280,11 +282,16 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         setPropertyId: (id : string) => {
             config.propertyId = id;
         },
-        getIdentity: (data: IdentityData, url?: string) => {
+        getIdentity: (data: IdentityData, url?: string = accessTokenUrl) : string => {
             return getAccessToken(url, data.mrid)
-            .then(accessToken => data.onIdentification(accessToken))
+            .then(accessToken => {
+                if (data.onIdentification) {
+                    data.onIdentification({ getAccessToken: () => accessToken });
+                }
+                return accessToken;
+            })
             .catch(err => {
-                console.log('Error creating partner token', err)
+                console.log('Error creating partner token', err);
             })
         }
     };
