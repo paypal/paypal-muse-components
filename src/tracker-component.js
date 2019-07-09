@@ -88,7 +88,7 @@ type Config = {|
 
 const sevenDays = 6.048e+8;
 
-const accessTokenUrl = 'https://localhost.paypal.com:8443/muse/api/partner-token';
+const accessTokenUrl = 'https://www.paypal.com/muse/api/partner-token';
 
 const getUserIdCookie = () : ?string => {
     return getCookie('paypal-user-id') || null;
@@ -114,7 +114,7 @@ const setCartCookie = (type, data) : void => {
     setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
 };
 
-const getAccessToken = (url : string, mrid : string) : string => {
+const getAccessToken = (url : string, mrid : string) : Promise<string> => {
     return fetch(url, {
         method:      'POST',
         credentials: 'include',
@@ -126,7 +126,6 @@ const getAccessToken = (url : string, mrid : string) : string => {
             clientId: getClientID()
         })
     }).then(r => r.json()).then(data => {
-        console.log('Created partner token', data);
         return data.cr_token;
     });
 };
@@ -282,16 +281,13 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         setPropertyId: (id : string) => {
             config.propertyId = id;
         },
-        getIdentity: (data : IdentityData, url? : string = accessTokenUrl) : string => {
+        getIdentity: (data : IdentityData, url? : string = accessTokenUrl) => {
             return getAccessToken(url, data.mrid)
                 .then(accessToken => {
                     if (data.onIdentification) {
                         data.onIdentification({ getAccessToken: () => accessToken });
                     }
                     return accessToken;
-                })
-                .catch(err => {
-                    console.log('Error creating partner token', err);
                 });
         }
     };
