@@ -49,6 +49,11 @@ type UserData = {|
     |}
 |};
 
+type IdentityData = {|
+    mrid : string,
+    onIdentification : Function
+|};
+
 type ParamsToBeaconUrl = ({
     trackingType : TrackingType,
     data : ViewData | CartData | RemoveCartData | PurchaseData
@@ -83,6 +88,8 @@ type Config = {|
 
 const sevenDays = 6.048e+8;
 
+const accessTokenUrl = 'https://www.paypal.com/muse/api/partner-token';
+
 const getUserIdCookie = () : ?string => {
     return getCookie('paypal-user-id') || null;
 };
@@ -105,6 +112,22 @@ const setCartCookie = (type, data) : void => {
         }
     }
     setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
+};
+
+const getAccessToken = (url : string, mrid : string) : Promise<string> => {
+    return fetch(url, {
+        method:      'POST',
+        credentials: 'include',
+        headers:     {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            mrid,
+            clientId: getClientID()
+        })
+    }).then(r => r.json()).then(data => {
+        return data.cr_token;
+    });
 };
 
 const getJetlorePayload = (type : string, options : Object) : Object => {
@@ -257,6 +280,15 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         },
         setPropertyId: (id : string) => {
             config.propertyId = id;
+        },
+        getIdentity: (data : IdentityData, url? : string = accessTokenUrl) => {
+            return getAccessToken(url, data.mrid)
+                .then(accessToken => {
+                    if (data.onIdentification) {
+                        data.onIdentification({ getAccessToken: () => accessToken });
+                    }
+                    return accessToken;
+                });
         }
     };
     const trackEvent = (type : string, data : Object) => {
