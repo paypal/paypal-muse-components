@@ -100,39 +100,11 @@ describe('paypal.Tracker', () => {
     // $FlowFixMe
     it('should be a function that returns a tracker', () => {
         const tracker = Tracker();
-        expect(tracker).to.have.property('view');
         expect(tracker).to.have.property('addToCart');
         expect(tracker).to.have.property('setCart');
         expect(tracker).to.have.property('removeFromCart');
         expect(tracker).to.have.property('purchase');
         expect(tracker).to.have.property('track');
-    });
-
-    // $FlowFixMe
-    it('should send view events', () => {
-        const email = '__test__email2@gmail.com';
-        const userName = '__test__userName2';
-        const tracker = Tracker({ user: { email, name: userName } });
-        tracker.view({
-            page:  '/test2/apples',
-            title: 'apples'
-        });
-        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
-            JSON.stringify({
-                page:  '/test2/apples',
-                title: 'apples',
-                user:  {
-                    email: '__test__email2@gmail.com',
-                    name:  '__test__userName2',
-                    id:    'abc123'
-                },
-                trackingType: 'view',
-                clientId:     'abcxyz123',
-                merchantId:   'xyz,hij,lmno',
-                deviceInfo
-            })
-        );
-        expect(appendChildCalls).to.equal(1);
     });
 
     it('should send addToCart events', () => {
@@ -397,34 +369,6 @@ describe('paypal.Tracker', () => {
                 deviceInfo
             })
         );
-        tracker.view({
-            page: '/test2'
-        });
-        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
-            JSON.stringify({
-                page: '/test2',
-                user: {
-                    email: '__test__email9',
-                    name:  '__test__userName9',
-                    id:    'abc123'
-                },
-                trackingType: 'view',
-                clientId:     'abcxyz123',
-                merchantId:   'xyz,hij,lmno',
-                deviceInfo
-            })
-        );
-        expect(appendChildCalls).to.equal(2);
-    });
-
-    it('should allow you to instantiate for anonymous users', () => {
-        const tracker = Tracker();
-        tracker.view({ page: '/hello/page' });
-        const dataParamObject = extractDataParam(imgMock.src);
-        // $FlowFixMe
-        expect(dataParamObject.page).to.equal('/hello/page');
-        // $FlowFixMe
-        expect(dataParamObject.trackingType).to.equal('view');
     });
 
     it('should allow you to instantiate a user and then set the user', () => {

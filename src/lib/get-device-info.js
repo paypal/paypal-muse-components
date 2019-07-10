@@ -79,9 +79,9 @@ const getDeviceInfo = () => {
             deviceType = 'Desktop';
         }
         return {
-            screenWidth:  getDeviceWidth(),
-            screenHeight: getDeviceHeight(),
-            colorDepth:   screen && screen.colorDepth,
+            screenWidth:     getDeviceWidth(),
+            screenHeight:    getDeviceHeight(),
+            colorDepth:      screen && screen.colorDepth,
             rosettaLanguage: getRosettaLanguage(),
             deviceType,
             browserHeight,
