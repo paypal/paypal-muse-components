@@ -256,7 +256,6 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         JL.tracking(trackingConfig);
     }
     const trackers = {
-        view:       (data : ViewData) => track(config, 'view', data),
         addToCart:  (data : CartData) => {
             setCartCookie('add', data);
             return trackCartEvent(config, 'addToCart', data);
