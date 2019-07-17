@@ -52,6 +52,7 @@ const showExitModal = ({ cartRecovery }) => {
 };
 
 export const Messaging = (...args : $ReadOnlyArray<{ cartRecovery : { userId : string, beta? : boolean } }>) => {
+    console.warn('This component has been deprecated. You are probably looking for the "Messages" component'); // eslint-disable-line no-console
     const config = args[0];
     if (!config.cartRecovery || !config.cartRecovery.beta) {
         return;
