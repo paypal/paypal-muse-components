@@ -126,7 +126,7 @@ const getAccessToken = (url : string, mrid : string) : Promise<string> => {
             clientId: getClientID()
         })
     }).then(r => r.json()).then(data => {
-        return data.cr_token;
+        return data;
     });
 };
 
@@ -301,7 +301,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             return getAccessToken(url, data.mrid)
                 .then(accessToken => {
                     if (data.onIdentification) {
-                        data.onIdentification({ getAccessToken: () => accessToken });
+                        data.onIdentification({ getAccessToken: () => accessToken.data });
                     }
                     return accessToken;
                 });
