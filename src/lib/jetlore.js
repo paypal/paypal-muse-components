@@ -184,7 +184,7 @@ const getJetlore = () => {
     
         var url_w_data = url_w_token + "&data=" + tracker.serialize(convertData, data)
     
-        var url_w_feed = url_w_data + "&feed=" + tracker.feed_id;
+        var url_w_feed = url_w_data + "&feed=" + tracker.feed_id + (data && data[0] && data[0].deal_id ? "&pid=" + data[0].deal_id : "") + (data && data[0] && data[0].price ? "&price=" + data[0].price : "");
     
         var url_w_div = typeof tracker.div !== 'undefined' && tracker.div != "" ? url_w_feed + "&div=" + tracker.div : url_w_feed;
     
