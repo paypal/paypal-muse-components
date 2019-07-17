@@ -51,8 +51,11 @@ const showExitModal = ({ cartRecovery }) => {
     return isRendered;
 };
 
-export const Messaging = (...args : $ReadOnlyArray<{ cartRecovery : { userId : string } }>) => {
+export const Messaging = (...args : $ReadOnlyArray<{ cartRecovery : { userId : string, beta? : boolean } }>) => {
     const config = args[0];
+    if (!config.cartRecovery || !config.cartRecovery.beta) {
+        return;
+    }
     if (config.cartRecovery) {
         userId = config.cartRecovery.userId;
     }
