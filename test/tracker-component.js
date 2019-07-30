@@ -93,7 +93,7 @@ describe('paypal.Tracker', () => {
     afterEach(() => {
         appendChildCalls = 0;
         imgMock.src = '';
-        document.cookie = 'paypal-cr-cart={}';
+        window.localStorage.setItem('paypal-cr-cart', '{}');
         fetchCalls = [];
     });
 
@@ -107,6 +107,24 @@ describe('paypal.Tracker', () => {
         expect(tracker).to.have.property('purchase');
         expect(tracker).to.have.property('track');
         expect(tracker).to.have.property('getIdentity');
+    });
+
+    it('should clear stored cart content if cart is expired', () => {
+        const beforeStorage = window.localStorage.getItem('paypal-cr-cart');
+
+        window.localStorage.setItem('paypal-cr-cart-expiry', Date.now() - 10);
+
+        expect(beforeStorage).to.equal('{}');
+
+        // Since the expiry is in the past, this initialization should clear
+        // the cart and expiry.
+        Tracker();
+
+        const afterStorage = window.localStorage.getItem('paypal-cr-cart');
+        const afterExpiry = window.localStorage.getItem('paypal-cr-cart-expiry');
+
+        expect(afterStorage).to.equal(null);
+        expect(afterExpiry).to.equal(null);
     });
 
     it('should send addToCart events', () => {
@@ -564,10 +582,10 @@ describe('paypal.Tracker', () => {
         };
         const url = 'https://www.paypal.com/muse/api/partner-token';
         const result = tracker.getIdentity(data, url).then(accessToken => {
-            expect(accessToken).to.be.a('string');
+            expect(result).to.be.a('promise');
+            expect(accessToken).to.be.an('object');
+            done();
         });
-        expect(result).to.be.a('promise');
-        done();
     });
 
     it('should call getIdentity function with no url passed in', done => {
@@ -580,9 +598,9 @@ describe('paypal.Tracker', () => {
             onIdentification: identityData => identityData
         };
         const result = tracker.getIdentity(data).then(accessToken => {
-            expect(accessToken).to.be.a('string');
+            expect(accessToken).to.be.an('object');
+            expect(result).to.be.a('promise');
+            done();
         });
-        expect(result).to.be.a('promise');
-        done();
     });
 });

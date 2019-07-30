@@ -30,7 +30,7 @@ const showExitModal = ({ cartRecovery }) => {
         return false;
     }
     // don't show modal if user has no cart items
-    const cart = JSON.parse(getCookie('paypal-cr-cart') || '{}');
+    const cart = JSON.parse(window.localStorage.getItem('paypal-cr-cart') || '{}');
     if (!cart.items) {
         return false;
     }
