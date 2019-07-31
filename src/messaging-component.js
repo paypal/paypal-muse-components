@@ -51,8 +51,12 @@ const showExitModal = ({ cartRecovery }) => {
     return isRendered;
 };
 
-export const Messaging = (...args : $ReadOnlyArray<{ cartRecovery : { userId : string } }>) => {
+export const Messaging = (...args : $ReadOnlyArray<{ cartRecovery : { userId : string, beta? : boolean } }>) => {
+    console.warn('PayPal Messaging: This component has been deprecated. Starting July 24, this **functionality** will no longer be available and will result in an error. For more information email dl-pp-sdk-messaging@paypal.com'); // eslint-disable-line no-console
     const config = args[0];
+    if (!config.cartRecovery || !config.cartRecovery.beta) {
+        return;
+    }
     if (config.cartRecovery) {
         userId = config.cartRecovery.userId;
     }

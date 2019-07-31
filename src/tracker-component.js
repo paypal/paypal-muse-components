@@ -126,7 +126,7 @@ const getAccessToken = (url : string, mrid : string) : Promise<string> => {
             clientId: getClientID()
         })
     }).then(r => r.json()).then(data => {
-        return data.cr_token;
+        return data;
     });
 };
 
@@ -283,6 +283,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         JL.tracking(trackingConfig);
     }
     const trackers = {
+        view:       (data : ViewData) => () => {},
         addToCart:  (data : CartData) => {
             setCartCookie('add', data);
             return trackCartEvent(config, 'addToCart', data);
@@ -310,10 +311,26 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         getIdentity: (data : IdentityData, url? : string = accessTokenUrl) => {
             return getAccessToken(url, data.mrid)
                 .then(accessToken => {
-                    if (data.onIdentification) {
-                        data.onIdentification({ getAccessToken: () => accessToken });
+                  if (accessToken.data) {
+                    if(data.onIdentification) {
+                        data.onIdentification({ getAccessToken: () => accessToken.data });
                     }
-                    return accessToken;
+                  } else {
+                    if(data.onError) {
+                      data.onError({
+                        message: 'No token could be created',
+                        error: accessToken
+                      });
+                    }
+                  }
+                  return accessToken;
+                }).catch(error => {
+                    if(data.onError) {
+                      data.onError({
+                        message: 'No token could be created',
+                        error
+                      });
+                    }
                 });
         }
     };
