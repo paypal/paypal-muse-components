@@ -243,8 +243,11 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     const savedPropertyId = window.localStorage.getItem(`${ clientId }-${ merchantId }`);
     const propertyId = savedPropertyId
         ? savedPropertyId
-        : fetch(`https://paypal.com/tagmanager/containers/xo?clientId=${ clientId }&merchantId=${ merchantId }`)
-            .then(container => container.id);
+        : fetch(`https://paypal.com/tagmanager/containers/xo?url=${ urcurrentUrl }&mrid=${ merchantId }`)
+            .then(container => {
+                window.localStorage.setItem(`${ clientId }-${ merchantId }`, container.id);
+                return container.id;
+            });
     config.propertyId = propertyId;
 
     const JL = getJetlore();
