@@ -106,15 +106,20 @@ const setRandomUserIdCookie = () : void => {
 };
 
 const composeCart = (type, data) => {
+    // Copy the data so we don't modify it outside the scope of this method.
     const _data = { ...data };
-    const storedCart = window.localStorage.getItem(storage.paypalCrCart);
+
+    // Devnote: Checking for cookie for backwards compatibility (the cookie check can be removed
+    // a couple weeks after deploy because any cart cookie storage will be moved to localStorage
+    // in this function).
+    const storedCart = window.localStorage.getItem(storage.paypalCrCart) || getCookie(storage.paypalCrCart);
     const expiry = window.localStorage.getItem(storage.paypalCrCartExpiry);
 
     if (!expiry) {
         window.localStorage.setItem(storage.paypalCrCartExpiry, Date.now() + sevenDays);
     }
 
-    if (type === 'add' && storedCart !== null) {
+    if (type === 'add' && storedCart) {
         const cart = JSON.parse(storedCart);
         const currentItems = cart && cart.items;
 

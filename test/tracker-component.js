@@ -93,7 +93,8 @@ describe('paypal.Tracker', () => {
     afterEach(() => {
         appendChildCalls = 0;
         imgMock.src = '';
-        window.localStorage.setItem('paypal-cr-cart', '{}');
+        window.localStorage.removeItem('paypal-cr-cart');
+        document.cookie = 'paypal-cr-cart=;';
         fetchCalls = [];
     });
 
@@ -114,7 +115,7 @@ describe('paypal.Tracker', () => {
 
         window.localStorage.setItem('paypal-cr-cart-expiry', Date.now() - 10);
 
-        expect(beforeStorage).to.equal('{}');
+        expect(beforeStorage).to.equal(null);
 
         // Since the expiry is in the past, this initialization should clear
         // the cart and expiry.
@@ -125,6 +126,43 @@ describe('paypal.Tracker', () => {
 
         expect(afterStorage).to.equal(null);
         expect(afterExpiry).to.equal(null);
+    });
+
+    it('should migrate cart cookie storage to localStorage when adding an item to cart', () => {
+        const products = [
+            {
+                id:  '1',
+                url: 'example.com'
+            },
+            {
+                id:  '2',
+                url: 'example.com'
+            },
+            {
+                id:  '3',
+                url: 'example.com'
+            },
+            {
+                id:  '4',
+                url: 'example.com'
+            }
+        ];
+
+        document.cookie = `paypal-cr-cart=${ JSON.stringify({ items: [
+            products[0],
+            products[1]
+        ] }) }`;
+
+        const tracker = Tracker();
+
+        tracker.addToCart({ items: [
+            products[2],
+            products[3]
+        ] });
+
+        expect(window.localStorage.getItem('paypal-cr-cart')).equal(JSON.stringify({
+            items: products
+        }));
     });
 
     it('should send addToCart events', () => {
