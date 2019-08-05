@@ -51,7 +51,8 @@ type UserData = {|
 
 type IdentityData = {|
     mrid : string,
-    onIdentification : Function
+    onIdentification : Function,
+    onError? : Function
 |};
 
 type ParamsToBeaconUrl = ({
@@ -86,6 +87,11 @@ type Config = {|
     |}
 |};
 
+const storage = {
+    paypalCrCart:       'paypal-cr-cart',
+    paypalCrCartExpiry: 'paypal-cr-cart-expiry'
+};
+
 const sevenDays = 6.048e+8;
 
 const accessTokenUrl = 'https://www.paypal.com/muse/api/partner-token';
@@ -99,22 +105,38 @@ const setRandomUserIdCookie = () : void => {
     setCookie('paypal-user-id', generate.generateId(), ONE_MONTH_IN_MILLISECONDS);
 };
 
-const setCartCookie = (type, data) : void => {
-    const currentCookie = getCookie('paypal-cr-cart');
-    if (type === 'add' && currentCookie !== '') {
-        const parsedCookie = JSON.parse(currentCookie);
-        const currentItems = parsedCookie && parsedCookie.items;
+const composeCart = (type, data) => {
+    // Copy the data so we don't modify it outside the scope of this method.
+    const _data = { ...data };
+
+    // Devnote: Checking for cookie for backwards compatibility (the cookie check can be removed
+    // a couple weeks after deploy because any cart cookie storage will be moved to localStorage
+    // in this function).
+    const storedCart = window.localStorage.getItem(storage.paypalCrCart) || getCookie(storage.paypalCrCart);
+    const expiry = window.localStorage.getItem(storage.paypalCrCartExpiry);
+
+    if (!expiry) {
+        window.localStorage.setItem(storage.paypalCrCartExpiry, Date.now() + sevenDays);
+    }
+
+    if (type === 'add' && storedCart) {
+        const cart = JSON.parse(storedCart);
+        const currentItems = cart && cart.items;
+
         if (currentItems && currentItems.length) {
-            data.items = [
+            _data.items = [
                 ...currentItems,
                 ...data.items
             ];
         }
     }
-    setCookie('paypal-cr-cart', JSON.stringify(data), sevenDays);
+
+    window.localStorage.setItem(storage.paypalCrCart, JSON.stringify(_data));
+
+    return _data;
 };
 
-const getAccessToken = (url : string, mrid : string) : Promise<string> => {
+const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
     return fetch(url, {
         method:      'POST',
         credentials: 'include',
@@ -219,23 +241,47 @@ const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, track
 
 const defaultTrackerConfig = { user: { email: undefined, name: undefined } };
 
+const clearExpiredCart = () => {
+    const expiry = window.localStorage.getItem(storage.paypalCrCartExpiry);
+
+    if (expiry !== null) {
+        const expiryTime = Number(expiry);
+
+        if (Date.now() >= expiryTime) {
+            window.localStorage.removeItem(storage.paypalCrCartExpiry);
+            window.localStorage.removeItem(storage.paypalCrCart);
+        }
+    }
+};
+
 export const Tracker = (config? : Config = defaultTrackerConfig) => {
     /* PP Shopping tracker code breaks Safari. While we are debugging
      * the problem, disable trackers on Safari. Use the get param
-     * ?ppDebug=true to see logs, and ?ppEnableSafari to enable the functions 
+     * ?ppDebug=true to see logs, and ?ppEnableSafari to enable the functions
      * on Safari for debugging purposes.
      */
     const currentUrl = new URL(window.location.href);
     const debug = currentUrl.searchParams.get('ppDebug');
     const enableSafari = currentUrl.searchParams.get('ppEnableSafari');
-    // eslint-disable-next-line no-console
-    debug && console.log('PayPal Shopping: debug mode on.')
+    
+    if (debug) {
+        // eslint-disable-next-line no-console
+        console.log('PayPal Shopping: debug mode on.');
+    }
     
     const isSafari = (/^((?!chrome|android).)*safari/i).test(navigator.userAgent);
-    // eslint-disable-next-line no-console
-    debug && isSafari && console.log('PayPal Shopping: Safari detected.')
-    // eslint-disable-next-line no-console
-    debug && isSafari && enableSafari && console.log('PayPal Shopping: Safari trackers enabled.')
+
+    if (debug && isSafari) {
+        // eslint-disable-next-line no-console
+        console.log('PayPal Shopping: Safari detected.');
+    }
+
+    if (debug && isSafari && enableSafari) {
+        // eslint-disable-next-line no-console
+        console.log('PayPal Shopping: Safari trackers enabled.');
+    }
+
+    clearExpiredCart();
 
     const JL = getJetlore();
     const jetloreTrackTypes = [
@@ -273,14 +319,16 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         JL.tracking(trackingConfig);
     }
     const trackers = {
-        view:       (data : ViewData) => () => {},
+        view:       (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
         addToCart:  (data : CartData) => {
-            setCartCookie('add', data);
-            return trackCartEvent(config, 'addToCart', data);
+            const newCart = composeCart('add', data);
+
+            return trackCartEvent(config, 'addToCart', newCart);
         },
         setCart:        (data : CartData) => {
-            setCartCookie('set', data);
-            return trackCartEvent(config, 'setCart', data);
+            const newCart = composeCart('set', data);
+
+            return trackCartEvent(config, 'setCart', newCart);
         },
         removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
         purchase:       (data : PurchaseData) => track(config, 'purchase', data),
@@ -298,44 +346,52 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         setPropertyId: (id : string) => {
             config.propertyId = id;
         },
-        getIdentity: (data : IdentityData, url? : string = accessTokenUrl) => {
+        getIdentity: (data : IdentityData, url? : string = accessTokenUrl) : Promise<Object> => {
             return getAccessToken(url, data.mrid)
                 .then(accessToken => {
-                  if (accessToken.data) {
-                    if(data.onIdentification) {
-                        data.onIdentification({ getAccessToken: () => accessToken.data });
+                    if (accessToken.data) {
+                        if (data.onIdentification) {
+                            data.onIdentification({ getAccessToken: () => accessToken.data });
+                        }
+                    } else {
+                        if (data.onError) {
+                            data.onError({
+                                message: 'No token could be created',
+                                error:   accessToken
+                            });
+                        }
                     }
-                  } else {
-                    if(data.onError) {
-                      data.onError({
-                        message: 'No token could be created',
-                        error: accessToken
-                      });
+                    return accessToken;
+                }).catch(err => {
+                    if (data.onError) {
+                        data.onError({
+                            message: 'No token could be created',
+                            error:   err
+                        });
                     }
-                  }
-                  return accessToken;
-                }).catch(error => {
-                    if(data.onError) {
-                      data.onError({
-                        message: 'No token could be created',
-                        error
-                      });
-                    }
+
+                    return {};
                 });
         }
     };
     const doNoop = () => {
-        // eslint-disable-next-line no-console
-        debug && isSafari && !enableSafari && console.log('PayPal Shopping: function is a noop because Safari is disabled.');
+        if (debug && isSafari && !enableSafari) {
+            // eslint-disable-next-line no-console
+            console.log('PayPal Shopping: function is a noop because Safari is disabled.');
+        }
     };
     const emptyTrackers = {
-        addToCart:  (data : CartData) => doNoop(),
-        setCart:        (data : CartData) => doNoop(),
-        removeFromCart: (data : RemoveCartData) => doNoop(),
-        purchase:       (data : PurchaseData) => doNoop(),
-        setUser:        (data : UserData) => doNoop(),
-        setPropertyId: (id : string) => doNoop(),
-        getIdentity: (data : IdentityData, url? : string = accessTokenUrl) => doNoop()
+        addToCart:      (data : CartData) => doNoop(), // eslint-disable-line no-unused-vars
+        setCart:        (data : CartData) => doNoop(), // eslint-disable-line no-unused-vars
+        removeFromCart: (data : RemoveCartData) => doNoop(), // eslint-disable-line no-unused-vars
+        purchase:       (data : PurchaseData) => doNoop(), // eslint-disable-line no-unused-vars
+        setUser:        (data : UserData) => doNoop(), // eslint-disable-line no-unused-vars
+        setPropertyId:  (id : string) => doNoop(), // eslint-disable-line no-unused-vars
+        getIdentity:    (data : IdentityData, url? : string = accessTokenUrl) : Promise<any> => { // eslint-disable-line no-unused-vars,flowtype/no-weak-types
+            return new Promise((resolve) => {
+                resolve(doNoop());
+            });
+        }
     };
     const trackerFunctions = (isSafari && !enableSafari) ? emptyTrackers : trackers;
 
