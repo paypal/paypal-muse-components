@@ -9,7 +9,7 @@ import { getCookie, setCookie } from './lib/cookie-utils';
 import getJetlore from './lib/jetlore';
 import { getDeviceInfo } from './lib/get-device-info';
 
-type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
+type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser' | 'cancelCart';
 
 type CartEventType = 'addToCart' | 'setCart' | 'removeFromCart';
 
@@ -35,6 +35,12 @@ type CartData = {|
     currencyCode? : string
 |};
 
+type CancelCartData = {|
+    cartId : string,
+    clientId : string,
+    encryptedAccountNumber : string
+|};
+
 type RemoveCartData = {|
     cartId? : string,
     items : $ReadOnlyArray<{ id : string }>
@@ -56,7 +62,7 @@ type IdentityData = {|
 
 type ParamsToBeaconUrl = ({
     trackingType : TrackingType,
-    data : ViewData | CartData | RemoveCartData | PurchaseData
+    data : ViewData | CartData | RemoveCartData | PurchaseData | CancelCartData
 }) => string;
 
 type ParamsToTokenUrl = () => string;
@@ -222,20 +228,20 @@ const defaultTrackerConfig = { user: { email: undefined, name: undefined } };
 export const Tracker = (config? : Config = defaultTrackerConfig) => {
     /* PP Shopping tracker code breaks Safari. While we are debugging
      * the problem, disable trackers on Safari. Use the get param
-     * ?ppDebug=true to see logs, and ?ppEnableSafari to enable the functions 
+     * ?ppDebug=true to see logs, and ?ppEnableSafari to enable the functions
      * on Safari for debugging purposes.
      */
     const currentUrl = new URL(window.location.href);
     const debug = currentUrl.searchParams.get('ppDebug');
     const enableSafari = currentUrl.searchParams.get('ppEnableSafari');
     // eslint-disable-next-line no-console
-    debug && console.log('PayPal Shopping: debug mode on.')
+    debug && console.log('PayPal Shopping: debug mode on.');
     
     const isSafari = (/^((?!chrome|android).)*safari/i).test(navigator.userAgent);
     // eslint-disable-next-line no-console
-    debug && isSafari && console.log('PayPal Shopping: Safari detected.')
+    debug && isSafari && console.log('PayPal Shopping: Safari detected.');
     // eslint-disable-next-line no-console
-    debug && isSafari && enableSafari && console.log('PayPal Shopping: Safari trackers enabled.')
+    debug && isSafari && enableSafari && console.log('PayPal Shopping: Safari trackers enabled.');
 
     const JL = getJetlore();
     const jetloreTrackTypes = [
@@ -295,31 +301,32 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             };
             track(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
-        setPropertyId: (id : string) => {
+        cancelCart:     (data : CancelCartData) => track(config, 'cancelCart', data),
+        setPropertyId:  (id : string) => {
             config.propertyId = id;
         },
         getIdentity: (data : IdentityData, url? : string = accessTokenUrl) => {
             return getAccessToken(url, data.mrid)
-                .then(accessToken => {
-                  if (accessToken.data) {
-                    if(data.onIdentification) {
-                        data.onIdentification({ getAccessToken: () => accessToken.data });
+                .then((accessToken) => {
+                    if (accessToken.data) {
+                        if (data.onIdentification) {
+                            data.onIdentification({ getAccessToken: () => accessToken.data });
+                        }
+                    } else {
+                        if (data.onError) {
+                            data.onError({
+                                message: 'No token could be created',
+                                error:   accessToken
+                            });
+                        }
                     }
-                  } else {
-                    if(data.onError) {
-                      data.onError({
-                        message: 'No token could be created',
-                        error: accessToken
-                      });
-                    }
-                  }
-                  return accessToken;
+                    return accessToken;
                 }).catch(error => {
-                    if(data.onError) {
-                      data.onError({
-                        message: 'No token could be created',
-                        error
-                      });
+                    if (data.onError) {
+                        data.onError({
+                            message: 'No token could be created',
+                            error
+                        });
                     }
                 });
         }
@@ -329,13 +336,14 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         debug && isSafari && !enableSafari && console.log('PayPal Shopping: function is a noop because Safari is disabled.');
     };
     const emptyTrackers = {
-        addToCart:  (data : CartData) => doNoop(),
+        addToCart:      (data : CartData) => doNoop(),
         setCart:        (data : CartData) => doNoop(),
         removeFromCart: (data : RemoveCartData) => doNoop(),
         purchase:       (data : PurchaseData) => doNoop(),
         setUser:        (data : UserData) => doNoop(),
-        setPropertyId: (id : string) => doNoop(),
-        getIdentity: (data : IdentityData, url? : string = accessTokenUrl) => doNoop()
+        cancelCart: (data : CancelCartData) => doNoop(),
+        setPropertyId:  (id : string) => doNoop(),
+        getIdentity:    (data : IdentityData, url? : string = accessTokenUrl) => doNoop()
     };
     const trackerFunctions = (isSafari && !enableSafari) ? emptyTrackers : trackers;
 

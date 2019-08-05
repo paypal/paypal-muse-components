@@ -107,6 +107,7 @@ describe('paypal.Tracker', () => {
         expect(tracker).to.have.property('purchase');
         expect(tracker).to.have.property('track');
         expect(tracker).to.have.property('getIdentity');
+        expect(tracker).to.have.property('cancelCart');
     });
 
     it('should send addToCart events', () => {
