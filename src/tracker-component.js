@@ -37,8 +37,6 @@ type CartData = {|
 
 type CancelCartData = {|
     cartId : string
-    // clientId : string
-    // encryptedAccountNumber : string
 |};
 
 type RemoveCartData = {|
@@ -269,14 +267,23 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     const currentUrl = new URL(window.location.href);
     const debug = currentUrl.searchParams.get('ppDebug');
     const enableSafari = currentUrl.searchParams.get('ppEnableSafari');
-    // eslint-disable-next-line no-console
-    debug && console.log('PayPal Shopping: debug mode on.');
+
+    if (debug) {
+        // eslint-disable-next-line no-console
+        console.log('PayPal Shopping: debug mode on.');
+    }
     
     const isSafari = (/^((?!chrome|android).)*safari/i).test(navigator.userAgent);
-    // eslint-disable-next-line no-console
-    debug && isSafari && console.log('PayPal Shopping: Safari detected.');
-    // eslint-disable-next-line no-console
-    debug && isSafari && enableSafari && console.log('PayPal Shopping: Safari trackers enabled.');
+
+    if (debug && isSafari) {
+        // eslint-disable-next-line no-console
+        console.log('PayPal Shopping: Safari detected.');
+    }
+
+    if (debug && isSafari && enableSafari) {
+        // eslint-disable-next-line no-console
+        console.log('PayPal Shopping: Safari trackers enabled.');
+    }
     
     clearExpiredCart();
 
