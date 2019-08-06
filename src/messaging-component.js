@@ -30,7 +30,8 @@ const showExitModal = ({ cartRecovery }) => {
         return false;
     }
     // don't show modal if user has no cart items
-    const cart = JSON.parse(getCookie('paypal-cr-cart') || '{}');
+    // Prefer localStorage first, fallback to cookie (backwards compatibility -- this check can be removed a couple weeks after deploy).
+    const cart = JSON.parse(window.localStorage.getItem('paypal-cr-cart') || getCookie('paypal-cr-cart') || '{}');
     if (!cart.items) {
         return false;
     }
