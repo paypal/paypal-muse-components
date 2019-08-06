@@ -369,6 +369,29 @@ describe('paypal.Tracker', () => {
         expect(appendChildCalls).to.equal(1);
     });
 
+    it('should send cancelCart events', () => {
+        const email = '__test__email7@gmail.com';
+        const userName = '__test__userName7';
+        const tracker = Tracker({ user: { email, name: userName } });
+        expect(appendChildCalls).to.equal(0);
+        tracker.cancelCart({ cartId: '__test__cartId' });
+        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
+            JSON.stringify({
+                cartId: '__test__cartId',
+                user:   {
+                    email: '__test__email7@gmail.com',
+                    name:  '__test__userName7',
+                    id:    'abc123'
+                },
+                trackingType: 'cancelCart',
+                clientId:     'abcxyz123',
+                merchantId:   'xyz,hij,lmno',
+                deviceInfo
+            })
+        );
+        expect(appendChildCalls).to.equal(1);
+    });
+
     it('should call paramsToBeaconUrl to create the url if you pass in paramsToBeaconUrl function', () => {
         const userName = '__test__userName6';
         let calledArgs;
