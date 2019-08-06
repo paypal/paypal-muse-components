@@ -5,5 +5,8 @@ module.exports = {
 
     'globals': {
         __sdk__: true
+    },
+    rules: {
+        'max-lines': 0
     }
 };

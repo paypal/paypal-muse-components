@@ -62,7 +62,7 @@ type ParamsToBeaconUrl = ({
 
 type ParamsToTokenUrl = () => string;
 
-type paramsToPropertyIdUrl = () => string;
+type ParamsToPropertyIdUrl = () => string;
 
 type JetloreConfig = {|
     user_id : string,
@@ -87,7 +87,7 @@ type Config = {|
         div? : string,
         lang? : string
     |},
-    paramsToPropertyIdUrl? : paramsToPropertyIdUrl
+    paramsToPropertyIdUrl? : ParamsToPropertyIdUrl
 |};
 
 const storage = {
@@ -245,11 +245,11 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
     }
 };
 
-const clearTrackQueue = () => {
+const clearTrackQueue = config => {
     const queue = trackEventQueue.slice(0);
     trackEventQueue.length = 0;
     queue.forEach(([ trackingType, trackingData ]) => {
-        track(trackingType, trackingData);
+        track(config, trackingType, trackingData);
     });
 };
 
@@ -287,7 +287,7 @@ const getPropertyId = ({ paramsToPropertyIdUrl }) => {
         } else {
             url = 'https://paypal.com/tagmanager/containers/xo';
         }
-        fetch(`${ url }?mrid=${ merchantId }&url=${ encodeURIComponent(currentUrl) }`)
+        window.fetch(`${ url }?mrid=${ merchantId }&url=${ encodeURIComponent(currentUrl) }`)
             .then(res => {
                 if (res.status === 200) {
                     return res;
@@ -391,7 +391,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         },
         setPropertyId: (id : string, automatic : boolean = false) => {
             if (trackEventQueue.length) {
-                clearTrackQueue();
+                clearTrackQueue(config);
             }
             /*
             ** this is used for backwards compatibility
