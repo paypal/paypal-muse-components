@@ -387,13 +387,13 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         }
     };
     const emptyTrackers = {
-        addToCart:      (data : CartData) => doNoop(),
-        setCart:        (data : CartData) => doNoop(),
-        removeFromCart: (data : RemoveCartData) => doNoop(),
-        purchase:       (data : PurchaseData) => doNoop(),
-        setUser:        (data : UserData) => doNoop(),
-        cancelCart:     (data : CancelCartData) => doNoop(),
-        setPropertyId:  (id : string) => doNoop(),
+        addToCart:      (data : CartData) => doNoop(), // eslint-disable-line no-unused-vars
+        setCart:        (data : CartData) => doNoop(), // eslint-disable-line no-unused-vars
+        removeFromCart: (data : RemoveCartData) => doNoop(), // eslint-disable-line no-unused-vars
+        purchase:       (data : PurchaseData) => doNoop(), // eslint-disable-line no-unused-vars
+        setUser:        (data : UserData) => doNoop(), // eslint-disable-line no-unused-vars
+        cancelCart:     (data : CancelCartData) => doNoop(), // eslint-disable-line no-unused-vars
+        setPropertyId:  (id : string) => doNoop(), // eslint-disable-line no-unused-vars
         getIdentity:    (data : IdentityData, url? : string = accessTokenUrl) : Promise<any> => { // eslint-disable-line no-unused-vars,flowtype/no-weak-types
             return new Promise((resolve) => {
                 resolve(doNoop());
