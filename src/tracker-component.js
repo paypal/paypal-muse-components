@@ -199,7 +199,13 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
     }
 };
 
+const trackEventQueue = [];
+
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
+    if (!config.propertyId) {
+        trackEventQueue.push([ trackingType, trackingData ]);
+        return;
+    }
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
 
     const img = document.createElement('img');
@@ -236,6 +242,14 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
     }
 };
 
+const clearTrackQueue = () => {
+    const queue = trackEventQueue.slice(0);
+    trackEventQueue.length = 0;
+    queue.forEach(([ trackingType, trackingData ]) => {
+        track(trackingType, trackingData);
+    });
+};
+
 const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) =>
     track(config, 'cartEvent', { ...trackingData, cartEventType });
 
@@ -252,6 +266,35 @@ const clearExpiredCart = () => {
             window.localStorage.removeItem(storage.paypalCrCart);
         }
     }
+};
+
+const getPropertyId = ({ paramsToPropertyIdUrl }) => {
+    return new Promise(resolve => {
+        const clientId = getClientID();
+        const merchantId = getMerchantID()[0];
+        const propertyIdKey = `property-id-${ clientId }-${ merchantId }`;
+        const savedPropertyId = window.localStorage.getItem(propertyIdKey);
+        const currentUrl = `${ window.location.protocol }//${ window.location.host }`;
+        if (savedPropertyId) {
+            return resolve(savedPropertyId);
+        }
+        let url;
+        if (paramsToPropertyIdUrl) {
+            url = paramsToPropertyIdUrl();
+        } else {
+            url = 'https://paypal.com/tagmanager/containers/xo';
+        }
+        fetch(`${ url }?mrid=${ merchantId }&url=${ encodeURIComponent(currentUrl) }`)
+            .then(res => {
+                if (res.status === 200) {
+                    return res;
+                }
+            })
+            .then(r => r.json()).then(container => {
+                window.localStorage.setItem(propertyIdKey, container.id);
+                resolve(container.id);
+            });
+    });
 };
 
 export const Tracker = (config? : Config = defaultTrackerConfig) => {
@@ -280,19 +323,6 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         // eslint-disable-next-line no-console
         console.log('PayPal Shopping: Safari trackers enabled.');
     }
-
-    // TODO: Make paypal url dynamic to env
-    const clientId = getClientID();
-    const merchantId = getMerchantID()[0];
-    const savedPropertyId = window.localStorage.getItem(`${ clientId }-${ merchantId }`);
-    const propertyId = savedPropertyId
-        ? savedPropertyId
-        : fetch(`https://paypal.com/tagmanager/containers/xo?url=${ urcurrentUrl }&mrid=${ merchantId }`)
-            .then(container => {
-                window.localStorage.setItem(`${ clientId }-${ merchantId }`, container.id);
-                return container.id;
-            });
-    config.propertyId = propertyId;
 
     clearExpiredCart();
 
@@ -357,7 +387,17 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             track(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
         setPropertyId: (id : string) => {
-            config.propertyId = id;
+            if (trackEventQueue.length) {
+                clearTrackQueue();
+            }
+            /*
+            ** this is used for backwards compatibility
+            ** we do not want to overwrite a propertyId if propertyId
+            ** has already been set using the SDK
+            */
+            if (!config.propertyId) {
+                config.propertyId = id;
+            }
         },
         getIdentity: (data : IdentityData, url? : string = accessTokenUrl) : Promise<Object> => {
             return getAccessToken(url, data.mrid)
@@ -387,6 +427,9 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
                 });
         }
     };
+    getPropertyId(config).then(propertyId => {
+        trackers.setPropertyId(propertyId);
+    });
     const doNoop = () => {
         if (debug && isSafari && !enableSafari) {
             // eslint-disable-next-line no-console
