@@ -27,6 +27,7 @@ describe('paypal.Tracker', () => {
     const appendChild = () => {
         appendChildCalls += 1;
     };
+    const propertyId = 'hello-there';
     let fetchCalls = [];
     window.fetch = (url, options) => {
         fetchCalls.push([ url, options ]);
@@ -96,6 +97,7 @@ describe('paypal.Tracker', () => {
         window.localStorage.removeItem('paypal-cr-cart');
         document.cookie = 'paypal-cr-cart=;';
         fetchCalls = [];
+        window.trackEventQueue  = [];
     });
 
     // $FlowFixMe
@@ -170,6 +172,8 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName3';
         const tracker = Tracker({ user: { email, name: userName } });
         expect(appendChildCalls).to.equal(0);
+        tracker.setPropertyId(propertyId);
+        expect(appendChildCalls).to.equal(1);
         tracker.addToCart({
             cartId: '__test__cartId',
             items:  [
@@ -200,13 +204,14 @@ describe('paypal.Tracker', () => {
                     name:  '__test__userName3',
                     id:    'abc123'
                 },
+                propertyId,
                 trackingType: 'cartEvent',
                 clientId:     'abcxyz123',
                 merchantId:   'xyz,hij,lmno',
                 deviceInfo
             })
         );
-        expect(appendChildCalls).to.equal(1);
+        expect(appendChildCalls).to.equal(2);
         tracker.addToCart({
             cartId: '__test__cartId0',
             items:  [
@@ -241,6 +246,7 @@ describe('paypal.Tracker', () => {
                     name:  '__test__userName3',
                     id:    'abc123'
                 },
+                propertyId,
                 trackingType: 'cartEvent',
                 clientId:     'abcxyz123',
                 merchantId:   'xyz,hij,lmno',
@@ -253,6 +259,7 @@ describe('paypal.Tracker', () => {
         const email = '__test__email4@gmail.com';
         const userName = '__test__userName4';
         const tracker = Tracker({ user: { email, name: userName } });
+        tracker.setPropertyId(propertyId);
         expect(appendChildCalls).to.equal(0);
         tracker.addToCart({
             cartId: '__test__cartId0',
@@ -296,6 +303,7 @@ describe('paypal.Tracker', () => {
                     name:  '__test__userName4',
                     id:    'abc123'
                 },
+                propertyId,
                 trackingType: 'cartEvent',
                 clientId:     'abcxyz123',
                 merchantId:   'xyz,hij,lmno',
@@ -309,6 +317,7 @@ describe('paypal.Tracker', () => {
         const email = '__test__email5@gmail.com';
         const userName = '__test__userName5';
         const tracker = Tracker({ user: { email, name: userName } });
+        tracker.setPropertyId(propertyId);
         expect(appendChildCalls).to.equal(0);
         tracker.removeFromCart({
             cartId: '__test__cartId',
@@ -334,6 +343,7 @@ describe('paypal.Tracker', () => {
                     name:  '__test__userName5',
                     id:    'abc123'
                 },
+                propertyId,
                 trackingType: 'cartEvent',
                 clientId:     'abcxyz123',
                 merchantId:   'xyz,hij,lmno',
@@ -347,6 +357,7 @@ describe('paypal.Tracker', () => {
         const email = '__test__email6@gmail.com';
         const userName = '__test__userName6';
         const tracker = Tracker({ user: { email, name: userName } });
+        tracker.setPropertyId(propertyId);
         expect(appendChildCalls).to.equal(0);
         tracker.purchase({
             cartId: '__test__cartId'
@@ -359,6 +370,7 @@ describe('paypal.Tracker', () => {
                     name:  '__test__userName6',
                     id:    'abc123'
                 },
+                propertyId,
                 trackingType: 'purchase',
                 clientId:     'abcxyz123',
                 merchantId:   'xyz,hij,lmno',
@@ -379,6 +391,7 @@ describe('paypal.Tracker', () => {
             user: { email: '__test__email@gmail.com', name: userName },
             paramsToBeaconUrl
         });
+        tracker.setPropertyId(propertyId);
         expect(appendChildCalls).to.equal(0);
         tracker.purchase({
             cartId: '__test__cartId'
@@ -396,6 +409,7 @@ describe('paypal.Tracker', () => {
                             name:  '__test__userName6',
                             id:    'abc123'
                         },
+                        propertyId,
                         trackingType: 'purchase',
                         clientId:     'abcxyz123',
                         merchantId:   'xyz,hij,lmno',
@@ -410,6 +424,7 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName9';
         const email = '__test__email9';
         const tracker = Tracker();
+        tracker.setPropertyId(propertyId);
         expect(appendChildCalls).to.equal(0);
         tracker.setUser({ user: { name: userName, email } });
         expect(appendChildCalls).to.equal(1);
@@ -421,6 +436,7 @@ describe('paypal.Tracker', () => {
                     name:  '__test__userName9',
                     id:    'abc123'
                 },
+                propertyId,
                 trackingType: 'setUser',
                 clientId:     'abcxyz123',
                 merchantId:   'xyz,hij,lmno',
@@ -435,6 +451,7 @@ describe('paypal.Tracker', () => {
                 email: '__test__oldEmail333@gmail.com'
             }
         });
+        tracker.setPropertyId(propertyId);
         expect(appendChildCalls).to.equal(0);
         tracker.setUser({
             user: {
@@ -453,6 +470,7 @@ describe('paypal.Tracker', () => {
                     name:  '__test__name',
                     id:    'abc123'
                 },
+                propertyId,
                 trackingType: 'setUser',
                 clientId:     'abcxyz123',
                 merchantId:   'xyz,hij,lmno',
@@ -463,6 +481,7 @@ describe('paypal.Tracker', () => {
 
     it('should send last user set with setUser', () => {
         const tracker = Tracker();
+        tracker.setPropertyId(propertyId);
         tracker.setUser({
             user: { email: '__test__email1', name: '__test__name1' }
         });
@@ -499,6 +518,7 @@ describe('paypal.Tracker', () => {
                     name:  '__test__name1',
                     id:    'abc123'
                 },
+                propertyId,
                 trackingType: 'cartEvent',
                 clientId:     'abcxyz123',
                 merchantId:   'xyz,hij,lmno',
@@ -510,6 +530,7 @@ describe('paypal.Tracker', () => {
     it('should use document.cookie value if it exists', () => {
         setCookie('paypal-user-id', '__test__cookie-id', 10000);
         const tracker = Tracker();
+        tracker.setPropertyId(propertyId);
         tracker.addToCart({
             cartId: '__test__cartId',
             items:  [
@@ -538,6 +559,7 @@ describe('paypal.Tracker', () => {
                 currencyCode:    'USD',
                 cartEventType:   'addToCart',
                 user:            { id: '__test__cookie-id' },
+                propertyId,
                 trackingType:    'cartEvent',
                 clientId:        'abcxyz123',
                 merchantId:      'xyz,hij,lmno',

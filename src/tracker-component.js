@@ -202,7 +202,8 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
     }
 };
 
-const trackEventQueue = [];
+window.trackEventQueue = [];
+const { trackEventQueue } = window;
 
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
     if (!config.propertyId) {
@@ -246,10 +247,10 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
 };
 
 const clearTrackQueue = config => {
-    const queue = trackEventQueue.slice(0);
-    trackEventQueue.length = 0;
-    queue.forEach(([ trackingType, trackingData ]) => {
+    trackEventQueue.forEach(eventData => {
+        const [ trackingType, trackingData ] = eventData;
         track(config, trackingType, trackingData);
+        trackEventQueue.shift();
     });
 };
 
@@ -390,18 +391,18 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             track(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
         setPropertyId: (id : string, automatic : boolean = false) => {
-            if (trackEventQueue.length) {
-                clearTrackQueue(config);
+            if (config.propertyId && automatic) {
+                return;
             }
+            config.propertyId = id;
             /*
             ** this is used for backwards compatibility
             ** we do not want to overwrite a propertyId if propertyId
             ** has already been set using the SDK
             */
-            if (config.propertyId && automatic) {
-                return;
+            if (trackEventQueue.length) {
+                clearTrackQueue(config);
             }
-            config.propertyId = id;
         },
         getIdentity: (data : IdentityData, url? : string = accessTokenUrl) : Promise<Object> => {
             return getAccessToken(url, data.mrid)
