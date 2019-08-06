@@ -62,6 +62,8 @@ type ParamsToBeaconUrl = ({
 
 type ParamsToTokenUrl = () => string;
 
+type paramsToPropertyIdUrl = () => string;
+
 type JetloreConfig = {|
     user_id : string,
     cid : string,
@@ -84,7 +86,8 @@ type Config = {|
         feed_id : string,
         div? : string,
         lang? : string
-    |}
+    |},
+    paramsToPropertyIdUrl? : paramsToPropertyIdUrl
 |};
 
 const storage = {
@@ -386,7 +389,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             };
             track(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
-        setPropertyId: (id : string) => {
+        setPropertyId: (id : string, automatic : boolean = false) => {
             if (trackEventQueue.length) {
                 clearTrackQueue();
             }
@@ -395,9 +398,10 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             ** we do not want to overwrite a propertyId if propertyId
             ** has already been set using the SDK
             */
-            if (!config.propertyId) {
-                config.propertyId = id;
+            if (config.propertyId && automatic) {
+                return;
             }
+            config.propertyId = id;
         },
         getIdentity: (data : IdentityData, url? : string = accessTokenUrl) : Promise<Object> => {
             return getAccessToken(url, data.mrid)
@@ -428,7 +432,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         }
     };
     getPropertyId(config).then(propertyId => {
-        trackers.setPropertyId(propertyId);
+        trackers.setPropertyId(propertyId, true);
     });
     const doNoop = () => {
         if (debug && isSafari && !enableSafari) {
