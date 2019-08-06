@@ -255,32 +255,18 @@ const clearExpiredCart = () => {
 };
 
 export const Tracker = (config? : Config = defaultTrackerConfig) => {
-    /* PP Shopping tracker code breaks Safari. While we are debugging
-     * the problem, disable trackers on Safari. Use the get param
-     * ?ppDebug=true to see logs, and ?ppEnableSafari to enable the functions
-     * on Safari for debugging purposes.
+    /*
+     * Use the get param ?ppDebug=true to see logs
+     *
      */
+    
     const currentUrl = new URL(window.location.href);
     const debug = currentUrl.searchParams.get('ppDebug');
-    const enableSafari = currentUrl.searchParams.get('ppEnableSafari');
-    
     if (debug) {
         // eslint-disable-next-line no-console
         console.log('PayPal Shopping: debug mode on.');
     }
     
-    const isSafari = (/^((?!chrome|android).)*safari/i).test(navigator.userAgent);
-
-    if (debug && isSafari) {
-        // eslint-disable-next-line no-console
-        console.log('PayPal Shopping: Safari detected.');
-    }
-
-    if (debug && isSafari && enableSafari) {
-        // eslint-disable-next-line no-console
-        console.log('PayPal Shopping: Safari trackers enabled.');
-    }
-
     clearExpiredCart();
 
     const JL = getJetlore();
@@ -374,26 +360,10 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
                 });
         }
     };
-    const doNoop = () => {
-        if (debug && isSafari && !enableSafari) {
-            // eslint-disable-next-line no-console
-            console.log('PayPal Shopping: function is a noop because Safari is disabled.');
-        }
-    };
-    const emptyTrackers = {
-        addToCart:      (data : CartData) => doNoop(), // eslint-disable-line no-unused-vars
-        setCart:        (data : CartData) => doNoop(), // eslint-disable-line no-unused-vars
-        removeFromCart: (data : RemoveCartData) => doNoop(), // eslint-disable-line no-unused-vars
-        purchase:       (data : PurchaseData) => doNoop(), // eslint-disable-line no-unused-vars
-        setUser:        (data : UserData) => doNoop(), // eslint-disable-line no-unused-vars
-        setPropertyId:  (id : string) => doNoop(), // eslint-disable-line no-unused-vars
-        getIdentity:    (data : IdentityData, url? : string = accessTokenUrl) : Promise<any> => { // eslint-disable-line no-unused-vars,flowtype/no-weak-types
-            return new Promise((resolve) => {
-                resolve(doNoop());
-            });
-        }
-    };
-    const trackerFunctions = (isSafari && !enableSafari) ? emptyTrackers : trackers;
+
+    // To disable functions, refer to this PR:
+    // https://github.com/paypal/paypal-muse-components/commit/b3e76554fadd72ad24b6a900b99b8ff75af08815
+    const trackerFunctions = trackers;
 
     const trackEvent = (type : string, data : Object) => {
         const isJetloreType = config.jetlore
