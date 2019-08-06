@@ -9,7 +9,7 @@ import { getCookie, setCookie } from './lib/cookie-utils';
 import getJetlore from './lib/jetlore';
 import { getDeviceInfo } from './lib/get-device-info';
 
-type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
+type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser' | 'cancelCart';
 
 type CartEventType = 'addToCart' | 'setCart' | 'removeFromCart';
 
@@ -35,6 +35,10 @@ type CartData = {|
     currencyCode? : string
 |};
 
+type CancelCartData = {|
+    cartId? : string
+|};
+
 type RemoveCartData = {|
     cartId? : string,
     items : $ReadOnlyArray<{ id : string }>
@@ -57,7 +61,7 @@ type IdentityData = {|
 
 type ParamsToBeaconUrl = ({
     trackingType : TrackingType,
-    data : ViewData | CartData | RemoveCartData | PurchaseData
+    data : ViewData | CartData | RemoveCartData | PurchaseData | CancelCartData
 }) => string;
 
 type ParamsToTokenUrl = () => string;
@@ -262,6 +266,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     
     const currentUrl = new URL(window.location.href);
     const debug = currentUrl.searchParams.get('ppDebug');
+
     if (debug) {
         // eslint-disable-next-line no-console
         console.log('PayPal Shopping: debug mode on.');
@@ -329,7 +334,8 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             };
             track(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
-        setPropertyId: (id : string) => {
+        cancelCart:     (data : CancelCartData) => track(config, 'cancelCart', data),
+        setPropertyId:  (id : string) => {
             config.propertyId = id;
         },
         getIdentity: (data : IdentityData, url? : string = accessTokenUrl) : Promise<Object> => {
@@ -348,6 +354,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
                         }
                     }
                     return accessToken;
+
                 }).catch(err => {
                     if (data.onError) {
                         data.onError({

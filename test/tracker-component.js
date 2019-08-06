@@ -108,6 +108,7 @@ describe('paypal.Tracker', () => {
         expect(tracker).to.have.property('purchase');
         expect(tracker).to.have.property('track');
         expect(tracker).to.have.property('getIdentity');
+        expect(tracker).to.have.property('cancelCart');
     });
 
     it('should clear stored cart content if cart is expired', () => {
@@ -360,6 +361,29 @@ describe('paypal.Tracker', () => {
                     id:    'abc123'
                 },
                 trackingType: 'purchase',
+                clientId:     'abcxyz123',
+                merchantId:   'xyz,hij,lmno',
+                deviceInfo
+            })
+        );
+        expect(appendChildCalls).to.equal(1);
+    });
+
+    it('should send cancelCart events', () => {
+        const email = '__test__email7@gmail.com';
+        const userName = '__test__userName7';
+        const tracker = Tracker({ user: { email, name: userName } });
+        expect(appendChildCalls).to.equal(0);
+        tracker.cancelCart({ cartId: '__test__cartId' });
+        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
+            JSON.stringify({
+                cartId: '__test__cartId',
+                user:   {
+                    email: '__test__email7@gmail.com',
+                    name:  '__test__userName7',
+                    id:    'abc123'
+                },
+                trackingType: 'cancelCart',
                 clientId:     'abcxyz123',
                 merchantId:   'xyz,hij,lmno',
                 deviceInfo
