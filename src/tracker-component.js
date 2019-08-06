@@ -36,9 +36,9 @@ type CartData = {|
 |};
 
 type CancelCartData = {|
-    cartId : string,
-    clientId : string,
-    encryptedAccountNumber : string
+    cartId : string
+    // clientId : string
+    // encryptedAccountNumber : string
 |};
 
 type RemoveCartData = {|
@@ -305,7 +305,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         setPropertyId:  (id : string) => {
             config.propertyId = id;
         },
-        getIdentity: (data : IdentityData, url? : string = accessTokenUrl) => {
+        getIdentity:    (data : IdentityData, url? : string = accessTokenUrl) => {
             return getAccessToken(url, data.mrid)
                 .then((accessToken) => {
                     if (accessToken.data) {
@@ -341,7 +341,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         removeFromCart: (data : RemoveCartData) => doNoop(),
         purchase:       (data : PurchaseData) => doNoop(),
         setUser:        (data : UserData) => doNoop(),
-        cancelCart: (data : CancelCartData) => doNoop(),
+        cancelCart:     (data : CancelCartData) => doNoop(),
         setPropertyId:  (id : string) => doNoop(),
         getIdentity:    (data : IdentityData, url? : string = accessTokenUrl) => doNoop()
     };
