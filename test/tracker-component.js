@@ -93,7 +93,8 @@ describe('paypal.Tracker', () => {
     afterEach(() => {
         appendChildCalls = 0;
         imgMock.src = '';
-        document.cookie = 'paypal-cr-cart={}';
+        window.localStorage.removeItem('paypal-cr-cart');
+        document.cookie = 'paypal-cr-cart=;';
         fetchCalls = [];
     });
 
@@ -107,6 +108,61 @@ describe('paypal.Tracker', () => {
         expect(tracker).to.have.property('purchase');
         expect(tracker).to.have.property('track');
         expect(tracker).to.have.property('getIdentity');
+    });
+
+    it('should clear stored cart content if cart is expired', () => {
+        const beforeStorage = window.localStorage.getItem('paypal-cr-cart');
+
+        window.localStorage.setItem('paypal-cr-cart-expiry', Date.now() - 10);
+
+        expect(beforeStorage).to.equal(null);
+
+        // Since the expiry is in the past, this initialization should clear
+        // the cart and expiry.
+        Tracker();
+
+        const afterStorage = window.localStorage.getItem('paypal-cr-cart');
+        const afterExpiry = window.localStorage.getItem('paypal-cr-cart-expiry');
+
+        expect(afterStorage).to.equal(null);
+        expect(afterExpiry).to.equal(null);
+    });
+
+    it('should migrate cart cookie storage to localStorage when adding an item to cart', () => {
+        const products = [
+            {
+                id:  '1',
+                url: 'example.com'
+            },
+            {
+                id:  '2',
+                url: 'example.com'
+            },
+            {
+                id:  '3',
+                url: 'example.com'
+            },
+            {
+                id:  '4',
+                url: 'example.com'
+            }
+        ];
+
+        document.cookie = `paypal-cr-cart=${ JSON.stringify({ items: [
+            products[0],
+            products[1]
+        ] }) }`;
+
+        const tracker = Tracker();
+
+        tracker.addToCart({ items: [
+            products[2],
+            products[3]
+        ] });
+
+        expect(window.localStorage.getItem('paypal-cr-cart')).equal(JSON.stringify({
+            items: products
+        }));
     });
 
     it('should send addToCart events', () => {
@@ -564,10 +620,10 @@ describe('paypal.Tracker', () => {
         };
         const url = 'https://www.paypal.com/muse/api/partner-token';
         const result = tracker.getIdentity(data, url).then(accessToken => {
-            expect(accessToken).to.be.a('string');
+            expect(result).to.be.a('promise');
+            expect(accessToken).to.be.an('object');
+            done();
         });
-        expect(result).to.be.a('promise');
-        done();
     });
 
     it('should call getIdentity function with no url passed in', done => {
@@ -580,9 +636,9 @@ describe('paypal.Tracker', () => {
             onIdentification: identityData => identityData
         };
         const result = tracker.getIdentity(data).then(accessToken => {
-            expect(accessToken).to.be.a('string');
+            expect(accessToken).to.be.an('object');
+            expect(result).to.be.a('promise');
+            done();
         });
-        expect(result).to.be.a('promise');
-        done();
     });
 });
