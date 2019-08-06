@@ -36,7 +36,7 @@ type CartData = {|
 |};
 
 type CancelCartData = {|
-    cartId : string
+    cartId? : string
 |};
 
 type RemoveCartData = {|
