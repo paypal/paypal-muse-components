@@ -8,6 +8,7 @@ import generate from './generate-id';
 import { getCookie, setCookie } from './lib/cookie-utils';
 import getJetlore from './lib/jetlore';
 import { getDeviceInfo } from './lib/get-device-info';
+import { removeFromCart, addToCart } from './lib/compose-cart';
 
 type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
 
@@ -112,23 +113,27 @@ const composeCart = (type, data) => {
     // Devnote: Checking for cookie for backwards compatibility (the cookie check can be removed
     // a couple weeks after deploy because any cart cookie storage will be moved to localStorage
     // in this function).
-    const storedCart = window.localStorage.getItem(storage.paypalCrCart) || getCookie(storage.paypalCrCart);
+    const storedCart = window.localStorage.getItem(storage.paypalCrCart) || getCookie(storage.paypalCrCart) || '{}';
     const expiry = window.localStorage.getItem(storage.paypalCrCartExpiry);
+    const cart = JSON.parse(storedCart);
+    const currentItems = cart ? cart.items : [];
 
     if (!expiry) {
         window.localStorage.setItem(storage.paypalCrCartExpiry, Date.now() + sevenDays);
     }
 
-    if (type === 'add' && storedCart) {
-        const cart = JSON.parse(storedCart);
-        const currentItems = cart && cart.items;
-
-        if (currentItems && currentItems.length) {
-            _data.items = [
-                ...currentItems,
-                ...data.items
-            ];
-        }
+    switch (type) {
+    case 'add':
+        _data.items = addToCart(data.items, currentItems);
+        break;
+    case 'set':
+        _data.items = data.items;
+        break;
+    case 'remove':
+        _data.items = removeFromCart(data.items, currentItems);
+        break;
+    default:
+        throw new Error('invalid cart action');
     }
 
     window.localStorage.setItem(storage.paypalCrCart, JSON.stringify(_data));
@@ -330,7 +335,11 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
 
             return trackCartEvent(config, 'setCart', newCart);
         },
-        removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
+        removeFromCart: (data : RemoveCartData) => {
+            const newCart = composeCart('remove', data);
+    
+            trackCartEvent(config, 'removeFromCart', newCart);
+        },
         purchase:       (data : PurchaseData) => track(config, 'purchase', data),
         setUser:        (data : UserData) => {
             config = {
