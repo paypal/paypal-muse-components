@@ -297,7 +297,27 @@ const getPropertyId = ({ paramsToPropertyIdUrl }) => {
             .then(r => r.json()).then(container => {
                 window.localStorage.setItem(propertyIdKey, container.id);
                 resolve(container.id);
+            })
+            .catch(() => {
+                // doing nothing for now since there's no logging
             });
+    });
+};
+
+export const setImplicitPropertyId = (config : Config) => {
+    if (config.propertyId) {
+        return;
+    }
+    getPropertyId(config).then(propertyId => {
+        config.propertyId = propertyId;
+        /*
+        ** this is used for backwards compatibility
+        ** we do not want to overwrite a propertyId if propertyId
+        ** has already been set using the SDK
+        */
+        if (trackEventQueue.length) {
+            clearTrackQueue(config);
+        }
     });
 };
 
@@ -390,19 +410,8 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             };
             track(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
-        setPropertyId: (id : string, automatic : boolean = false) => {
-            if (config.propertyId && automatic) {
-                return;
-            }
+        setPropertyId: (id : string) => {
             config.propertyId = id;
-            /*
-            ** this is used for backwards compatibility
-            ** we do not want to overwrite a propertyId if propertyId
-            ** has already been set using the SDK
-            */
-            if (trackEventQueue.length) {
-                clearTrackQueue(config);
-            }
         },
         getIdentity: (data : IdentityData, url? : string = accessTokenUrl) : Promise<Object> => {
             return getAccessToken(url, data.mrid)
@@ -432,9 +441,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
                 });
         }
     };
-    getPropertyId(config).then(propertyId => {
-        trackers.setPropertyId(propertyId, true);
-    });
+    setImplicitPropertyId(config);
     const doNoop = () => {
         if (debug && isSafari && !enableSafari) {
             // eslint-disable-next-line no-console
