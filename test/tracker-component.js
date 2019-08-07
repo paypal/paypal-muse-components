@@ -320,15 +320,14 @@ describe('paypal.Tracker', () => {
                 }
             ]
         });
+
         expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
             JSON.stringify({
-                cartId: '__test__cartId',
-                items:  [
-                    {
-                        id:  '__test__productId',
-                        url: 'https://example.com/__test__productId'
-                    }
-                ],
+                cartId:        '__test__cartId',
+                items:         [ {
+                    id:  '__test__productId',
+                    url: 'https://example.com/__test__productId'
+                } ],
                 cartEventType: 'removeFromCart',
                 user:          {
                     email: '__test__email5@gmail.com',
