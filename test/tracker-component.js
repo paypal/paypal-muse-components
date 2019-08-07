@@ -368,7 +368,7 @@ describe('paypal.Tracker', () => {
         expect(appendChildCalls).to.equal(1);
     });
 
-    it('should send cancelCart events', () => {
+    it('should send cancelCart events and clear localStorage upon cancelling cart', () => {
         const email = '__test__email7@gmail.com';
         const userName = '__test__userName7';
         const tracker = Tracker({ user: { email, name: userName } });
@@ -389,6 +389,12 @@ describe('paypal.Tracker', () => {
             })
         );
         expect(appendChildCalls).to.equal(1);
+
+        const afterStorage = window.localStorage.getItem('paypal-cr-cart');
+        const afterExpiry = window.localStorage.getItem('paypal-cr-cart-expiry');
+
+        expect(afterStorage).to.equal(null);
+        expect(afterExpiry).to.equal(null);
     });
 
     it('should call paramsToBeaconUrl to create the url if you pass in paramsToBeaconUrl function', () => {
