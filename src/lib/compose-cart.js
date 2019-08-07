@@ -5,12 +5,10 @@ export const removeFromCart = (items, currentItems = []) => {
         if (item.quantity === undefined) {
             return accumulator.filter(curItem => curItem.id !== item.id);
         }
+
+        let quantity = parseInt(item.quantity, 10);
   
-        if (typeof item.quantity !== 'number') {
-            throw new TypeError('quantity must be a number');
-        }
-  
-        while (item.quantity > 0) {
+        while (quantity > 0) {
             const index = accumulator.findIndex(curItem => curItem.id === item.id);
   
             if (index === -1) {
@@ -18,7 +16,7 @@ export const removeFromCart = (items, currentItems = []) => {
             }
   
             accumulator.splice(index, 1);
-            item.quantity -= 1;
+            quantity -= 1;
         }
   
         return accumulator;

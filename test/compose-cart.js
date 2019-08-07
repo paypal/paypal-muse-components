@@ -176,16 +176,5 @@ describe('compose cart', () => {
 
             expect(result).to.deep.equal(expected);
         });
-
-        it('throws when quantity is not a number', () => {
-            const currentItems = [ item1, item2, item3, item4, item5, item6 ];
-            const itemsToRemove = [ { id: item1.id, quantity: 'a lot' } ];
-
-            try {
-                removeFromCart(itemsToRemove, currentItems);
-            } catch (err) {
-                expect(err.message).to.equal('quantity must be a number');
-            }
-        });
     });
 });
