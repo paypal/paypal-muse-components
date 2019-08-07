@@ -319,6 +319,7 @@ describe('paypal.Tracker', () => {
                 }
             ]
         });
+
         expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
             JSON.stringify({
                 cartId: '__test__cartId',

@@ -97,7 +97,7 @@ describe('Tracker.track function', () => {
             [operation]: createMock(trackerCalls)
         };
         const tracker = Tracker(initTrackerOpts);
-        tracker.track(operation, { payload: {} });
+        tracker.track(operation, { payload: {}, items: [] });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
         expect(trackerCalls.count).to.equal(1);
         expect(trackingCalls.count).to.equal(1);

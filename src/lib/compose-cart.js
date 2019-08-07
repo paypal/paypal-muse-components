@@ -1,6 +1,6 @@
 /* @flow */
 // $FlowFixMe
-export const removeFromCart = (items, currentItems) => {
+export const removeFromCart = (items, currentItems = []) => {
     return items.reduce((accumulator, item) => {
         if (item.quantity === undefined) {
             return accumulator.filter(curItem => curItem.id !== item.id);

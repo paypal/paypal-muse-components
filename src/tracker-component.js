@@ -19,7 +19,7 @@ type Product = {|
     title? : string,
     url? : string,
     description? : string,
-    imageUrl? : string,
+    imgUrl? : string,
     otherImages? : $ReadOnlyArray<string>,
     keywords? : $ReadOnlyArray<string>,
     price? : string,
@@ -108,7 +108,7 @@ const setRandomUserIdCookie = () : void => {
 
 const composeCart = (type, data) => {
     // Copy the data so we don't modify it outside the scope of this method.
-    const _data = { ...data };
+    let _data = { ...data };
 
     // Devnote: Checking for cookie for backwards compatibility (the cookie check can be removed
     // a couple weeks after deploy because any cart cookie storage will be moved to localStorage
@@ -130,6 +130,7 @@ const composeCart = (type, data) => {
         _data.items = data.items;
         break;
     case 'remove':
+        _data = { ...data, ...cart };
         _data.items = removeFromCart(data.items, currentItems);
         break;
     default:
@@ -336,9 +337,9 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             return trackCartEvent(config, 'setCart', newCart);
         },
         removeFromCart: (data : RemoveCartData) => {
-            const newCart = composeCart('remove', data);
-    
-            trackCartEvent(config, 'removeFromCart', newCart);
+            composeCart('remove', data);
+
+            trackCartEvent(config, 'removeFromCart', data);
         },
         purchase:       (data : PurchaseData) => track(config, 'purchase', data),
         setUser:        (data : UserData) => {
