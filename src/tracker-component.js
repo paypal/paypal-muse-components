@@ -258,6 +258,11 @@ const clearExpiredCart = () => {
     }
 };
 
+const clearCancelledCart = () => {
+    window.localStorage.removeItem(storage.paypalCrCartExpiry);
+    window.localStorage.removeItem(storage.paypalCrCart);
+};
+
 export const Tracker = (config? : Config = defaultTrackerConfig) => {
     /* PP Shopping tracker code breaks Safari. While we are debugging
      * the problem, disable trackers on Safari. Use the get param
@@ -347,7 +352,10 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             };
             track(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
-        cancelCart:     (data : CancelCartData) => track(config, 'cancelCart', data),
+        cancelCart:     (data : CancelCartData) => {
+            clearCancelledCart();
+            track(config, 'cancelCart', data);
+        },
         setPropertyId:  (id : string) => {
             config.propertyId = id;
         },
