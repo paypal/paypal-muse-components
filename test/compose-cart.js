@@ -12,61 +12,61 @@ const emailCampaignId = 'crazy_leroy@geocities.com';
 const cartId = 'a-unique-cart-id';
 
 const item1 = {
-    id:     'XL novelty hat',
+    id: 'XL novelty hat',
     imgUrl: 'https://www.paypalobjects.com/digitalassets/c/gifts/media/catalog/product/b/e/bestbuy.jpg',
-    price:  '100.00',
-    title:  'Best Buy',
-    url:    'http://localhost.paypal.com:8080/us/gifts/brands/best-buy'
+    price: '100.00',
+    title: 'Best Buy',
+    url: 'http://localhost.paypal.com:8080/us/gifts/brands/best-buy'
 };
 
 const item2 = {
-    id:     'XL novelty hat',
+    id: 'XL novelty hat',
     imgUrl: 'https://www.paypalobjects.com/digitalassets/c/gifts/media/catalog/product/b/e/bestbuy.jpg',
-    price:  '100.00',
-    title:  'Best Buy',
-    url:    'http://localhost.paypal.com:8080/us/gifts/brands/best-buy'
+    price: '100.00',
+    title: 'Best Buy',
+    url: 'http://localhost.paypal.com:8080/us/gifts/brands/best-buy'
 };
 
 const item3 = {
-    id:     'XL novelty hat',
+    id: 'XL novelty hat',
     imgUrl: 'https://www.paypalobjects.com/digitalassets/c/gifts/media/catalog/product/b/e/bestbuy.jpg',
-    price:  '100.00',
-    title:  'Best Buy',
-    url:    'http://localhost.paypal.com:8080/us/gifts/brands/best-buy'
+    price: '100.00',
+    title: 'Best Buy',
+    url: 'http://localhost.paypal.com:8080/us/gifts/brands/best-buy'
 };
 
 const item4 = {
-    id:     'rocket skates',
+    id: 'rocket skates',
     imgUrl: 'https://www.paypalobjects.com/digitalassets/c/gifts/media/catalog/product/b/e/bestbuy.jpg',
-    price:  '100.00',
-    title:  'Best Buy',
-    url:    'http://localhost.paypal.com:8080/us/gifts/brands/best-buy'
+    price: '100.00',
+    title: 'Best Buy',
+    url: 'http://localhost.paypal.com:8080/us/gifts/brands/best-buy'
 };
 
 const item5 = {
-    id:     'rocket skates',
+    id: 'rocket skates',
     imgUrl: 'https://www.paypalobjects.com/digitalassets/c/gifts/media/catalog/product/b/e/bestbuy.jpg',
-    price:  '100.00',
-    title:  'Best Buy',
-    url:    'http://localhost.paypal.com:8080/us/gifts/brands/best-buy'
+    price: '100.00',
+    title: 'Best Buy',
+    url: 'http://localhost.paypal.com:8080/us/gifts/brands/best-buy'
 };
 
 const item6 = {
-    id:     'a gigantic box of raisins',
+    id: 'a gigantic box of raisins',
     imgUrl: 'https://www.paypalobjects.com/digitalassets/c/gifts/media/catalog/product/b/e/bestbuy.jpg',
-    price:  '100.00',
-    title:  'Best Buy',
-    url:    'http://localhost.paypal.com:8080/us/gifts/brands/best-buy'
+    price: '100.00',
+    title: 'Best Buy',
+    url: 'http://localhost.paypal.com:8080/us/gifts/brands/best-buy'
 };
 
 describe('compose cart', () => {
     describe('composeCart', () => {
         const cart = {
             cartId,
-            items:           [],
+            items: [],
             emailCampaignId: 'crazy_leroy@geocities.com',
-            total:           '0.00',
-            currencyCode:    'USD'
+            total: '0.00',
+            currencyCode: 'USD'
         };
 
         before(() => {

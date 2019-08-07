@@ -24,12 +24,12 @@ describe('Tracker.track function', () => {
         initTrackerOpts = {
             user: {
                 email: 'blah@gmail.com',
-                name:  'ayye'
+                name: 'ayye'
             },
             jetlore: {
-                user_id:      'a',
+                user_id: 'a',
                 access_token: 'aaa',
-                feed_id:      'bbb'
+                feed_id: 'bbb'
             }
         };
         createMock = calls => {
@@ -39,15 +39,15 @@ describe('Tracker.track function', () => {
             };
         };
         getMockObj = () => ({
-            count:      0,
+            count: 0,
             calledWith: []
         });
         expectedJLInitObj = {
-            cid:     initTrackerOpts.jetlore.access_token,
+            cid: initTrackerOpts.jetlore.access_token,
             user_id: initTrackerOpts.jetlore.user_id,
             feed_id: initTrackerOpts.jetlore.feed_id,
-            div:     undefined,
-            lang:    undefined
+            div: undefined,
+            lang: undefined
         };
     });
 
@@ -235,23 +235,23 @@ describe('Tracker.track function', () => {
     it('should get correct jetlore payload based on type', () => {
         const payload = {
             payload: {
-                deal_id:     '6',
-                option_id:   '7',
-                count:        8,
-                text:        'yes',
-                name:        'muse',
+                deal_id: '6',
+                option_id: '7',
+                count: 8,
+                text: 'yes',
+                name: 'muse',
                 refinements: [ {
-                    name:   'hello',
-                    value:  'world'
+                    name: 'hello',
+                    value: 'world'
                 } ],
-                id:         '2245332',
+                id: '2245332',
                 payload: {
-                    name:   'paypal shopping',
-                    value:  'muse'
+                    name: 'paypal shopping',
+                    value: 'muse'
                 },
-                event:      'event1',
-                price:      100,
-                title:      'the title'
+                event: 'event1',
+                price: 100,
+                title: 'the title'
             }
         };
         const { deal_id, option_id, count, text, name, refinements, price } = payload.payload;
