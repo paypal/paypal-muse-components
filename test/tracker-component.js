@@ -173,7 +173,6 @@ describe('paypal.Tracker', () => {
         const tracker = Tracker({ user: { email, name: userName } });
         expect(appendChildCalls).to.equal(0);
         tracker.setPropertyId(propertyId);
-        expect(appendChildCalls).to.equal(1);
         tracker.addToCart({
             cartId: '__test__cartId',
             items:  [
@@ -211,7 +210,7 @@ describe('paypal.Tracker', () => {
                 deviceInfo
             })
         );
-        expect(appendChildCalls).to.equal(2);
+        expect(appendChildCalls).to.equal(1);
         tracker.addToCart({
             cartId: '__test__cartId0',
             items:  [
