@@ -264,6 +264,11 @@ const clearExpiredCart = () => {
     }
 };
 
+const clearCancelledCart = () => {
+    window.localStorage.removeItem(storage.paypalCrCartExpiry);
+    window.localStorage.removeItem(storage.paypalCrCart);
+};
+
 export const Tracker = (config? : Config = defaultTrackerConfig) => {
     /*
      * Use the get param ?ppDebug=true to see logs
@@ -344,7 +349,10 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             };
             track(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
-        cancelCart:     (data : CancelCartData) => track(config, 'cancelCart', data),
+        cancelCart:     (data : CancelCartData) => {
+            clearCancelledCart();
+            track(config, 'cancelCart', data);
+        },
         setPropertyId:  (id : string) => {
             config.propertyId = id;
         },
