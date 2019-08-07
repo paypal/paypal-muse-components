@@ -130,7 +130,7 @@ const composeCart = (type, data) => {
         _data.items = data.items;
         break;
     case 'remove':
-        _data = { ...data, ...cart };
+        _data = { ...cart, ...data };
         _data.items = removeFromCart(data.items, currentItems);
         break;
     default:
