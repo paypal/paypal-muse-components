@@ -337,9 +337,9 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             return trackCartEvent(config, 'setCart', newCart);
         },
         removeFromCart: (data : RemoveCartData) => {
-            composeCart('remove', data);
+            const newCart = composeCart('remove', data);
 
-            trackCartEvent(config, 'removeFromCart', data);
+            trackCartEvent(config, 'removeFromCart', newCart);
         },
         purchase:       (data : PurchaseData) => track(config, 'purchase', data),
         setUser:        (data : UserData) => {
