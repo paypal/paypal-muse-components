@@ -387,7 +387,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         }
     };
     const emptyTrackers = {
-        addToCart:      (data : CartData) => doNoop(),
+        addToCart:      (data : CartData) => doNoop(),  // eslint-disable-line no-unused-vars
         setCart:        (data : CartData) => doNoop(),
         removeFromCart: (data : RemoveCartData) => doNoop(),
         purchase:       (data : PurchaseData) => doNoop(),
