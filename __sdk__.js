@@ -3,18 +3,18 @@
 
 module.exports = {
     'messaging': {
-        entry:           './src/messaging',
+        entry: './src/messaging',
         staticNamespace: '__messaging__',
-        automatic:        false
+        automatic: false
     },
     'muse': {
-        entry:           './src/index',
+        entry: './src/index',
         staticNamespace: '__muse__',
-        automatic:        false
+        automatic: false
     },
     'tracker': {
-        entry:           './src/tracker',
+        entry: './src/tracker',
         staticNamespace: '__tracker__',
-        automatic:        false
+        automatic: false
     }
 };

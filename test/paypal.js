@@ -13,7 +13,7 @@ insertMockSDKScript({
 
 setupSDK([
     {
-        name:     'must',
+        name: 'must',
         requirer: () => muse
     }
 ]);

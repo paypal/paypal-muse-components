@@ -43,8 +43,8 @@ const showExitModal = ({ cartRecovery }) => {
     if (!isRendered) {
         // $FlowFixMe
         ppq('updateExperience', {
-            command:    'SHOW_OVERLAY',
-            visitorId:  userId
+            command: 'SHOW_OVERLAY',
+            visitorId: userId
         });
         setCookie('paypal-cr-lastseen', 'true', sevenDays);
         isRendered = true;
@@ -102,18 +102,18 @@ export function setup() {
     loadJavascript(museSdkUrl);
     // $FlowFixMe
     ppq('showExperience', 'https://www.paypalobjects.com/muse/cart-recovery-0.3/', 'body', {
-        sessionId:          'BOND007',
-        variant:            'modal',
-        flow:               'cart-recovery',
-        mobileVariant:      'modal',
-        mobileFlow:         'cart-recovery',
-        isMobileEnabled:    'true',
-        isDesktopEnabled:   'true',
-        mrid:               'FY8HBGU6Y2MWW',
-        iframeId:           '__cr',
-        dismissCookieAge:   0,
-        isPpUserExclusive:  false,
-        handleEvents:       ({ data, email }) => {
+        sessionId: 'BOND007',
+        variant: 'modal',
+        flow: 'cart-recovery',
+        mobileVariant: 'modal',
+        mobileFlow: 'cart-recovery',
+        isMobileEnabled: 'true',
+        isDesktopEnabled: 'true',
+        mrid: 'FY8HBGU6Y2MWW',
+        iframeId: '__cr',
+        dismissCookieAge: 0,
+        isPpUserExclusive: false,
+        handleEvents: ({ data, email }) => {
             if (!data) {
                 return;
             }

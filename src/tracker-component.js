@@ -8,8 +8,9 @@ import generate from './generate-id';
 import { getCookie, setCookie } from './lib/cookie-utils';
 import getJetlore from './lib/jetlore';
 import { getDeviceInfo } from './lib/get-device-info';
+import { removeFromCart, addToCart } from './lib/compose-cart';
 
-type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser';
+type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser' | 'cancelCart';
 
 type CartEventType = 'addToCart' | 'setCart' | 'removeFromCart';
 
@@ -18,7 +19,7 @@ type Product = {|
     title? : string,
     url? : string,
     description? : string,
-    imageUrl? : string,
+    imgUrl? : string,
     otherImages? : $ReadOnlyArray<string>,
     keywords? : $ReadOnlyArray<string>,
     price? : string,
@@ -33,6 +34,10 @@ type CartData = {|
     emailCampaignId? : string,
     total? : string,
     currencyCode? : string
+|};
+
+type CancelCartData = {|
+    cartId? : string
 |};
 
 type RemoveCartData = {|
@@ -57,7 +62,7 @@ type IdentityData = {|
 
 type ParamsToBeaconUrl = ({
     trackingType : TrackingType,
-    data : ViewData | CartData | RemoveCartData | PurchaseData
+    data : ViewData | CartData | RemoveCartData | PurchaseData | CancelCartData
 }) => string;
 
 type ParamsToTokenUrl = () => string;
@@ -91,7 +96,7 @@ type Config = {|
 |};
 
 const storage = {
-    paypalCrCart:       'paypal-cr-cart',
+    paypalCrCart: 'paypal-cr-cart',
     paypalCrCartExpiry: 'paypal-cr-cart-expiry'
 };
 
@@ -110,28 +115,33 @@ const setRandomUserIdCookie = () : void => {
 
 const composeCart = (type, data) => {
     // Copy the data so we don't modify it outside the scope of this method.
-    const _data = { ...data };
+    let _data = { ...data };
 
     // Devnote: Checking for cookie for backwards compatibility (the cookie check can be removed
     // a couple weeks after deploy because any cart cookie storage will be moved to localStorage
     // in this function).
-    const storedCart = window.localStorage.getItem(storage.paypalCrCart) || getCookie(storage.paypalCrCart);
+    const storedCart = window.localStorage.getItem(storage.paypalCrCart) || getCookie(storage.paypalCrCart) || '{}';
     const expiry = window.localStorage.getItem(storage.paypalCrCartExpiry);
+    const cart = JSON.parse(storedCart);
+    const currentItems = cart ? cart.items : [];
 
     if (!expiry) {
         window.localStorage.setItem(storage.paypalCrCartExpiry, Date.now() + sevenDays);
     }
 
-    if (type === 'add' && storedCart) {
-        const cart = JSON.parse(storedCart);
-        const currentItems = cart && cart.items;
-
-        if (currentItems && currentItems.length) {
-            _data.items = [
-                ...currentItems,
-                ...data.items
-            ];
-        }
+    switch (type) {
+    case 'add':
+        _data.items = addToCart(data.items, currentItems);
+        break;
+    case 'set':
+        _data.items = data.items;
+        break;
+    case 'remove':
+        _data = { ...cart, ...data };
+        _data.items = removeFromCart(data.items, currentItems);
+        break;
+    default:
+        throw new Error('invalid cart action');
     }
 
     window.localStorage.setItem(storage.paypalCrCart, JSON.stringify(_data));
@@ -141,9 +151,9 @@ const composeCart = (type, data) => {
 
 const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
     return fetch(url, {
-        method:      'POST',
+        method: 'POST',
         credentials: 'include',
-        headers:     {
+        headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -161,16 +171,16 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
     case 'addToCart':
     case 'removeFromCart':
         return {
-            deal_id:   payload.deal_id,
+            deal_id: payload.deal_id,
             option_id: payload.option_id,
-            count:     payload.count,
-            price:     payload.price
+            count: payload.count,
+            price: payload.price
         };
     case 'purchase':
         return {
-            deal_id:   payload.deal_id,
+            deal_id: payload.deal_id,
             option_id: payload.option_id,
-            count:     payload.count
+            count: payload.count
         };
     case 'search':
         return {
@@ -178,18 +188,18 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
         };
     case 'view':
         return {
-            deal_id:   payload.deal_id,
+            deal_id: payload.deal_id,
             option_id: payload.option_id
         };
     case 'browse_section':
         return {
-            name:        payload.name,
+            name: payload.name,
             refinements: payload.refinements
         };
     case 'browse_promo':
         return {
             name: payload.name,
-            id:   payload.id
+            id: payload.id
         };
     case 'addToWishList':
     case 'removeFromWishList':
@@ -225,9 +235,9 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
     const data = {
         ...trackingData,
         user,
-        propertyId:   config.propertyId,
+        propertyId: config.propertyId,
         trackingType,
-        clientId:   getClientID(),
+        clientId: getClientID(),
         merchantId: getMerchantID().join(','),
         deviceInfo
     };
@@ -319,35 +329,25 @@ export const setImplicitPropertyId = (config : Config) => {
             clearTrackQueue(config);
         }
     });
+const clearCancelledCart = () => {
+    window.localStorage.removeItem(storage.paypalCrCartExpiry);
+    window.localStorage.removeItem(storage.paypalCrCart);
 };
 
 export const Tracker = (config? : Config = defaultTrackerConfig) => {
-    /* PP Shopping tracker code breaks Safari. While we are debugging
-     * the problem, disable trackers on Safari. Use the get param
-     * ?ppDebug=true to see logs, and ?ppEnableSafari to enable the functions
-     * on Safari for debugging purposes.
+    /*
+     * Use the get param ?ppDebug=true to see logs
+     *
      */
+    
     const currentUrl = new URL(window.location.href);
     const debug = currentUrl.searchParams.get('ppDebug');
-    const enableSafari = currentUrl.searchParams.get('ppEnableSafari');
-    
+
     if (debug) {
         // eslint-disable-next-line no-console
         console.log('PayPal Shopping: debug mode on.');
     }
     
-    const isSafari = (/^((?!chrome|android).)*safari/i).test(navigator.userAgent);
-
-    if (debug && isSafari) {
-        // eslint-disable-next-line no-console
-        console.log('PayPal Shopping: Safari detected.');
-    }
-
-    if (debug && isSafari && enableSafari) {
-        // eslint-disable-next-line no-console
-        console.log('PayPal Shopping: Safari trackers enabled.');
-    }
-
     clearExpiredCart();
 
     const JL = getJetlore();
@@ -386,29 +386,37 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         JL.tracking(trackingConfig);
     }
     const trackers = {
-        view:       (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
-        addToCart:  (data : CartData) => {
+        view: (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
+        addToCart: (data : CartData) => {
             const newCart = composeCart('add', data);
 
             return trackCartEvent(config, 'addToCart', newCart);
         },
-        setCart:        (data : CartData) => {
+        setCart: (data : CartData) => {
             const newCart = composeCart('set', data);
 
             return trackCartEvent(config, 'setCart', newCart);
         },
-        removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
-        purchase:       (data : PurchaseData) => track(config, 'purchase', data),
-        setUser:        (data : UserData) => {
+        removeFromCart: (data : RemoveCartData) => {
+            composeCart('remove', data);
+
+            trackCartEvent(config, 'removeFromCart', data);
+        },
+        purchase: (data : PurchaseData) => track(config, 'purchase', data),
+        setUser: (data : UserData) => {
             config = {
                 ...config,
                 user: {
                     ...config.user,
                     email: data.user.email || ((config && config.user) || {}).email,
-                    name:  data.user.name || ((config && config.user) || {}).name
+                    name: data.user.name || ((config && config.user) || {}).name
                 }
             };
             track(config, 'setUser', { oldUserId: getUserIdCookie() });
+        },
+        cancelCart: (data : CancelCartData) => {
+            clearCancelledCart();
+            track(config, 'cancelCart', data);
         },
         setPropertyId: (id : string) => {
             config.propertyId = id;
@@ -424,16 +432,17 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
                         if (data.onError) {
                             data.onError({
                                 message: 'No token could be created',
-                                error:   accessToken
+                                error: accessToken
                             });
                         }
                     }
                     return accessToken;
+
                 }).catch(err => {
                     if (data.onError) {
                         data.onError({
                             message: 'No token could be created',
-                            error:   err
+                            error: err
                         });
                     }
 
@@ -463,6 +472,10 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     };
     const trackerFunctions = (isSafari && !enableSafari) ? emptyTrackers : trackers;
 
+    // To disable functions, refer to this PR:
+    // https://github.com/paypal/paypal-muse-components/commit/b3e76554fadd72ad24b6a900b99b8ff75af08815
+    const trackerFunctions = trackers;
+
     const trackEvent = (type : string, data : Object) => {
         const isJetloreType = config.jetlore
             ? jetloreTrackTypes.includes(type)
@@ -483,14 +496,14 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             url = 'https://paypal.com/muse/api/partner-token';
         }
         return window.fetch(url, {
-            method:      'POST',
+            method: 'POST',
             credentials: 'include',
-            headers:     {
+            headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 merchantId: getMerchantID()[0],
-                clientId:   getClientID()
+                clientId: getClientID()
             })
         }).then(res => {
             if (res.status !== 200) {

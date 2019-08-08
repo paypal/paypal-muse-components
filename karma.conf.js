@@ -15,17 +15,17 @@ const museGlobal : MuseGlobalType = {
 export default (karma : Object) => {
     const karmaConfig = getKarmaConfig(karma, {
         basePath: __dirname,
-        webpack:  getWebpackConfig({
+        webpack: getWebpackConfig({
             vars: {
                 __muse__: museGlobal,
 
-                __PORT__:       8000,
+                __PORT__: 8000,
                 __STAGE_HOST__: 'msmaster.qa.paypal.com',
-                __HOST__:       'test.paypal.com',
-                __HOSTNAME__:   'test.paypal.com',
-                __PATH__:       '/sdk/js',
-                __VERSION__:    '1.0.55',
-                __NAMESPACE__:  'testpaypal'
+                __HOST__: 'test.paypal.com',
+                __HOSTNAME__: 'test.paypal.com',
+                __PATH__: '/sdk/js',
+                __VERSION__: '1.0.55',
+                __NAMESPACE__: 'testpaypal'
             }
         })
     });
@@ -37,9 +37,9 @@ export default (karma : Object) => {
         },
         files: [
             {
-                pattern:  'test/paypal.js',
+                pattern: 'test/paypal.js',
                 included: true,
-                served:   true
+                served: true
             },
 
             ...karmaConfig.files
