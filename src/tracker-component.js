@@ -8,6 +8,7 @@ import generate from './generate-id';
 import { getCookie, setCookie } from './lib/cookie-utils';
 import getJetlore from './lib/jetlore';
 import { getDeviceInfo } from './lib/get-device-info';
+import { removeFromCart, addToCart } from './lib/compose-cart';
 
 type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser' | 'cancelCart';
 
@@ -18,7 +19,7 @@ type Product = {|
     title? : string,
     url? : string,
     description? : string,
-    imageUrl? : string,
+    imgUrl? : string,
     otherImages? : $ReadOnlyArray<string>,
     keywords? : $ReadOnlyArray<string>,
     price? : string,
@@ -111,28 +112,33 @@ const setRandomUserIdCookie = () : void => {
 
 const composeCart = (type, data) => {
     // Copy the data so we don't modify it outside the scope of this method.
-    const _data = { ...data };
+    let _data = { ...data };
 
     // Devnote: Checking for cookie for backwards compatibility (the cookie check can be removed
     // a couple weeks after deploy because any cart cookie storage will be moved to localStorage
     // in this function).
-    const storedCart = window.localStorage.getItem(storage.paypalCrCart) || getCookie(storage.paypalCrCart);
+    const storedCart = window.localStorage.getItem(storage.paypalCrCart) || getCookie(storage.paypalCrCart) || '{}';
     const expiry = window.localStorage.getItem(storage.paypalCrCartExpiry);
+    const cart = JSON.parse(storedCart);
+    const currentItems = cart ? cart.items : [];
 
     if (!expiry) {
         window.localStorage.setItem(storage.paypalCrCartExpiry, Date.now() + sevenDays);
     }
 
-    if (type === 'add' && storedCart) {
-        const cart = JSON.parse(storedCart);
-        const currentItems = cart && cart.items;
-
-        if (currentItems && currentItems.length) {
-            _data.items = [
-                ...currentItems,
-                ...data.items
-            ];
-        }
+    switch (type) {
+    case 'add':
+        _data.items = addToCart(data.items, currentItems);
+        break;
+    case 'set':
+        _data.items = data.items;
+        break;
+    case 'remove':
+        _data = { ...cart, ...data };
+        _data.items = removeFromCart(data.items, currentItems);
+        break;
+    default:
+        throw new Error('invalid cart action');
     }
 
     window.localStorage.setItem(storage.paypalCrCart, JSON.stringify(_data));
@@ -258,21 +264,30 @@ const clearExpiredCart = () => {
     }
 };
 
+const clearCancelledCart = () => {
+    window.localStorage.removeItem(storage.paypalCrCartExpiry);
+    window.localStorage.removeItem(storage.paypalCrCart);
+};
+
 export const Tracker = (config? : Config = defaultTrackerConfig) => {
-    /* PP Shopping tracker code breaks Safari. While we are debugging
-     * the problem, disable trackers on Safari. Use the get param
-     * ?ppDebug=true to see logs, and ?ppEnableSafari to enable the functions
-     * on Safari for debugging purposes.
+    /*
+     * Use the get param ?ppDebug=true to see logs
+     *
      */
+    
     const currentUrl = new URL(window.location.href);
     const debug = currentUrl.searchParams.get('ppDebug');
+<<<<<<< HEAD
     const enableSafari = currentUrl.searchParams.get('ppEnableSafari');
+=======
+>>>>>>> 19c19d769e2bba16508ff21dca76ab290669aa71
 
     if (debug) {
         // eslint-disable-next-line no-console
         console.log('PayPal Shopping: debug mode on.');
     }
     
+<<<<<<< HEAD
     const isSafari = (/^((?!chrome|android).)*safari/i).test(navigator.userAgent);
 
     if (debug && isSafari) {
@@ -285,6 +300,8 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         console.log('PayPal Shopping: Safari trackers enabled.');
     }
     
+=======
+>>>>>>> 19c19d769e2bba16508ff21dca76ab290669aa71
     clearExpiredCart();
 
     const JL = getJetlore();
@@ -334,7 +351,11 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
 
             return trackCartEvent(config, 'setCart', newCart);
         },
-        removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
+        removeFromCart: (data : RemoveCartData) => {
+            composeCart('remove', data);
+
+            trackCartEvent(config, 'removeFromCart', data);
+        },
         purchase:       (data : PurchaseData) => track(config, 'purchase', data),
         setUser:        (data : UserData) => {
             config = {
@@ -347,7 +368,14 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             };
             track(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
+<<<<<<< HEAD
         cancelCart:     (data : CancelCartData) => track(config, 'cancelCart', data),
+=======
+        cancelCart:     (data : CancelCartData) => {
+            clearCancelledCart();
+            track(config, 'cancelCart', data);
+        },
+>>>>>>> 19c19d769e2bba16508ff21dca76ab290669aa71
         setPropertyId:  (id : string) => {
             config.propertyId = id;
         },
@@ -380,6 +408,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
                 });
         }
     };
+<<<<<<< HEAD
     const doNoop = () => {
         if (debug && isSafari && !enableSafari) {
             // eslint-disable-next-line no-console
@@ -401,6 +430,12 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         }
     };
     const trackerFunctions = (isSafari && !enableSafari) ? emptyTrackers : trackers;
+=======
+
+    // To disable functions, refer to this PR:
+    // https://github.com/paypal/paypal-muse-components/commit/b3e76554fadd72ad24b6a900b99b8ff75af08815
+    const trackerFunctions = trackers;
+>>>>>>> 19c19d769e2bba16508ff21dca76ab290669aa71
 
     const trackEvent = (type : string, data : Object) => {
         const isJetloreType = config.jetlore

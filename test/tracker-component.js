@@ -320,15 +320,14 @@ describe('paypal.Tracker', () => {
                 }
             ]
         });
+
         expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
             JSON.stringify({
-                cartId: '__test__cartId',
-                items:  [
-                    {
-                        id:  '__test__productId',
-                        url: 'https://example.com/__test__productId'
-                    }
-                ],
+                cartId:        '__test__cartId',
+                items:         [ {
+                    id:  '__test__productId',
+                    url: 'https://example.com/__test__productId'
+                } ],
                 cartEventType: 'removeFromCart',
                 user:          {
                     email: '__test__email5@gmail.com',
@@ -369,7 +368,7 @@ describe('paypal.Tracker', () => {
         expect(appendChildCalls).to.equal(1);
     });
 
-    it('should send cancelCart events', () => {
+    it('should send cancelCart events and clear localStorage upon cancelling cart', () => {
         const email = '__test__email7@gmail.com';
         const userName = '__test__userName7';
         const tracker = Tracker({ user: { email, name: userName } });
@@ -390,6 +389,12 @@ describe('paypal.Tracker', () => {
             })
         );
         expect(appendChildCalls).to.equal(1);
+
+        const afterStorage = window.localStorage.getItem('paypal-cr-cart');
+        const afterExpiry = window.localStorage.getItem('paypal-cr-cart-expiry');
+
+        expect(afterStorage).to.equal(null);
+        expect(afterExpiry).to.equal(null);
     });
 
     it('should call paramsToBeaconUrl to create the url if you pass in paramsToBeaconUrl function', () => {
