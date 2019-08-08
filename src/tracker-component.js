@@ -93,7 +93,7 @@ type Config = {|
 |};
 
 const storage = {
-    paypalCrCart:       'paypal-cr-cart',
+    paypalCrCart: 'paypal-cr-cart',
     paypalCrCartExpiry: 'paypal-cr-cart-expiry'
 };
 
@@ -148,9 +148,9 @@ const composeCart = (type, data) => {
 
 const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
     return fetch(url, {
-        method:      'POST',
+        method: 'POST',
         credentials: 'include',
-        headers:     {
+        headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -168,16 +168,16 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
     case 'addToCart':
     case 'removeFromCart':
         return {
-            deal_id:   payload.deal_id,
+            deal_id: payload.deal_id,
             option_id: payload.option_id,
-            count:     payload.count,
-            price:     payload.price
+            count: payload.count,
+            price: payload.price
         };
     case 'purchase':
         return {
-            deal_id:   payload.deal_id,
+            deal_id: payload.deal_id,
             option_id: payload.option_id,
-            count:     payload.count
+            count: payload.count
         };
     case 'search':
         return {
@@ -185,18 +185,18 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
         };
     case 'view':
         return {
-            deal_id:   payload.deal_id,
+            deal_id: payload.deal_id,
             option_id: payload.option_id
         };
     case 'browse_section':
         return {
-            name:        payload.name,
+            name: payload.name,
             refinements: payload.refinements
         };
     case 'browse_promo':
         return {
             name: payload.name,
-            id:   payload.id
+            id: payload.id
         };
     case 'addToWishList':
     case 'removeFromWishList':
@@ -225,9 +225,9 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
     const data = {
         ...trackingData,
         user,
-        propertyId:   config.propertyId,
+        propertyId: config.propertyId,
         trackingType,
-        clientId:   getClientID(),
+        clientId: getClientID(),
         merchantId: getMerchantID().join(','),
         deviceInfo
     };
@@ -321,13 +321,13 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         JL.tracking(trackingConfig);
     }
     const trackers = {
-        view:       (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
-        addToCart:  (data : CartData) => {
+        view: (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
+        addToCart: (data : CartData) => {
             const newCart = composeCart('add', data);
 
             return trackCartEvent(config, 'addToCart', newCart);
         },
-        setCart:        (data : CartData) => {
+        setCart: (data : CartData) => {
             const newCart = composeCart('set', data);
 
             return trackCartEvent(config, 'setCart', newCart);
@@ -337,23 +337,23 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
 
             trackCartEvent(config, 'removeFromCart', data);
         },
-        purchase:       (data : PurchaseData) => track(config, 'purchase', data),
-        setUser:        (data : UserData) => {
+        purchase: (data : PurchaseData) => track(config, 'purchase', data),
+        setUser: (data : UserData) => {
             config = {
                 ...config,
                 user: {
                     ...config.user,
                     email: data.user.email || ((config && config.user) || {}).email,
-                    name:  data.user.name || ((config && config.user) || {}).name
+                    name: data.user.name || ((config && config.user) || {}).name
                 }
             };
             track(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
-        cancelCart:     (data : CancelCartData) => {
+        cancelCart: (data : CancelCartData) => {
             clearCancelledCart();
             track(config, 'cancelCart', data);
         },
-        setPropertyId:  (id : string) => {
+        setPropertyId: (id : string) => {
             config.propertyId = id;
         },
         getIdentity: (data : IdentityData, url? : string = accessTokenUrl) : Promise<Object> => {
@@ -367,7 +367,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
                         if (data.onError) {
                             data.onError({
                                 message: 'No token could be created',
-                                error:   accessToken
+                                error: accessToken
                             });
                         }
                     }
@@ -377,7 +377,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
                     if (data.onError) {
                         data.onError({
                             message: 'No token could be created',
-                            error:   err
+                            error: err
                         });
                     }
 
@@ -410,14 +410,14 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             url = 'https://paypal.com/muse/api/partner-token';
         }
         return window.fetch(url, {
-            method:      'POST',
+            method: 'POST',
             credentials: 'include',
-            headers:     {
+            headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 merchantId: getMerchantID()[0],
-                clientId:   getClientID()
+                clientId: getClientID()
             })
         }).then(res => {
             if (res.status !== 200) {
