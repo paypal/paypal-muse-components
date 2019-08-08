@@ -515,7 +515,7 @@ module.exports = {
         'func-name-matching': 'off',
         'getter-return': 'off',
         'line-comment-position': 'off',
-        'max-lines': [ 'error', 500 ],
+        'max-lines': 0,
         'max-statements-per-line': [ 'error', { 'max': 1 } ],
         'multiline-ternary': 'off',
         'no-await-in-loop': 'off',

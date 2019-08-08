@@ -329,6 +329,7 @@ export const setImplicitPropertyId = (config : Config) => {
             clearTrackQueue(config);
         }
     });
+};
 const clearCancelledCart = () => {
     window.localStorage.removeItem(storage.paypalCrCartExpiry);
     window.localStorage.removeItem(storage.paypalCrCart);
@@ -451,26 +452,6 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         }
     };
     setImplicitPropertyId(config);
-    const doNoop = () => {
-        if (debug && isSafari && !enableSafari) {
-            // eslint-disable-next-line no-console
-            console.log('PayPal Shopping: function is a noop because Safari is disabled.');
-        }
-    };
-    const emptyTrackers = {
-        addToCart:      (data : CartData) => doNoop(), // eslint-disable-line no-unused-vars
-        setCart:        (data : CartData) => doNoop(), // eslint-disable-line no-unused-vars
-        removeFromCart: (data : RemoveCartData) => doNoop(), // eslint-disable-line no-unused-vars
-        purchase:       (data : PurchaseData) => doNoop(), // eslint-disable-line no-unused-vars
-        setUser:        (data : UserData) => doNoop(), // eslint-disable-line no-unused-vars
-        setPropertyId:  (id : string) => doNoop(), // eslint-disable-line no-unused-vars
-        getIdentity:    (data : IdentityData, url? : string = accessTokenUrl) : Promise<any> => { // eslint-disable-line no-unused-vars,flowtype/no-weak-types
-            return new Promise((resolve) => {
-                resolve(doNoop());
-            });
-        }
-    };
-    const trackerFunctions = (isSafari && !enableSafari) ? emptyTrackers : trackers;
 
     // To disable functions, refer to this PR:
     // https://github.com/paypal/paypal-muse-components/commit/b3e76554fadd72ad24b6a900b99b8ff75af08815

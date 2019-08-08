@@ -5,6 +5,6 @@ module.exports = {
 
     'rules': {
         'import/export': 'off',
-        'max-lines': 'off'
+        'max-lines': 0
     }
 };

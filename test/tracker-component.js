@@ -383,6 +383,7 @@ describe('paypal.Tracker', () => {
         const email = '__test__email7@gmail.com';
         const userName = '__test__userName7';
         const tracker = Tracker({ user: { email, name: userName } });
+        tracker.setPropertyId(propertyId);
         expect(appendChildCalls).to.equal(0);
         tracker.cancelCart({ cartId: '__test__cartId' });
         expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
@@ -393,6 +394,7 @@ describe('paypal.Tracker', () => {
                     name: '__test__userName7',
                     id: 'abc123'
                 },
+                propertyId,
                 trackingType: 'cancelCart',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
