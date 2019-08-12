@@ -21,6 +21,9 @@ const extractDataParam = (url : string) : string => {
     );
 };
 
+const autoPropertyId = 'wow-so-auto';
+let fetchCalls = [];
+
 // $FlowFixMe
 describe('paypal.Tracker', () => {
     let appendChildCalls = 0;
@@ -28,14 +31,13 @@ describe('paypal.Tracker', () => {
         appendChildCalls += 1;
     };
     const propertyId = 'hello-there';
-    let fetchCalls = [];
     window.fetch = (url, options) => {
         fetchCalls.push([ url, options ]);
         return Promise.resolve({
             url,
             body: options.body,
             status: 200,
-            json: () => ({ hello: 'hi' })
+            json: () => ({ id: autoPropertyId, hello: 'hi' })
         });
     };
 
@@ -612,6 +614,7 @@ describe('paypal.Tracker', () => {
                 }));
                 expect(data).to.deep.equal({
                     hello: 'hi',
+                    id: autoPropertyId,
                     success: true
                 });
                 done();
@@ -635,6 +638,7 @@ describe('paypal.Tracker', () => {
                 expect(params[0]).to.equal(tokenUrl);
                 expect(data).to.deep.equal({
                     hello: 'hi',
+                    id: autoPropertyId,
                     success: true
                 });
                 done();
@@ -652,6 +656,7 @@ describe('paypal.Tracker', () => {
             tracker.identify().then(data => {
                 expect(data).to.deep.equal({
                     hello: 'hi',
+                    id: autoPropertyId,
                     success: true
                 });
                 done();
@@ -692,5 +697,69 @@ describe('paypal.Tracker', () => {
             expect(result).to.be.a('promise');
             done();
         });
+    });
+
+    it('should not fetch implicit propertyId route if one is provided', () => {
+        const email = '__test__email3@gmail.com';
+        const userName = '__test__userName3';
+        const id = '__test__cookie-id';
+        const tracker = Tracker({ user: {
+            email,
+            name: userName
+        }, propertyId });
+        expect(appendChildCalls).to.equal(0);
+        tracker.setPropertyId(propertyId);
+        expect(fetchCalls.length).to.equal(0);
+        tracker.addToCart({
+            cartId: '__test__cartId',
+            items: [
+                {
+                    id: '__test__productId',
+                    url: 'https://example.com/__test__productId'
+                }
+            ],
+            emailCampaignId: '__test__emailCampaignId',
+            total: '12345.67',
+            currencyCode: 'USD'
+        });
+        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
+            JSON.stringify({
+                cartId: '__test__cartId',
+                items: [
+                    {
+                        id: '__test__productId',
+                        url: 'https://example.com/__test__productId'
+                    }
+                ],
+                emailCampaignId: '__test__emailCampaignId',
+                total: '12345.67',
+                currencyCode: 'USD',
+                cartEventType: 'addToCart',
+                user: { email, name: userName, id },
+                propertyId,
+                trackingType: 'cartEvent',
+                clientId: 'abcxyz123',
+                merchantId: 'xyz,hij,lmno',
+                deviceInfo
+            })
+        );
+        expect(appendChildCalls).to.equal(1);
+    });
+
+    it('should fetch implicit propertyId route if one is not provided', () => {
+        const email = '__test__email3@gmail.com';
+        const userName = '__test__userName3';
+        const id = 'cool-auto-id';
+        Tracker({ user: { email, name: userName } });
+        expect(appendChildCalls).to.equal(0);
+        expect(fetchCalls.length).to.equal(1);
+        expect(fetchCalls[0][0]).to.equal('https://paypal.com/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost%3A9876');
+    });
+
+    it('should not fetch propertyId if one is provided', () => {
+        const email = '__test__email3@gmail.com';
+        const userName = '__test__userName3';
+        Tracker({ user: { email, name: userName }, propertyId: 'hello' });
+        expect(fetchCalls.length).to.equal(0);
     });
 });

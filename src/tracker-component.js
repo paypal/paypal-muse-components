@@ -282,7 +282,7 @@ const clearExpiredCart = () => {
     }
 };
 
-const getPropertyId = ({ paramsToPropertyIdUrl }) => {
+const getPropertyId = ({ paramsToPropertyIdUrl, propertyId }) => {
     return new Promise(resolve => {
         const clientId = getClientID();
         const merchantId = getMerchantID()[0];
@@ -298,7 +298,7 @@ const getPropertyId = ({ paramsToPropertyIdUrl }) => {
         } else {
             url = 'https://paypal.com/tagmanager/containers/xo';
         }
-        window.fetch(`${ url }?mrid=${ merchantId }&url=${ encodeURIComponent(currentUrl) }`)
+        return window.fetch(`${ url }?mrid=${ merchantId }&url=${ encodeURIComponent(currentUrl) }`)
             .then(res => {
                 if (res.status === 200) {
                     return res;
@@ -315,16 +315,16 @@ const getPropertyId = ({ paramsToPropertyIdUrl }) => {
 };
 
 export const setImplicitPropertyId = (config : Config) => {
+    /*
+    ** this is used for backwards compatibility
+    ** we do not want to overwrite a propertyId if propertyId
+    ** has already been set using the SDK
+    */
     if (config.propertyId) {
         return;
     }
     getPropertyId(config).then(propertyId => {
         config.propertyId = propertyId;
-        /*
-        ** this is used for backwards compatibility
-        ** we do not want to overwrite a propertyId if propertyId
-        ** has already been set using the SDK
-        */
         if (trackEventQueue.length) {
             clearTrackQueue(config);
         }
