@@ -213,11 +213,10 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
 };
 
 window.trackEventQueue = [];
-const { trackEventQueue } = window;
 
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
     if (!config.propertyId) {
-        trackEventQueue.push([ trackingType, trackingData ]);
+        window.trackEventQueue.push([ trackingType, trackingData ]);
         return;
     }
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
@@ -257,10 +256,10 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
 };
 
 const clearTrackQueue = config => {
-    trackEventQueue.forEach(eventData => {
+    // eslint-disable-next-line array-callback-return
+    window.trackEventQueue = window.trackEventQueue.filter(eventData => {
         const [ trackingType, trackingData ] = eventData;
         track(config, trackingType, trackingData);
-        trackEventQueue.shift();
     });
 };
 
@@ -325,7 +324,7 @@ export const setImplicitPropertyId = (config : Config) => {
     }
     getPropertyId(config).then(propertyId => {
         config.propertyId = propertyId;
-        if (trackEventQueue.length) {
+        if (window.trackEventQueue.length) {
             clearTrackQueue(config);
         }
     });
