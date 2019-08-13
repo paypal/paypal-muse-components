@@ -749,7 +749,6 @@ describe('paypal.Tracker', () => {
     it('should fetch implicit propertyId route if one is not provided', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
-        const id = 'cool-auto-id';
         Tracker({ user: { email, name: userName } });
         expect(appendChildCalls).to.equal(0);
         expect(fetchCalls.length).to.equal(1);

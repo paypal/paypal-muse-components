@@ -282,7 +282,7 @@ const clearExpiredCart = () => {
     }
 };
 
-const getPropertyId = ({ paramsToPropertyIdUrl, propertyId }) => {
+const getPropertyId = ({ paramsToPropertyIdUrl }) => {
     return new Promise(resolve => {
         const clientId = getClientID();
         const merchantId = getMerchantID()[0];
