@@ -67,6 +67,8 @@ type ParamsToBeaconUrl = ({
 
 type ParamsToTokenUrl = () => string;
 
+type ParamsToPropertyIdUrl = () => string;
+
 type JetloreConfig = {|
     user_id : string,
     cid : string,
@@ -89,7 +91,8 @@ type Config = {|
         feed_id : string,
         div? : string,
         lang? : string
-    |}
+    |},
+    paramsToPropertyIdUrl? : ParamsToPropertyIdUrl
 |};
 
 const storage = {
@@ -209,7 +212,13 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
     }
 };
 
+let trackEventQueue = [];
+
 const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
+    if (!config.propertyId) {
+        trackEventQueue.push([ trackingType, trackingData ]);
+        return;
+    }
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
 
     const img = document.createElement('img');
@@ -246,6 +255,14 @@ const track = <T>(config : Config, trackingType : TrackingType, trackingData : T
     }
 };
 
+// eslint-disable-next-line flowtype/no-weak-types
+export const clearTrackQueue = (config : Config, queue : any) => {
+    // eslint-disable-next-line array-callback-return
+    return queue.filter(([ trackingType, trackingData ]) => {
+        track(config, trackingType, trackingData);
+    });
+};
+
 const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) =>
     track(config, 'cartEvent', { ...trackingData, cartEventType });
 
@@ -264,6 +281,54 @@ const clearExpiredCart = () => {
     }
 };
 
+const getPropertyId = ({ paramsToPropertyIdUrl }) => {
+    return new Promise(resolve => {
+        const clientId = getClientID();
+        const merchantId = getMerchantID()[0];
+        const propertyIdKey = `property-id-${ clientId }-${ merchantId }`;
+        const savedPropertyId = window.localStorage.getItem(propertyIdKey);
+        const currentUrl = `${ window.location.protocol }//${ window.location.host }`;
+        if (savedPropertyId) {
+            return resolve(savedPropertyId);
+        }
+        let url;
+        if (paramsToPropertyIdUrl) {
+            url = paramsToPropertyIdUrl();
+        } else {
+            url = 'https://paypal.com/tagmanager/containers/xo';
+        }
+        return window.fetch(`${ url }?mrid=${ merchantId }&url=${ encodeURIComponent(currentUrl) }`)
+            .then(res => {
+                if (res.status === 200) {
+                    return res;
+                }
+            })
+            .then(r => r.json()).then(container => {
+                window.localStorage.setItem(propertyIdKey, container.id);
+                resolve(container.id);
+            })
+            .catch(() => {
+                // doing nothing for now since there's no logging
+            });
+    });
+};
+
+export const setImplicitPropertyId = (config : Config) => {
+    /*
+    ** this is used for backwards compatibility
+    ** we do not want to overwrite a propertyId if propertyId
+    ** has already been set using the SDK
+    */
+    if (config.propertyId) {
+        return;
+    }
+    getPropertyId(config).then(propertyId => {
+        config.propertyId = propertyId;
+        if (trackEventQueue.length) {
+            trackEventQueue = clearTrackQueue(config, trackEventQueue);
+        }
+    });
+};
 const clearCancelledCart = () => {
     window.localStorage.removeItem(storage.paypalCrCartExpiry);
     window.localStorage.removeItem(storage.paypalCrCart);
@@ -385,6 +450,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
                 });
         }
     };
+    setImplicitPropertyId(config);
 
     // To disable functions, refer to this PR:
     // https://github.com/paypal/paypal-muse-components/commit/b3e76554fadd72ad24b6a900b99b8ff75af08815
