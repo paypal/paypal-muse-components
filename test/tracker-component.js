@@ -3,7 +3,7 @@
 
 import { expect } from 'chai';
 
-import { Tracker } from '../src/tracker-component';
+import { Tracker, clearTrackQueue } from '../src/tracker-component';
 import { setCookie } from '../src/lib/cookie-utils';
 // $FlowFixMe
 import generateIdModule from '../src/generate-id';
@@ -99,7 +99,6 @@ describe('paypal.Tracker', () => {
         window.localStorage.removeItem('paypal-cr-cart');
         document.cookie = 'paypal-cr-cart=;';
         fetchCalls = [];
-        window.trackEventQueue  = [];
     });
 
     // $FlowFixMe
@@ -760,5 +759,37 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName3';
         Tracker({ user: { email, name: userName }, propertyId: 'hello' });
         expect(fetchCalls.length).to.equal(0);
+    });
+
+    it('should clear trackEventQueue when function is called', () => {
+        const email = '__test__email4@gmail.com';
+        const userName = '__test__userName4';
+        const id = '__test__cookie-id';
+        const trackingData = {
+            cartId: '__test__cartId',
+            items: [
+                {
+                    id: '__test__productId',
+                    url: 'https://example.com/__test__productId'
+                }
+            ],
+            emailCampaignId: '__test__emailCampaignId',
+            total: '12345.67',
+            currencyCode: 'USD',
+            cartEventType: 'addToCart',
+            user: { email, name: userName, id },
+            propertyId,
+            trackingType: 'cartEvent',
+            clientId: 'abcxyz123',
+            merchantId: 'xyz,hij,lmno',
+            deviceInfo
+        };
+        const trackEventQueue = [
+            [ 'addToCart', trackingData ],
+            [ 'setCart', trackingData ],
+            [ 'remoteFromCart', trackingData ]
+        ];
+        const result = clearTrackQueue({}, trackEventQueue);
+        expect(result.length).to.equal(0);
     });
 });
