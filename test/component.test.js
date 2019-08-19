@@ -1,9 +1,8 @@
-/* global it describe beforeEach afterEach */
+/* global it describe beforeEach afterEach expect */
 /* @flow */
 
 import { ENV } from '@paypal/sdk-constants/src';
-import { getVersion, getEventEmitter } from '@paypal/sdk-client/src';
-import { expect } from 'chai';
+import { getEventEmitter } from '@paypal/sdk-client/src';
 
 import * as component from '../src/component'; // eslint-disable-line import/no-namespace
 
@@ -51,7 +50,7 @@ describe('muse', () => {
             const script = document.getElementById(component.PPTM_ID);
 
             // $FlowFixMe
-            expect(script).to.equal(null);
+            expect(script).toBe(null);
         });
 
         // $FlowFixMe
@@ -65,7 +64,7 @@ describe('muse', () => {
             const renderEventQueue = window.paypalDDL.filter(e => e.event === 'paypalButtonRender');
 
             // $FlowFixMe
-            expect(renderEventQueue.length).to.equal(1);
+            expect(renderEventQueue.length).toBe(1);
         });
     });
 
@@ -78,15 +77,17 @@ describe('muse', () => {
         // $FlowFixMe
         it('should not add mrid param to src if mrid is not present', () => {
             const src = component.getPptmScriptSrc(ENV.TEST, null, clientId, url);
+            const excluded = '&mrid=';
             // $FlowFixMe
-            expect(src).to.not.have.string('&mrid=');
+            expect(src).toEqual(expect.not.stringContaining(excluded));
         });
 
         // $FlowFixMe
         it('should not add client_id param to source if client_id is not present', () => {
             const src = component.getPptmScriptSrc(ENV.TEST, mrid, null, url);
+            const excluded = '&client_id=';
             // $FlowFixMe
-            expect(src).to.not.have.string('&client_id=');
+            expect(src).toEqual(expect.not.stringContaining(excluded));
         });
     });
 });

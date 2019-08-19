@@ -39,7 +39,6 @@
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
-    "chai": "^4.2.0",
     "flow-bin": "^0.100.0",
     "grumbler-scripts": "^3",
     "jest": "^24.9.0",

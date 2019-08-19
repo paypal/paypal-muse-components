@@ -1,7 +1,5 @@
-/* globals describe beforeAll afterEach it */
+/* globals describe beforeAll afterEach it expect */
 /* @flow */
-import { expect } from 'chai';
-
 import { Tracker } from '../src/tracker-component';
 import getJetlore from '../src/lib/jetlore';
 
@@ -67,9 +65,9 @@ describe('Tracker.track function', () => {
         const tracker = Tracker(initTrackerOpts);
         tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
-        expect(trackerCalls.count).to.equal(1);
-        expect(trackingCalls.count).to.equal(1);
-        expect(actualJLInitObj).to.deep.equal(expectedJLInitObj);
+        expect(trackerCalls.count).toBe(1);
+        expect(trackingCalls.count).toBe(1);
+        expect(actualJLInitObj).toEqual(expectedJLInitObj);
     });
 
     it('should call jetlore addToCart function', () => {
@@ -83,9 +81,9 @@ describe('Tracker.track function', () => {
         const tracker = Tracker(initTrackerOpts);
         tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
-        expect(trackerCalls.count).to.equal(1);
-        expect(trackingCalls.count).to.equal(1);
-        expect(actualJLInitObj).to.deep.equal(expectedJLInitObj);
+        expect(trackerCalls.count).toBe(1);
+        expect(trackingCalls.count).toBe(1);
+        expect(actualJLInitObj).toEqual(expectedJLInitObj);
     });
 
     it('should call jetlore removeFromCart function', () => {
@@ -99,9 +97,9 @@ describe('Tracker.track function', () => {
         const tracker = Tracker(initTrackerOpts);
         tracker.track(operation, { payload: {}, items: [] });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
-        expect(trackerCalls.count).to.equal(1);
-        expect(trackingCalls.count).to.equal(1);
-        expect(actualJLInitObj).to.deep.equal(expectedJLInitObj);
+        expect(trackerCalls.count).toBe(1);
+        expect(trackingCalls.count).toBe(1);
+        expect(actualJLInitObj).toEqual(expectedJLInitObj);
     });
 
     it('should call jetlore purchase function', () => {
@@ -115,9 +113,9 @@ describe('Tracker.track function', () => {
         const tracker = Tracker(initTrackerOpts);
         tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
-        expect(trackerCalls.count).to.equal(1);
-        expect(trackingCalls.count).to.equal(1);
-        expect(actualJLInitObj).to.deep.equal(expectedJLInitObj);
+        expect(trackerCalls.count).toBe(1);
+        expect(trackingCalls.count).toBe(1);
+        expect(actualJLInitObj).toEqual(expectedJLInitObj);
     });
 
     it('should call jetlore search function', () => {
@@ -131,9 +129,9 @@ describe('Tracker.track function', () => {
         const tracker = Tracker(initTrackerOpts);
         tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
-        expect(trackerCalls.count).to.equal(1);
-        expect(trackingCalls.count).to.equal(1);
-        expect(actualJLInitObj).to.deep.equal(expectedJLInitObj);
+        expect(trackerCalls.count).toBe(1);
+        expect(trackingCalls.count).toBe(1);
+        expect(actualJLInitObj).toEqual(expectedJLInitObj);
     });
 
     it('should call jetlore browse_section function', () => {
@@ -147,9 +145,9 @@ describe('Tracker.track function', () => {
         const tracker = Tracker(initTrackerOpts);
         tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
-        expect(trackerCalls.count).to.equal(1);
-        expect(trackingCalls.count).to.equal(1);
-        expect(actualJLInitObj).to.deep.equal(expectedJLInitObj);
+        expect(trackerCalls.count).toBe(1);
+        expect(trackingCalls.count).toBe(1);
+        expect(actualJLInitObj).toEqual(expectedJLInitObj);
     });
 
     it('should call jetlore addToWishList function', () => {
@@ -163,9 +161,9 @@ describe('Tracker.track function', () => {
         const tracker = Tracker(initTrackerOpts);
         tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
-        expect(trackerCalls.count).to.equal(1);
-        expect(trackingCalls.count).to.equal(1);
-        expect(actualJLInitObj).to.deep.equal(expectedJLInitObj);
+        expect(trackerCalls.count).toBe(1);
+        expect(trackingCalls.count).toBe(1);
+        expect(actualJLInitObj).toEqual(expectedJLInitObj);
     });
 
     it('should call jetlore removeFromWishList function', () => {
@@ -179,9 +177,9 @@ describe('Tracker.track function', () => {
         const tracker = Tracker(initTrackerOpts);
         tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
-        expect(trackerCalls.count).to.equal(1);
-        expect(trackingCalls.count).to.equal(1);
-        expect(actualJLInitObj).to.deep.equal(expectedJLInitObj);
+        expect(trackerCalls.count).toEqual(1);
+        expect(trackingCalls.count).toEqual(1);
+        expect(actualJLInitObj).toEqual(expectedJLInitObj);
     });
 
     it('should call jetlore addToFavorites function', () => {
@@ -195,9 +193,9 @@ describe('Tracker.track function', () => {
         const tracker = Tracker(initTrackerOpts);
         tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
-        expect(trackerCalls.count).to.equal(1);
-        expect(trackingCalls.count).to.equal(1);
-        expect(actualJLInitObj).to.deep.equal(expectedJLInitObj);
+        expect(trackerCalls.count).toEqual(1);
+        expect(trackingCalls.count).toEqual(1);
+        expect(actualJLInitObj).toEqual(expectedJLInitObj);
     });
 
     it('should call jetlore removeFromFavorites function', () => {
@@ -211,9 +209,9 @@ describe('Tracker.track function', () => {
         const tracker = Tracker(initTrackerOpts);
         tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
-        expect(trackerCalls.count).to.equal(1);
-        expect(trackingCalls.count).to.equal(1);
-        expect(actualJLInitObj).to.deep.equal(expectedJLInitObj);
+        expect(trackerCalls.count).toEqual(1);
+        expect(trackingCalls.count).toEqual(1);
+        expect(actualJLInitObj).toEqual(expectedJLInitObj);
     });
 
     it('should call jetlore generic track function', () => {
@@ -227,9 +225,9 @@ describe('Tracker.track function', () => {
         const tracker = Tracker(initTrackerOpts);
         tracker.track(operation, { payload: {} });
         const actualJLInitObj = trackingCalls.calledWith[0][0];
-        expect(trackerCalls.count).to.equal(1);
-        expect(trackingCalls.count).to.equal(1);
-        expect(actualJLInitObj).to.deep.equal(expectedJLInitObj);
+        expect(trackerCalls.count).toEqual(1);
+        expect(trackingCalls.count).toEqual(1);
+        expect(actualJLInitObj).toEqual(expectedJLInitObj);
     });
 
     it('should get correct jetlore payload based on type', () => {
@@ -279,11 +277,11 @@ describe('Tracker.track function', () => {
         const getPayload = type => {
             return tracker.getJetlorePayload(type, payload);
         };
-        expect(getPayload('addToCart')).to.deep.equal(expectedCartEventPayload);
-        expect(getPayload('removeFromCart')).to.deep.equal(expectedCartEventPayload);
-        expect(getPayload('purchase')).to.deep.equal(expectedCartPurchasePayload);
-        expect(getPayload('search')).to.deep.equal(expectedSearchPayload);
-        expect(getPayload('view')).to.deep.equal(expectedViewPayload);
-        expect(getPayload('browse_section')).to.deep.equal(expectedBrowsePayload);
+        expect(getPayload('addToCart')).toEqual(expectedCartEventPayload);
+        expect(getPayload('removeFromCart')).toEqual(expectedCartEventPayload);
+        expect(getPayload('purchase')).toEqual(expectedCartPurchasePayload);
+        expect(getPayload('search')).toEqual(expectedSearchPayload);
+        expect(getPayload('view')).toEqual(expectedViewPayload);
+        expect(getPayload('browse_section')).toEqual(expectedBrowsePayload);
     });
 });
