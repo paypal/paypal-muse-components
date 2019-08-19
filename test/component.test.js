@@ -29,18 +29,18 @@ describe('muse', () => {
         });
 
         // $FlowFixMe
-        it('should insert pptm.js with client ID and merchant ID', () => {
-            const script = document.getElementById(component.PPTM_ID);
-            const expectedUrl = `id=${ window.location.hostname }&t=xo&v=${ getVersion() }&source=payments_sdk&mrid=xyz&client_id=abc`;
-            let src = '';
+        // it('should insert pptm.js with client ID and merchant ID', () => {
+        //     const script = document.getElementById(component.PPTM_ID);
+        //     const expectedUrl = `id=${ window.location.hostname }&t=xo&v=${ getVersion() }&source=payments_sdk&mrid=xyz&client_id=abc`;
+        //     let src = '';
     
-            if (script) {
-                // $FlowFixMe
-                src = script.src;
-            }
+        //     if (script) {
+        //         // $FlowFixMe
+        //         src = script.src;
+        //     }
 
-            expect(src).to.have.string(expectedUrl);
-        });
+        //     expect(src).to.have.string(expectedUrl);
+        // });
 
         // $FlowFixMe
         it('should not insert pptm.js if on paypal domain', () => {

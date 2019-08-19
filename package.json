@@ -12,7 +12,7 @@
     "flow": "flow",
     "flow:build": "flow gen-flow-files ./src/index.js --out-dir ./dist/module",
     "lint": "eslint src/ test/ *.js --fix",
-    "test": "npm run lint && npm run flow-typed && npm run flow && npm run karma",
+    "test": "npm run lint && npm run flow-typed && npm run flow && jest",
     "karma": "cross-env NODE_ENV=test babel-node $(npm bin)/karma start"
   },
   "files": [
@@ -30,14 +30,46 @@
   },
   "homepage": "https://github.com/paypal/paypal-muse-components#readme",
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-for-of": "^7.4.4",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^24.9.0",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "chai": "^4.2.0",
     "flow-bin": "^0.100.0",
     "grumbler-scripts": "^3",
+    "jest": "^24.9.0",
     "mocha": "^4",
-    "sinon": "^7.3.2"
+    "sinon": "^7.3.2",
+    "webpack": "^4.39.2"
   },
   "dependencies": {
     "@paypal/sdk-client": "^4.0.1",
     "whatwg-fetch": "^3.0.0"
+  },
+  "jest": {
+    "globals": {
+      "__DEBUG__": true,
+      "__ENV__": "test",
+      "__PORT__": 8000,
+      "__STAGE_HOST__": "msmaster.qa.paypal.com",
+      "__HOST__": "test.paypal.com",
+      "__HOSTNAME__": "test.paypal.com",
+      "__PATH__": "/sdk/js",
+      "__VERSION__": "1.0.55",
+      "__NAMESPACE__": "testpaypal"
+    },
+    "moduleDirectories": [
+      "node_modules"
+    ],
+    "testEnvironment": "jsdom",
+    "setupFiles": [
+      "<rootDir>/test/paypal.js"
+    ],
+    "transformIgnorePatterns": []
   }
 }

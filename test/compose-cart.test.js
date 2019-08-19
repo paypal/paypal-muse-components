@@ -1,4 +1,4 @@
-/* global it describe */
+/* global it describe beforeAll */
 /* @flow */
 import { expect } from 'chai';
 
@@ -69,7 +69,7 @@ describe('compose cart', () => {
             currencyCode: 'USD'
         };
 
-        before(() => {
+        beforeAll(() => {
             window.localStorage.removeItem(localStorageKey);
         });
 

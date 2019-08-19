@@ -1,7 +1,7 @@
 /* @flow */
 
-export * from './component';
-export * from './tracker-component';
-export * from './cookie-utils';
-export * from './tracker-component-jetlore';
-export * from './compose-cart';
+export * from './component.test.js';
+export * from './tracker-component.test.js';
+export * from './cookie-utils.test.js';
+export * from './tracker-component-jetlore.test.js';
+export * from './compose-cart.test.js';

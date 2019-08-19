@@ -3,7 +3,8 @@
 import { setupSDK, insertMockSDKScript } from '@paypal/sdk-client/src';
 import { SDK_QUERY_KEYS } from '@paypal/sdk-constants/src';
 
-import * as muse from '../src'; // eslint-disable-line import/no-namespace
+// eslint-disable-next-line import/no-namespace
+import * as muse from '../src';
 
 insertMockSDKScript({
     query: {

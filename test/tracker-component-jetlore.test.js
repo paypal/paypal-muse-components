@@ -1,4 +1,4 @@
-/* globals describe before afterEach it */
+/* globals describe beforeAll afterEach it */
 /* @flow */
 import { expect } from 'chai';
 
@@ -18,7 +18,7 @@ describe('Tracker.track function', () => {
     let expectedJLInitObj;
     let JL;
 
-    before(() => {
+    beforeAll(() => {
         JL = getJetlore();
         originalJLTracking = JL.tracking;
         initTrackerOpts = {
