@@ -2,7 +2,7 @@
 /* @flow */
 
 import { ENV } from '@paypal/sdk-constants/src';
-import { getEventEmitter } from '@paypal/sdk-client/src';
+import { getVersion, getEventEmitter } from '@paypal/sdk-client/src';
 
 import * as component from '../src/component'; // eslint-disable-line import/no-namespace
 
@@ -28,18 +28,21 @@ describe('muse', () => {
         });
 
         // $FlowFixMe
-        // it('should insert pptm.js with client ID and merchant ID', () => {
-        //     const script = document.getElementById(component.PPTM_ID);
-        //     const expectedUrl = `id=${ window.location.hostname }&t=xo&v=${ getVersion() }&source=payments_sdk&mrid=xyz&client_id=abc`;
-        //     let src = '';
-    
-        //     if (script) {
-        //         // $FlowFixMe
-        //         src = script.src;
-        //     }
+        it('should insert pptm.js with client ID and merchant ID', () => {
+            component.insertPptm();
+            const script = document.getElementById(component.PPTM_ID);
+            const expectedUrl = `id=${ window.location.hostname }&t=xo&v=${ getVersion() }&source=payments_sdk&mrid=xyz&client_id=abc`;
+            const expected = expect.stringContaining(expectedUrl);
 
-        //     expect(src).to.have.string(expectedUrl);
-        // });
+            let src = '';
+    
+            if (script) {
+                // $FlowFixMe
+                src = script.src;
+            }
+
+            expect(src).toEqual(expected);
+        });
 
         // $FlowFixMe
         it('should not insert pptm.js if on paypal domain', () => {

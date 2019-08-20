@@ -12,8 +12,7 @@
     "flow": "flow",
     "flow:build": "flow gen-flow-files ./src/index.js --out-dir ./dist/module",
     "lint": "eslint src/ test/ *.js --fix",
-    "test": "npm run lint && npm run flow-typed && npm run flow && jest",
-    "karma": "cross-env NODE_ENV=test babel-node $(npm bin)/karma start"
+    "test": "npm run lint && npm run flow-typed && npm run flow && jest"
   },
   "files": [
     "src",
@@ -42,8 +41,6 @@
     "flow-bin": "^0.100.0",
     "grumbler-scripts": "^3",
     "jest": "^24.9.0",
-    "mocha": "^4",
-    "sinon": "^7.3.2",
     "webpack": "^4.39.2"
   },
   "dependencies": {

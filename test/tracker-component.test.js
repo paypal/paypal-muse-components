@@ -601,22 +601,18 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName3';
         const tracker = Tracker({ user: { email, name: userName } });
         tracker.identify(data => {
-            try {
-                const params = fetchCalls.pop();
-                expect(params[0]).toBe('https://paypal.com/muse/api/partner-token');
-                expect(params[1].body).toBe(JSON.stringify({
-                    merchantId: 'xyz',
-                    clientId: 'abcxyz123'
-                }));
-                expect(data).toEqual({
-                    hello: 'hi',
-                    id: autoPropertyId,
-                    success: true
-                });
-                done();
-            } catch (err) {
-                done(err);
-            }
+            const params = fetchCalls.pop();
+            expect(params[0]).toBe('https://paypal.com/muse/api/partner-token');
+            expect(params[1].body).toBe(JSON.stringify({
+                merchantId: 'xyz',
+                clientId: 'abcxyz123'
+            }));
+            expect(data).toEqual({
+                hello: 'hi',
+                id: autoPropertyId,
+                success: true
+            });
+            done();
         });
     });
 
@@ -629,18 +625,14 @@ describe('paypal.Tracker', () => {
             paramsToTokenUrl: () => tokenUrl
         });
         tracker.identify(data => {
-            try {
-                const params = fetchCalls.pop();
-                expect(params[0]).toBe(tokenUrl);
-                expect(data).toEqual({
-                    hello: 'hi',
-                    id: autoPropertyId,
-                    success: true
-                });
-                done();
-            } catch (err) {
-                done(err);
-            }
+            const params = fetchCalls.pop();
+            expect(params[0]).toBe(tokenUrl);
+            expect(data).toEqual({
+                hello: 'hi',
+                id: autoPropertyId,
+                success: true
+            });
+            done();
         });
     });
 
@@ -648,18 +640,15 @@ describe('paypal.Tracker', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
         const tracker = Tracker({ user: { email, name: userName } });
-        try {
-            tracker.identify().then(data => {
-                expect(data).toEqual({
-                    hello: 'hi',
-                    id: autoPropertyId,
-                    success: true
-                });
-                done();
+
+        tracker.identify().then(data => {
+            expect(data).toEqual({
+                hello: 'hi',
+                id: autoPropertyId,
+                success: true
             });
-        } catch (err) {
-            done(err);
-        }
+            done();
+        });
     });
 
     it('should call getIdentity function with url passed in', done => {
@@ -742,14 +731,14 @@ describe('paypal.Tracker', () => {
         expect(appendChildCalls).toBe(1);
     });
 
-    // it('should fetch implicit propertyId route if one is not provided', () => {
-    //     const email = '__test__email3@gmail.com';
-    //     const userName = '__test__userName3';
-    //     Tracker({ user: { email, name: userName } });
-    //     expect(appendChildCalls).toBe(0);
-    //     expect(fetchCalls.length).toBe(1);
-    //     expect(fetchCalls[0][0]).toBe('https://paypal.com/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost%3A9876');
-    // });
+    it('should fetch implicit propertyId route if one is not provided', () => {
+        const email = '__test__email3@gmail.com';
+        const userName = '__test__userName3';
+        Tracker({ user: { email, name: userName } });
+        expect(appendChildCalls).toBe(0);
+        expect(fetchCalls.length).toBe(1);
+        expect(fetchCalls[0][0]).toBe('https://paypal.com/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost');
+    });
 
     it('should not fetch propertyId if one is provided', () => {
         const email = '__test__email3@gmail.com';
