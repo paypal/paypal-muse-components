@@ -40,8 +40,7 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "flow-bin": "^0.100.0",
     "grumbler-scripts": "^3",
-    "jest": "^24.9.0",
-    "webpack": "^4.39.2"
+    "jest": "^24.9.0"
   },
   "dependencies": {
     "@paypal/sdk-client": "^4.0.1",
