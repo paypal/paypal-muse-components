@@ -14,6 +14,8 @@ type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser' | 'cancelCart'
 
 type CartEventType = 'addToCart' | 'setCart' | 'removeFromCart';
 
+type ViewType = 'home' | 'product' | 'cart' | 'checkout';
+
 type Product = {|
     id : string,
     title? : string,
@@ -26,7 +28,11 @@ type Product = {|
     quantity? : string
 |};
 
-type ViewData = {| page : string, title? : string |};
+type ViewData = {|
+    type : ViewType,
+    cart? : $ReadOnlyArray<Product>,
+    product? : Product
+|};
 
 type CartData = {|
     cartId? : string,
@@ -386,7 +392,16 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         JL.tracking(trackingConfig);
     }
     const trackers = {
-        view: (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
+        view: (data : ViewData) => {
+            const { type, product, cart } = data;
+            const payload = { type };
+            if (type === 'product') {
+                payload.cart = product;
+            } else if (type === 'cart' || type === 'checkout') {
+                payload.cart = cart;
+            }
+            track(config, 'view', payload);
+        },
         addToCart: (data : CartData) => {
             const newCart = composeCart('add', data);
 
