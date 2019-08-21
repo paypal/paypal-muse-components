@@ -394,13 +394,13 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     const trackers = {
         view: (data : ViewData) => {
             const { type, product, cart } = data;
-            const payload = { type };
+            let fptiCart;
             if (type === 'product') {
-                payload.cart = product;
+                fptiCart = product;
             } else if (type === 'cart' || type === 'checkout') {
-                payload.cart = cart;
+                fptiCart = cart;
             }
-            track(config, 'view', payload);
+            track(config, 'view', { type, fptiCart });
         },
         addToCart: (data : CartData) => {
             const newCart = composeCart('add', data);
