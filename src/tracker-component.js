@@ -400,7 +400,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
             } else if (type === 'cart' || type === 'checkout') {
                 fptiCart = cart;
             }
-            track(config, 'view', { type, fptiCart });
+            track(config, 'view', { type, cart: fptiCart });
         },
         addToCart: (data : CartData) => {
             const newCart = composeCart('add', data);
