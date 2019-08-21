@@ -3,7 +3,7 @@
 import { expect } from 'chai';
 
 // $FlowFixMe
-import { removeFromCart } from '../src/lib/compose-cart';
+import { removeFromCart, addToCart } from '../src/lib/compose-cart';
 // $FlowFixMe
 import { Tracker } from '../src/tracker-component';
 
@@ -143,6 +143,39 @@ describe('compose cart', () => {
             expect(result.emailCampaignId).to.equal(emailCampaignId);
             expect(result.total).to.equal('0.00');
             expect(result.currencyCode).to.equal('USD');
+        });
+    });
+
+    describe('addToCart', () => {
+        it('adds one item when no quantity is specified', () => {
+            const currentItems = [];
+            const expected = [ item1 ];
+            const itemsToAdd = [ item1 ];
+
+            const result = addToCart(itemsToAdd, currentItems);
+            expect(result).to.deep.equal(expected);
+        });
+
+        it('throws when quantity is infinity, because that\'s ridiculous', (done) => {
+            const currentItems = [];
+            const expected = `'Infinity' is not an accepted quantity for item: ${ item1.id }`;
+            const itemsToAdd = [ { ...item1, quantity: Infinity } ];
+
+            try {
+                addToCart(itemsToAdd, currentItems);
+            } catch (err) {
+                expect(err.message).to.equal(expected);
+                done();
+            }
+        });
+
+        it('adds the correct number of items', () => {
+            const currentItems = [ item6 ];
+            const expected = [ item6, item1, item1, item1, item4, item5, item5 ];
+            const itemsToAdd = [ item1, { ...item1, quantity: 2 }, item4, { ...item5, quantity: 2 } ];
+
+            const result = addToCart(itemsToAdd, currentItems);
+            expect(result).to.deep.equal(expected);
         });
     });
 
