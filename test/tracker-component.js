@@ -792,4 +792,129 @@ describe('paypal.Tracker', () => {
         const result = clearTrackQueue({}, trackEventQueue);
         expect(result.length).to.equal(0);
     });
+
+    it('should send product view events', () => {
+        const id = '__test__cookie-id';
+        setCookie('paypal-user-id', id, 10000);
+        const tracker = Tracker();
+        tracker.setPropertyId(propertyId);
+        tracker.view({
+            type: 'product',
+            product: {
+                id: '__test__productId',
+                url: 'https://example.com/__test__productId'
+            }
+        });
+        const dataParamObject = extractDataParam(imgMock.src);
+        // $FlowFixMe
+        expect(JSON.stringify(dataParamObject)).to.equal(
+            JSON.stringify({
+                type: 'product',
+                cart: {
+                    id: '__test__productId',
+                    url: 'https://example.com/__test__productId'
+                },
+                user: { id },
+                propertyId,
+                trackingType: 'view',
+                clientId: 'abcxyz123',
+                merchantId: 'xyz,hij,lmno',
+                deviceInfo
+            })
+        );
+    });
+
+    it('should send product view events', () => {
+        const id = '__test__cookie-id';
+        setCookie('paypal-user-id', id, 10000);
+        const tracker = Tracker();
+        tracker.setPropertyId(propertyId);
+        tracker.view({
+            type: 'cart',
+            cart: [ {
+                id: '__test__productId',
+                url: 'https://example.com/__test__productId'
+            } ]
+        });
+        const dataParamObject = extractDataParam(imgMock.src);
+        // $FlowFixMe
+        expect(JSON.stringify(dataParamObject)).to.equal(
+            JSON.stringify({
+                type: 'cart',
+                cart: [
+                    {
+                        id: '__test__productId',
+                        url: 'https://example.com/__test__productId'
+                    }
+                ],
+                user: { id },
+                propertyId,
+                trackingType: 'view',
+                clientId: 'abcxyz123',
+                merchantId: 'xyz,hij,lmno',
+                deviceInfo
+            })
+        );
+    });
+
+    it('should send product view events', () => {
+        const id = '__test__cookie-id';
+        setCookie('paypal-user-id', id, 10000);
+        const tracker = Tracker();
+        tracker.setPropertyId(propertyId);
+        tracker.view({
+            type: 'checkout',
+            cart: [ {
+                id: '__test__productId',
+                url: 'https://example.com/__test__productId'
+            } ]
+        });
+        const dataParamObject = extractDataParam(imgMock.src);
+        // $FlowFixMe
+        expect(JSON.stringify(dataParamObject)).to.equal(
+            JSON.stringify({
+                type: 'checkout',
+                cart: [
+                    {
+                        id: '__test__productId',
+                        url: 'https://example.com/__test__productId'
+                    }
+                ],
+                user: { id },
+                propertyId,
+                trackingType: 'view',
+                clientId: 'abcxyz123',
+                merchantId: 'xyz,hij,lmno',
+                deviceInfo
+            })
+        );
+    });
+
+    it('should send homepage view events', () => {
+        const id = '__test__cookie-id';
+        setCookie('paypal-user-id', id, 10000);
+        const tracker = Tracker();
+        tracker.setPropertyId(propertyId);
+        tracker.view({
+            type: 'home',
+            product: {
+                id: '__test__productId',
+                url: 'https://example.com/__test__productId'
+            }
+        });
+        const dataParamObject = extractDataParam(imgMock.src);
+        // $FlowFixMe
+        expect(JSON.stringify(dataParamObject)).to.equal(
+            JSON.stringify({
+                type: 'home',
+                user: { id },
+                propertyId,
+                trackingType: 'view',
+                clientId: 'abcxyz123',
+                merchantId: 'xyz,hij,lmno',
+                deviceInfo
+            })
+        );
+    });
+    
 });
