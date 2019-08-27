@@ -388,7 +388,14 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     const trackers = {
         view: (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
         addToCart: (data : CartData) => {
-            const newCart = composeCart('add', data);
+            let newCart;
+
+            try {
+                newCart = composeCart('add', data);
+            } catch (err) {
+                console.error(err.message); // eslint-disable-line no-console
+                return;
+            }
 
             return trackCartEvent(config, 'addToCart', newCart);
         },

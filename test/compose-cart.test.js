@@ -2,7 +2,7 @@
 /* @flow */
 
 // $FlowFixMe
-import { removeFromCart } from '../src/lib/compose-cart';
+import { removeFromCart, addToCart } from '../src/lib/compose-cart';
 // $FlowFixMe
 import { Tracker } from '../src/tracker-component';
 
@@ -145,21 +145,62 @@ describe('compose cart', () => {
         });
     });
 
+    describe('addToCart', () => {
+        it('adds one item when no quantity is specified', () => {
+            const currentItems = [];
+            const expected = [ item1 ];
+            const itemsToAdd = [ item1 ];
+
+            const result = addToCart(itemsToAdd, currentItems);
+            expect(result).toEqual(expected);
+        });
+
+        it('throws when quantity is infinity, because that\'s ridiculous', (done) => {
+            const currentItems = [];
+            const expected = `'Infinity' is not an accepted quantity for item: ${ item1.id }`;
+            const itemsToAdd = [ { ...item1, quantity: Infinity } ];
+
+            try {
+                addToCart(itemsToAdd, currentItems);
+            } catch (err) {
+                expect(err.message).toEqual(expected);
+                done();
+            }
+        });
+
+        it('adds the correct number of items', () => {
+            const currentItems = [ item6 ];
+            const expected = [ item6, item1, item1, item1, item4, item5, item5 ];
+            const itemsToAdd = [ item1, { ...item1, quantity: 2 }, item4, { ...item5, quantity: 2 } ];
+
+            const result = addToCart(itemsToAdd, currentItems);
+            expect(result).toEqual(expected);
+        });
+    });
+
     describe('removeFromCart', () => {
-        it('removes all instances of an item when no quantity is specified', () => {
+        it('removes all instances of an item when infinity is passed', () => {
             const currentItems = [ item1, item2, item3, item4, item5, item6 ];
             const expected = [ item4, item5, item6 ];
+            const itemsToRemove = [ { id: item1.id, quantity: Infinity } ];
+
+            const result = removeFromCart(itemsToRemove, currentItems);
+            expect(result).toEqual(expected);
+        });
+
+        it('removes one item when no quantity is specified', () => {
+            const currentItems = [ item1, item2, item3, item4, item5, item6 ];
+            const expected = [ item2, item3, item4, item5, item6 ];
             const itemsToRemove = [ { id: item1.id } ];
 
             const result = removeFromCart(itemsToRemove, currentItems);
-
             expect(result).toEqual(expected);
         });
 
         it('removes the specified number of items', () => {
             const currentItems = [ item1, item2, item3, item4, item5, item6 ];
-            const expected = [ item3, item5, item6 ];
-            const itemsToRemove = [ { id: item1.id, quantity: 2 }, { id: item4.id, quantity: 1 } ];
+            const expected = [ item3, item6 ];
+            const itemsToRemove = [ { id: item1.id, quantity: 1 }, { id: item1.id }, { id: item4.id, quantity: 2 } ];
 
             const result = removeFromCart(itemsToRemove, currentItems);
 
