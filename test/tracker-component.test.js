@@ -1,8 +1,5 @@
-/* globals describe before after afterEach it */
+/* globals describe beforeAll afterAll afterEach it expect */
 /* @flow */
-
-import { expect } from 'chai';
-
 import { Tracker, clearTrackQueue } from '../src/tracker-component';
 import { setCookie } from '../src/lib/cookie-utils';
 // $FlowFixMe
@@ -32,10 +29,12 @@ describe('paypal.Tracker', () => {
     };
     const propertyId = 'hello-there';
     window.fetch = (url, options) => {
+        const body = options ? options.body : undefined;
+
         fetchCalls.push([ url, options ]);
         return Promise.resolve({
             url,
-            body: options.body,
+            body,
             status: 200,
             json: () => ({ id: autoPropertyId, hello: 'hi' })
         });
@@ -60,7 +59,7 @@ describe('paypal.Tracker', () => {
 
     const createElement = (elementType : string) => {
         // $FlowFixMe
-        expect(elementType).to.equal('img');
+        expect(elementType).toBe('img');
         return imgMock;
     };
 
@@ -69,7 +68,7 @@ describe('paypal.Tracker', () => {
     // $FlowFixMe
     const originalDocumentCreateElement = document.createElement;
     const originalGenerateId = generateIdModule.generateId;
-    before(() => {
+    beforeAll(() => {
         const deviceLib = require('../src/lib/get-device-info');
         // $FlowFixMe
         deviceLib.getDeviceInfo = () => deviceInfo;
@@ -83,7 +82,7 @@ describe('paypal.Tracker', () => {
     });
 
     // $FlowFixMe
-    after(() => {
+    afterAll(() => {
         // $FlowFixMe
         document.body.appendChild = originalDocumentBodyAppendChild;
         // $FlowFixMe
@@ -104,14 +103,14 @@ describe('paypal.Tracker', () => {
     // $FlowFixMe
     it('should be a function that returns a tracker', () => {
         const tracker = Tracker();
-        expect(tracker).to.have.property('view');
-        expect(tracker).to.have.property('addToCart');
-        expect(tracker).to.have.property('setCart');
-        expect(tracker).to.have.property('removeFromCart');
-        expect(tracker).to.have.property('purchase');
-        expect(tracker).to.have.property('track');
-        expect(tracker).to.have.property('getIdentity');
-        expect(tracker).to.have.property('cancelCart');
+        expect(tracker).toHaveProperty('view');
+        expect(tracker).toHaveProperty('addToCart');
+        expect(tracker).toHaveProperty('setCart');
+        expect(tracker).toHaveProperty('removeFromCart');
+        expect(tracker).toHaveProperty('purchase');
+        expect(tracker).toHaveProperty('track');
+        expect(tracker).toHaveProperty('getIdentity');
+        expect(tracker).toHaveProperty('cancelCart');
     });
 
     it('should clear stored cart content if cart is expired', () => {
@@ -119,7 +118,7 @@ describe('paypal.Tracker', () => {
 
         window.localStorage.setItem('paypal-cr-cart-expiry', Date.now() - 10);
 
-        expect(beforeStorage).to.equal(null);
+        expect(beforeStorage).toBe(null);
 
         // Since the expiry is in the past, this initialization should clear
         // the cart and expiry.
@@ -128,8 +127,8 @@ describe('paypal.Tracker', () => {
         const afterStorage = window.localStorage.getItem('paypal-cr-cart');
         const afterExpiry = window.localStorage.getItem('paypal-cr-cart-expiry');
 
-        expect(afterStorage).to.equal(null);
-        expect(afterExpiry).to.equal(null);
+        expect(afterStorage).toBe(null);
+        expect(afterExpiry).toBe(null);
     });
 
     it('should migrate cart cookie storage to localStorage when adding an item to cart', () => {
@@ -164,7 +163,7 @@ describe('paypal.Tracker', () => {
             products[3]
         ] });
 
-        expect(window.localStorage.getItem('paypal-cr-cart')).equal(JSON.stringify({
+        expect(window.localStorage.getItem('paypal-cr-cart')).toBe(JSON.stringify({
             items: products
         }));
     });
@@ -173,7 +172,7 @@ describe('paypal.Tracker', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
         const tracker = Tracker({ user: { email, name: userName } });
-        expect(appendChildCalls).to.equal(0);
+        expect(appendChildCalls).toBe(0);
         tracker.setPropertyId(propertyId);
         tracker.addToCart({
             cartId: '__test__cartId',
@@ -187,7 +186,7 @@ describe('paypal.Tracker', () => {
             total: '12345.67',
             currencyCode: 'USD'
         });
-        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
+        expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
                 cartId: '__test__cartId',
                 items: [
@@ -212,7 +211,7 @@ describe('paypal.Tracker', () => {
                 deviceInfo
             })
         );
-        expect(appendChildCalls).to.equal(1);
+        expect(appendChildCalls).toBe(1);
         tracker.addToCart({
             cartId: '__test__cartId0',
             items: [
@@ -225,7 +224,7 @@ describe('paypal.Tracker', () => {
             total: '102345.67',
             currencyCode: 'USD'
         });
-        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
+        expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
                 cartId: '__test__cartId0',
                 items: [
@@ -261,7 +260,7 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName4';
         const tracker = Tracker({ user: { email, name: userName } });
         tracker.setPropertyId(propertyId);
-        expect(appendChildCalls).to.equal(0);
+        expect(appendChildCalls).toBe(0);
         tracker.addToCart({
             cartId: '__test__cartId0',
             items: [
@@ -286,7 +285,7 @@ describe('paypal.Tracker', () => {
             total: '12345.67',
             currencyCode: 'USD'
         });
-        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
+        expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
                 cartId: '__test__cartId',
                 items: [
@@ -311,7 +310,7 @@ describe('paypal.Tracker', () => {
                 deviceInfo
             })
         );
-        expect(appendChildCalls).to.equal(2);
+        expect(appendChildCalls).toBe(2);
     });
 
     it('should send removeFromCart events', () => {
@@ -319,7 +318,7 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName5';
         const tracker = Tracker({ user: { email, name: userName } });
         tracker.setPropertyId(propertyId);
-        expect(appendChildCalls).to.equal(0);
+        expect(appendChildCalls).toBe(0);
         tracker.removeFromCart({
             cartId: '__test__cartId',
             items: [
@@ -330,7 +329,7 @@ describe('paypal.Tracker', () => {
             ]
         });
 
-        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
+        expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
                 cartId: '__test__cartId',
                 items: [ {
@@ -350,7 +349,7 @@ describe('paypal.Tracker', () => {
                 deviceInfo
             })
         );
-        expect(appendChildCalls).to.equal(1);
+        expect(appendChildCalls).toBe(1);
     });
 
     it('should send purchase events', () => {
@@ -358,11 +357,11 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName6';
         const tracker = Tracker({ user: { email, name: userName } });
         tracker.setPropertyId(propertyId);
-        expect(appendChildCalls).to.equal(0);
+        expect(appendChildCalls).toBe(0);
         tracker.purchase({
             cartId: '__test__cartId'
         });
-        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
+        expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
                 cartId: '__test__cartId',
                 user: {
@@ -377,7 +376,7 @@ describe('paypal.Tracker', () => {
                 deviceInfo
             })
         );
-        expect(appendChildCalls).to.equal(1);
+        expect(appendChildCalls).toBe(1);
     });
 
     it('should send cancelCart events and clear localStorage upon cancelling cart', () => {
@@ -385,9 +384,9 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName7';
         const tracker = Tracker({ user: { email, name: userName } });
         tracker.setPropertyId(propertyId);
-        expect(appendChildCalls).to.equal(0);
+        expect(appendChildCalls).toBe(0);
         tracker.cancelCart({ cartId: '__test__cartId' });
-        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
+        expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
                 cartId: '__test__cartId',
                 user: {
@@ -402,13 +401,13 @@ describe('paypal.Tracker', () => {
                 deviceInfo
             })
         );
-        expect(appendChildCalls).to.equal(1);
+        expect(appendChildCalls).toBe(1);
 
         const afterStorage = window.localStorage.getItem('paypal-cr-cart');
         const afterExpiry = window.localStorage.getItem('paypal-cr-cart-expiry');
 
-        expect(afterStorage).to.equal(null);
-        expect(afterExpiry).to.equal(null);
+        expect(afterStorage).toBe(null);
+        expect(afterExpiry).toBe(null);
     });
 
     it('should call paramsToBeaconUrl to create the url if you pass in paramsToBeaconUrl function', () => {
@@ -423,13 +422,13 @@ describe('paypal.Tracker', () => {
             paramsToBeaconUrl
         });
         tracker.setPropertyId(propertyId);
-        expect(appendChildCalls).to.equal(0);
+        expect(appendChildCalls).toBe(0);
         tracker.purchase({
             cartId: '__test__cartId'
         });
-        expect(imgMock.src).to.equal('https://example.com/picture');
-        expect(appendChildCalls).to.equal(1);
-        expect(JSON.stringify(calledArgs)).to.deep.equal(
+        expect(imgMock.src).toBe('https://example.com/picture');
+        expect(appendChildCalls).toBe(1);
+        expect(JSON.stringify(calledArgs)).toEqual(
             JSON.stringify([
                 {
                     trackingType: 'purchase',
@@ -456,10 +455,10 @@ describe('paypal.Tracker', () => {
         const email = '__test__email9';
         const tracker = Tracker();
         tracker.setPropertyId(propertyId);
-        expect(appendChildCalls).to.equal(0);
+        expect(appendChildCalls).toBe(0);
         tracker.setUser({ user: { name: userName, email } });
-        expect(appendChildCalls).to.equal(1);
-        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
+        expect(appendChildCalls).toBe(1);
+        expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
                 oldUserId: 'abc123',
                 user: {
@@ -483,17 +482,17 @@ describe('paypal.Tracker', () => {
             }
         });
         tracker.setPropertyId(propertyId);
-        expect(appendChildCalls).to.equal(0);
+        expect(appendChildCalls).toBe(0);
         tracker.setUser({
             user: {
                 email: '__test__email@gmail.com',
                 name: '__test__name'
             }
         });
-        expect(appendChildCalls).to.equal(1);
+        expect(appendChildCalls).toBe(1);
         const dataParamObject = extractDataParam(imgMock.src);
         // $FlowFixMe
-        expect(JSON.stringify(dataParamObject)).to.equal(
+        expect(JSON.stringify(dataParamObject)).toBe(
             JSON.stringify({
                 oldUserId: 'abc123',
                 user: {
@@ -531,7 +530,7 @@ describe('paypal.Tracker', () => {
         });
         const dataParamObject = extractDataParam(imgMock.src);
         // $FlowFixMe
-        expect(JSON.stringify(dataParamObject)).to.equal(
+        expect(JSON.stringify(dataParamObject)).toBe(
             JSON.stringify({
                 cartId: '__test__cartId',
                 items: [
@@ -576,7 +575,7 @@ describe('paypal.Tracker', () => {
         });
         const dataParamObject = extractDataParam(imgMock.src);
         // $FlowFixMe
-        expect(JSON.stringify(dataParamObject)).to.equal(
+        expect(JSON.stringify(dataParamObject)).toBe(
             JSON.stringify({
                 cartId: '__test__cartId',
                 items: [
@@ -604,22 +603,18 @@ describe('paypal.Tracker', () => {
         const userName = '__test__userName3';
         const tracker = Tracker({ user: { email, name: userName } });
         tracker.identify(data => {
-            try {
-                const params = fetchCalls.pop();
-                expect(params[0]).to.equal('https://paypal.com/muse/api/partner-token');
-                expect(params[1].body).to.equal(JSON.stringify({
-                    merchantId: 'xyz',
-                    clientId: 'abcxyz123'
-                }));
-                expect(data).to.deep.equal({
-                    hello: 'hi',
-                    id: autoPropertyId,
-                    success: true
-                });
-                done();
-            } catch (err) {
-                done(err);
-            }
+            const params = fetchCalls.pop();
+            expect(params[0]).toBe('https://paypal.com/muse/api/partner-token');
+            expect(params[1].body).toBe(JSON.stringify({
+                merchantId: 'xyz',
+                clientId: 'abcxyz123'
+            }));
+            expect(data).toEqual({
+                hello: 'hi',
+                id: autoPropertyId,
+                success: true
+            });
+            done();
         });
     });
 
@@ -632,18 +627,14 @@ describe('paypal.Tracker', () => {
             paramsToTokenUrl: () => tokenUrl
         });
         tracker.identify(data => {
-            try {
-                const params = fetchCalls.pop();
-                expect(params[0]).to.equal(tokenUrl);
-                expect(data).to.deep.equal({
-                    hello: 'hi',
-                    id: autoPropertyId,
-                    success: true
-                });
-                done();
-            } catch (err) {
-                done(err);
-            }
+            const params = fetchCalls.pop();
+            expect(params[0]).toBe(tokenUrl);
+            expect(data).toEqual({
+                hello: 'hi',
+                id: autoPropertyId,
+                success: true
+            });
+            done();
         });
     });
 
@@ -651,18 +642,15 @@ describe('paypal.Tracker', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
         const tracker = Tracker({ user: { email, name: userName } });
-        try {
-            tracker.identify().then(data => {
-                expect(data).to.deep.equal({
-                    hello: 'hi',
-                    id: autoPropertyId,
-                    success: true
-                });
-                done();
+
+        tracker.identify().then(data => {
+            expect(data).toEqual({
+                hello: 'hi',
+                id: autoPropertyId,
+                success: true
             });
-        } catch (err) {
-            done(err);
-        }
+            done();
+        });
     });
 
     it('should call getIdentity function with url passed in', done => {
@@ -676,8 +664,8 @@ describe('paypal.Tracker', () => {
         };
         const url = 'https://www.paypal.com/muse/api/partner-token';
         const result = tracker.getIdentity(data, url).then(accessToken => {
-            expect(result).to.be.a('promise');
-            expect(accessToken).to.be.an('object');
+            expect(result).toBeInstanceOf(Promise);
+            expect(accessToken).toBeInstanceOf(Object);
             done();
         });
     });
@@ -692,8 +680,8 @@ describe('paypal.Tracker', () => {
             onIdentification: identityData => identityData
         };
         const result = tracker.getIdentity(data).then(accessToken => {
-            expect(accessToken).to.be.an('object');
-            expect(result).to.be.a('promise');
+            expect(accessToken).toBeInstanceOf(Object);
+            expect(result).toBeInstanceOf(Promise);
             done();
         });
     });
@@ -706,9 +694,9 @@ describe('paypal.Tracker', () => {
             email,
             name: userName
         }, propertyId });
-        expect(appendChildCalls).to.equal(0);
+        expect(appendChildCalls).toBe(0);
         tracker.setPropertyId(propertyId);
-        expect(fetchCalls.length).to.equal(0);
+        expect(fetchCalls.length).toBe(0);
         tracker.addToCart({
             cartId: '__test__cartId',
             items: [
@@ -721,7 +709,7 @@ describe('paypal.Tracker', () => {
             total: '12345.67',
             currencyCode: 'USD'
         });
-        expect(JSON.stringify(extractDataParam(imgMock.src))).to.equal(
+        expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
                 cartId: '__test__cartId',
                 items: [
@@ -742,23 +730,38 @@ describe('paypal.Tracker', () => {
                 deviceInfo
             })
         );
-        expect(appendChildCalls).to.equal(1);
+        expect(appendChildCalls).toBe(1);
+    });
+
+    it('should not fetch implicit propertyId route if one is not provided and propertyid is cached', () => {
+        const email = '__test__email3@gmail.com';
+        const userName = '__test__userName3';
+
+        Tracker({ user: { email, name: userName } });
+        expect(appendChildCalls).toBe(0);
+        expect(fetchCalls.length).toBe(0);
     });
 
     it('should fetch implicit propertyId route if one is not provided', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
+        // clear local storage to ensure a request happens
+        window.localStorage.removeItem('property-id-abcxyz123-xyz')
         Tracker({ user: { email, name: userName } });
-        expect(appendChildCalls).to.equal(0);
-        expect(fetchCalls.length).to.equal(1);
-        expect(fetchCalls[0][0]).to.equal('https://paypal.com/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost%3A9876');
+
+        expect(appendChildCalls).toBe(0);
+        expect(fetchCalls.length).toBe(1);
+        expect(fetchCalls[0][0]).toBe('https://paypal.com/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost');
     });
 
     it('should not fetch propertyId if one is provided', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
+        // clear local storage to ensure a request happens
+        window.localStorage.removeItem('property-id-abcxyz123-xyz')
+
         Tracker({ user: { email, name: userName }, propertyId: 'hello' });
-        expect(fetchCalls.length).to.equal(0);
+        expect(fetchCalls.length).toBe(0);
     });
 
     it('should clear trackEventQueue when function is called', () => {
@@ -790,6 +793,6 @@ describe('paypal.Tracker', () => {
             [ 'remoteFromCart', trackingData ]
         ];
         const result = clearTrackQueue({}, trackEventQueue);
-        expect(result.length).to.equal(0);
+        expect(result.length).toBe(0);
     });
 });
