@@ -1,6 +1,5 @@
-/* global it describe */
+/* global it describe beforeAll expect */
 /* @flow */
-import { expect } from 'chai';
 
 // $FlowFixMe
 import { removeFromCart } from '../src/lib/compose-cart';
@@ -69,7 +68,7 @@ describe('compose cart', () => {
             currencyCode: 'USD'
         };
 
-        before(() => {
+        beforeAll(() => {
             window.localStorage.removeItem(localStorageKey);
         });
 
@@ -85,7 +84,7 @@ describe('compose cart', () => {
             tracker.addToCart(cart);
             let result = window.localStorage.getItem(localStorageKey);
             result = JSON.parse(result);
-            expect(result.items).to.deep.equal([ item1 ]);
+            expect(result.items).toEqual([ item1 ]);
 
             cart.items = [ item4 ];
 
@@ -94,11 +93,11 @@ describe('compose cart', () => {
             result = window.localStorage.getItem(localStorageKey);
             result = JSON.parse(result);
 
-            expect(result.items).to.deep.equal([ item1, item4 ]);
-            expect(result.cartId).to.equal(cartId);
-            expect(result.emailCampaignId).to.equal(emailCampaignId);
-            expect(result.total).to.equal('0.00');
-            expect(result.currencyCode).to.equal('USD');
+            expect(result.items).toEqual([ item1, item4 ]);
+            expect(result.cartId).toEqual(cartId);
+            expect(result.emailCampaignId).toEqual(emailCampaignId);
+            expect(result.total).toEqual('0.00');
+            expect(result.currencyCode).toEqual('USD');
         });
 
         it('sets items correctly', () => {
@@ -114,17 +113,17 @@ describe('compose cart', () => {
             let result = window.localStorage.getItem(localStorageKey);
             result = JSON.parse(result);
 
-            expect(result.items).to.deep.equal([ item5, item6 ]);
+            expect(result.items).toEqual([ item5, item6 ]);
 
             cart.items = [];
             tracker.setCart(cart);
             result = window.localStorage.getItem(localStorageKey);
             result = JSON.parse(result);
-            expect(result.items).to.deep.equal([]);
-            expect(result.cartId).to.equal(cartId);
-            expect(result.emailCampaignId).to.equal(emailCampaignId);
-            expect(result.total).to.equal('0.00');
-            expect(result.currencyCode).to.equal('USD');
+            expect(result.items).toEqual([]);
+            expect(result.cartId).toEqual(cartId);
+            expect(result.emailCampaignId).toEqual(emailCampaignId);
+            expect(result.total).toEqual('0.00');
+            expect(result.currencyCode).toEqual('USD');
         });
 
         it('removes items correctly', () => {
@@ -138,11 +137,11 @@ describe('compose cart', () => {
             let result = window.localStorage.getItem(localStorageKey);
             result = JSON.parse(result);
 
-            expect(result.items).to.deep.equal([ item3, item5 ]);
-            expect(result.cartId).to.equal(cartId);
-            expect(result.emailCampaignId).to.equal(emailCampaignId);
-            expect(result.total).to.equal('0.00');
-            expect(result.currencyCode).to.equal('USD');
+            expect(result.items).toEqual([ item3, item5 ]);
+            expect(result.cartId).toEqual(cartId);
+            expect(result.emailCampaignId).toEqual(emailCampaignId);
+            expect(result.total).toEqual('0.00');
+            expect(result.currencyCode).toEqual('USD');
         });
     });
 
@@ -154,7 +153,7 @@ describe('compose cart', () => {
 
             const result = removeFromCart(itemsToRemove, currentItems);
 
-            expect(result).to.deep.equal(expected);
+            expect(result).toEqual(expected);
         });
 
         it('removes the specified number of items', () => {
@@ -164,7 +163,7 @@ describe('compose cart', () => {
 
             const result = removeFromCart(itemsToRemove, currentItems);
 
-            expect(result).to.deep.equal(expected);
+            expect(result).toEqual(expected);
         });
 
         it('accepts quantity in excess of what is present in the cart', () => {
@@ -174,7 +173,7 @@ describe('compose cart', () => {
 
             const result = removeFromCart(itemsToRemove, currentItems);
 
-            expect(result).to.deep.equal(expected);
+            expect(result).toEqual(expected);
         });
     });
 });
