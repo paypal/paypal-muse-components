@@ -29,10 +29,12 @@ describe('paypal.Tracker', () => {
     };
     const propertyId = 'hello-there';
     window.fetch = (url, options) => {
+        const body = options ? options.body : undefined;
+
         fetchCalls.push([ url, options ]);
         return Promise.resolve({
             url,
-            body: options.body,
+            body,
             status: 200,
             json: () => ({ id: autoPropertyId, hello: 'hi' })
         });
@@ -731,10 +733,22 @@ describe('paypal.Tracker', () => {
         expect(appendChildCalls).toBe(1);
     });
 
+    it('should not fetch implicit propertyId route if one is not provided and propertyid is cached', () => {
+        const email = '__test__email3@gmail.com';
+        const userName = '__test__userName3';
+
+        Tracker({ user: { email, name: userName } });
+        expect(appendChildCalls).toBe(0);
+        expect(fetchCalls.length).toBe(0);
+    });
+
     it('should fetch implicit propertyId route if one is not provided', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
+        // clear local storage to ensure a request happens
+        window.localStorage.removeItem('property-id-abcxyz123-xyz')
         Tracker({ user: { email, name: userName } });
+
         expect(appendChildCalls).toBe(0);
         expect(fetchCalls.length).toBe(1);
         expect(fetchCalls[0][0]).toBe('https://paypal.com/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost');
@@ -743,6 +757,9 @@ describe('paypal.Tracker', () => {
     it('should not fetch propertyId if one is provided', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
+        // clear local storage to ensure a request happens
+        window.localStorage.removeItem('property-id-abcxyz123-xyz')
+
         Tracker({ user: { email, name: userName }, propertyId: 'hello' });
         expect(fetchCalls.length).toBe(0);
     });
