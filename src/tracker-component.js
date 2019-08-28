@@ -4,17 +4,15 @@ import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 // $FlowFixMe
-import generate from './generate-id';
-import { getCookie, setCookie } from './lib/cookie-utils';
+import { getUserIdCookie } from './lib/cookie-utils';
 import getJetlore from './lib/jetlore';
-import { getDeviceInfo } from './lib/get-device-info';
 import { composeCart } from './lib/compose-cart';
+import { track } from './lib/track';
 import {
     accessTokenUrl,
     storage
 } from './lib/constants';
 import type {
-    TrackingType,
     CartEventType,
     ViewData,
     CartData,
@@ -26,15 +24,6 @@ import type {
     JetloreConfig,
     Config
 } from './lib/types';
-
-const getUserIdCookie = () : ?string => {
-    return getCookie('paypal-user-id') || null;
-};
-
-const setRandomUserIdCookie = () : void => {
-    const ONE_MONTH_IN_MILLISECONDS = 30 * 24 * 60 * 60 * 1000;
-    setCookie('paypal-user-id', generate.generateId(), ONE_MONTH_IN_MILLISECONDS);
-};
 
 const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
     return fetch(url, {
@@ -101,52 +90,11 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
 
 let trackEventQueue = [];
 
-const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
-    if (!config.propertyId) {
-        trackEventQueue.push([ trackingType, trackingData ]);
-        return;
-    }
-    const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
-
-    const img = document.createElement('img');
-    img.style.display = 'none';
-    if (!getUserIdCookie()) {
-        setRandomUserIdCookie();
-    }
-    const user = {
-        ...config.user,
-        id: getUserIdCookie()
-    };
-    const deviceInfo = getDeviceInfo();
-    const data = {
-        ...trackingData,
-        user,
-        propertyId: config.propertyId,
-        trackingType,
-        clientId: getClientID(),
-        merchantId: getMerchantID().join(','),
-        deviceInfo
-    };
-
-    // paramsToBeaconUrl is a function that gives you the ability to override the beacon url
-    // to whatever you want it to be based on the trackingType string and data object.
-    // This can be useful for testing purposes, this feature won't be used by merchants.
-    if (config.paramsToBeaconUrl) {
-        img.src = config.paramsToBeaconUrl({ trackingType, data });
-    } else {
-        img.src = `https://www.paypal.com/targeting/track/${ trackingType }?data=${ encodeData(data) }`;
-    }
-
-    if (document.body) {
-        document.body.appendChild(img);
-    }
-};
-
 // eslint-disable-next-line flowtype/no-weak-types
 export const clearTrackQueue = (config : Config, queue : any) => {
     // eslint-disable-next-line array-callback-return
     return queue.filter(([ trackingType, trackingData ]) => {
-        track(config, trackingType, trackingData);
+        track(config, trackingType, trackingData, trackEventQueue);
     });
 };
 
@@ -289,7 +237,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
 
             trackCartEvent(config, 'removeFromCart', data);
         },
-        purchase: (data : PurchaseData) => track(config, 'purchase', data),
+        purchase: (data : PurchaseData) => track(config, 'purchase', data, trackEventQueue),
         setUser: (data : UserData) => {
             config = {
                 ...config,
@@ -299,11 +247,11 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
                     name: data.user.name || ((config && config.user) || {}).name
                 }
             };
-            track(config, 'setUser', { oldUserId: getUserIdCookie() });
+            track(config, 'setUser', { oldUserId: getUserIdCookie() }, trackEventQueue);
         },
         cancelCart: (data : CancelCartData) => {
             clearCancelledCart();
-            track(config, 'cancelCart', data);
+            track(config, 'cancelCart', data, trackEventQueue);
         },
         setPropertyId: (id : string) => {
             config.propertyId = id;

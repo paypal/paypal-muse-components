@@ -25,10 +25,10 @@ module.exports = {
     },
 
     'settings': {
-        'import/extensions': [ '.js', '.jsx', '.json' ],
+        'import/extensions': [ '.js', '.jsx' ],
         'import/resolver': {
             'node': {
-                'extensions': [ '.js', '.jsx', '.json' ]
+                'extensions': [ '.js', '.jsx' ]
             }
         },
         'react': {

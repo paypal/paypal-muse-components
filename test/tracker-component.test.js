@@ -3,7 +3,7 @@
 import { Tracker, clearTrackQueue } from '../src/tracker-component';
 import { setCookie } from '../src/lib/cookie-utils';
 // $FlowFixMe
-import generateIdModule from '../src/generate-id';
+import generateIdModule from '../src/lib/generate-id';
 
 const decode = (encodedDataParam : string) : string => {
     return JSON.parse(atob(decodeURIComponent(encodedDataParam)));
