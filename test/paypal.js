@@ -19,8 +19,8 @@ setupSDK([
     }
 ]);
 
-// JSDOM initializes with the 'DOMContentLoaded' event having 
-// already been fired. We manually fire it after insterting the 
+// JSDOM initializes with the 'DOMContentLoaded' event having
+// already been fired. We manually fire it after insterting the
 // sdk.
 const loadEvent = document.createEvent('Event');
 loadEvent.initEvent('DOMContentLoaded', true, true);
