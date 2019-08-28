@@ -8,12 +8,10 @@ import { getUserIdCookie } from './lib/cookie-utils';
 import getJetlore from './lib/jetlore';
 import { composeCart } from './lib/compose-cart';
 import { track } from './lib/track';
-import {
-    accessTokenUrl,
-    storage
-} from './lib/constants';
+import constants from './lib/constants';
 import type {
     CartEventType,
+    TrackingType,
     ViewData,
     CartData,
     CancelCartData,
@@ -24,6 +22,11 @@ import type {
     JetloreConfig,
     Config
 } from './lib/types';
+
+const {
+    accessTokenUrl,
+    storage
+} = constants;
 
 const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
     return fetch(url, {
@@ -90,18 +93,28 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
 
 let trackEventQueue = [];
 
-// eslint-disable-next-line flowtype/no-weak-types
-export const clearTrackQueue = (config : Config, queue : any) => {
-    // eslint-disable-next-line array-callback-return
-    return queue.filter(([ trackingType, trackingData ]) => {
-        track(config, trackingType, trackingData, trackEventQueue);
+const defaultTrackerConfig = { user: { email: undefined, name: undefined } };
+
+export const clearTrackQueue = (config : Config) => {
+    // $FlowFixMe
+    return trackEventQueue.filter(([ trackingType, trackingData ]) => { // eslint-disable-line array-callback-return
+        track(config, trackingType, trackingData);
     });
 };
 
-const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) =>
-    track(config, 'cartEvent', { ...trackingData, cartEventType });
+export const trackEvent = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
+    // Events cannot be fired without a propertyId. We add events
+    // to a queue if a propertyId has not yet been returned.
+    if (!config.propertyId) {
+        trackEventQueue.push([ trackingType, trackingData ]);
+        return;
+    }
 
-const defaultTrackerConfig = { user: { email: undefined, name: undefined } };
+    track(config, trackingType, trackingData);
+};
+
+const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) =>
+    trackEvent(config, 'cartEvent', { ...trackingData, cartEventType });
 
 const clearExpiredCart = () => {
     const expiry = window.localStorage.getItem(storage.paypalCrCartExpiry);
@@ -160,7 +173,7 @@ export const setImplicitPropertyId = (config : Config) => {
     getPropertyId(config).then(propertyId => {
         config.propertyId = propertyId;
         if (trackEventQueue.length) {
-            trackEventQueue = clearTrackQueue(config, trackEventQueue);
+            trackEventQueue = clearTrackQueue(config);
         }
     });
 };
@@ -237,7 +250,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
 
             trackCartEvent(config, 'removeFromCart', data);
         },
-        purchase: (data : PurchaseData) => track(config, 'purchase', data, trackEventQueue),
+        purchase: (data : PurchaseData) => track(config, 'purchase', data),
         setUser: (data : UserData) => {
             config = {
                 ...config,
@@ -247,11 +260,11 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
                     name: data.user.name || ((config && config.user) || {}).name
                 }
             };
-            track(config, 'setUser', { oldUserId: getUserIdCookie() }, trackEventQueue);
+            trackEvent(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
         cancelCart: (data : CancelCartData) => {
             clearCancelledCart();
-            track(config, 'cancelCart', data, trackEventQueue);
+            trackEvent(config, 'cancelCart', data);
         },
         setPropertyId: (id : string) => {
             config.propertyId = id;
@@ -291,7 +304,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     // https://github.com/paypal/paypal-muse-components/commit/b3e76554fadd72ad24b6a900b99b8ff75af08815
     const trackerFunctions = trackers;
 
-    const trackEvent = (type : string, data : Object) => {
+    const trackEventByType = (type : string, data : Object) => {
         const isJetloreType = config.jetlore
             ? jetloreTrackTypes.includes(type)
             : false;
@@ -340,7 +353,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     return {
         // bringing in tracking functions for backwards compatibility
         ...trackerFunctions,
-        track: trackEvent,
+        track: trackEventByType,
         identify,
         getJetlorePayload
     };

@@ -1,6 +1,11 @@
 /* @flow */
 import { getCookie } from './cookie-utils';
-import { storage, sevenDays } from './constants';
+import constants from './constants';
+
+const {
+    storage,
+    sevenDays
+} = constants;
 // $FlowFixMe
 export const removeFromCart = (items, currentItems = []) => {
     return items.reduce((accumulator, item) => {

@@ -7,7 +7,6 @@ import { uniqueID } from 'belter/src';
 ** - flow and eslint have to be disabled on whatever line this is used.
 */
 
-// eslint-disable-next-line import/no-default-export
 export default {
     generateId: uniqueID
 };

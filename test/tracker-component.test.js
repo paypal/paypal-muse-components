@@ -1,6 +1,6 @@
 /* globals describe beforeAll afterAll afterEach it expect */
 /* @flow */
-import { Tracker, clearTrackQueue } from '../src/tracker-component';
+import { Tracker } from '../src/tracker-component';
 import { setCookie } from '../src/lib/cookie-utils';
 // $FlowFixMe
 import generateIdModule from '../src/lib/generate-id';
@@ -762,37 +762,5 @@ describe('paypal.Tracker', () => {
 
         Tracker({ user: { email, name: userName }, propertyId: 'hello' });
         expect(fetchCalls.length).toBe(0);
-    });
-
-    it('should clear trackEventQueue when function is called', () => {
-        const email = '__test__email4@gmail.com';
-        const userName = '__test__userName4';
-        const id = '__test__cookie-id';
-        const trackingData = {
-            cartId: '__test__cartId',
-            items: [
-                {
-                    id: '__test__productId',
-                    url: 'https://example.com/__test__productId'
-                }
-            ],
-            emailCampaignId: '__test__emailCampaignId',
-            total: '12345.67',
-            currencyCode: 'USD',
-            cartEventType: 'addToCart',
-            user: { email, name: userName, id },
-            propertyId,
-            trackingType: 'cartEvent',
-            clientId: 'abcxyz123',
-            merchantId: 'xyz,hij,lmno',
-            deviceInfo
-        };
-        const trackEventQueue = [
-            [ 'addToCart', trackingData ],
-            [ 'setCart', trackingData ],
-            [ 'remoteFromCart', trackingData ]
-        ];
-        const result = clearTrackQueue({}, trackEventQueue);
-        expect(result.length).toBe(0);
     });
 });

@@ -8,12 +8,7 @@ import type {
     TrackingType
 } from './types';
 
-// eslint-disable-next-line flowtype/no-weak-types
-export const track = <T>(config : Config, trackingType : TrackingType, trackingData : T, trackEventQueue? : any = []) => {
-    if (!config.propertyId) {
-        trackEventQueue.push([ trackingType, trackingData ]);
-        return;
-    }
+export const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
 
     const img = document.createElement('img');
