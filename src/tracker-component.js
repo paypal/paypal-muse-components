@@ -9,91 +9,19 @@ import { getCookie, setCookie } from './lib/cookie-utils';
 import getJetlore from './lib/jetlore';
 import { getDeviceInfo } from './lib/get-device-info';
 import { removeFromCart, addToCart } from './lib/compose-cart';
-
-type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser' | 'cancelCart';
-
-type CartEventType = 'addToCart' | 'setCart' | 'removeFromCart';
-
-type Product = {|
-    id : string,
-    title? : string,
-    url? : string,
-    description? : string,
-    imgUrl? : string,
-    otherImages? : $ReadOnlyArray<string>,
-    keywords? : $ReadOnlyArray<string>,
-    price? : string,
-    quantity? : string
-|};
-
-type ViewData = {| page : string, title? : string |};
-
-type CartData = {|
-    cartId? : string,
-    items : $ReadOnlyArray<Product>,
-    emailCampaignId? : string,
-    total? : string,
-    currencyCode? : string
-|};
-
-type CancelCartData = {|
-    cartId? : string
-|};
-
-type RemoveCartData = {|
-    cartId? : string,
-    items : $ReadOnlyArray<{ id : string }>
-|};
-
-type PurchaseData = {| cartId : string |};
-
-type UserData = {|
-    user : {|
-        email : string,
-        name? : string
-    |}
-|};
-
-type IdentityData = {|
-    mrid : string,
-    onIdentification : Function,
-    onError? : Function
-|};
-
-type ParamsToBeaconUrl = ({
-    trackingType : TrackingType,
-    data : ViewData | CartData | RemoveCartData | PurchaseData | CancelCartData
-}) => string;
-
-type ParamsToTokenUrl = () => string;
-
-type ParamsToPropertyIdUrl = () => string;
-
-type JetloreConfig = {|
-    user_id : string,
-    cid : string,
-    feed_id : string,
-    div? : string,
-    lang? : string
-|};
-
-type Config = {|
-    user? : {|
-        email? : string, // mandatory if unbranded cart recovery
-        name? : string
-    |},
-    propertyId? : string,
-    paramsToBeaconUrl? : ParamsToBeaconUrl,
-    paramsToTokenUrl? : ParamsToTokenUrl,
-    jetlore? : {|
-        user_id : string,
-        access_token : string,
-        feed_id : string,
-        div? : string,
-        lang? : string
-    |},
-    paramsToPropertyIdUrl? : ParamsToPropertyIdUrl
-|};
+import type {
+    TrackingType,
+    CartEventType,
+    ViewData,
+    CartData,
+    CancelCartData,
+    RemoveCartData,
+    PurchaseData,
+    UserData,
+    IdentityData,
+    JetloreConfig,
+    Config
+} from './lib/types';
 
 const storage = {
     paypalCrCart: 'paypal-cr-cart',
