@@ -7,7 +7,6 @@ import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 import { getUserIdCookie } from './lib/cookie-utils';
 import { getPropertyId } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
-import { composeCart } from './lib/compose-cart';
 import { track } from './lib/track';
 import constants from './lib/constants';
 import type {
@@ -146,10 +145,12 @@ export const setImplicitPropertyId = (config : Config) => {
         }
     });
 };
+
 const clearCancelledCart = () => {
     window.localStorage.removeItem(storage.paypalCrCartExpiry);
     window.localStorage.removeItem(storage.paypalCrCart);
 };
+
 // $FlowFixMe
 export const Tracker = (config? : Config = {}) => {
     // $FlowFixMe
@@ -206,22 +207,14 @@ export const Tracker = (config? : Config = {}) => {
     }
     const trackers = {
         view: (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
-        addToCart: (data : CartData) => {
-            const newCart = composeCart('add', data);
-
-            return trackCartEvent(config, 'addToCart', newCart);
-        },
-        setCart: (data : CartData) => {
-            const newCart = composeCart('set', data);
-
-            return trackCartEvent(config, 'setCart', newCart);
-        },
-        removeFromCart: (data : RemoveCartData) => {
-            composeCart('remove', data);
-
-            trackCartEvent(config, 'removeFromCart', data);
-        },
+        addToCart: (data : CartData) => trackCartEvent(config, 'addToCart', data),
+        setCart: (data : CartData) => trackCartEvent(config, 'setCart', data),
+        removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
         purchase: (data : PurchaseData) => track(config, 'purchase', data),
+        cancelCart: (data : CancelCartData) => {
+            clearCancelledCart();
+            return trackEvent(config, 'cancelCart', data);
+        },
         setUser: (data : UserData) => {
             const user = data.user || data;
             const configUser = config.user || {};
@@ -239,10 +232,6 @@ export const Tracker = (config? : Config = {}) => {
                 }
             };
             trackEvent(config, 'setUser', { oldUserId: getUserIdCookie() });
-        },
-        cancelCart: (data : CancelCartData) => {
-            clearCancelledCart();
-            trackEvent(config, 'cancelCart', data);
         },
         setPropertyId: (id : string) => {
             config.propertyId = id;
