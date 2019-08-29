@@ -1,9 +1,9 @@
 /* globals describe beforeAll afterAll afterEach it expect */
 /* @flow */
-import { Tracker, clearTrackQueue } from '../src/tracker-component';
+import { Tracker } from '../src/tracker-component';
 import { setCookie } from '../src/lib/cookie-utils';
 // $FlowFixMe
-import generateIdModule from '../src/generate-id';
+import generateIdModule from '../src/lib/generate-id';
 
 const decode = (encodedDataParam : string) : string => {
     return JSON.parse(atob(decodeURIComponent(encodedDataParam)));
@@ -462,9 +462,9 @@ describe('paypal.Tracker', () => {
             JSON.stringify({
                 oldUserId: 'abc123',
                 user: {
+                    id: 'abc123',
                     email: '__test__email9',
-                    name: '__test__userName9',
-                    id: 'abc123'
+                    name: '__test__userName9'
                 },
                 propertyId,
                 trackingType: 'setUser',
@@ -496,9 +496,9 @@ describe('paypal.Tracker', () => {
             JSON.stringify({
                 oldUserId: 'abc123',
                 user: {
+                    id: 'abc123',
                     email: '__test__email@gmail.com',
-                    name: '__test__name',
-                    id: 'abc123'
+                    name: '__test__name'
                 },
                 propertyId,
                 trackingType: 'setUser',
@@ -544,9 +544,9 @@ describe('paypal.Tracker', () => {
                 currencyCode: 'USD',
                 cartEventType: 'addToCart',
                 user: {
+                    id: 'abc123',
                     email: '__test__email2',
-                    name: '__test__name1',
-                    id: 'abc123'
+                    name: '__test__name1'
                 },
                 propertyId,
                 trackingType: 'cartEvent',
@@ -588,7 +588,7 @@ describe('paypal.Tracker', () => {
                 total: '12345.67',
                 currencyCode: 'USD',
                 cartEventType: 'addToCart',
-                user: { id: '__test__cookie-id' },
+                user: { id: '__test__cookie-id', email: null, name: null },
                 propertyId,
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
@@ -746,7 +746,7 @@ describe('paypal.Tracker', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
         // clear local storage to ensure a request happens
-        window.localStorage.removeItem('property-id-abcxyz123-xyz')
+        window.localStorage.removeItem('property-id-abcxyz123-xyz');
         Tracker({ user: { email, name: userName } });
 
         expect(appendChildCalls).toBe(0);
@@ -758,41 +758,9 @@ describe('paypal.Tracker', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
         // clear local storage to ensure a request happens
-        window.localStorage.removeItem('property-id-abcxyz123-xyz')
+        window.localStorage.removeItem('property-id-abcxyz123-xyz');
 
         Tracker({ user: { email, name: userName }, propertyId: 'hello' });
         expect(fetchCalls.length).toBe(0);
-    });
-
-    it('should clear trackEventQueue when function is called', () => {
-        const email = '__test__email4@gmail.com';
-        const userName = '__test__userName4';
-        const id = '__test__cookie-id';
-        const trackingData = {
-            cartId: '__test__cartId',
-            items: [
-                {
-                    id: '__test__productId',
-                    url: 'https://example.com/__test__productId'
-                }
-            ],
-            emailCampaignId: '__test__emailCampaignId',
-            total: '12345.67',
-            currencyCode: 'USD',
-            cartEventType: 'addToCart',
-            user: { email, name: userName, id },
-            propertyId,
-            trackingType: 'cartEvent',
-            clientId: 'abcxyz123',
-            merchantId: 'xyz,hij,lmno',
-            deviceInfo
-        };
-        const trackEventQueue = [
-            [ 'addToCart', trackingData ],
-            [ 'setCart', trackingData ],
-            [ 'remoteFromCart', trackingData ]
-        ];
-        const result = clearTrackQueue({}, trackEventQueue);
-        expect(result.length).toBe(0);
     });
 });

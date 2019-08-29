@@ -149,7 +149,6 @@ module.exports = {
         'no-useless-call': 'error',
         'no-useless-concat': 'error',
         'no-void': 'error',
-        'no-warning-comments': 'error',
         'no-with': 'error',
         'radix': 'error',
         'vars-on-top': 'off',
@@ -420,7 +419,7 @@ module.exports = {
         'import/exports-last': 'off',
         'import/group-exports': 'off',
         'import/no-cycle': 'error',
-        'import/no-default-export': 'error',
+        'import/no-default-export': 'off',
         'import/no-self-import': 'error',
         'import/no-useless-path-segments': 'error',
 
