@@ -5,5 +5,12 @@ export default {
     'storage': {
         'paypalCrCart': 'paypal-cr-cart',
         'paypalCrCartExpiry': 'paypal-cr-cart-expiry'
+    },
+    'defaultTrackerConfig': {
+        'user': {
+            'id': null,
+            'email': null,
+            'name': null
+        }
     }
 };

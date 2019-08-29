@@ -20,6 +20,12 @@ export const track = <T>(config : Config, trackingType : TrackingType, trackingD
         ...config.user,
         id: getUserIdCookie()
     };
+
+    // remove null, undefined values
+    user.id || delete user.id
+    user.email || delete user.email
+    user.name || delete user.name
+
     const deviceInfo = getDeviceInfo();
     const data = {
         ...trackingData,

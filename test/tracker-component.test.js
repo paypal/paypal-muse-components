@@ -462,9 +462,9 @@ describe('paypal.Tracker', () => {
             JSON.stringify({
                 oldUserId: 'abc123',
                 user: {
+                    id: 'abc123',
                     email: '__test__email9',
                     name: '__test__userName9',
-                    id: 'abc123'
                 },
                 propertyId,
                 trackingType: 'setUser',
@@ -496,9 +496,9 @@ describe('paypal.Tracker', () => {
             JSON.stringify({
                 oldUserId: 'abc123',
                 user: {
+                    id: 'abc123',
                     email: '__test__email@gmail.com',
                     name: '__test__name',
-                    id: 'abc123'
                 },
                 propertyId,
                 trackingType: 'setUser',
@@ -544,9 +544,9 @@ describe('paypal.Tracker', () => {
                 currencyCode: 'USD',
                 cartEventType: 'addToCart',
                 user: {
+                    id: 'abc123',
                     email: '__test__email2',
                     name: '__test__name1',
-                    id: 'abc123'
                 },
                 propertyId,
                 trackingType: 'cartEvent',

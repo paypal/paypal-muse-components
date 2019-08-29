@@ -5,6 +5,7 @@ import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 // $FlowFixMe
 import { getUserIdCookie } from './lib/cookie-utils';
+import { getPropertyId } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
 import { composeCart } from './lib/compose-cart';
 import { track } from './lib/track';
@@ -25,7 +26,8 @@ import type {
 
 const {
     accessTokenUrl,
-    storage
+    storage,
+    defaultTrackerConfig
 } = constants;
 
 const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
@@ -93,8 +95,6 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
 
 let trackEventQueue = [];
 
-const defaultTrackerConfig = { user: { email: undefined, name: undefined } };
-
 export const clearTrackQueue = (config : Config) => {
     // $FlowFixMe
     return trackEventQueue.filter(([ trackingType, trackingData ]) => { // eslint-disable-line array-callback-return
@@ -129,38 +129,6 @@ const clearExpiredCart = () => {
     }
 };
 
-const getPropertyId = ({ paramsToPropertyIdUrl }) => {
-    return new Promise(resolve => {
-        const clientId = getClientID();
-        const merchantId = getMerchantID()[0];
-        const propertyIdKey = `property-id-${ clientId }-${ merchantId }`;
-        const savedPropertyId = window.localStorage.getItem(propertyIdKey);
-        const currentUrl = `${ window.location.protocol }//${ window.location.host }`;
-        if (savedPropertyId) {
-            return resolve(savedPropertyId);
-        }
-        let url;
-        if (paramsToPropertyIdUrl) {
-            url = paramsToPropertyIdUrl();
-        } else {
-            url = 'https://paypal.com/tagmanager/containers/xo';
-        }
-        return window.fetch(`${ url }?mrid=${ merchantId }&url=${ encodeURIComponent(currentUrl) }`)
-            .then(res => {
-                if (res.status === 200) {
-                    return res;
-                }
-            })
-            .then(r => r.json()).then(container => {
-                window.localStorage.setItem(propertyIdKey, container.id);
-                resolve(container.id);
-            })
-            .catch(() => {
-                // doing nothing for now since there's no logging
-            });
-    });
-};
-
 export const setImplicitPropertyId = (config : Config) => {
     /*
     ** this is used for backwards compatibility
@@ -182,7 +150,8 @@ const clearCancelledCart = () => {
     window.localStorage.removeItem(storage.paypalCrCart);
 };
 
-export const Tracker = (config? : Config = defaultTrackerConfig) => {
+export const Tracker = (config? : Config = {}) => {
+    config = { ...defaultTrackerConfig, ...config }
     /*
      * Use the get param ?ppDebug=true to see logs
      *
@@ -252,12 +221,19 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
         },
         purchase: (data : PurchaseData) => track(config, 'purchase', data),
         setUser: (data : UserData) => {
+            const user = data.user || data
+            const configUser = config.user || {}
+
+            const userId = user.id !== undefined ? user.id : config.user.id
+            const userEmail = user.email !== undefined ? user.email : config.user.email
+            const userName = user.name !== undefined ? user.name : config.user.name
+
             config = {
                 ...config,
                 user: {
-                    ...config.user,
-                    email: data.user.email || ((config && config.user) || {}).email,
-                    name: data.user.name || ((config && config.user) || {}).name
+                    id: userId,
+                    email: userEmail,
+                    name: userName
                 }
             };
             trackEvent(config, 'setUser', { oldUserId: getUserIdCookie() });
