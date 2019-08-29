@@ -21,11 +21,6 @@ export const track = <T>(config : Config, trackingType : TrackingType, trackingD
         id: getUserIdCookie()
     };
 
-    // remove null, undefined values
-    user.id || delete user.id
-    user.email || delete user.email
-    user.name || delete user.name
-
     const deviceInfo = getDeviceInfo();
     const data = {
         ...trackingData,
@@ -46,6 +41,8 @@ export const track = <T>(config : Config, trackingType : TrackingType, trackingD
         img.src = `https://www.paypal.com/targeting/track/${ trackingType }?data=${ encodeData(data) }`;
     }
 
+    // TODO: this will add a new image EVERY time the 'track' method is called. There's no reason
+    // to clutter the DOM like this. We should replace the old image.
     if (document.body) {
         document.body.appendChild(img);
     }

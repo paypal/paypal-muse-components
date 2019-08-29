@@ -96,6 +96,7 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
 let trackEventQueue = [];
 
 export const clearTrackQueue = (config : Config) => {
+    // TODO: replace 'filter' with 'forEach'
     // $FlowFixMe
     return trackEventQueue.filter(([ trackingType, trackingData ]) => { // eslint-disable-line array-callback-return
         track(config, trackingType, trackingData);
@@ -149,9 +150,10 @@ const clearCancelledCart = () => {
     window.localStorage.removeItem(storage.paypalCrCartExpiry);
     window.localStorage.removeItem(storage.paypalCrCart);
 };
-
+// $FlowFixMe
 export const Tracker = (config? : Config = {}) => {
-    config = { ...defaultTrackerConfig, ...config }
+    // $FlowFixMe
+    config = { ...defaultTrackerConfig, ...config };
     /*
      * Use the get param ?ppDebug=true to see logs
      *
@@ -221,12 +223,12 @@ export const Tracker = (config? : Config = {}) => {
         },
         purchase: (data : PurchaseData) => track(config, 'purchase', data),
         setUser: (data : UserData) => {
-            const user = data.user || data
-            const configUser = config.user || {}
+            const user = data.user || data;
+            const configUser = config.user || {};
 
-            const userId = user.id !== undefined ? user.id : config.user.id
-            const userEmail = user.email !== undefined ? user.email : config.user.email
-            const userName = user.name !== undefined ? user.name : config.user.name
+            const userId = user.id !== undefined ? user.id : configUser.id;
+            const userEmail = user.email !== undefined ? user.email : configUser.email;
+            const userName = user.name !== undefined ? user.name : configUser.name;
 
             config = {
                 ...config,

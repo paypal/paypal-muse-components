@@ -464,7 +464,7 @@ describe('paypal.Tracker', () => {
                 user: {
                     id: 'abc123',
                     email: '__test__email9',
-                    name: '__test__userName9',
+                    name: '__test__userName9'
                 },
                 propertyId,
                 trackingType: 'setUser',
@@ -498,7 +498,7 @@ describe('paypal.Tracker', () => {
                 user: {
                     id: 'abc123',
                     email: '__test__email@gmail.com',
-                    name: '__test__name',
+                    name: '__test__name'
                 },
                 propertyId,
                 trackingType: 'setUser',
@@ -546,7 +546,7 @@ describe('paypal.Tracker', () => {
                 user: {
                     id: 'abc123',
                     email: '__test__email2',
-                    name: '__test__name1',
+                    name: '__test__name1'
                 },
                 propertyId,
                 trackingType: 'cartEvent',
@@ -588,7 +588,7 @@ describe('paypal.Tracker', () => {
                 total: '12345.67',
                 currencyCode: 'USD',
                 cartEventType: 'addToCart',
-                user: { id: '__test__cookie-id' },
+                user: { id: '__test__cookie-id', email: null, name: null },
                 propertyId,
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
