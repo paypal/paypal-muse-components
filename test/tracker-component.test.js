@@ -171,7 +171,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);
@@ -209,7 +210,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
     });
@@ -266,7 +268,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(2);
@@ -305,7 +308,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);
@@ -332,7 +336,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'purchase',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);
@@ -357,7 +362,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cancelCart',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);
@@ -402,7 +408,8 @@ describe('paypal.Tracker', () => {
                         trackingType: 'purchase',
                         clientId: 'abcxyz123',
                         merchantId: 'xyz,hij,lmno',
-                        deviceInfo
+                        deviceInfo,
+                        version: 'TRANSITION_FLAG'
                     }
                 }
             ])
@@ -429,7 +436,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'setUser',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
     });
@@ -463,7 +471,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'setUser',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
     });
@@ -511,7 +520,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
     });
@@ -552,7 +562,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
     });
@@ -686,7 +697,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);
