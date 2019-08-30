@@ -2,6 +2,7 @@
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 import { getUserIdCookie, setRandomUserIdCookie } from './cookie-utils';
+import { getCartId, createNewCartId } from './local-storage-utils';
 import { getDeviceInfo } from './get-device-info';
 import type {
     Config,
@@ -10,6 +11,16 @@ import type {
 
 export const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
+    let cartId;
+
+    try {
+        // $FlowFixMe
+        cartId = getCartId().cartId;
+    } catch (err) {
+        // setting up 'cartId' should be handled elsewhere
+        console.warn('No cartId found. Creating new id.'); // eslint-disable-line no-console
+        cartId = createNewCartId().cartId;
+    }
 
     const img = document.createElement('img');
     img.style.display = 'none';
@@ -24,6 +35,7 @@ export const track = <T>(config : Config, trackingType : TrackingType, trackingD
     const deviceInfo = getDeviceInfo();
     const data = {
         ...trackingData,
+        cartId,
         user,
         propertyId: config.propertyId,
         trackingType,

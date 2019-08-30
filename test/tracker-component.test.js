@@ -2,8 +2,11 @@
 /* @flow */
 import { Tracker } from '../src/tracker-component';
 import { setCookie } from '../src/lib/cookie-utils';
+import constants from '../src/lib/constants';
 // $FlowFixMe
 import generateIdModule from '../src/lib/generate-id';
+
+const { sevenDays, storage } = constants;
 
 const decode = (encodedDataParam : string) : string => {
     return JSON.parse(atob(decodeURIComponent(encodedDataParam)));
@@ -91,11 +94,15 @@ describe('paypal.Tracker', () => {
         generateIdModule.generateId = originalGenerateId;
     });
 
+    beforeEach(() => {
+        window.localStorage.removeItem(storage.paypalCrCart);
+    });
+
     // $FlowFixMe
     afterEach(() => {
         appendChildCalls = 0;
         imgMock.src = '';
-        window.localStorage.removeItem('paypal-cr-cart');
+        window.localStorage.removeItem(storage.paypalCrCart);
         document.cookie = 'paypal-cr-cart=;';
         fetchCalls = [];
     });
@@ -114,21 +121,23 @@ describe('paypal.Tracker', () => {
     });
 
     it('should clear stored cart content if cart is expired', () => {
-        const beforeStorage = window.localStorage.getItem('paypal-cr-cart');
-
-        window.localStorage.setItem('paypal-cr-cart-expiry', Date.now() - 10);
-
+        const beforeStorage = window.localStorage.getItem(storage.paypalCrCart);
+        const twoWeeksAgo = (Date.now() - (sevenDays * 2));
+    
         expect(beforeStorage).toBe(null);
+        window.localStorage.setItem(storage.paypalCrCart, JSON.stringify({
+            cartId: 'arglebargleflimflam',
+            createdAt: twoWeeksAgo
+        }));
 
         // Since the expiry is in the past, this initialization should clear
         // the cart and expiry.
         Tracker();
 
-        const afterStorage = window.localStorage.getItem('paypal-cr-cart');
-        const afterExpiry = window.localStorage.getItem('paypal-cr-cart-expiry');
+        const afterStorage = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
 
-        expect(afterStorage).toBe(null);
-        expect(afterExpiry).toBe(null);
+        expect(afterStorage.cartId).not.toBe('arglebargleflimflam');
+        expect(afterStorage.createdAt).toBeGreaterThan(twoWeeksAgo);
     });
 
     it('should send addToCart events', () => {
@@ -368,11 +377,9 @@ describe('paypal.Tracker', () => {
         );
         expect(appendChildCalls).toBe(1);
 
-        const afterStorage = window.localStorage.getItem('paypal-cr-cart');
-        const afterExpiry = window.localStorage.getItem('paypal-cr-cart-expiry');
+        const afterStorage = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
 
-        expect(afterStorage).toBe(null);
-        expect(afterExpiry).toBe(null);
+        expect(afterStorage.cartId).not.toBe('__test__cartId');
     });
 
     it('should call paramsToBeaconUrl to create the url if you pass in paramsToBeaconUrl function', () => {
@@ -427,6 +434,7 @@ describe('paypal.Tracker', () => {
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
                 oldUserId: 'abc123',
+                cartId: 'abc123',
                 user: {
                     id: 'abc123',
                     email: '__test__email9',
@@ -462,6 +470,7 @@ describe('paypal.Tracker', () => {
         expect(JSON.stringify(dataParamObject)).toBe(
             JSON.stringify({
                 oldUserId: 'abc123',
+                cartId: 'abc123',
                 user: {
                     id: 'abc123',
                     email: '__test__email@gmail.com',

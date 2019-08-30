@@ -6,6 +6,7 @@
 .*/test/tracker/set-user.test.js
 .*/test/tracker/remove-from-cart.test.js
 .*/test/tracker/add-to-cart.test.js
+.*/test/local-storage-utils.test.js
 [untyped]
 .*/src/lib/jetlore
 [include]
