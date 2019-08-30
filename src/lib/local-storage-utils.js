@@ -4,20 +4,6 @@ import generate from './generate-id';
 
 const { storage, sevenDays } = constants;
 
-/* Generates a random cartId that expires in 7 days */
-export const createNewCartId = () => {
-    const cartId = `${ generate.generateId() }`;
-
-    const storedValue = {
-        cartId,
-        createdAt: Date.now()
-    };
-
-    window.localStorage.setItem(storage.paypalCrCart, JSON.stringify(storedValue));
-
-    return storedValue;
-};
-
 /* Returns an existing cartId or null */
 export const getCartId = () => {
     const storedValue = window.localStorage.getItem(storage.paypalCrCart);
@@ -39,6 +25,13 @@ export const setCartId = (cartId : string) => {
     window.localStorage.setItem(storage.paypalCrCart, JSON.stringify(storedValue));
 
     return storedValue;
+};
+
+/* Generates a random cartId that expires in 7 days */
+export const createNewCartId = () => {
+    const cartId = `${ generate.generateId() }`;
+
+    return setCartId(cartId);
 };
 
 /* Generates a new cartId if the existing value is older than 7 days.

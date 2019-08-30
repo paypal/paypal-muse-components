@@ -208,6 +208,7 @@ export const Tracker = (config? : Config = {}) => {
             trackCartEvent(config, 'addToCart', data);
         },
         setCart: (data : CartData) => trackCartEvent(config, 'setCart', data),
+        setCartId: (cartId : string) => setCartId(cartId),
         removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
         purchase: (data : PurchaseData) => trackEvent(config, 'purchase', data),
         cancelCart: (data : CancelCartData) => {

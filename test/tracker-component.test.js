@@ -535,6 +535,16 @@ describe('paypal.Tracker', () => {
         );
     });
 
+    it('should set the cartId when setCartId is called', () => {
+        const tracker = Tracker();
+        const beforeStorage = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
+        tracker.setCartId('arglebargle');
+        const afterStorage = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
+
+        expect(beforeStorage).not.toEqual(afterStorage);
+        expect(afterStorage.cartId).toBe('arglebargle');
+    });
+
     it('should use document.cookie value if it exists', () => {
         setCookie('paypal-user-id', '__test__cookie-id', 10000);
         const tracker = Tracker();
