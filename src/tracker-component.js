@@ -207,7 +207,18 @@ export const Tracker = (config? : Config = {}) => {
     }
     const trackers = {
         view: (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
-        addToCart: (data : CartData) => trackCartEvent(config, 'addToCart', data),
+        addToCart: (data : CartData) => {
+            // $FlowFixMe
+            const invalidQuantity = data.items.find(item => item.quantity === Infinity)
+
+            if (invalidQuantity) {
+                // eslint-disable-next-line no-console
+                console.error(`'Infinity' is not an accepted quantity for item: ${ invalidQuantity.id }`)
+                return
+            }
+
+            trackCartEvent(config, 'addToCart', data)
+        },
         setCart: (data : CartData) => trackCartEvent(config, 'setCart', data),
         removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
         purchase: (data : PurchaseData) => track(config, 'purchase', data),

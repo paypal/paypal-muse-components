@@ -4,6 +4,7 @@ import { Tracker } from '../../src/tracker-component';
 import { track } from '../../src/lib/track';
 import { getPropertyId } from '../../src/lib/get-property-id';
 
+console.error = jest.fn()
 jest.mock('../../src/lib/track');
 jest.mock('../../src/lib/get-property-id', () => {
     return {
@@ -11,7 +12,6 @@ jest.mock('../../src/lib/get-property-id', () => {
         getPropertyId: async () => 'mockpropertyidofsomekind'
     };
 });
-
 
 describe('addToCart', () => {
     let config;
@@ -39,6 +39,7 @@ describe('addToCart', () => {
 
     afterEach(() => {
         track.mockReset();
+        console.error.mockReset();
         window.localStorage.removeItem('paypal-cr-cart');
         window.localStorage.removeItem('paypal-cr-cart-expirty');
     });
@@ -46,6 +47,7 @@ describe('addToCart', () => {
     afterAll(() => {
         track.mockRestore();
         getPropertyId.mockRestore();
+        console.error.mockRestore()
     });
 
     it('should pass added items', () => {
@@ -78,5 +80,17 @@ describe('addToCart', () => {
             expect(args[1][2].items).toEqual([ mockItem ]);
             done();
         }, 100);
+    });
+
+    it('should log an error and return when "infinity" is passed as a quantity', () => {
+      const tracker = Tracker(config);
+      mockItem.quantity = Infinity
+
+      tracker.addToCart({ items: [ mockItem ] });
+      const args = track.mock.calls;
+      const consoleArgs = console.error.mock.calls;
+
+      expect(args.length).toEqual(0)
+      expect(consoleArgs[0][0]).toEqual(`'Infinity' is not an accepted quantity for item: ${ mockItem.id }`)
     });
 });
