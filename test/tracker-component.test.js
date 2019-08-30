@@ -131,43 +131,6 @@ describe('paypal.Tracker', () => {
         expect(afterExpiry).toBe(null);
     });
 
-    it('should migrate cart cookie storage to localStorage when adding an item to cart', () => {
-        const products = [
-            {
-                id: '1',
-                url: 'example.com'
-            },
-            {
-                id: '2',
-                url: 'example.com'
-            },
-            {
-                id: '3',
-                url: 'example.com'
-            },
-            {
-                id: '4',
-                url: 'example.com'
-            }
-        ];
-
-        document.cookie = `paypal-cr-cart=${ JSON.stringify({ items: [
-            products[0],
-            products[1]
-        ] }) }`;
-
-        const tracker = Tracker();
-
-        tracker.addToCart({ items: [
-            products[2],
-            products[3]
-        ] });
-
-        expect(window.localStorage.getItem('paypal-cr-cart')).toBe(JSON.stringify({
-            items: products
-        }));
-    });
-
     it('should send addToCart events', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
@@ -208,7 +171,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);
@@ -229,10 +193,6 @@ describe('paypal.Tracker', () => {
                 cartId: '__test__cartId0',
                 items: [
                     {
-                        id: '__test__productId',
-                        url: 'https://example.com/__test__productId'
-                    },
-                    {
                         id: '__test__productId0',
                         url: 'https://example.com/__test__productId0'
                     }
@@ -250,7 +210,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
     });
@@ -307,7 +268,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(2);
@@ -346,7 +308,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);
@@ -373,7 +336,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'purchase',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);
@@ -398,7 +362,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cancelCart',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);
@@ -443,7 +408,8 @@ describe('paypal.Tracker', () => {
                         trackingType: 'purchase',
                         clientId: 'abcxyz123',
                         merchantId: 'xyz,hij,lmno',
-                        deviceInfo
+                        deviceInfo,
+                        version: 'TRANSITION_FLAG'
                     }
                 }
             ])
@@ -470,7 +436,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'setUser',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
     });
@@ -504,7 +471,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'setUser',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
     });
@@ -552,7 +520,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
     });
@@ -593,7 +562,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
     });
@@ -727,7 +697,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);

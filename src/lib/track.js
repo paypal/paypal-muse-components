@@ -29,7 +29,8 @@ export const track = <T>(config : Config, trackingType : TrackingType, trackingD
         trackingType,
         clientId: getClientID(),
         merchantId: getMerchantID().join(','),
-        deviceInfo
+        deviceInfo,
+        version: 'TRANSITION_FLAG'
     };
 
     // paramsToBeaconUrl is a function that gives you the ability to override the beacon url
