@@ -34,6 +34,11 @@ export const createNewCartId = () => {
     return setCartId(cartId);
 };
 
+/* Returns an existing cartId or creates a new one */
+export const getOrCreateCartId = () => {
+    return getCartId() || createNewCartId();
+};
+
 /* Generates a new cartId if the existing value is older than 7 days.
 Returns the current, up-to-date cartId in either case */
 export const resetExpiredCartId = () => {

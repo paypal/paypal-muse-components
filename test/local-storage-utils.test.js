@@ -5,7 +5,8 @@ import {
     createNewCartId,
     getCartId,
     setCartId,
-    resetExpiredCartId
+    resetExpiredCartId,
+    getOrCreateCartId
 } from '../src/lib/local-storage-utils';
 
 const { storage } = constants;
@@ -73,6 +74,31 @@ describe('local-storage-utils', () => {
         it('returns null when no cart exists', () => {
             const result = getCartId();
             expect(result).toBe(null);
+        });
+    });
+
+    describe('getOrCreateCartId', () => {
+        beforeEach(() => {
+            window.localStorage.removeItem(storage.paypalCrCart);
+        });
+
+        it('returns an existing cart when one exists', () => {
+            setCartId('foobar');
+            const result = getOrCreateCartId();
+            const localStorage = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
+
+            expect(result.cartId).toBe('foobar');
+            expect(typeof result.createdAt).toBe('number');
+            expect(result).toEqual(localStorage);
+        });
+
+        it('creates a new cart when none exists', () => {
+            const result = getOrCreateCartId();
+            const localStorage = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
+
+            expect(typeof result.cartId).toBe('string');
+            expect(typeof result.createdAt).toBe('number');
+            expect(result).toEqual(localStorage);
         });
     });
 
