@@ -4,6 +4,11 @@ import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 // $FlowFixMe
+import {
+    validateAddItems,
+    validateRemoveItems,
+    validateUser
+} from './lib/input-validation';
 import { getUserIdCookie } from './lib/cookie-utils';
 import { getOrCreateValidCartId, setCartId, createNewCartId } from './lib/local-storage-utils';
 import { getPropertyId } from './lib/get-property-id';
@@ -196,20 +201,33 @@ export const Tracker = (config? : Config = {}) => {
     const trackers = {
         view: (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
         addToCart: (data : CartData) => {
-            // $FlowFixMe
-            const invalidQuantity = data.items.find(item => item.quantity === Infinity);
-
-            if (invalidQuantity) {
+            try {
+                validateAddItems(data);
+                return trackCartEvent(config, 'addToCart', data);
+            } catch (err) {
                 // eslint-disable-next-line no-console
-                console.error(`'Infinity' is not an accepted quantity for item: ${ invalidQuantity.id }`);
-                return;
+                console.error(err.message);
             }
-
-            trackCartEvent(config, 'addToCart', data);
         },
-        setCart: (data : CartData) => trackCartEvent(config, 'setCart', data),
+        setCart: (data : CartData) => {
+            try {
+                validateAddItems(data);
+                return trackCartEvent(config, 'setCart', data);
+            } catch (err) {
+                // eslint-disable-next-line no-console
+                console.error(err.message);
+            }
+        },
         setCartId: (cartId : string) => setCartId(cartId),
-        removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
+        removeFromCart: (data : RemoveCartData) => {
+            try {
+                validateRemoveItems(data);
+                return trackCartEvent(config, 'removeFromCart', data);
+            } catch (err) {
+                // eslint-disable-next-line no-console
+                console.error(err.message);
+            }
+        },
         purchase: (data : PurchaseData) => trackEvent(config, 'purchase', data),
         cancelCart: (data : CancelCartData) => {
             const event = trackEvent(config, 'cancelCart', data);
@@ -218,6 +236,14 @@ export const Tracker = (config? : Config = {}) => {
             return event;
         },
         setUser: (data : UserData) => {
+            try {
+                validateUser(data);
+            } catch (err) {
+                // eslint-disable-next-line no-console
+                console.error(err.message);
+                return;
+            }
+
             const user = data.user || data;
             const configUser = config.user || {};
 
@@ -233,6 +259,7 @@ export const Tracker = (config? : Config = {}) => {
                     name: userName
                 }
             };
+
             trackEvent(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
         setPropertyId: (id : string) => {

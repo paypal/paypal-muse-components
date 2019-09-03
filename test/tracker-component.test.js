@@ -150,6 +150,9 @@ describe('paypal.Tracker', () => {
             cartId: '__test__cartId',
             items: [
                 {
+                    title: 'archbishop of canterbury',
+                    imgUrl: 'animageurl',
+                    price: 'tree fiddy',
                     id: '__test__productId',
                     url: 'https://example.com/__test__productId'
                 }
@@ -163,6 +166,9 @@ describe('paypal.Tracker', () => {
                 cartId: '__test__cartId',
                 items: [
                     {
+                        title: 'archbishop of canterbury',
+                        imgUrl: 'animageurl',
+                        price: 'tree fiddy',
                         id: '__test__productId',
                         url: 'https://example.com/__test__productId'
                     }
@@ -189,6 +195,9 @@ describe('paypal.Tracker', () => {
             cartId: '__test__cartId0',
             items: [
                 {
+                    title: 'duke of lancaster',
+                    imgUrl: 'animageurl',
+                    price: 'tree fiddy',
                     id: '__test__productId0',
                     url: 'https://example.com/__test__productId0'
                 }
@@ -202,6 +211,9 @@ describe('paypal.Tracker', () => {
                 cartId: '__test__cartId0',
                 items: [
                     {
+                        title: 'duke of lancaster',
+                        imgUrl: 'animageurl',
+                        price: 'tree fiddy',
                         id: '__test__productId0',
                         url: 'https://example.com/__test__productId0'
                     }
@@ -235,6 +247,9 @@ describe('paypal.Tracker', () => {
             cartId: '__test__cartId0',
             items: [
                 {
+                    title: 'sultan of cairo',
+                    imgUrl: 'animageurl',
+                    price: 'tree fiddy',
                     id: '__test__productId0',
                     url: 'https://example.com/__test__productId0'
                 }
@@ -247,6 +262,9 @@ describe('paypal.Tracker', () => {
             cartId: '__test__cartId',
             items: [
                 {
+                    title: 'william of normandy',
+                    imgUrl: 'animageurl',
+                    price: 'tree fiddy',
                     id: '__test__productId',
                     url: 'https://example.com/__test__productId'
                 }
@@ -260,6 +278,9 @@ describe('paypal.Tracker', () => {
                 cartId: '__test__cartId',
                 items: [
                     {
+                        title: 'william of normandy',
+                        imgUrl: 'animageurl',
+                        price: 'tree fiddy',
                         id: '__test__productId',
                         url: 'https://example.com/__test__productId'
                     }
@@ -497,6 +518,9 @@ describe('paypal.Tracker', () => {
             cartId: '__test__cartId',
             items: [
                 {
+                    title: 'duke of york',
+                    imgUrl: 'animageurl',
+                    price: 'tree fiddy',
                     id: '__test__productId',
                     url: 'https://example.com/__test__productId'
                 }
@@ -512,6 +536,9 @@ describe('paypal.Tracker', () => {
                 cartId: '__test__cartId',
                 items: [
                     {
+                        title: 'duke of york',
+                        imgUrl: 'animageurl',
+                        price: 'tree fiddy',
                         id: '__test__productId',
                         url: 'https://example.com/__test__productId'
                     }
@@ -553,6 +580,9 @@ describe('paypal.Tracker', () => {
             cartId: '__test__cartId',
             items: [
                 {
+                    title: 'emir of kuwait',
+                    imgUrl: 'animageurl',
+                    price: 'tree fiddy',
                     id: '__test__productId',
                     url: 'https://example.com/__test__productId'
                 }
@@ -568,6 +598,9 @@ describe('paypal.Tracker', () => {
                 cartId: '__test__cartId',
                 items: [
                     {
+                        title: 'emir of kuwait',
+                        imgUrl: 'animageurl',
+                        price: 'tree fiddy',
                         id: '__test__productId',
                         url: 'https://example.com/__test__productId'
                     }
@@ -690,6 +723,9 @@ describe('paypal.Tracker', () => {
             cartId: '__test__cartId',
             items: [
                 {
+                    title: 'consul of rome',
+                    imgUrl: 'animageurl',
+                    price: 'tree fiddy',
                     id: '__test__productId',
                     url: 'https://example.com/__test__productId'
                 }
@@ -703,6 +739,9 @@ describe('paypal.Tracker', () => {
                 cartId: '__test__cartId',
                 items: [
                     {
+                        title: 'consul of rome',
+                        imgUrl: 'animageurl',
+                        price: 'tree fiddy',
                         id: '__test__productId',
                         url: 'https://example.com/__test__productId'
                     }

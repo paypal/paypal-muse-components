@@ -83,17 +83,4 @@ describe('addToCart', () => {
             done();
         }, 100);
     });
-
-    it('should log an error and return when "infinity" is passed as a quantity', () => {
-        const tracker = Tracker(config);
-        mockItem.quantity = Infinity;
-
-        tracker.addToCart({ items: [ mockItem ] });
-        const args = track.mock.calls;
-        // eslint-disable-next-line no-console
-        const consoleArgs = console.error.mock.calls;
-
-        expect(args.length).toEqual(0);
-        expect(consoleArgs[0][0]).toEqual(`'Infinity' is not an accepted quantity for item: ${ mockItem.id }`);
-    });
 });
