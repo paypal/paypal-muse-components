@@ -12,7 +12,7 @@ const getType = (input : any) => {
 };
 
 // Performs 'typeof' check on every key in 'input'
-const checkRequiredKeys = (input : any, expectedInput : any) => {
+const checkKeys = (input : any, expectedInput : any) => {
     // input must be an object
     if (getType(input) !== 'object') {
         throw new Error(`Input error: expected ${ getType(input) } to be object`);
@@ -22,26 +22,8 @@ const checkRequiredKeys = (input : any, expectedInput : any) => {
         const expected = expectedInput[key];
         const actual = getType(input[key]);
 
-        if (actual !== expected) {
-            throw new Error(`Input error for ${ key }: expected ${ actual } to be ${ expected }`);
-        }
-    }
-};
-
-// Performs 'typeof' check on every key in 'input' that exists
-const checkOptionalKeys = (input : any, expectedInput : any) => {
-    // input must be an object
-    if (getType(input) !== 'object') {
-        throw new Error(`Input error: expected ${ getType(input) } to be object`);
-    }
-
-
-    for (const key in expectedInput) {
-        const expected = expectedInput[key];
-        const actual = getType(input[key]);
-
-        if (actual !== 'undefined' && actual !== expected) {
-            throw new Error(`Input error for ${ key }: expected ${ actual } to be ${ expected }`);
+        if (expected.indexOf(actual) === -1) {
+            throw new Error(`Input error for ${ key }: expected ${ actual } to be ${ expected[0] }`);
         }
     }
 };
@@ -52,88 +34,63 @@ const checkArrayKeys = (input : any, expectedInput : any) => {
         throw new Error(`Input error: expected ${ getType(input) } to be array`);
     }
 
-    input.forEach(inputItem => checkRequiredKeys(inputItem, expectedInput));
-};
-
-const checkArrayOptionalKeys = (input : any, expectedInput : any) => {
-    // input must be an array
-    if (getType(input) !== 'array') {
-        throw new Error(`Input error: expected ${ getType(input) } to be array`);
-    }
-
-    input.forEach(inputItem => checkOptionalKeys(inputItem, expectedInput));
+    input.forEach(inputItem => checkKeys(inputItem, expectedInput));
 };
 
 export const validateAddItems = (input : any) => {
-    const requiredInputKeys = {
-        items: 'array'
+    const inputKeys = {
+        items: ['array'],
+        cartId: ['string', 'undefined']
     };
 
-    const optionalInputKeys = {
-        cartId: 'string'
+    const itemKeys = {
+        id: ['string'],
+        title: ['string'],
+        url: ['string'],
+        imgUrl: ['string'],
+        price: ['string'],
+        quantity: ['number', 'undefined'],
+        keywords: ['array', 'undefined'],
+        otherImages: ['array', 'undefined'],
+        description: ['string', 'undefined']
     };
 
-    const requiredItemKeys = {
-        id: 'string',
-        title: 'string',
-        url: 'string',
-        imgUrl: 'string',
-        price: 'string'
-    };
-
-    const optionalItemKeys = {
-        quantity: 'number',
-        keywords: 'array',
-        otherImages: 'array',
-        description: 'string'
-    };
-
-    checkRequiredKeys(input, requiredInputKeys);
-    checkOptionalKeys(input, optionalInputKeys);
-    checkArrayKeys(input.items, requiredItemKeys);
-    checkArrayOptionalKeys(input.items, optionalItemKeys);
+    checkKeys(input, inputKeys);
+    checkArrayKeys(input.items, itemKeys);
 };
 
 export const validateRemoveItems = (input : any) => {
-    const requiredInputKeys = {
-        items: 'array'
+    const inputKeys = {
+        items: ['array'],
+        cartId: ['string', 'undefined']
     };
 
-    const optionalInputKeys = {
-        cartId: 'string'
+    const itemKeys = {
+        id: ['string'],
+        quantity: ['number', 'undefined']
     };
 
-    const requiredItemKeys = {
-        id: 'string'
-    };
-
-    const optionalItemKeys = {
-        quantity: 'number'
-    };
-
-    checkRequiredKeys(input, requiredInputKeys);
-    checkOptionalKeys(input, optionalInputKeys);
-    checkArrayKeys(input.items, requiredItemKeys);
-    checkArrayOptionalKeys(input.items, optionalItemKeys);
+    checkKeys(input, inputKeys);
+    checkArrayKeys(input.items, itemKeys);
 };
 
 export const validateUser = (input : any) => {
-    const optionalInputKeys = {
-        id: 'string',
-        email: 'string',
-        name: 'string',
-        user: 'object'
+    const inputKeys = {
+        id: ['string', 'null', 'undefined'],
+        email: ['string', 'null', 'undefined'],
+        name: ['string', 'null', 'undefined'],
+        user: ['object', 'undefined']
     };
 
-    const optionalUserKeys = {
-        id: 'string',
-        email: 'string',
-        name: 'string'
+    const userKeys = {
+        id: ['string', 'null', 'undefined'],
+        email: ['string', 'null', 'undefined'],
+        name: ['string', 'null', 'undefined'],
     };
 
-    checkOptionalKeys(input, optionalInputKeys);
+    checkKeys(input, inputKeys);
 
     if (input.user) {
-        checkOptionalKeys(input.user, optionalUserKeys);
+        checkKeys(input.user, userKeys);
     }
 };

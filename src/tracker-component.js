@@ -6,7 +6,8 @@ import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 // $FlowFixMe
 import {
     validateAddItems,
-    validateRemoveItems
+    validateRemoveItems,
+    validateUser
 } from './lib/input-validation';
 import { getUserIdCookie } from './lib/cookie-utils';
 import { getOrCreateValidCartId, setCartId, createNewCartId } from './lib/local-storage-utils';
@@ -206,7 +207,6 @@ export const Tracker = (config? : Config = {}) => {
             } catch (err) {
                 // eslint-disable-next-line no-console
                 console.error(err.message);
-                
             }
         },
         setCart: (data : CartData) => {
@@ -216,7 +216,6 @@ export const Tracker = (config? : Config = {}) => {
             } catch (err) {
                 // eslint-disable-next-line no-console
                 console.error(err.message);
-                
             }
         },
         setCartId: (cartId : string) => setCartId(cartId),
@@ -227,7 +226,6 @@ export const Tracker = (config? : Config = {}) => {
             } catch (err) {
                 // eslint-disable-next-line no-console
                 console.error(err.message);
-                
             }
         },
         purchase: (data : PurchaseData) => trackEvent(config, 'purchase', data),
@@ -238,6 +236,14 @@ export const Tracker = (config? : Config = {}) => {
             return event;
         },
         setUser: (data : UserData) => {
+            try {
+                validateUser(data)
+            } catch (err) {
+                // eslint-disable-next-line no-console
+                console.error(err.message)
+                return
+            }
+
             const user = data.user || data;
             const configUser = config.user || {};
 
