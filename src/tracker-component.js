@@ -4,17 +4,16 @@ import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 // $FlowFixMe
+import {
+    validateAddItems,
+    validateRemoveItems
+} from './lib/input-validation';
 import { getUserIdCookie } from './lib/cookie-utils';
 import { getOrCreateValidCartId, setCartId, createNewCartId } from './lib/local-storage-utils';
 import { getPropertyId } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
 import { track } from './lib/track';
 import constants from './lib/constants';
-import { 
-    validateAddItems,
-    validateRemoveItems,
-    validateUser
-} from '../src/lib/input-validation'
 import type {
     CartEventType,
     TrackingType,
@@ -202,30 +201,33 @@ export const Tracker = (config? : Config = {}) => {
         view: (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
         addToCart: (data : CartData) => {
             try {
-                validateAddItems(data)
-                trackCartEvent(config, 'addToCart', data);
+                validateAddItems(data);
+                return trackCartEvent(config, 'addToCart', data);
             } catch (err) {
-                console.error(err.message)
-                return
+                // eslint-disable-next-line no-console
+                console.error(err.message);
+                
             }
         },
         setCart: (data : CartData) => {
             try {
-                validateAddItems(data)
-                trackCartEvent(config, 'setCart', data)
+                validateAddItems(data);
+                return trackCartEvent(config, 'setCart', data);
             } catch (err) {
-                console.error(err.message)
-                return
+                // eslint-disable-next-line no-console
+                console.error(err.message);
+                
             }
         },
         setCartId: (cartId : string) => setCartId(cartId),
         removeFromCart: (data : RemoveCartData) => {
             try {
-                validateRemoveItems(data)
-                trackCartEvent(config, 'removeFromCart', data)
+                validateRemoveItems(data);
+                return trackCartEvent(config, 'removeFromCart', data);
             } catch (err) {
-                console.error(err.message)
-                return
+                // eslint-disable-next-line no-console
+                console.error(err.message);
+                
             }
         },
         purchase: (data : PurchaseData) => trackEvent(config, 'purchase', data),
@@ -251,6 +253,7 @@ export const Tracker = (config? : Config = {}) => {
                     name: userName
                 }
             };
+
             trackEvent(config, 'setUser', { oldUserId: getUserIdCookie() });
         },
         setPropertyId: (id : string) => {
