@@ -10,6 +10,11 @@ import { getPropertyId } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
 import { track } from './lib/track';
 import constants from './lib/constants';
+import { 
+    validateAddItems,
+    validateRemoveItems,
+    validateUser
+} from '../src/lib/input-validation'
 import type {
     CartEventType,
     TrackingType,
@@ -196,20 +201,33 @@ export const Tracker = (config? : Config = {}) => {
     const trackers = {
         view: (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
         addToCart: (data : CartData) => {
-            // $FlowFixMe
-            const invalidQuantity = data.items.find(item => item.quantity === Infinity);
-
-            if (invalidQuantity) {
-                // eslint-disable-next-line no-console
-                console.error(`'Infinity' is not an accepted quantity for item: ${ invalidQuantity.id }`);
-                return;
+            try {
+                validateAddItems(data)
+                trackCartEvent(config, 'addToCart', data);
+            } catch (err) {
+                console.error(err.message)
+                return
             }
-
-            trackCartEvent(config, 'addToCart', data);
         },
-        setCart: (data : CartData) => trackCartEvent(config, 'setCart', data),
+        setCart: (data : CartData) => {
+            try {
+                validateAddItems(data)
+                trackCartEvent(config, 'setCart', data)
+            } catch (err) {
+                console.error(err.message)
+                return
+            }
+        },
         setCartId: (cartId : string) => setCartId(cartId),
-        removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
+        removeFromCart: (data : RemoveCartData) => {
+            try {
+                validateRemoveItems(data)
+                trackCartEvent(config, 'removeFromCart', data)
+            } catch (err) {
+                console.error(err.message)
+                return
+            }
+        },
         purchase: (data : PurchaseData) => trackEvent(config, 'purchase', data),
         cancelCart: (data : CancelCartData) => {
             const event = trackEvent(config, 'cancelCart', data);
