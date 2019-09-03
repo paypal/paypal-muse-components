@@ -5,6 +5,7 @@ import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 // $FlowFixMe
 import { getUserIdCookie } from './lib/cookie-utils';
+import { getOrCreateValidCartId, setCartId, createNewCartId } from './lib/local-storage-utils';
 import { getPropertyId } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
 import { track } from './lib/track';
@@ -25,7 +26,6 @@ import type {
 
 const {
     accessTokenUrl,
-    storage,
     defaultTrackerConfig
 } = constants;
 
@@ -103,6 +103,12 @@ export const clearTrackQueue = (config : Config) => {
 };
 
 export const trackEvent = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
+    // CartId can be set by any event if it is provided
+    // $FlowFixMe
+    if (trackingData.cartId) {
+        setCartId(trackingData.cartId);
+    }
+
     // Events cannot be fired without a propertyId. We add events
     // to a queue if a propertyId has not yet been returned.
     if (!config.propertyId) {
@@ -115,19 +121,6 @@ export const trackEvent = <T>(config : Config, trackingType : TrackingType, trac
 
 const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) =>
     trackEvent(config, 'cartEvent', { ...trackingData, cartEventType });
-
-const clearExpiredCart = () => {
-    const expiry = window.localStorage.getItem(storage.paypalCrCartExpiry);
-
-    if (expiry !== null) {
-        const expiryTime = Number(expiry);
-
-        if (Date.now() >= expiryTime) {
-            window.localStorage.removeItem(storage.paypalCrCartExpiry);
-            window.localStorage.removeItem(storage.paypalCrCart);
-        }
-    }
-};
 
 export const setImplicitPropertyId = (config : Config) => {
     /*
@@ -144,11 +137,6 @@ export const setImplicitPropertyId = (config : Config) => {
             trackEventQueue = clearTrackQueue(config);
         }
     });
-};
-
-const clearCancelledCart = () => {
-    window.localStorage.removeItem(storage.paypalCrCartExpiry);
-    window.localStorage.removeItem(storage.paypalCrCart);
 };
 
 // $FlowFixMe
@@ -168,7 +156,7 @@ export const Tracker = (config? : Config = {}) => {
         console.log('PayPal Shopping: debug mode on.');
     }
     
-    clearExpiredCart();
+    getOrCreateValidCartId();
 
     const JL = getJetlore();
     const jetloreTrackTypes = [
@@ -220,11 +208,14 @@ export const Tracker = (config? : Config = {}) => {
             trackCartEvent(config, 'addToCart', data);
         },
         setCart: (data : CartData) => trackCartEvent(config, 'setCart', data),
+        setCartId: (cartId : string) => setCartId(cartId),
         removeFromCart: (data : RemoveCartData) => trackCartEvent(config, 'removeFromCart', data),
-        purchase: (data : PurchaseData) => track(config, 'purchase', data),
+        purchase: (data : PurchaseData) => trackEvent(config, 'purchase', data),
         cancelCart: (data : CancelCartData) => {
-            clearCancelledCart();
-            return trackEvent(config, 'cancelCart', data);
+            const event = trackEvent(config, 'cancelCart', data);
+            // a new id can only be created AFTER the 'cancel' event has been fired
+            createNewCartId();
+            return event;
         },
         setUser: (data : UserData) => {
             const user = data.user || data;
