@@ -1,4 +1,8 @@
-import { validateAddItems } from '../src/lib/input-validation'
+import { 
+  validateAddItems,
+  validateRemoveItems,
+  validateUser
+} from '../src/lib/input-validation'
 
 describe('input validation', () => {
   describe('validateAddItems', () => {
@@ -38,7 +42,7 @@ describe('input validation', () => {
       }
     })
 
-    it('throws items are invalid', () => {
+    it('throws when items are invalid', () => {
       const invalidInput = {
         items: [{
           id: 4343534543,
@@ -56,7 +60,7 @@ describe('input validation', () => {
       try {
         validateAddItems(invalidInput)
       } catch (err) {
-        expect(err.message).toBe('Input error: expected number to be string')
+        expect(err.message).toBe('Input error for id: expected number to be string')
       }
     })
 
@@ -77,7 +81,7 @@ describe('input validation', () => {
       try {
         validateAddItems(invalidInput)
       } catch (err) {
-        expect(err.message).toBe('Input error: expected undefined to be string')
+        expect(err.message).toBe('Input error for id: expected undefined to be string')
       }
     })
 
@@ -100,12 +104,98 @@ describe('input validation', () => {
       try {
         validateAddItems(invalidInput)
       } catch (err) {
-        expect(err.message).toBe('Input error: expected number to be array')
+        expect(err.message).toBe('Input error for keywords: expected number to be array')
       }
     })
 
     it('works normally when input is valid', () => {
       validateAddItems(validInput)
+    })
+  })
+
+  describe('validateRemoveItems', () => {
+    let validInput
+
+    beforeEach(() => {
+      validInput = {
+        items: [{
+          id: 'changedmymind',
+          quantity: 5
+        }, {
+          id: 'whywouldibuythis'
+        }, {
+          id: 'illwaittillitsonsale',
+          quantity: 3
+        }]
+      }
+    })
+
+    it('throws when input is invalid', () => {
+      const invalidInput = ['thataintright']
+
+      try {
+        validateRemoveItems(invalidInput)
+      } catch (err) {
+        expect(err.message).toBe('Input error: expected array to be object')
+      }
+    })
+
+    it('throws when quantity is invalid', () => {
+      const invalidInput = {
+        items: [{id: 'foobar', quantity: 'pizza'}]
+      }
+
+      try {
+        validateRemoveItems(invalidInput)
+      } catch (err) {
+        expect(err.message).toBe('Input error for quantity: expected string to be number')
+      }
+    })
+
+    it('works normally when input is valid', () => {
+      validateRemoveItems(validInput)
+    })
+  })
+
+  describe('validateUser', () => {
+    let validInput1
+    let validInput2
+
+    beforeEach(() => {
+      validInput1 = {
+        id: 'flimflam',
+        email: 'baz@bar.com',
+        name: 'Richard Festerboothe III'
+      }
+      validInput2 = {
+        user: {
+          id: 'arglebargle',
+          email: 'foo@bar.com',
+          name: 'Samantha Tarbox'
+        }
+      }
+    })
+
+    it('throws when input is invalid', () => {
+      const invalidInput = ['thataintright']
+
+      try {
+        validateUser(invalidInput)
+      } catch (err) {
+        expect(err.message).toBe('Input error: expected array to be object')
+      }
+    })
+
+    it('throws when user input is invalid', () => {
+      const invalidInput = {
+        user: 'this should be an object',
+      }
+
+      try {
+        validateUser(invalidInput)
+      } catch (err) {
+        expect(err.message).toBe('Input error for user: expected string to be object')
+      }
     })
   })
 })

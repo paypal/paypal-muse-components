@@ -22,7 +22,7 @@ const checkRequiredKeys = (input, expectedInput) => {
     const actual = getType(input[key])
 
     if (actual !== expected) {
-      throw new Error(`Input error: expected ${actual} to be ${expected}`)
+      throw new Error(`Input error for ${key}: expected ${actual} to be ${expected}`)
     }
   }
 }
@@ -40,7 +40,7 @@ const checkOptionalKeys = (input, expectedInput) => {
     const actual = getType(input[key])
 
     if (actual !== 'undefined' && actual !== expected) {
-      throw new Error(`Input error: expected ${actual} to be ${expected}`)
+      throw new Error(`Input error for ${key}: expected ${actual} to be ${expected}`)
     }
   }
 }
@@ -93,5 +93,46 @@ export const validateAddItems = input => {
   checkArrayOptionalKeys(input.items, optionalItemKeys)
 }
 
-export const validateRemoveItems = input => {};
-export const validateUser = input => {};
+export const validateRemoveItems = input => {
+  const requiredInputKeys = {
+    items: 'array'
+  }
+
+  const optionalInputKeys = {
+    cartId: 'string',
+  }
+
+  const requiredItemKeys = {
+    id: 'string',
+  }
+
+  const optionalItemKeys = {
+    quantity: 'number',
+  }
+
+  checkRequiredKeys(input, requiredInputKeys)
+  checkOptionalKeys(input, optionalInputKeys)
+  checkArrayKeys(input.items, requiredItemKeys)
+  checkArrayOptionalKeys(input.items, optionalItemKeys)
+};
+
+export const validateUser = input => {
+  const optionalInputKeys = {
+    id: 'string',
+    email: 'string',
+    name: 'string',
+    user: 'object',
+  }
+
+  const optionalUserKeys = {
+    id: 'string',
+    email: 'string',
+    name: 'string',
+  }
+
+  checkOptionalKeys(input, optionalInputKeys)
+
+  if (input.user) {
+    checkOptionalKeys(input.user, optionalUserKeys)
+  }
+};
