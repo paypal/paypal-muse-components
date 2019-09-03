@@ -237,11 +237,11 @@ export const Tracker = (config? : Config = {}) => {
         },
         setUser: (data : UserData) => {
             try {
-                validateUser(data)
+                validateUser(data);
             } catch (err) {
                 // eslint-disable-next-line no-console
-                console.error(err.message)
-                return
+                console.error(err.message);
+                return;
             }
 
             const user = data.user || data;

@@ -39,20 +39,20 @@ const checkArrayKeys = (input : any, expectedInput : any) => {
 
 export const validateAddItems = (input : any) => {
     const inputKeys = {
-        items: ['array'],
-        cartId: ['string', 'undefined']
+        items: [ 'array' ],
+        cartId: [ 'string', 'undefined' ]
     };
 
     const itemKeys = {
-        id: ['string'],
-        title: ['string'],
-        url: ['string'],
-        imgUrl: ['string'],
-        price: ['string'],
-        quantity: ['number', 'undefined'],
-        keywords: ['array', 'undefined'],
-        otherImages: ['array', 'undefined'],
-        description: ['string', 'undefined']
+        id: [ 'string' ],
+        title: [ 'string' ],
+        url: [ 'string' ],
+        imgUrl: [ 'string' ],
+        price: [ 'string' ],
+        quantity: [ 'number', 'undefined' ],
+        keywords: [ 'array', 'undefined' ],
+        otherImages: [ 'array', 'undefined' ],
+        description: [ 'string', 'undefined' ]
     };
 
     checkKeys(input, inputKeys);
@@ -61,13 +61,13 @@ export const validateAddItems = (input : any) => {
 
 export const validateRemoveItems = (input : any) => {
     const inputKeys = {
-        items: ['array'],
-        cartId: ['string', 'undefined']
+        items: [ 'array' ],
+        cartId: [ 'string', 'undefined' ]
     };
 
     const itemKeys = {
-        id: ['string'],
-        quantity: ['number', 'undefined']
+        id: [ 'string' ],
+        quantity: [ 'number', 'undefined' ]
     };
 
     checkKeys(input, inputKeys);
@@ -76,16 +76,16 @@ export const validateRemoveItems = (input : any) => {
 
 export const validateUser = (input : any) => {
     const inputKeys = {
-        id: ['string', 'null', 'undefined'],
-        email: ['string', 'null', 'undefined'],
-        name: ['string', 'null', 'undefined'],
-        user: ['object', 'undefined']
+        id: [ 'string', 'null', 'undefined' ],
+        email: [ 'string', 'null', 'undefined' ],
+        name: [ 'string', 'null', 'undefined' ],
+        user: [ 'object', 'undefined' ]
     };
 
     const userKeys = {
-        id: ['string', 'null', 'undefined'],
-        email: ['string', 'null', 'undefined'],
-        name: ['string', 'null', 'undefined'],
+        id: [ 'string', 'null', 'undefined' ],
+        email: [ 'string', 'null', 'undefined' ],
+        name: [ 'string', 'null', 'undefined' ]
     };
 
     checkKeys(input, inputKeys);
