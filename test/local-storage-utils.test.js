@@ -5,8 +5,7 @@ import {
     createNewCartId,
     getCartId,
     setCartId,
-    resetExpiredCartId,
-    getOrCreateCartId
+    getOrCreateValidCartId
 } from '../src/lib/local-storage-utils';
 
 const { storage } = constants;
@@ -77,32 +76,7 @@ describe('local-storage-utils', () => {
         });
     });
 
-    describe('getOrCreateCartId', () => {
-        beforeEach(() => {
-            window.localStorage.removeItem(storage.paypalCrCart);
-        });
-
-        it('returns an existing cart when one exists', () => {
-            setCartId('foobar');
-            const result = getOrCreateCartId();
-            const localStorage = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
-
-            expect(result.cartId).toBe('foobar');
-            expect(typeof result.createdAt).toBe('number');
-            expect(result).toEqual(localStorage);
-        });
-
-        it('creates a new cart when none exists', () => {
-            const result = getOrCreateCartId();
-            const localStorage = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
-
-            expect(typeof result.cartId).toBe('string');
-            expect(typeof result.createdAt).toBe('number');
-            expect(result).toEqual(localStorage);
-        });
-    });
-
-    describe('resetExpiredCartId', () => {
+    describe('getOrCreateValidCartId', () => {
         beforeEach(() => {
             window.localStorage.removeItem(storage.paypalCrCart);
         });
@@ -115,7 +89,7 @@ describe('local-storage-utils', () => {
 
             window.localStorage.setItem(storage.paypalCrCart, JSON.stringify(previous));
 
-            const result = resetExpiredCartId();
+            const result = getOrCreateValidCartId();
             const current = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
 
             expect(result).toEqual(current);
@@ -131,11 +105,20 @@ describe('local-storage-utils', () => {
 
             window.localStorage.setItem(storage.paypalCrCart, JSON.stringify(previous));
 
-            const result = resetExpiredCartId();
+            const result = getOrCreateValidCartId();
             const current = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
 
             expect(result).toEqual(previous);
             expect(current).toEqual(previous);
+        });
+
+        it('creates a new cart when none exists', () => {
+            const result = getOrCreateValidCartId();
+            const localStorage = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
+
+            expect(typeof result.cartId).toBe('string');
+            expect(typeof result.createdAt).toBe('number');
+            expect(result).toEqual(localStorage);
         });
     });
 });

@@ -5,7 +5,7 @@ import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 // $FlowFixMe
 import { getUserIdCookie } from './lib/cookie-utils';
-import { resetExpiredCartId, setCartId, createNewCartId } from './lib/local-storage-utils';
+import { getOrCreateValidCartId, setCartId, createNewCartId } from './lib/local-storage-utils';
 import { getPropertyId } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
 import { track } from './lib/track';
@@ -156,7 +156,7 @@ export const Tracker = (config? : Config = {}) => {
         console.log('PayPal Shopping: debug mode on.');
     }
     
-    resetExpiredCartId();
+    getOrCreateValidCartId();
 
     const JL = getJetlore();
     const jetloreTrackTypes = [

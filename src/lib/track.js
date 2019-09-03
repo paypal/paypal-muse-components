@@ -2,7 +2,7 @@
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 import { getUserIdCookie, setRandomUserIdCookie } from './cookie-utils';
-import { getOrCreateCartId } from './local-storage-utils';
+import { getOrCreateValidCartId } from './local-storage-utils';
 import { getDeviceInfo } from './get-device-info';
 import type {
     Config,
@@ -11,7 +11,7 @@ import type {
 
 export const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
-    const cartId = getOrCreateCartId().cartId;
+    const cartId = getOrCreateValidCartId().cartId;
 
     const img = document.createElement('img');
     img.style.display = 'none';
