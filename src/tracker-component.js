@@ -16,7 +16,7 @@ import {
     removeFromCartNormalizer,
     purchaseNormalizer,
     setUserNormalizer
-} from './lib/depricated-input-normalizers';
+} from './lib/deprecated-input-normalizers';
 import { getUserIdCookie } from './lib/cookie-utils';
 import { getOrCreateValidCartId, setCartId, createNewCartId } from './lib/local-storage-utils';
 import { getPropertyId } from './lib/get-property-id';
@@ -210,7 +210,7 @@ export const Tracker = (config? : Config = {}) => {
         view: (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
         addToCart: (data : CartData) => {
             try {
-                data = addToCartNormalizer(data)
+                data = addToCartNormalizer(data);
                 validateAddItems(data);
                 return trackCartEvent(config, 'addToCart', data);
             } catch (err) {
@@ -220,7 +220,7 @@ export const Tracker = (config? : Config = {}) => {
         },
         setCart: (data : CartData) => {
             try {
-                data = setCartNormalizer(data)
+                data = setCartNormalizer(data);
                 validateAddItems(data);
                 return trackCartEvent(config, 'setCart', data);
             } catch (err) {
@@ -231,7 +231,7 @@ export const Tracker = (config? : Config = {}) => {
         setCartId: (cartId : string) => setCartId(cartId),
         removeFromCart: (data : RemoveCartData) => {
             try {
-                data = removeFromCartNormalizer(data)
+                data = removeFromCartNormalizer(data);
                 validateRemoveItems(data);
                 return trackCartEvent(config, 'removeFromCart', data);
             } catch (err) {
@@ -241,9 +241,9 @@ export const Tracker = (config? : Config = {}) => {
         },
         purchase: (data : PurchaseData) => {
             try {
-                data = purchaseNormalizer(data)
-                validatePurchase(data)
-                return trackEvent(config, 'purchase', data)
+                data = purchaseNormalizer(data);
+                validatePurchase(data);
+                return trackEvent(config, 'purchase', data);
             } catch (err) {
                 // eslint-disable-next-line no-console
                 console.error(err.message);
@@ -257,7 +257,7 @@ export const Tracker = (config? : Config = {}) => {
         },
         setUser: (data : UserData) => {
             try {
-                data = setUserNormalizer(data)
+                data = setUserNormalizer(data);
                 validateUser(data);
             } catch (err) {
                 // eslint-disable-next-line no-console

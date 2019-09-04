@@ -57,7 +57,7 @@ describe('addToCart', () => {
 
         tracker.addToCart({
             cartTotal: '25.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
         const args = track.mock.calls;
 
@@ -67,7 +67,7 @@ describe('addToCart', () => {
     it('should pass user configuration to the track method', () => {
         const tracker = Tracker(config);
 
-        tracker.addToCart({ 
+        tracker.addToCart({
             cartTotal: '25.00',
             items: [ mockItem ]
         });
@@ -81,12 +81,12 @@ describe('addToCart', () => {
         const tracker = Tracker();
 
         tracker.addToCart({
-            cartTotal: '25.00', 
-            items: [ mockItem ] 
+            cartTotal: '25.00',
+            items: [ mockItem ]
         });
         tracker.addToCart({
             cartTotal: '25.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
 
         setTimeout(() => {

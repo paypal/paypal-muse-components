@@ -33,6 +33,7 @@ export type CartData = {|
     items : $ReadOnlyArray<Product>,
     emailCampaignId? : string,
     total? : string,
+    cartTotal? : string,
     currencyCode? : string
 |};
 
@@ -42,6 +43,8 @@ export type CancelCartData = {|
 
 export type RemoveCartData = {|
     cartId? : string,
+    cartTotal? : string,
+    total? : string,
     items : $ReadOnlyArray<{ id : string }>
 |};
 

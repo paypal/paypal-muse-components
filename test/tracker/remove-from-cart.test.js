@@ -52,8 +52,8 @@ describe('removeFromCart', () => {
         const tracker = Tracker(config);
 
         tracker.removeFromCart({
-            cartTotal: '25.00', 
-            items: [ mockItem ] 
+            cartTotal: '25.00',
+            items: [ mockItem ]
         });
         const args = track.mock.calls;
 
@@ -63,9 +63,9 @@ describe('removeFromCart', () => {
     it('should pass user configuration to the track method', () => {
         const tracker = Tracker(config);
 
-        tracker.removeFromCart({ 
+        tracker.removeFromCart({
             cartTotal: '25.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
 
         const args = track.mock.calls;
@@ -76,13 +76,13 @@ describe('removeFromCart', () => {
     it('should enqueue events when fired before propertyId is ready', (done) => {
         const tracker = Tracker();
 
-        tracker.removeFromCart({ 
+        tracker.removeFromCart({
             cartTotal: '25.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
-        tracker.removeFromCart({ 
+        tracker.removeFromCart({
             cartTotal: '25.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
 
         setTimeout(() => {

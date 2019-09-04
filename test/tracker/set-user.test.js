@@ -55,12 +55,11 @@ describe('setUser', () => {
 
         tracker.addToCart({
             cartTotal: '5.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
-        tracker.removeFromCart({ 
+        tracker.removeFromCart({
             total: '0.00',
-            items: [ mockItem ]}
-        );
+            items: [ mockItem ] });
 
         const args = track.mock.calls;
 
@@ -75,7 +74,7 @@ describe('setUser', () => {
         setTimeout(() => {
             tracker.addToCart({
                 cartTotal: '5.00',
-                items: [ mockItem ] 
+                items: [ mockItem ]
             });
             tracker.removeFromCart({
                 cartTotal: '0.00',
@@ -94,7 +93,7 @@ describe('setUser', () => {
 
         tracker.addToCart({
             cartTotal: '5.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
         tracker.removeFromCart({
             cartTotal: '0.00',
@@ -111,7 +110,7 @@ describe('setUser', () => {
 
         tracker.addToCart({
             cartTotal: '5.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
         tracker.removeFromCart({
             cartTotal: '0.00',
@@ -121,7 +120,7 @@ describe('setUser', () => {
         tracker.setUser(config.user);
         tracker.addToCart({
             cartTotal: '5.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
         tracker.removeFromCart({
             cartTotal: '0.00',
@@ -147,7 +146,7 @@ describe('setUser', () => {
 
         tracker.addToCart({
             cartTotal: '5.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
         tracker.removeFromCart({
             cartTotal: '0.00',
@@ -158,7 +157,7 @@ describe('setUser', () => {
 
         tracker.addToCart({
             cartTotal: '5.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
         tracker.removeFromCart({
             cartTotal: '0.00',
@@ -186,7 +185,7 @@ describe('setUser', () => {
         tracker.setUser(alternateUser);
         tracker.addToCart({
             cartTotal: '5.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
         tracker.removeFromCart({
             cartTotal: '0.00',
@@ -196,7 +195,7 @@ describe('setUser', () => {
         tracker.setUser({ user: config.user });
         tracker.addToCart({
             cartTotal: '5.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
         tracker.removeFromCart({
             cartTotal: '0.00',
@@ -227,7 +226,7 @@ describe('setUser', () => {
         });
         tracker.addToCart({
             cartTotal: '5.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
         tracker.removeFromCart({
             cartTotal: '0.00',
@@ -237,7 +236,7 @@ describe('setUser', () => {
         tracker.setUser(alternateUser);
         tracker.addToCart({
             cartTotal: '5.00',
-            items: [ mockItem ] 
+            items: [ mockItem ]
         });
         tracker.removeFromCart({
             cartTotal: '0.00',

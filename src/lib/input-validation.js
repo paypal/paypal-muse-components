@@ -80,17 +80,17 @@ export const validateUser = (input : any) => {
     const inputKeys = {
         id: [ 'string', 'null', 'undefined' ],
         email: [ 'string', 'null', 'undefined' ],
-        name: [ 'string', 'null', 'undefined' ],
+        name: [ 'string', 'null', 'undefined' ]
     };
 
     checkKeys(input, inputKeys);
 };
 
-export const validatePurchase = (input: any) => {
+export const validatePurchase = (input : any) => {
     const inputKeys = {
-        total: ['string', 'undefined'],
-        paymentProvider: ['string', 'undefined'],
-    }
+        total: [ 'string', 'undefined' ],
+        paymentProvider: [ 'string', 'undefined' ]
+    };
 
-    checkKeys(input, inputKeys)
+    checkKeys(input, inputKeys);
 };
