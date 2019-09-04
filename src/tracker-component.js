@@ -7,8 +7,16 @@ import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 import {
     validateAddItems,
     validateRemoveItems,
-    validateUser
+    validateUser,
+    validatePurchase
 } from './lib/input-validation';
+import {
+    addToCartNormalizer,
+    setCartNormalizer,
+    removeFromCartNormalizer,
+    purchaseNormalizer,
+    setUserNormalizer
+} from './lib/deprecated-input-normalizers';
 import { getUserIdCookie } from './lib/cookie-utils';
 import { getOrCreateValidCartId, setCartId, createNewCartId } from './lib/local-storage-utils';
 import { getPropertyId } from './lib/get-property-id';
@@ -202,6 +210,7 @@ export const Tracker = (config? : Config = {}) => {
         view: (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
         addToCart: (data : CartData) => {
             try {
+                data = addToCartNormalizer(data);
                 validateAddItems(data);
                 return trackCartEvent(config, 'addToCart', data);
             } catch (err) {
@@ -211,6 +220,7 @@ export const Tracker = (config? : Config = {}) => {
         },
         setCart: (data : CartData) => {
             try {
+                data = setCartNormalizer(data);
                 validateAddItems(data);
                 return trackCartEvent(config, 'setCart', data);
             } catch (err) {
@@ -221,6 +231,7 @@ export const Tracker = (config? : Config = {}) => {
         setCartId: (cartId : string) => setCartId(cartId),
         removeFromCart: (data : RemoveCartData) => {
             try {
+                data = removeFromCartNormalizer(data);
                 validateRemoveItems(data);
                 return trackCartEvent(config, 'removeFromCart', data);
             } catch (err) {
@@ -228,7 +239,16 @@ export const Tracker = (config? : Config = {}) => {
                 console.error(err.message);
             }
         },
-        purchase: (data : PurchaseData) => trackEvent(config, 'purchase', data),
+        purchase: (data : PurchaseData) => {
+            try {
+                data = purchaseNormalizer(data);
+                validatePurchase(data);
+                return trackEvent(config, 'purchase', data);
+            } catch (err) {
+                // eslint-disable-next-line no-console
+                console.error(err.message);
+            }
+        },
         cancelCart: (data : CancelCartData) => {
             const event = trackEvent(config, 'cancelCart', data);
             // a new id can only be created AFTER the 'cancel' event has been fired
@@ -237,6 +257,7 @@ export const Tracker = (config? : Config = {}) => {
         },
         setUser: (data : UserData) => {
             try {
+                data = setUserNormalizer(data);
                 validateUser(data);
             } catch (err) {
                 // eslint-disable-next-line no-console
@@ -244,12 +265,10 @@ export const Tracker = (config? : Config = {}) => {
                 return;
             }
 
-            const user = data.user || data;
             const configUser = config.user || {};
-
-            const userId = user.id !== undefined ? user.id : configUser.id;
-            const userEmail = user.email !== undefined ? user.email : configUser.email;
-            const userName = user.name !== undefined ? user.name : configUser.name;
+            const userId = data.id !== undefined ? data.id : configUser.id;
+            const userEmail = data.email !== undefined ? data.email : configUser.email;
+            const userName = data.name !== undefined ? data.name : configUser.name;
 
             config = {
                 ...config,

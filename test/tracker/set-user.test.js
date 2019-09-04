@@ -53,8 +53,13 @@ describe('setUser', () => {
     it('user should be set when the tracker is initialized', () => {
         const tracker = Tracker(config);
 
-        tracker.addToCart({ items: [ mockItem ] });
-        tracker.removeFromCart({ items: [ mockItem ] });
+        tracker.addToCart({
+            cartTotal: '5.00',
+            items: [ mockItem ]
+        });
+        tracker.removeFromCart({
+            total: '0.00',
+            items: [ mockItem ] });
 
         const args = track.mock.calls;
 
@@ -67,8 +72,14 @@ describe('setUser', () => {
 
         // wait for mock propertyId to resolve
         setTimeout(() => {
-            tracker.addToCart({ items: [ mockItem ] });
-            tracker.removeFromCart({ items: [ mockItem ] });
+            tracker.addToCart({
+                cartTotal: '5.00',
+                items: [ mockItem ]
+            });
+            tracker.removeFromCart({
+                cartTotal: '0.00',
+                items: [ mockItem ]
+            });
 
             const args = track.mock.calls;
             expect(args[0][0].user).toEqual(defaultTrackerConfig.user);
@@ -80,8 +91,14 @@ describe('setUser', () => {
     it('no user should be set if no user is passed to initialization', () => {
         const tracker = Tracker({ propertyId: 'somevalue' });
 
-        tracker.addToCart({ items: [ mockItem ] });
-        tracker.removeFromCart({ items: [ mockItem ] });
+        tracker.addToCart({
+            cartTotal: '5.00',
+            items: [ mockItem ]
+        });
+        tracker.removeFromCart({
+            cartTotal: '0.00',
+            items: [ mockItem ]
+        });
 
         const args = track.mock.calls;
         expect(args[0][0].user).toEqual(defaultTrackerConfig.user);
@@ -91,12 +108,24 @@ describe('setUser', () => {
     it('user should be set when set user is called', () => {
         const tracker = Tracker({ propertyId: 'somevalue' });
 
-        tracker.addToCart({ items: [ mockItem ] });
-        tracker.removeFromCart({ items: [ mockItem ] });
+        tracker.addToCart({
+            cartTotal: '5.00',
+            items: [ mockItem ]
+        });
+        tracker.removeFromCart({
+            cartTotal: '0.00',
+            items: [ mockItem ]
+        });
 
         tracker.setUser(config.user);
-        tracker.addToCart({ items: [ mockItem ] });
-        tracker.removeFromCart({ items: [ mockItem ] });
+        tracker.addToCart({
+            cartTotal: '5.00',
+            items: [ mockItem ]
+        });
+        tracker.removeFromCart({
+            cartTotal: '0.00',
+            items: [ mockItem ]
+        });
 
         const args = track.mock.calls;
         expect(args[0][0].user).toEqual(defaultTrackerConfig.user);
@@ -115,12 +144,25 @@ describe('setUser', () => {
 
         const tracker = Tracker(config);
 
-        tracker.addToCart({ items: [ mockItem ] });
-        tracker.removeFromCart({ items: [ mockItem ] });
+        tracker.addToCart({
+            cartTotal: '5.00',
+            items: [ mockItem ]
+        });
+        tracker.removeFromCart({
+            cartTotal: '0.00',
+            items: [ mockItem ]
+        });
 
         tracker.setUser(alternateUser);
-        tracker.addToCart({ items: [ mockItem ] });
-        tracker.removeFromCart({ items: [ mockItem ] });
+
+        tracker.addToCart({
+            cartTotal: '5.00',
+            items: [ mockItem ]
+        });
+        tracker.removeFromCart({
+            cartTotal: '0.00',
+            items: [ mockItem ]
+        });
 
         const args = track.mock.calls;
         expect(args[0][0].user).toEqual(config.user);
@@ -141,12 +183,24 @@ describe('setUser', () => {
         const tracker = Tracker({ propertyId: 'somevalue' });
 
         tracker.setUser(alternateUser);
-        tracker.addToCart({ items: [ mockItem ] });
-        tracker.removeFromCart({ items: [ mockItem ] });
+        tracker.addToCart({
+            cartTotal: '5.00',
+            items: [ mockItem ]
+        });
+        tracker.removeFromCart({
+            cartTotal: '0.00',
+            items: [ mockItem ]
+        });
 
         tracker.setUser({ user: config.user });
-        tracker.addToCart({ items: [ mockItem ] });
-        tracker.removeFromCart({ items: [ mockItem ] });
+        tracker.addToCart({
+            cartTotal: '5.00',
+            items: [ mockItem ]
+        });
+        tracker.removeFromCart({
+            cartTotal: '0.00',
+            items: [ mockItem ]
+        });
         const args = track.mock.calls;
 
         expect(args[0][0].user).toEqual(alternateUser);
@@ -170,12 +224,24 @@ describe('setUser', () => {
             email: null,
             name: null
         });
-        tracker.addToCart({ items: [ mockItem ] });
-        tracker.removeFromCart({ items: [ mockItem ] });
+        tracker.addToCart({
+            cartTotal: '5.00',
+            items: [ mockItem ]
+        });
+        tracker.removeFromCart({
+            cartTotal: '0.00',
+            items: [ mockItem ]
+        });
 
         tracker.setUser(alternateUser);
-        tracker.addToCart({ items: [ mockItem ] });
-        tracker.removeFromCart({ items: [ mockItem ] });
+        tracker.addToCart({
+            cartTotal: '5.00',
+            items: [ mockItem ]
+        });
+        tracker.removeFromCart({
+            cartTotal: '0.00',
+            items: [ mockItem ]
+        });
         const args = track.mock.calls;
     
         expect(args[0][0].user).toEqual(defaultTrackerConfig.user);

@@ -40,6 +40,7 @@ const checkArrayKeys = (input : any, expectedInput : any) => {
 export const validateAddItems = (input : any) => {
     const inputKeys = {
         items: [ 'array' ],
+        total: [ 'string' ],
         cartId: [ 'string', 'undefined' ]
     };
 
@@ -62,6 +63,7 @@ export const validateAddItems = (input : any) => {
 export const validateRemoveItems = (input : any) => {
     const inputKeys = {
         items: [ 'array' ],
+        total: [ 'string' ],
         cartId: [ 'string', 'undefined' ]
     };
 
@@ -78,19 +80,17 @@ export const validateUser = (input : any) => {
     const inputKeys = {
         id: [ 'string', 'null', 'undefined' ],
         email: [ 'string', 'null', 'undefined' ],
-        name: [ 'string', 'null', 'undefined' ],
-        user: [ 'object', 'undefined' ]
-    };
-
-    const userKeys = {
-        id: [ 'string', 'null', 'undefined' ],
-        email: [ 'string', 'null', 'undefined' ],
         name: [ 'string', 'null', 'undefined' ]
     };
 
     checkKeys(input, inputKeys);
+};
 
-    if (input.user) {
-        checkKeys(input.user, userKeys);
-    }
+export const validatePurchase = (input : any) => {
+    const inputKeys = {
+        total: [ 'string', 'undefined' ],
+        paymentProvider: [ 'string', 'undefined' ]
+    };
+
+    checkKeys(input, inputKeys);
 };
