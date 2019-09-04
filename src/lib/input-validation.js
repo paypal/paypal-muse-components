@@ -40,6 +40,7 @@ const checkArrayKeys = (input : any, expectedInput : any) => {
 export const validateAddItems = (input : any) => {
     const inputKeys = {
         items: [ 'array' ],
+        total: [ 'string' ],
         cartId: [ 'string', 'undefined' ]
     };
 
@@ -62,6 +63,7 @@ export const validateAddItems = (input : any) => {
 export const validateRemoveItems = (input : any) => {
     const inputKeys = {
         items: [ 'array' ],
+        total: [ 'string' ],
         cartId: [ 'string', 'undefined' ]
     };
 

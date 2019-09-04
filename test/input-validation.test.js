@@ -12,6 +12,7 @@ describe('input validation', () => {
 
         beforeEach(() => {
             validInput = {
+                total: '25.00',
                 items: [ {
                     id: '01120000',
                     title: 'alligator handbag',
@@ -46,6 +47,7 @@ describe('input validation', () => {
 
         it('throws when items are invalid', () => {
             const invalidInput = {
+                total: '25.00',
                 items: [ {
                     id: 4343534543,
                     title: 'read the docs. Id should be a string',
@@ -68,6 +70,7 @@ describe('input validation', () => {
 
         it('throws when required item keys are missing', () => {
             const invalidInput = {
+                total: '25.00',
                 items: [ {
                     title: 'idontknowwhatthisis',
                     url: '/products/idontknowwhatthisis',
@@ -89,6 +92,7 @@ describe('input validation', () => {
 
         it('throws when optional fields are invalid', () => {
             const invalidInput = {
+                total: '25.00',
                 items: [ {
                     id: '01120001',
                     title: 'Why on earth would keywords be a number?',
@@ -119,6 +123,7 @@ describe('input validation', () => {
 
         beforeEach(() => {
             validInput = {
+                total: '00.00',
                 items: [ {
                     id: 'changedmymind',
                     quantity: 5
@@ -143,6 +148,7 @@ describe('input validation', () => {
 
         it('throws when quantity is invalid', () => {
             const invalidInput = {
+                total: '25.00',
                 items: [ { id: 'foobar', quantity: 'pizza' } ]
             };
 

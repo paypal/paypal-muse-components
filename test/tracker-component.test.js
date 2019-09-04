@@ -158,7 +158,7 @@ describe('paypal.Tracker', () => {
                 }
             ],
             emailCampaignId: '__test__emailCampaignId',
-            total: '12345.67',
+            cartTotal: '12345.67',
             currencyCode: 'USD'
         });
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
@@ -174,8 +174,8 @@ describe('paypal.Tracker', () => {
                     }
                 ],
                 emailCampaignId: '__test__emailCampaignId',
-                total: '12345.67',
                 currencyCode: 'USD',
+                total: '12345.67',
                 cartEventType: 'addToCart',
                 user: {
                     email: '__test__email3@gmail.com',
@@ -203,7 +203,7 @@ describe('paypal.Tracker', () => {
                 }
             ],
             emailCampaignId: '__test__emailCampaignId0',
-            total: '102345.67',
+            cartTotal: '102345.67',
             currencyCode: 'USD'
         });
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
@@ -219,8 +219,8 @@ describe('paypal.Tracker', () => {
                     }
                 ],
                 emailCampaignId: '__test__emailCampaignId0',
-                total: '102345.67',
                 currencyCode: 'USD',
+                total: '102345.67',
                 cartEventType: 'addToCart',
                 user: {
                     email: '__test__email3@gmail.com',
@@ -255,7 +255,7 @@ describe('paypal.Tracker', () => {
                 }
             ],
             emailCampaignId: '__test__emailCampaignId0',
-            total: '102345.67',
+            cartTotal: '102345.67',
             currencyCode: 'USD'
         });
         tracker.setCart({
@@ -270,8 +270,8 @@ describe('paypal.Tracker', () => {
                 }
             ],
             emailCampaignId: '__test__emailCampaignId',
-            total: '12345.67',
-            currencyCode: 'USD'
+            currencyCode: 'USD',
+            total: '12345.67'
         });
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
@@ -286,8 +286,8 @@ describe('paypal.Tracker', () => {
                     }
                 ],
                 emailCampaignId: '__test__emailCampaignId',
-                total: '12345.67',
                 currencyCode: 'USD',
+                total: '12345.67',
                 cartEventType: 'setCart',
                 user: {
                     email: '__test__email4@gmail.com',
@@ -313,6 +313,7 @@ describe('paypal.Tracker', () => {
         expect(appendChildCalls).toBe(0);
         tracker.removeFromCart({
             cartId: '__test__cartId',
+            cartTotal: '5.00',
             items: [
                 {
                     id: '__test__productId',
@@ -328,6 +329,7 @@ describe('paypal.Tracker', () => {
                     id: '__test__productId',
                     url: 'https://example.com/__test__productId'
                 } ],
+                total: '5.00',
                 cartEventType: 'removeFromCart',
                 user: {
                     email: '__test__email5@gmail.com',
@@ -526,7 +528,7 @@ describe('paypal.Tracker', () => {
                 }
             ],
             emailCampaignId: '__test__emailCampaignId',
-            total: '12345.67',
+            cartTotal: '12345.67',
             currencyCode: 'USD'
         });
         const dataParamObject = extractDataParam(imgMock.src);
@@ -544,8 +546,8 @@ describe('paypal.Tracker', () => {
                     }
                 ],
                 emailCampaignId: '__test__emailCampaignId',
-                total: '12345.67',
                 currencyCode: 'USD',
+                total: '12345.67',
                 cartEventType: 'addToCart',
                 user: {
                     id: 'abc123',
@@ -588,7 +590,7 @@ describe('paypal.Tracker', () => {
                 }
             ],
             emailCampaignId: '__test__emailCampaignId',
-            total: '12345.67',
+            cartTotal: '12345.67',
             currencyCode: 'USD'
         });
         const dataParamObject = extractDataParam(imgMock.src);
@@ -606,8 +608,8 @@ describe('paypal.Tracker', () => {
                     }
                 ],
                 emailCampaignId: '__test__emailCampaignId',
-                total: '12345.67',
                 currencyCode: 'USD',
+                total: '12345.67',
                 cartEventType: 'addToCart',
                 user: { id: '__test__cookie-id', email: null, name: null },
                 propertyId,
@@ -731,7 +733,7 @@ describe('paypal.Tracker', () => {
                 }
             ],
             emailCampaignId: '__test__emailCampaignId',
-            total: '12345.67',
+            cartTotal: '12345.67',
             currencyCode: 'USD'
         });
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
@@ -747,8 +749,8 @@ describe('paypal.Tracker', () => {
                     }
                 ],
                 emailCampaignId: '__test__emailCampaignId',
-                total: '12345.67',
                 currencyCode: 'USD',
+                total: '12345.67',
                 cartEventType: 'addToCart',
                 user: { email, name: userName, id },
                 propertyId,

@@ -9,6 +9,12 @@ import {
     validateRemoveItems,
     validateUser
 } from './lib/input-validation';
+
+import {
+    addToCartNormalizer,
+    setCartNormalizer,
+    removeFromCartNormalizer
+} from './lib/depricated-input-normalizers'
 import { getUserIdCookie } from './lib/cookie-utils';
 import { getOrCreateValidCartId, setCartId, createNewCartId } from './lib/local-storage-utils';
 import { getPropertyId } from './lib/get-property-id';
@@ -202,6 +208,7 @@ export const Tracker = (config? : Config = {}) => {
         view: (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
         addToCart: (data : CartData) => {
             try {
+                data = addToCartNormalizer(data)
                 validateAddItems(data);
                 return trackCartEvent(config, 'addToCart', data);
             } catch (err) {
@@ -211,6 +218,7 @@ export const Tracker = (config? : Config = {}) => {
         },
         setCart: (data : CartData) => {
             try {
+                data = setCartNormalizer(data)
                 validateAddItems(data);
                 return trackCartEvent(config, 'setCart', data);
             } catch (err) {
@@ -221,6 +229,7 @@ export const Tracker = (config? : Config = {}) => {
         setCartId: (cartId : string) => setCartId(cartId),
         removeFromCart: (data : RemoveCartData) => {
             try {
+                data = removeFromCartNormalizer(data)
                 validateRemoveItems(data);
                 return trackCartEvent(config, 'removeFromCart', data);
             } catch (err) {
