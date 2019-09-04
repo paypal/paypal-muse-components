@@ -12,7 +12,8 @@ export const setUserNormalizer = (input : any) => {
     return input;
 };
 
-/* sets cartTotal to total. Warns in the event a 'deprecated' value is passed */
+/* sets cartTotal to total. Warns in the event a 'deprecated' value is passed
+TODO: 'total' should eventually be replaced with 'cartTotal' on the backend. */
 export const addToCartNormalizer = (input : any) => {
     if (input) {
         if (input.total !== undefined) {
