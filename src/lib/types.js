@@ -97,6 +97,7 @@ export type Config = {|
         div? : string,
         lang? : string
     |},
-    paramsToPropertyIdUrl? : ParamsToPropertyIdUrl
+    paramsToPropertyIdUrl? : ParamsToPropertyIdUrl,
+    currencyCode? : string
 |};
 
