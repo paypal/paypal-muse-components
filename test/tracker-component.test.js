@@ -143,7 +143,7 @@ describe('paypal.Tracker', () => {
     it('should send addToCart events', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
-        const tracker = Tracker({ user: { email, name: userName } });
+        const tracker = Tracker({ currencyCode: 'FOO', user: { email, name: userName } });
         expect(appendChildCalls).toBe(0);
         tracker.setPropertyId(propertyId);
         tracker.addToCart({
@@ -158,8 +158,7 @@ describe('paypal.Tracker', () => {
                 }
             ],
             emailCampaignId: '__test__emailCampaignId',
-            cartTotal: '12345.67',
-            currencyCode: 'USD'
+            cartTotal: '12345.67'
         });
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
@@ -174,9 +173,9 @@ describe('paypal.Tracker', () => {
                     }
                 ],
                 emailCampaignId: '__test__emailCampaignId',
-                currencyCode: 'USD',
                 total: '12345.67',
                 cartEventType: 'addToCart',
+                currencyCode: 'FOO',
                 user: {
                     email: '__test__email3@gmail.com',
                     name: '__test__userName3',
@@ -312,6 +311,7 @@ describe('paypal.Tracker', () => {
         tracker.setPropertyId(propertyId);
         expect(appendChildCalls).toBe(0);
         tracker.removeFromCart({
+            currencyCode: 'LARGE_SHINY_ROCKS',
             cartId: '__test__cartId',
             cartTotal: '5.00',
             items: [
@@ -324,6 +324,7 @@ describe('paypal.Tracker', () => {
 
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
+                currencyCode: 'LARGE_SHINY_ROCKS',
                 cartId: '__test__cartId',
                 items: [ {
                     id: '__test__productId',
@@ -350,14 +351,16 @@ describe('paypal.Tracker', () => {
     it('should send purchase events', () => {
         const email = '__test__email6@gmail.com';
         const userName = '__test__userName6';
-        const tracker = Tracker({ user: { email, name: userName } });
+        const tracker = Tracker({ currencyCode: 'COWRIESHELLS', user: { email, name: userName } });
         tracker.setPropertyId(propertyId);
         expect(appendChildCalls).toBe(0);
         tracker.purchase({
+            currencyCode: 'USD',
             cartId: '__test__cartId'
         });
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
+                currencyCode: 'USD',
                 cartId: '__test__cartId',
                 user: {
                     email: '__test__email6@gmail.com',
@@ -378,13 +381,14 @@ describe('paypal.Tracker', () => {
     it('should send cancelCart events and clear localStorage upon cancelling cart', () => {
         const email = '__test__email7@gmail.com';
         const userName = '__test__userName7';
-        const tracker = Tracker({ user: { email, name: userName } });
+        const tracker = Tracker({ currencyCode: 'COWRIESHELLS', user: { email, name: userName } });
         tracker.setPropertyId(propertyId);
         expect(appendChildCalls).toBe(0);
         tracker.cancelCart({ cartId: '__test__cartId' });
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
                 cartId: '__test__cartId',
+                currencyCode: 'COWRIESHELLS',
                 user: {
                     email: '__test__email7@gmail.com',
                     name: '__test__userName7',
@@ -429,6 +433,7 @@ describe('paypal.Tracker', () => {
                     trackingType: 'purchase',
                     data: {
                         cartId: '__test__cartId',
+                        currencyCode: 'USD',
                         user: {
                             email: '__test__email@gmail.com',
                             name: '__test__userName6',
@@ -457,6 +462,7 @@ describe('paypal.Tracker', () => {
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
                 oldUserId: 'abc123',
+                currencyCode: 'USD',
                 cartId: 'abc123',
                 user: {
                     id: 'abc123',
@@ -493,6 +499,7 @@ describe('paypal.Tracker', () => {
         expect(JSON.stringify(dataParamObject)).toBe(
             JSON.stringify({
                 oldUserId: 'abc123',
+                currencyCode: 'USD',
                 cartId: 'abc123',
                 user: {
                     id: 'abc123',

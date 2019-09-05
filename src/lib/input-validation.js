@@ -41,7 +41,8 @@ export const validateAddItems = (input : any) => {
     const inputKeys = {
         items: [ 'array' ],
         total: [ 'string' ],
-        cartId: [ 'string', 'undefined' ]
+        cartId: [ 'string', 'undefined' ],
+        currencyCode: [ 'string', 'undefined' ]
     };
 
     const itemKeys = {
@@ -51,8 +52,8 @@ export const validateAddItems = (input : any) => {
         imgUrl: [ 'string' ],
         price: [ 'string' ],
         quantity: [ 'number', 'undefined' ],
-        keywords: [ 'array', 'undefined' ],
-        otherImages: [ 'array', 'undefined' ],
+        keywords: [ 'array', 'string', 'undefined' ],
+        otherImages: [ 'array', 'string', 'undefined' ],
         description: [ 'string', 'undefined' ]
     };
 
@@ -64,7 +65,8 @@ export const validateRemoveItems = (input : any) => {
     const inputKeys = {
         items: [ 'array' ],
         total: [ 'string' ],
-        cartId: [ 'string', 'undefined' ]
+        cartId: [ 'string', 'undefined' ],
+        currencyCode: [ 'string', 'undefined' ]
     };
 
     const itemKeys = {
@@ -89,7 +91,8 @@ export const validateUser = (input : any) => {
 export const validatePurchase = (input : any) => {
     const inputKeys = {
         total: [ 'string', 'undefined' ],
-        paymentProvider: [ 'string', 'undefined' ]
+        paymentProvider: [ 'string', 'undefined' ],
+        currencyCode: [ 'string', 'undefined' ]
     };
 
     checkKeys(input, inputKeys);

@@ -1,7 +1,7 @@
 /* @flow */
 import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
-import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
+import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src';
 
 // $FlowFixMe
 import {
@@ -122,6 +122,11 @@ export const trackEvent = <T>(config : Config, trackingType : TrackingType, trac
         setCartId(trackingData.cartId);
     }
 
+    // $FlowFixMe
+    if (trackingData.currencyCode) {
+        config.currencyCode = trackingData.currencyCode;
+    }
+
     // Events cannot be fired without a propertyId. We add events
     // to a queue if a propertyId has not yet been returned.
     if (!config.propertyId) {
@@ -156,6 +161,8 @@ export const setImplicitPropertyId = (config : Config) => {
 export const Tracker = (config? : Config = {}) => {
     // $FlowFixMe
     config = { ...defaultTrackerConfig, ...config };
+    config.currencyCode = config.currencyCode || getCurrency();
+
     /*
      * Use the get param ?ppDebug=true to see logs
      *

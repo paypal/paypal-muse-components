@@ -45,10 +45,14 @@ export type RemoveCartData = {|
     cartId? : string,
     cartTotal? : string,
     total? : string,
+    currencyCode? : string,
     items : $ReadOnlyArray<{ id : string }>
 |};
 
-export type PurchaseData = {| cartId : string |};
+export type PurchaseData = {|
+    currencyCode? : string,
+    cartId : string
+|};
 
 export type UserData = {|
     user : {|
@@ -97,6 +101,7 @@ export type Config = {|
         div? : string,
         lang? : string
     |},
-    paramsToPropertyIdUrl? : ParamsToPropertyIdUrl
+    paramsToPropertyIdUrl? : ParamsToPropertyIdUrl,
+    currencyCode? : string
 |};
 
