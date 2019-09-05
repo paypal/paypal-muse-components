@@ -1,8 +1,8 @@
 /* @flow */
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
-import { getUserIdCookie, setRandomUserIdCookie } from './cookie-utils';
-import { getOrCreateValidCartId } from './local-storage-utils';
+// import { getUserIdCookie, setRandomUserIdCookie } from './cookie-utils';
+import { getOrCreateValidCartId, getOrCreateValidUserId } from './local-storage-utils';
 import { getDeviceInfo } from './get-device-info';
 import type {
     Config,
@@ -12,17 +12,18 @@ import type {
 export const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
     const cartId = getOrCreateValidCartId().cartId;
+    const userId = getOrCreateValidUserId().userId;
     // $FlowFixMe
     const currencyCode = trackingData.currencyCode || config.currencyCode;
 
     const img = document.createElement('img');
     img.style.display = 'none';
-    if (!getUserIdCookie()) {
-        setRandomUserIdCookie();
-    }
+    // if (!getUserIdCookie()) {
+    //     setRandomUserIdCookie();
+    // }
     const user = {
         ...config.user,
-        id: getUserIdCookie()
+        id: userId
     };
 
     const deviceInfo = getDeviceInfo();

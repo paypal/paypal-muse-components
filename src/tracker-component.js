@@ -17,8 +17,14 @@ import {
     purchaseNormalizer,
     setUserNormalizer
 } from './lib/deprecated-input-normalizers';
-import { getUserIdCookie } from './lib/cookie-utils';
-import { getOrCreateValidCartId, setCartId, createNewCartId } from './lib/local-storage-utils';
+import {
+    getOrCreateValidCartId,
+    setCartId,
+    createNewCartId,
+    getUserId,
+    getOrCreateValidUserId,
+    setUserId
+} from './lib/local-storage-utils';
 import { getPropertyId } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
 import { track } from './lib/track';
@@ -162,13 +168,9 @@ export const Tracker = (config? : Config = {}) => {
     // $FlowFixMe
     config = { ...defaultTrackerConfig, ...config };
     config.currencyCode = config.currencyCode || getCurrency();
-
-    /*
-     * Use the get param ?ppDebug=true to see logs
-     *
-     */
     
     const currentUrl = new URL(window.location.href);
+    // use the param ?ppDebug=true to see logs
     const debug = currentUrl.searchParams.get('ppDebug');
 
     if (debug) {
@@ -177,6 +179,12 @@ export const Tracker = (config? : Config = {}) => {
     }
     
     getOrCreateValidCartId();
+
+    if (config && config.user && config.user.id) {
+        setUserId(config.user.id);
+    } else {
+        getOrCreateValidUserId();
+    }
 
     const JL = getJetlore();
     const jetloreTrackTypes = [
@@ -263,6 +271,9 @@ export const Tracker = (config? : Config = {}) => {
             return event;
         },
         setUser: (data : UserData) => {
+            // $FlowFixMe
+            const oldUserId = getUserId().userId;
+
             try {
                 data = setUserNormalizer(data);
                 validateUser(data);
@@ -270,6 +281,10 @@ export const Tracker = (config? : Config = {}) => {
                 // eslint-disable-next-line no-console
                 console.error(err.message);
                 return;
+            }
+
+            if (data.id) {
+                setUserId(data.id);
             }
 
             const configUser = config.user || {};
@@ -286,7 +301,7 @@ export const Tracker = (config? : Config = {}) => {
                 }
             };
 
-            trackEvent(config, 'setUser', { oldUserId: getUserIdCookie() });
+            trackEvent(config, 'setUser', { oldUserId });
         },
         setPropertyId: (id : string) => {
             config.propertyId = id;

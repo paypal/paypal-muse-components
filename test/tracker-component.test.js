@@ -1,7 +1,6 @@
 /* globals describe beforeAll afterAll afterEach it expect */
 /* @flow */
 import { Tracker } from '../src/tracker-component';
-import { setCookie } from '../src/lib/cookie-utils';
 import constants from '../src/lib/constants';
 // $FlowFixMe
 import generateIdModule from '../src/lib/generate-id';
@@ -96,6 +95,7 @@ describe('paypal.Tracker', () => {
 
     beforeEach(() => {
         window.localStorage.removeItem(storage.paypalCrCart);
+        window.localStorage.removeItem(storage.paypalCrUser);
     });
 
     // $FlowFixMe
@@ -103,6 +103,7 @@ describe('paypal.Tracker', () => {
         appendChildCalls = 0;
         imgMock.src = '';
         window.localStorage.removeItem(storage.paypalCrCart);
+        window.localStorage.removeItem(storage.paypalCrUser);
         document.cookie = 'paypal-cr-cart=;';
         fetchCalls = [];
     });
@@ -482,6 +483,7 @@ describe('paypal.Tracker', () => {
     it('should allow you to instantiate a user and then set the user', () => {
         const tracker = Tracker({
             user: {
+                id: 'foo',
                 email: '__test__oldEmail333@gmail.com'
             }
         });
@@ -489,6 +491,7 @@ describe('paypal.Tracker', () => {
         expect(appendChildCalls).toBe(0);
         tracker.setUser({
             user: {
+                id: 'bar',
                 email: '__test__email@gmail.com',
                 name: '__test__name'
             }
@@ -498,11 +501,11 @@ describe('paypal.Tracker', () => {
         // $FlowFixMe
         expect(JSON.stringify(dataParamObject)).toBe(
             JSON.stringify({
-                oldUserId: 'abc123',
+                oldUserId: 'foo',
                 currencyCode: 'USD',
                 cartId: 'abc123',
                 user: {
-                    id: 'abc123',
+                    id: 'bar',
                     email: '__test__email@gmail.com',
                     name: '__test__name'
                 },
@@ -581,53 +584,53 @@ describe('paypal.Tracker', () => {
         expect(afterStorage.cartId).toBe('arglebargle');
     });
 
-    it('should use document.cookie value if it exists', () => {
-        setCookie('paypal-user-id', '__test__cookie-id', 10000);
-        const tracker = Tracker();
-        tracker.setPropertyId(propertyId);
-        tracker.addToCart({
-            cartId: '__test__cartId',
-            items: [
-                {
-                    title: 'emir of kuwait',
-                    imgUrl: 'animageurl',
-                    price: 'tree fiddy',
-                    id: '__test__productId',
-                    url: 'https://example.com/__test__productId'
-                }
-            ],
-            emailCampaignId: '__test__emailCampaignId',
-            cartTotal: '12345.67',
-            currencyCode: 'USD'
-        });
-        const dataParamObject = extractDataParam(imgMock.src);
-        // $FlowFixMe
-        expect(JSON.stringify(dataParamObject)).toBe(
-            JSON.stringify({
-                cartId: '__test__cartId',
-                items: [
-                    {
-                        title: 'emir of kuwait',
-                        imgUrl: 'animageurl',
-                        price: 'tree fiddy',
-                        id: '__test__productId',
-                        url: 'https://example.com/__test__productId'
-                    }
-                ],
-                emailCampaignId: '__test__emailCampaignId',
-                currencyCode: 'USD',
-                total: '12345.67',
-                cartEventType: 'addToCart',
-                user: { id: '__test__cookie-id', email: null, name: null },
-                propertyId,
-                trackingType: 'cartEvent',
-                clientId: 'abcxyz123',
-                merchantId: 'xyz,hij,lmno',
-                deviceInfo,
-                version: 'TRANSITION_FLAG'
-            })
-        );
-    });
+    // it('should use document.cookie value if it exists', () => {
+    //     setCookie('paypal-user-id', '__test__cookie-id', 10000);
+    //     const tracker = Tracker();
+    //     tracker.setPropertyId(propertyId);
+    //     tracker.addToCart({
+    //         cartId: '__test__cartId',
+    //         items: [
+    //             {
+    //                 title: 'emir of kuwait',
+    //                 imgUrl: 'animageurl',
+    //                 price: 'tree fiddy',
+    //                 id: '__test__productId',
+    //                 url: 'https://example.com/__test__productId'
+    //             }
+    //         ],
+    //         emailCampaignId: '__test__emailCampaignId',
+    //         cartTotal: '12345.67',
+    //         currencyCode: 'USD'
+    //     });
+    //     const dataParamObject = extractDataParam(imgMock.src);
+    //     // $FlowFixMe
+    //     expect(JSON.stringify(dataParamObject)).toBe(
+    //         JSON.stringify({
+    //             cartId: '__test__cartId',
+    //             items: [
+    //                 {
+    //                     title: 'emir of kuwait',
+    //                     imgUrl: 'animageurl',
+    //                     price: 'tree fiddy',
+    //                     id: '__test__productId',
+    //                     url: 'https://example.com/__test__productId'
+    //                 }
+    //             ],
+    //             emailCampaignId: '__test__emailCampaignId',
+    //             currencyCode: 'USD',
+    //             total: '12345.67',
+    //             cartEventType: 'addToCart',
+    //             user: { id: '__test__cookie-id', email: null, name: null },
+    //             propertyId,
+    //             trackingType: 'cartEvent',
+    //             clientId: 'abcxyz123',
+    //             merchantId: 'xyz,hij,lmno',
+    //             deviceInfo,
+    //             version: 'TRANSITION_FLAG'
+    //         })
+    //     );
+    // });
 
     it('should hit partner-token route when identify method is invoked', done => {
         const email = '__test__email3@gmail.com';
@@ -720,7 +723,7 @@ describe('paypal.Tracker', () => {
     it('should not fetch implicit propertyId route if one is provided', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
-        const id = '__test__cookie-id';
+        const id = 'abc123';
         const tracker = Tracker({ user: {
             email,
             name: userName
