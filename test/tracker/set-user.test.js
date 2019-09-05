@@ -144,10 +144,10 @@ describe('setUser', () => {
         const tracker = Tracker({ user: { id: 'oldvalue' } });
         const oldUser = getUserId().userId;
 
-        tracker.setUser({ id: null })
+        tracker.setUser({ id: null });
         const newUser = getUserId().userId;
-        expect(oldUser).toBe('oldvalue')
-        expect(newUser).not.toBe(oldUser)
+        expect(oldUser).toBe('oldvalue');
+        expect(newUser).not.toBe(oldUser);
     });
 
     it('no user should be set if no user is passed to initialization', () => {
