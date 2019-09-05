@@ -12,6 +12,8 @@ import type {
 export const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
     const cartId = getOrCreateValidCartId().cartId;
+    // $FlowFixMe
+    const currencyCode = trackingData.currencyCode || config.currencyCode;
 
     const img = document.createElement('img');
     img.style.display = 'none';
@@ -26,6 +28,7 @@ export const track = <T>(config : Config, trackingType : TrackingType, trackingD
     const deviceInfo = getDeviceInfo();
     const data = {
         ...trackingData,
+        currencyCode,
         cartId,
         user,
         propertyId: config.propertyId,

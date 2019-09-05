@@ -52,8 +52,8 @@ export const validateAddItems = (input : any) => {
         imgUrl: [ 'string' ],
         price: [ 'string' ],
         quantity: [ 'number', 'undefined' ],
-        keywords: [ 'array', 'undefined' ],
-        otherImages: [ 'array', 'undefined' ],
+        keywords: [ 'array', 'string', 'undefined' ],
+        otherImages: [ 'array', 'string', 'undefined' ],
         description: [ 'string', 'undefined' ]
     };
 
