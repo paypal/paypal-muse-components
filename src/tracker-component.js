@@ -178,13 +178,19 @@ export const Tracker = (config? : Config = {}) => {
         // eslint-disable-next-line no-console
         console.log('PayPal Shopping: debug mode on.');
     }
-    
-    getOrCreateValidCartId();
 
-    if (config && config.user && config.user.id) {
-        setUserId(config.user.id);
-    } else {
-        getOrCreateValidUserId();
+    try {
+        getOrCreateValidCartId();
+        if (config && config.user && config.user.id) {
+            setUserId(config.user.id);
+        } else {
+            getOrCreateValidUserId();
+        }
+    } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err.message);
+        createNewCartId();
+        createNewUserId();
     }
 
     const JL = getJetlore();
