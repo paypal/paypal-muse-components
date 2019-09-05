@@ -584,54 +584,6 @@ describe('paypal.Tracker', () => {
         expect(afterStorage.cartId).toBe('arglebargle');
     });
 
-    // it('should use document.cookie value if it exists', () => {
-    //     setCookie('paypal-user-id', '__test__cookie-id', 10000);
-    //     const tracker = Tracker();
-    //     tracker.setPropertyId(propertyId);
-    //     tracker.addToCart({
-    //         cartId: '__test__cartId',
-    //         items: [
-    //             {
-    //                 title: 'emir of kuwait',
-    //                 imgUrl: 'animageurl',
-    //                 price: 'tree fiddy',
-    //                 id: '__test__productId',
-    //                 url: 'https://example.com/__test__productId'
-    //             }
-    //         ],
-    //         emailCampaignId: '__test__emailCampaignId',
-    //         cartTotal: '12345.67',
-    //         currencyCode: 'USD'
-    //     });
-    //     const dataParamObject = extractDataParam(imgMock.src);
-    //     // $FlowFixMe
-    //     expect(JSON.stringify(dataParamObject)).toBe(
-    //         JSON.stringify({
-    //             cartId: '__test__cartId',
-    //             items: [
-    //                 {
-    //                     title: 'emir of kuwait',
-    //                     imgUrl: 'animageurl',
-    //                     price: 'tree fiddy',
-    //                     id: '__test__productId',
-    //                     url: 'https://example.com/__test__productId'
-    //                 }
-    //             ],
-    //             emailCampaignId: '__test__emailCampaignId',
-    //             currencyCode: 'USD',
-    //             total: '12345.67',
-    //             cartEventType: 'addToCart',
-    //             user: { id: '__test__cookie-id', email: null, name: null },
-    //             propertyId,
-    //             trackingType: 'cartEvent',
-    //             clientId: 'abcxyz123',
-    //             merchantId: 'xyz,hij,lmno',
-    //             deviceInfo,
-    //             version: 'TRANSITION_FLAG'
-    //         })
-    //     );
-    // });
-
     it('should hit partner-token route when identify method is invoked', done => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';

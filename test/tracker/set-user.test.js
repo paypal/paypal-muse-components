@@ -2,6 +2,7 @@
 /* global it describe beforeEach afterAll expect jest */
 import { Tracker } from '../../src/tracker-component';
 import { getPropertyId } from '../../src/lib/get-property-id';
+import { getUserId } from '../../src/lib/local-storage-utils';
 import { track } from '../../src/lib/track';
 import constants from '../../src/lib/constants';
 
@@ -14,12 +15,14 @@ jest.mock('../../src/lib/get-property-id', () => {
 });
 
 describe('setUser', () => {
-    const { defaultTrackerConfig } = constants;
+    const { defaultTrackerConfig, storage } = constants;
 
     let config;
     let mockItem;
 
     beforeEach(() => {
+        window.localStorage.removeItem(storage.paypalCrUser);
+
         config = {
             propertyId: 'foobar',
             user: {
@@ -86,6 +89,65 @@ describe('setUser', () => {
             expect(args[1][0].user).toEqual(defaultTrackerConfig.user);
             done();
         }, 100);
+    });
+
+    it('creates a userId if none exists when the tracker is initialized', () => {
+        const oldUser = getUserId();
+        Tracker();
+        const newUser = getUserId().userId;
+
+        expect(oldUser).toBe(null);
+        expect(typeof newUser).toBe('string');
+    });
+
+    it('creates a userId if one exists but expired', () => {
+        const oldUser = { userId: 'oldvalue', createdAt: 500 };
+        window.localStorage.setItem(storage.paypalCrUser, JSON.stringify(oldUser));
+        Tracker();
+        const newUser = getUserId().userId;
+
+        expect(typeof newUser).toBe('string');
+        expect(newUser).not.toBe(oldUser.userId);
+    });
+
+    it('should retain a userId if one exists when the tracker is initialized', () => {
+        const oldUser = { userId: 'oldvalue', createdAt: Date.now() };
+        window.localStorage.setItem(storage.paypalCrUser, JSON.stringify(oldUser));
+        Tracker();
+        const newUser = getUserId().userId;
+
+        expect(newUser).toBe(oldUser.userId);
+    });
+
+    it('should override userId if one is passed in at the time a tracker is initialized', () => {
+        const oldUser = { userId: 'oldvalue', createdAt: Date.now() };
+        window.localStorage.setItem(storage.paypalCrUser, JSON.stringify(oldUser));
+        Tracker({ user: { id: 'newvalue' } });
+    
+        const newUser = getUserId().userId;
+        expect(newUser).toBe('newvalue');
+        expect(newUser).not.toBe(oldUser.userId);
+    });
+
+    it('should set a user to local storage when called', () => {
+        const oldUser = { userId: 'oldvalue', createdAt: Date.now() };
+        window.localStorage.setItem(storage.paypalCrUser, JSON.stringify(oldUser));
+        const tracker = Tracker({ user: { id: 'alsoanoldvalue' } });
+        tracker.setUser({ id: 'newvalue' });
+
+        const newUser = getUserId().userId;
+        expect(newUser).toBe('newvalue');
+        expect(newUser).not.toBe(oldUser.userId);
+    });
+
+    it('should clear a userId from local storage when null is passed', () => {
+        const tracker = Tracker({ user: { id: 'oldvalue' } });
+        const oldUser = getUserId().userId;
+
+        tracker.setUser({ id: null })
+        const newUser = getUserId().userId;
+        expect(oldUser).toBe('oldvalue')
+        expect(newUser).not.toBe(oldUser)
     });
 
     it('no user should be set if no user is passed to initialization', () => {

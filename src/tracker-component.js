@@ -22,6 +22,7 @@ import {
     setCartId,
     createNewCartId,
     getUserId,
+    createNewUserId,
     getOrCreateValidUserId,
     setUserId
 } from './lib/local-storage-utils';
@@ -285,6 +286,8 @@ export const Tracker = (config? : Config = {}) => {
 
             if (data.id) {
                 setUserId(data.id);
+            } else if (data.id === null) {
+                createNewUserId();
             }
 
             const configUser = config.user || {};

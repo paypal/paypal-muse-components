@@ -1,7 +1,6 @@
 /* @flow */
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
-// import { getUserIdCookie, setRandomUserIdCookie } from './cookie-utils';
 import { getOrCreateValidCartId, getOrCreateValidUserId } from './local-storage-utils';
 import { getDeviceInfo } from './get-device-info';
 import type {
@@ -18,9 +17,7 @@ export const track = <T>(config : Config, trackingType : TrackingType, trackingD
 
     const img = document.createElement('img');
     img.style.display = 'none';
-    // if (!getUserIdCookie()) {
-    //     setRandomUserIdCookie();
-    // }
+
     const user = {
         ...config.user,
         id: userId

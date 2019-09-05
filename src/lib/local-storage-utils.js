@@ -46,6 +46,7 @@ export const getOrCreateValidCartId = () => {
     return storedValue;
 };
 
+/* Sets a new userId to expire in one month */
 export const setUserId = (userId : string) => {
     const storedValue = {
         userId,
@@ -57,12 +58,14 @@ export const setUserId = (userId : string) => {
     return storedValue;
 };
 
+/* Generates a random userId to expire in one month */
 export const createNewUserId = () => {
     const userId = `${ generate.generateId() }`;
 
     return setUserId(userId);
 };
 
+/* Returns a userId if one exists */
 export const getUserId = () => {
     const storedValue = window.localStorage.getItem(storage.paypalCrUser);
 
@@ -73,7 +76,7 @@ export const getUserId = () => {
     return null;
 };
 
-// paypalCrUser
+/* Returns an existing, valid userId or creates a new one */
 export const getOrCreateValidUserId = () => {
     const storedValue = getUserId();
     const now = Date.now();
