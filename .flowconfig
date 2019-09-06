@@ -7,6 +7,7 @@
 .*/test/tracker/remove-from-cart.test.js
 .*/test/tracker/add-to-cart.test.js
 .*/test/local-storage-utils.test.js
+.*/test/tracker-component.test.js
 [untyped]
 .*/src/lib/jetlore
 [include]

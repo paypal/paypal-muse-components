@@ -17,8 +17,15 @@ import {
     purchaseNormalizer,
     setUserNormalizer
 } from './lib/deprecated-input-normalizers';
-import { getUserIdCookie } from './lib/cookie-utils';
-import { getOrCreateValidCartId, setCartId, createNewCartId } from './lib/local-storage-utils';
+import {
+    getOrCreateValidCartId,
+    setCartId,
+    createNewCartId,
+    getUserId,
+    createNewUserId,
+    getOrCreateValidUserId,
+    setUserId
+} from './lib/local-storage-utils';
 import { getPropertyId } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
 import { track } from './lib/track';
@@ -162,21 +169,29 @@ export const Tracker = (config? : Config = {}) => {
     // $FlowFixMe
     config = { ...defaultTrackerConfig, ...config };
     config.currencyCode = config.currencyCode || getCurrency();
-
-    /*
-     * Use the get param ?ppDebug=true to see logs
-     *
-     */
     
     const currentUrl = new URL(window.location.href);
+    // use the param ?ppDebug=true to see logs
     const debug = currentUrl.searchParams.get('ppDebug');
 
     if (debug) {
         // eslint-disable-next-line no-console
         console.log('PayPal Shopping: debug mode on.');
     }
-    
-    getOrCreateValidCartId();
+
+    try {
+        getOrCreateValidCartId();
+        if (config && config.user && config.user.id) {
+            setUserId(config.user.id);
+        } else {
+            getOrCreateValidUserId();
+        }
+    } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err.message);
+        createNewCartId();
+        createNewUserId();
+    }
 
     const JL = getJetlore();
     const jetloreTrackTypes = [
@@ -263,6 +278,9 @@ export const Tracker = (config? : Config = {}) => {
             return event;
         },
         setUser: (data : UserData) => {
+            // $FlowFixMe
+            const oldUserId = getUserId().userId;
+
             try {
                 data = setUserNormalizer(data);
                 validateUser(data);
@@ -270,6 +288,12 @@ export const Tracker = (config? : Config = {}) => {
                 // eslint-disable-next-line no-console
                 console.error(err.message);
                 return;
+            }
+
+            if (data.id) {
+                setUserId(data.id);
+            } else if (data.id === null) {
+                createNewUserId();
             }
 
             const configUser = config.user || {};
@@ -286,7 +310,7 @@ export const Tracker = (config? : Config = {}) => {
                 }
             };
 
-            trackEvent(config, 'setUser', { oldUserId: getUserIdCookie() });
+            trackEvent(config, 'setUser', { oldUserId });
         },
         setPropertyId: (id : string) => {
             config.propertyId = id;

@@ -1,10 +1,10 @@
-/* globals describe beforeAll afterAll afterEach it expect */
+/* globals describe beforeAll afterAll afterEach it expect jest */
 /* @flow */
 import { Tracker } from '../src/tracker-component';
-import { setCookie } from '../src/lib/cookie-utils';
 import constants from '../src/lib/constants';
 // $FlowFixMe
 import generateIdModule from '../src/lib/generate-id';
+import { getUserId, getCartId } from '../src/lib/local-storage-utils';
 
 const { sevenDays, storage } = constants;
 
@@ -96,6 +96,7 @@ describe('paypal.Tracker', () => {
 
     beforeEach(() => {
         window.localStorage.removeItem(storage.paypalCrCart);
+        window.localStorage.removeItem(storage.paypalCrUser);
     });
 
     // $FlowFixMe
@@ -103,6 +104,7 @@ describe('paypal.Tracker', () => {
         appendChildCalls = 0;
         imgMock.src = '';
         window.localStorage.removeItem(storage.paypalCrCart);
+        window.localStorage.removeItem(storage.paypalCrUser);
         document.cookie = 'paypal-cr-cart=;';
         fetchCalls = [];
     });
@@ -482,6 +484,7 @@ describe('paypal.Tracker', () => {
     it('should allow you to instantiate a user and then set the user', () => {
         const tracker = Tracker({
             user: {
+                id: 'foo',
                 email: '__test__oldEmail333@gmail.com'
             }
         });
@@ -489,6 +492,7 @@ describe('paypal.Tracker', () => {
         expect(appendChildCalls).toBe(0);
         tracker.setUser({
             user: {
+                id: 'bar',
                 email: '__test__email@gmail.com',
                 name: '__test__name'
             }
@@ -498,11 +502,11 @@ describe('paypal.Tracker', () => {
         // $FlowFixMe
         expect(JSON.stringify(dataParamObject)).toBe(
             JSON.stringify({
-                oldUserId: 'abc123',
+                oldUserId: 'foo',
                 currencyCode: 'USD',
                 cartId: 'abc123',
                 user: {
-                    id: 'abc123',
+                    id: 'bar',
                     email: '__test__email@gmail.com',
                     name: '__test__name'
                 },
@@ -579,54 +583,6 @@ describe('paypal.Tracker', () => {
 
         expect(beforeStorage).not.toEqual(afterStorage);
         expect(afterStorage.cartId).toBe('arglebargle');
-    });
-
-    it('should use document.cookie value if it exists', () => {
-        setCookie('paypal-user-id', '__test__cookie-id', 10000);
-        const tracker = Tracker();
-        tracker.setPropertyId(propertyId);
-        tracker.addToCart({
-            cartId: '__test__cartId',
-            items: [
-                {
-                    title: 'emir of kuwait',
-                    imgUrl: 'animageurl',
-                    price: 'tree fiddy',
-                    id: '__test__productId',
-                    url: 'https://example.com/__test__productId'
-                }
-            ],
-            emailCampaignId: '__test__emailCampaignId',
-            cartTotal: '12345.67',
-            currencyCode: 'USD'
-        });
-        const dataParamObject = extractDataParam(imgMock.src);
-        // $FlowFixMe
-        expect(JSON.stringify(dataParamObject)).toBe(
-            JSON.stringify({
-                cartId: '__test__cartId',
-                items: [
-                    {
-                        title: 'emir of kuwait',
-                        imgUrl: 'animageurl',
-                        price: 'tree fiddy',
-                        id: '__test__productId',
-                        url: 'https://example.com/__test__productId'
-                    }
-                ],
-                emailCampaignId: '__test__emailCampaignId',
-                currencyCode: 'USD',
-                total: '12345.67',
-                cartEventType: 'addToCart',
-                user: { id: '__test__cookie-id', email: null, name: null },
-                propertyId,
-                trackingType: 'cartEvent',
-                clientId: 'abcxyz123',
-                merchantId: 'xyz,hij,lmno',
-                deviceInfo,
-                version: 'TRANSITION_FLAG'
-            })
-        );
     });
 
     it('should hit partner-token route when identify method is invoked', done => {
@@ -720,7 +676,7 @@ describe('paypal.Tracker', () => {
     it('should not fetch implicit propertyId route if one is provided', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
-        const id = '__test__cookie-id';
+        const id = 'abc123';
         const tracker = Tracker({ user: {
             email,
             name: userName
@@ -800,5 +756,25 @@ describe('paypal.Tracker', () => {
 
         Tracker({ user: { email, name: userName }, propertyId: 'hello' });
         expect(fetchCalls.length).toBe(0);
+    });
+
+    it('should gracefully fail in the event that malformed data exists in local storage', () => {
+        // eslint-disable-next-line no-console
+        console.error = jest.fn();
+        window.localStorage.setItem(storage.paypalCrUser, 'this will cause an error');
+        window.localStorage.setItem(storage.paypalCrCart, 'this will also cause an error');
+
+        // eslint-disable-next-line no-console
+        expect(console.error.mock.calls.length).toBe(0);
+        Tracker();
+        const userId = getUserId().userId;
+        const cartId = getCartId().cartId;
+        // eslint-disable-next-line no-console
+        expect(console.error.mock.calls.length).toBe(1);
+        expect(typeof userId).toBe('string');
+        expect(typeof cartId).toBe('string');
+
+        // eslint-disable-next-line no-console
+        console.error.mockRestore();
     });
 });

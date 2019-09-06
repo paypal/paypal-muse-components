@@ -1,6 +1,4 @@
 /* @flow */
-import generate from './generate-id';
-
 export const getCookie = (cookieName : string) : string => {
     const name = `${ cookieName }=`;
     const cookies = document.cookie.split(';');
@@ -21,13 +19,4 @@ export const setCookie = (cookieName : string, cookieValue : string, expirationM
     d.setTime(d.getTime() + expirationMilliseconds);
     const expires = `expires=${ d.toUTCString() }`;
     document.cookie = `${ cookieName }=${ cookieValue }; Path=/; ${ expires }`;
-};
-
-export const getUserIdCookie = () : ?string => {
-    return getCookie('paypal-user-id') || null;
-};
-
-export const setRandomUserIdCookie = () : void => {
-    const ONE_MONTH_IN_MILLISECONDS = 30 * 24 * 60 * 60 * 1000;
-    setCookie('paypal-user-id', generate.generateId(), ONE_MONTH_IN_MILLISECONDS);
 };
