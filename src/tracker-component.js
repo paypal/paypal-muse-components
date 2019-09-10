@@ -295,7 +295,7 @@ const getPropertyId = ({ paramsToPropertyIdUrl }) => {
         if (paramsToPropertyIdUrl) {
             url = paramsToPropertyIdUrl();
         } else {
-            url = 'https://paypal.com/tagmanager/containers/xo';
+            url = 'https://www.paypal.com/tagmanager/containers/xo';
         }
         return window.fetch(`${ url }?mrid=${ merchantId }&url=${ encodeURIComponent(currentUrl) }`)
             .then(res => {
