@@ -746,19 +746,19 @@ describe('paypal.Tracker', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
         // clear local storage to ensure a request happens
-        window.localStorage.removeItem('property-id-abcxyz123-xyz')
+        window.localStorage.removeItem('property-id-abcxyz123-xyz');
         Tracker({ user: { email, name: userName } });
 
         expect(appendChildCalls).toBe(0);
         expect(fetchCalls.length).toBe(1);
-        expect(fetchCalls[0][0]).toBe('https://paypal.com/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost');
+        expect(fetchCalls[0][0]).toBe('https://www.paypal.com/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost');
     });
 
     it('should not fetch propertyId if one is provided', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
         // clear local storage to ensure a request happens
-        window.localStorage.removeItem('property-id-abcxyz123-xyz')
+        window.localStorage.removeItem('property-id-abcxyz123-xyz');
 
         Tracker({ user: { email, name: userName }, propertyId: 'hello' });
         expect(fetchCalls.length).toBe(0);
