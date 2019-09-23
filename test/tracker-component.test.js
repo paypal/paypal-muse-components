@@ -386,11 +386,11 @@ describe('paypal.Tracker', () => {
         const tracker = Tracker({ currencyCode: 'COWRIESHELLS', user: { email, name: userName } });
         tracker.setPropertyId(propertyId);
         expect(appendChildCalls).toBe(0);
-        tracker.cancelCart({ cartId: '__test__cartId' });
+        tracker.cancelCart();
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
-                cartId: '__test__cartId',
                 currencyCode: 'COWRIESHELLS',
+                cartId: 'abc123',
                 user: {
                     email: '__test__email7@gmail.com',
                     name: '__test__userName7',
