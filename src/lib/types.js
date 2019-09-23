@@ -37,10 +37,6 @@ export type CartData = {|
     currencyCode? : string
 |};
 
-export type CancelCartData = {|
-    cartId? : string
-|};
-
 export type RemoveCartData = {|
     cartId? : string,
     cartTotal? : string,
@@ -70,7 +66,7 @@ export type IdentityData = {|
 
 export type ParamsToBeaconUrl = ({
     trackingType : TrackingType,
-    data : ViewData | CartData | RemoveCartData | PurchaseData | CancelCartData
+    data : ViewData | CartData | RemoveCartData | PurchaseData
 }) => string;
 
 export type ParamsToTokenUrl = () => string;

@@ -35,7 +35,6 @@ import type {
     TrackingType,
     ViewData,
     CartData,
-    CancelCartData,
     RemoveCartData,
     PurchaseData,
     UserData,
@@ -271,8 +270,8 @@ export const Tracker = (config? : Config = {}) => {
                 console.error(err.message);
             }
         },
-        cancelCart: (data : CancelCartData) => {
-            const event = trackEvent(config, 'cancelCart', data);
+        cancelCart: () => {
+            const event = trackEvent(config, 'cancelCart', {});
             // a new id can only be created AFTER the 'cancel' event has been fired
             createNewCartId();
             return event;
