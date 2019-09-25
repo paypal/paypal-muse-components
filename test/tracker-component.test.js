@@ -1,9 +1,12 @@
-/* globals describe beforeAll afterAll afterEach it expect */
+/* globals describe beforeAll afterAll afterEach it expect jest */
 /* @flow */
-import { Tracker, clearTrackQueue } from '../src/tracker-component';
-import { setCookie } from '../src/lib/cookie-utils';
+import { Tracker } from '../src/tracker-component';
+import constants from '../src/lib/constants';
 // $FlowFixMe
-import generateIdModule from '../src/generate-id';
+import generateIdModule from '../src/lib/generate-id';
+import { getUserId, getCartId } from '../src/lib/local-storage-utils';
+
+const { sevenDays, storage } = constants;
 
 const decode = (encodedDataParam : string) : string => {
     return JSON.parse(atob(decodeURIComponent(encodedDataParam)));
@@ -91,11 +94,17 @@ describe('paypal.Tracker', () => {
         generateIdModule.generateId = originalGenerateId;
     });
 
+    beforeEach(() => {
+        window.localStorage.removeItem(storage.paypalCrCart);
+        window.localStorage.removeItem(storage.paypalCrUser);
+    });
+
     // $FlowFixMe
     afterEach(() => {
         appendChildCalls = 0;
         imgMock.src = '';
-        window.localStorage.removeItem('paypal-cr-cart');
+        window.localStorage.removeItem(storage.paypalCrCart);
+        window.localStorage.removeItem(storage.paypalCrUser);
         document.cookie = 'paypal-cr-cart=;';
         fetchCalls = [];
     });
@@ -114,91 +123,61 @@ describe('paypal.Tracker', () => {
     });
 
     it('should clear stored cart content if cart is expired', () => {
-        const beforeStorage = window.localStorage.getItem('paypal-cr-cart');
-
-        window.localStorage.setItem('paypal-cr-cart-expiry', Date.now() - 10);
-
+        const beforeStorage = window.localStorage.getItem(storage.paypalCrCart);
+        const twoWeeksAgo = (Date.now() - (sevenDays * 2));
+    
         expect(beforeStorage).toBe(null);
+        window.localStorage.setItem(storage.paypalCrCart, JSON.stringify({
+            cartId: 'arglebargleflimflam',
+            createdAt: twoWeeksAgo
+        }));
 
         // Since the expiry is in the past, this initialization should clear
         // the cart and expiry.
         Tracker();
 
-        const afterStorage = window.localStorage.getItem('paypal-cr-cart');
-        const afterExpiry = window.localStorage.getItem('paypal-cr-cart-expiry');
+        const afterStorage = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
 
-        expect(afterStorage).toBe(null);
-        expect(afterExpiry).toBe(null);
-    });
-
-    it('should migrate cart cookie storage to localStorage when adding an item to cart', () => {
-        const products = [
-            {
-                id: '1',
-                url: 'example.com'
-            },
-            {
-                id: '2',
-                url: 'example.com'
-            },
-            {
-                id: '3',
-                url: 'example.com'
-            },
-            {
-                id: '4',
-                url: 'example.com'
-            }
-        ];
-
-        document.cookie = `paypal-cr-cart=${ JSON.stringify({ items: [
-            products[0],
-            products[1]
-        ] }) }`;
-
-        const tracker = Tracker();
-
-        tracker.addToCart({ items: [
-            products[2],
-            products[3]
-        ] });
-
-        expect(window.localStorage.getItem('paypal-cr-cart')).toBe(JSON.stringify({
-            items: products
-        }));
+        expect(afterStorage.cartId).not.toBe('arglebargleflimflam');
+        expect(afterStorage.createdAt).toBeGreaterThan(twoWeeksAgo);
     });
 
     it('should send addToCart events', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
-        const tracker = Tracker({ user: { email, name: userName } });
+        const tracker = Tracker({ currencyCode: 'FOO', user: { email, name: userName } });
         expect(appendChildCalls).toBe(0);
         tracker.setPropertyId(propertyId);
         tracker.addToCart({
             cartId: '__test__cartId',
             items: [
                 {
+                    title: 'archbishop of canterbury',
+                    imgUrl: 'animageurl',
+                    price: 'tree fiddy',
                     id: '__test__productId',
                     url: 'https://example.com/__test__productId'
                 }
             ],
             emailCampaignId: '__test__emailCampaignId',
-            total: '12345.67',
-            currencyCode: 'USD'
+            cartTotal: '12345.67'
         });
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
                 cartId: '__test__cartId',
                 items: [
                     {
+                        title: 'archbishop of canterbury',
+                        imgUrl: 'animageurl',
+                        price: 'tree fiddy',
                         id: '__test__productId',
                         url: 'https://example.com/__test__productId'
                     }
                 ],
                 emailCampaignId: '__test__emailCampaignId',
                 total: '12345.67',
-                currencyCode: 'USD',
                 cartEventType: 'addToCart',
+                currencyCode: 'FOO',
                 user: {
                     email: '__test__email3@gmail.com',
                     name: '__test__userName3',
@@ -208,7 +187,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);
@@ -216,12 +196,15 @@ describe('paypal.Tracker', () => {
             cartId: '__test__cartId0',
             items: [
                 {
+                    title: 'duke of lancaster',
+                    imgUrl: 'animageurl',
+                    price: 'tree fiddy',
                     id: '__test__productId0',
                     url: 'https://example.com/__test__productId0'
                 }
             ],
             emailCampaignId: '__test__emailCampaignId0',
-            total: '102345.67',
+            cartTotal: '102345.67',
             currencyCode: 'USD'
         });
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
@@ -229,17 +212,16 @@ describe('paypal.Tracker', () => {
                 cartId: '__test__cartId0',
                 items: [
                     {
-                        id: '__test__productId',
-                        url: 'https://example.com/__test__productId'
-                    },
-                    {
+                        title: 'duke of lancaster',
+                        imgUrl: 'animageurl',
+                        price: 'tree fiddy',
                         id: '__test__productId0',
                         url: 'https://example.com/__test__productId0'
                     }
                 ],
                 emailCampaignId: '__test__emailCampaignId0',
-                total: '102345.67',
                 currencyCode: 'USD',
+                total: '102345.67',
                 cartEventType: 'addToCart',
                 user: {
                     email: '__test__email3@gmail.com',
@@ -250,7 +232,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
     });
@@ -265,38 +248,47 @@ describe('paypal.Tracker', () => {
             cartId: '__test__cartId0',
             items: [
                 {
+                    title: 'sultan of cairo',
+                    imgUrl: 'animageurl',
+                    price: 'tree fiddy',
                     id: '__test__productId0',
                     url: 'https://example.com/__test__productId0'
                 }
             ],
             emailCampaignId: '__test__emailCampaignId0',
-            total: '102345.67',
+            cartTotal: '102345.67',
             currencyCode: 'USD'
         });
         tracker.setCart({
             cartId: '__test__cartId',
             items: [
                 {
+                    title: 'william of normandy',
+                    imgUrl: 'animageurl',
+                    price: 'tree fiddy',
                     id: '__test__productId',
                     url: 'https://example.com/__test__productId'
                 }
             ],
             emailCampaignId: '__test__emailCampaignId',
-            total: '12345.67',
-            currencyCode: 'USD'
+            currencyCode: 'USD',
+            total: '12345.67'
         });
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
                 cartId: '__test__cartId',
                 items: [
                     {
+                        title: 'william of normandy',
+                        imgUrl: 'animageurl',
+                        price: 'tree fiddy',
                         id: '__test__productId',
                         url: 'https://example.com/__test__productId'
                     }
                 ],
                 emailCampaignId: '__test__emailCampaignId',
-                total: '12345.67',
                 currencyCode: 'USD',
+                total: '12345.67',
                 cartEventType: 'setCart',
                 user: {
                     email: '__test__email4@gmail.com',
@@ -307,7 +299,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(2);
@@ -320,7 +313,9 @@ describe('paypal.Tracker', () => {
         tracker.setPropertyId(propertyId);
         expect(appendChildCalls).toBe(0);
         tracker.removeFromCart({
+            currencyCode: 'LARGE_SHINY_ROCKS',
             cartId: '__test__cartId',
+            cartTotal: '5.00',
             items: [
                 {
                     id: '__test__productId',
@@ -331,11 +326,13 @@ describe('paypal.Tracker', () => {
 
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
+                currencyCode: 'LARGE_SHINY_ROCKS',
                 cartId: '__test__cartId',
                 items: [ {
                     id: '__test__productId',
                     url: 'https://example.com/__test__productId'
                 } ],
+                total: '5.00',
                 cartEventType: 'removeFromCart',
                 user: {
                     email: '__test__email5@gmail.com',
@@ -346,7 +343,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);
@@ -355,14 +353,16 @@ describe('paypal.Tracker', () => {
     it('should send purchase events', () => {
         const email = '__test__email6@gmail.com';
         const userName = '__test__userName6';
-        const tracker = Tracker({ user: { email, name: userName } });
+        const tracker = Tracker({ currencyCode: 'COWRIESHELLS', user: { email, name: userName } });
         tracker.setPropertyId(propertyId);
         expect(appendChildCalls).toBe(0);
         tracker.purchase({
+            currencyCode: 'USD',
             cartId: '__test__cartId'
         });
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
+                currencyCode: 'USD',
                 cartId: '__test__cartId',
                 user: {
                     email: '__test__email6@gmail.com',
@@ -373,7 +373,8 @@ describe('paypal.Tracker', () => {
                 trackingType: 'purchase',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);
@@ -382,13 +383,14 @@ describe('paypal.Tracker', () => {
     it('should send cancelCart events and clear localStorage upon cancelling cart', () => {
         const email = '__test__email7@gmail.com';
         const userName = '__test__userName7';
-        const tracker = Tracker({ user: { email, name: userName } });
+        const tracker = Tracker({ currencyCode: 'COWRIESHELLS', user: { email, name: userName } });
         tracker.setPropertyId(propertyId);
         expect(appendChildCalls).toBe(0);
-        tracker.cancelCart({ cartId: '__test__cartId' });
+        tracker.cancelCart();
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
-                cartId: '__test__cartId',
+                currencyCode: 'COWRIESHELLS',
+                cartId: 'abc123',
                 user: {
                     email: '__test__email7@gmail.com',
                     name: '__test__userName7',
@@ -398,16 +400,15 @@ describe('paypal.Tracker', () => {
                 trackingType: 'cancelCart',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);
 
-        const afterStorage = window.localStorage.getItem('paypal-cr-cart');
-        const afterExpiry = window.localStorage.getItem('paypal-cr-cart-expiry');
+        const afterStorage = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
 
-        expect(afterStorage).toBe(null);
-        expect(afterExpiry).toBe(null);
+        expect(afterStorage.cartId).not.toBe('__test__cartId');
     });
 
     it('should call paramsToBeaconUrl to create the url if you pass in paramsToBeaconUrl function', () => {
@@ -434,6 +435,7 @@ describe('paypal.Tracker', () => {
                     trackingType: 'purchase',
                     data: {
                         cartId: '__test__cartId',
+                        currencyCode: 'USD',
                         user: {
                             email: '__test__email@gmail.com',
                             name: '__test__userName6',
@@ -443,7 +445,8 @@ describe('paypal.Tracker', () => {
                         trackingType: 'purchase',
                         clientId: 'abcxyz123',
                         merchantId: 'xyz,hij,lmno',
-                        deviceInfo
+                        deviceInfo,
+                        version: 'TRANSITION_FLAG'
                     }
                 }
             ])
@@ -461,16 +464,19 @@ describe('paypal.Tracker', () => {
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
                 oldUserId: 'abc123',
+                currencyCode: 'USD',
+                cartId: 'abc123',
                 user: {
+                    id: 'abc123',
                     email: '__test__email9',
-                    name: '__test__userName9',
-                    id: 'abc123'
+                    name: '__test__userName9'
                 },
                 propertyId,
                 trackingType: 'setUser',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
     });
@@ -478,6 +484,7 @@ describe('paypal.Tracker', () => {
     it('should allow you to instantiate a user and then set the user', () => {
         const tracker = Tracker({
             user: {
+                id: 'foo',
                 email: '__test__oldEmail333@gmail.com'
             }
         });
@@ -485,6 +492,7 @@ describe('paypal.Tracker', () => {
         expect(appendChildCalls).toBe(0);
         tracker.setUser({
             user: {
+                id: 'bar',
                 email: '__test__email@gmail.com',
                 name: '__test__name'
             }
@@ -494,17 +502,20 @@ describe('paypal.Tracker', () => {
         // $FlowFixMe
         expect(JSON.stringify(dataParamObject)).toBe(
             JSON.stringify({
-                oldUserId: 'abc123',
+                oldUserId: 'foo',
+                currencyCode: 'USD',
+                cartId: 'abc123',
                 user: {
+                    id: 'bar',
                     email: '__test__email@gmail.com',
-                    name: '__test__name',
-                    id: 'abc123'
+                    name: '__test__name'
                 },
                 propertyId,
                 trackingType: 'setUser',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
     });
@@ -520,12 +531,15 @@ describe('paypal.Tracker', () => {
             cartId: '__test__cartId',
             items: [
                 {
+                    title: 'duke of york',
+                    imgUrl: 'animageurl',
+                    price: 'tree fiddy',
                     id: '__test__productId',
                     url: 'https://example.com/__test__productId'
                 }
             ],
             emailCampaignId: '__test__emailCampaignId',
-            total: '12345.67',
+            cartTotal: '12345.67',
             currencyCode: 'USD'
         });
         const dataParamObject = extractDataParam(imgMock.src);
@@ -535,67 +549,40 @@ describe('paypal.Tracker', () => {
                 cartId: '__test__cartId',
                 items: [
                     {
+                        title: 'duke of york',
+                        imgUrl: 'animageurl',
+                        price: 'tree fiddy',
                         id: '__test__productId',
                         url: 'https://example.com/__test__productId'
                     }
                 ],
                 emailCampaignId: '__test__emailCampaignId',
-                total: '12345.67',
                 currencyCode: 'USD',
+                total: '12345.67',
                 cartEventType: 'addToCart',
                 user: {
+                    id: 'abc123',
                     email: '__test__email2',
-                    name: '__test__name1',
-                    id: 'abc123'
+                    name: '__test__name1'
                 },
                 propertyId,
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
     });
 
-    it('should use document.cookie value if it exists', () => {
-        setCookie('paypal-user-id', '__test__cookie-id', 10000);
+    it('should set the cartId when setCartId is called', () => {
         const tracker = Tracker();
-        tracker.setPropertyId(propertyId);
-        tracker.addToCart({
-            cartId: '__test__cartId',
-            items: [
-                {
-                    id: '__test__productId',
-                    url: 'https://example.com/__test__productId'
-                }
-            ],
-            emailCampaignId: '__test__emailCampaignId',
-            total: '12345.67',
-            currencyCode: 'USD'
-        });
-        const dataParamObject = extractDataParam(imgMock.src);
-        // $FlowFixMe
-        expect(JSON.stringify(dataParamObject)).toBe(
-            JSON.stringify({
-                cartId: '__test__cartId',
-                items: [
-                    {
-                        id: '__test__productId',
-                        url: 'https://example.com/__test__productId'
-                    }
-                ],
-                emailCampaignId: '__test__emailCampaignId',
-                total: '12345.67',
-                currencyCode: 'USD',
-                cartEventType: 'addToCart',
-                user: { id: '__test__cookie-id' },
-                propertyId,
-                trackingType: 'cartEvent',
-                clientId: 'abcxyz123',
-                merchantId: 'xyz,hij,lmno',
-                deviceInfo
-            })
-        );
+        const beforeStorage = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
+        tracker.setCartId('arglebargle');
+        const afterStorage = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
+
+        expect(beforeStorage).not.toEqual(afterStorage);
+        expect(afterStorage.cartId).toBe('arglebargle');
     });
 
     it('should hit partner-token route when identify method is invoked', done => {
@@ -689,7 +676,7 @@ describe('paypal.Tracker', () => {
     it('should not fetch implicit propertyId route if one is provided', () => {
         const email = '__test__email3@gmail.com';
         const userName = '__test__userName3';
-        const id = '__test__cookie-id';
+        const id = 'abc123';
         const tracker = Tracker({ user: {
             email,
             name: userName
@@ -701,12 +688,15 @@ describe('paypal.Tracker', () => {
             cartId: '__test__cartId',
             items: [
                 {
+                    title: 'consul of rome',
+                    imgUrl: 'animageurl',
+                    price: 'tree fiddy',
                     id: '__test__productId',
                     url: 'https://example.com/__test__productId'
                 }
             ],
             emailCampaignId: '__test__emailCampaignId',
-            total: '12345.67',
+            cartTotal: '12345.67',
             currencyCode: 'USD'
         });
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
@@ -714,20 +704,24 @@ describe('paypal.Tracker', () => {
                 cartId: '__test__cartId',
                 items: [
                     {
+                        title: 'consul of rome',
+                        imgUrl: 'animageurl',
+                        price: 'tree fiddy',
                         id: '__test__productId',
                         url: 'https://example.com/__test__productId'
                     }
                 ],
                 emailCampaignId: '__test__emailCampaignId',
-                total: '12345.67',
                 currencyCode: 'USD',
+                total: '12345.67',
                 cartEventType: 'addToCart',
                 user: { email, name: userName, id },
                 propertyId,
                 trackingType: 'cartEvent',
                 clientId: 'abcxyz123',
                 merchantId: 'xyz,hij,lmno',
-                deviceInfo
+                deviceInfo,
+                version: 'TRANSITION_FLAG'
             })
         );
         expect(appendChildCalls).toBe(1);
@@ -764,35 +758,23 @@ describe('paypal.Tracker', () => {
         expect(fetchCalls.length).toBe(0);
     });
 
-    it('should clear trackEventQueue when function is called', () => {
-        const email = '__test__email4@gmail.com';
-        const userName = '__test__userName4';
-        const id = '__test__cookie-id';
-        const trackingData = {
-            cartId: '__test__cartId',
-            items: [
-                {
-                    id: '__test__productId',
-                    url: 'https://example.com/__test__productId'
-                }
-            ],
-            emailCampaignId: '__test__emailCampaignId',
-            total: '12345.67',
-            currencyCode: 'USD',
-            cartEventType: 'addToCart',
-            user: { email, name: userName, id },
-            propertyId,
-            trackingType: 'cartEvent',
-            clientId: 'abcxyz123',
-            merchantId: 'xyz,hij,lmno',
-            deviceInfo
-        };
-        const trackEventQueue = [
-            [ 'addToCart', trackingData ],
-            [ 'setCart', trackingData ],
-            [ 'remoteFromCart', trackingData ]
-        ];
-        const result = clearTrackQueue({}, trackEventQueue);
-        expect(result.length).toBe(0);
+    it('should gracefully fail in the event that malformed data exists in local storage', () => {
+        // eslint-disable-next-line no-console
+        console.error = jest.fn();
+        window.localStorage.setItem(storage.paypalCrUser, 'this will cause an error');
+        window.localStorage.setItem(storage.paypalCrCart, 'this will also cause an error');
+
+        // eslint-disable-next-line no-console
+        expect(console.error.mock.calls.length).toBe(0);
+        Tracker();
+        const userId = getUserId().userId;
+        const cartId = getCartId().cartId;
+        // eslint-disable-next-line no-console
+        expect(console.error.mock.calls.length).toBe(1);
+        expect(typeof userId).toBe('string');
+        expect(typeof cartId).toBe('string');
+
+        // eslint-disable-next-line no-console
+        console.error.mockRestore();
     });
 });

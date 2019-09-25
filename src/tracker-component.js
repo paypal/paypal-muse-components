@@ -1,153 +1,52 @@
 /* @flow */
 import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
-import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
+import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src';
 
 // $FlowFixMe
-import generate from './generate-id';
-import { getCookie, setCookie } from './lib/cookie-utils';
+import {
+    validateAddItems,
+    validateRemoveItems,
+    validateUser,
+    validatePurchase
+} from './lib/input-validation';
+import {
+    addToCartNormalizer,
+    setCartNormalizer,
+    removeFromCartNormalizer,
+    purchaseNormalizer,
+    setUserNormalizer
+} from './lib/deprecated-input-normalizers';
+import {
+    getOrCreateValidCartId,
+    setCartId,
+    createNewCartId,
+    getUserId,
+    createNewUserId,
+    getOrCreateValidUserId,
+    setUserId
+} from './lib/local-storage-utils';
+import { getPropertyId } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
-import { getDeviceInfo } from './lib/get-device-info';
-import { removeFromCart, addToCart } from './lib/compose-cart';
+import { track } from './lib/track';
+import constants from './lib/constants';
+import type {
+    CartEventType,
+    TrackingType,
+    ViewData,
+    CartData,
+    RemoveCartData,
+    PurchaseData,
+    UserData,
+    IdentityData,
+    JetloreConfig,
+    Config
+} from './lib/types';
 
-type TrackingType = 'view' | 'cartEvent' | 'purchase' | 'setUser' | 'cancelCart';
-
-type CartEventType = 'addToCart' | 'setCart' | 'removeFromCart';
-
-type Product = {|
-    id : string,
-    title? : string,
-    url? : string,
-    description? : string,
-    imgUrl? : string,
-    otherImages? : $ReadOnlyArray<string>,
-    keywords? : $ReadOnlyArray<string>,
-    price? : string,
-    quantity? : string
-|};
-
-type ViewData = {| page : string, title? : string |};
-
-type CartData = {|
-    cartId? : string,
-    items : $ReadOnlyArray<Product>,
-    emailCampaignId? : string,
-    total? : string,
-    currencyCode? : string
-|};
-
-type CancelCartData = {|
-    cartId? : string
-|};
-
-type RemoveCartData = {|
-    cartId? : string,
-    items : $ReadOnlyArray<{ id : string }>
-|};
-
-type PurchaseData = {| cartId : string |};
-
-type UserData = {|
-    user : {|
-        email : string,
-        name? : string
-    |}
-|};
-
-type IdentityData = {|
-    mrid : string,
-    onIdentification : Function,
-    onError? : Function
-|};
-
-type ParamsToBeaconUrl = ({
-    trackingType : TrackingType,
-    data : ViewData | CartData | RemoveCartData | PurchaseData | CancelCartData
-}) => string;
-
-type ParamsToTokenUrl = () => string;
-
-type ParamsToPropertyIdUrl = () => string;
-
-type JetloreConfig = {|
-    user_id : string,
-    cid : string,
-    feed_id : string,
-    div? : string,
-    lang? : string
-|};
-
-type Config = {|
-    user? : {|
-        email? : string, // mandatory if unbranded cart recovery
-        name? : string
-    |},
-    propertyId? : string,
-    paramsToBeaconUrl? : ParamsToBeaconUrl,
-    paramsToTokenUrl? : ParamsToTokenUrl,
-    jetlore? : {|
-        user_id : string,
-        access_token : string,
-        feed_id : string,
-        div? : string,
-        lang? : string
-    |},
-    paramsToPropertyIdUrl? : ParamsToPropertyIdUrl
-|};
-
-const storage = {
-    paypalCrCart: 'paypal-cr-cart',
-    paypalCrCartExpiry: 'paypal-cr-cart-expiry'
-};
-
-const sevenDays = 6.048e+8;
-
-const accessTokenUrl = 'https://www.paypal.com/muse/api/partner-token';
-
-const getUserIdCookie = () : ?string => {
-    return getCookie('paypal-user-id') || null;
-};
-
-const setRandomUserIdCookie = () : void => {
-    const ONE_MONTH_IN_MILLISECONDS = 30 * 24 * 60 * 60 * 1000;
-    setCookie('paypal-user-id', generate.generateId(), ONE_MONTH_IN_MILLISECONDS);
-};
-
-const composeCart = (type, data) => {
-    // Copy the data so we don't modify it outside the scope of this method.
-    let _data = { ...data };
-
-    // Devnote: Checking for cookie for backwards compatibility (the cookie check can be removed
-    // a couple weeks after deploy because any cart cookie storage will be moved to localStorage
-    // in this function).
-    const storedCart = window.localStorage.getItem(storage.paypalCrCart) || getCookie(storage.paypalCrCart) || '{}';
-    const expiry = window.localStorage.getItem(storage.paypalCrCartExpiry);
-    const cart = JSON.parse(storedCart);
-    const currentItems = cart ? cart.items : [];
-
-    if (!expiry) {
-        window.localStorage.setItem(storage.paypalCrCartExpiry, Date.now() + sevenDays);
-    }
-
-    switch (type) {
-    case 'add':
-        _data.items = addToCart(data.items, currentItems);
-        break;
-    case 'set':
-        _data.items = data.items;
-        break;
-    case 'remove':
-        _data = { ...cart, ...data };
-        _data.items = removeFromCart(data.items, currentItems);
-        break;
-    default:
-        throw new Error('invalid cart action');
-    }
-
-    window.localStorage.setItem(storage.paypalCrCart, JSON.stringify(_data));
-
-    return _data;
-};
+const {
+    accessTokenUrl,
+    defaultTrackerConfig
+} = constants;
 
 const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
     return fetch(url, {
@@ -214,104 +113,38 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
 
 let trackEventQueue = [];
 
-const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
-    if (!config.propertyId) {
-        trackEventQueue.push([ trackingType, trackingData ]);
-        return;
-    }
-    const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
-
-    const img = document.createElement('img');
-    img.style.display = 'none';
-    if (!getUserIdCookie()) {
-        setRandomUserIdCookie();
-    }
-    const user = {
-        ...config.user,
-        id: getUserIdCookie()
-    };
-    const deviceInfo = getDeviceInfo();
-    const data = {
-        ...trackingData,
-        user,
-        propertyId: config.propertyId,
-        trackingType,
-        clientId: getClientID(),
-        merchantId: getMerchantID().join(','),
-        deviceInfo
-    };
-
-    // paramsToBeaconUrl is a function that gives you the ability to override the beacon url
-    // to whatever you want it to be based on the trackingType string and data object.
-    // This can be useful for testing purposes, this feature won't be used by merchants.
-    if (config.paramsToBeaconUrl) {
-        img.src = config.paramsToBeaconUrl({ trackingType, data });
-    } else {
-        img.src = `https://www.paypal.com/targeting/track/${ trackingType }?data=${ encodeData(data) }`;
-    }
-
-    if (document.body) {
-        document.body.appendChild(img);
-    }
-};
-
-// eslint-disable-next-line flowtype/no-weak-types
-export const clearTrackQueue = (config : Config, queue : any) => {
-    // eslint-disable-next-line array-callback-return
-    return queue.filter(([ trackingType, trackingData ]) => {
+export const clearTrackQueue = (config : Config) => {
+    // TODO: replace 'filter' with 'forEach'
+    // $FlowFixMe
+    return trackEventQueue.filter(([ trackingType, trackingData ]) => { // eslint-disable-line array-callback-return
         track(config, trackingType, trackingData);
     });
 };
 
-const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) =>
-    track(config, 'cartEvent', { ...trackingData, cartEventType });
-
-const defaultTrackerConfig = { user: { email: undefined, name: undefined } };
-
-const clearExpiredCart = () => {
-    const expiry = window.localStorage.getItem(storage.paypalCrCartExpiry);
-
-    if (expiry !== null) {
-        const expiryTime = Number(expiry);
-
-        if (Date.now() >= expiryTime) {
-            window.localStorage.removeItem(storage.paypalCrCartExpiry);
-            window.localStorage.removeItem(storage.paypalCrCart);
-        }
+export const trackEvent = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
+    // CartId can be set by any event if it is provided
+    // $FlowFixMe
+    if (trackingData.cartId) {
+        setCartId(trackingData.cartId);
     }
+
+    // $FlowFixMe
+    if (trackingData.currencyCode) {
+        config.currencyCode = trackingData.currencyCode;
+    }
+
+    // Events cannot be fired without a propertyId. We add events
+    // to a queue if a propertyId has not yet been returned.
+    if (!config.propertyId) {
+        trackEventQueue.push([ trackingType, trackingData ]);
+        return;
+    }
+
+    track(config, trackingType, trackingData);
 };
 
-const getPropertyId = ({ paramsToPropertyIdUrl }) => {
-    return new Promise(resolve => {
-        const clientId = getClientID();
-        const merchantId = getMerchantID()[0];
-        const propertyIdKey = `property-id-${ clientId }-${ merchantId }`;
-        const savedPropertyId = window.localStorage.getItem(propertyIdKey);
-        const currentUrl = `${ window.location.protocol }//${ window.location.host }`;
-        if (savedPropertyId) {
-            return resolve(savedPropertyId);
-        }
-        let url;
-        if (paramsToPropertyIdUrl) {
-            url = paramsToPropertyIdUrl();
-        } else {
-            url = 'https://www.paypal.com/tagmanager/containers/xo';
-        }
-        return window.fetch(`${ url }?mrid=${ merchantId }&url=${ encodeURIComponent(currentUrl) }`)
-            .then(res => {
-                if (res.status === 200) {
-                    return res;
-                }
-            })
-            .then(r => r.json()).then(container => {
-                window.localStorage.setItem(propertyIdKey, container.id);
-                resolve(container.id);
-            })
-            .catch(() => {
-                // doing nothing for now since there's no logging
-            });
-    });
-};
+const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) =>
+    trackEvent(config, 'cartEvent', { ...trackingData, cartEventType });
 
 export const setImplicitPropertyId = (config : Config) => {
     /*
@@ -325,30 +158,39 @@ export const setImplicitPropertyId = (config : Config) => {
     getPropertyId(config).then(propertyId => {
         config.propertyId = propertyId;
         if (trackEventQueue.length) {
-            trackEventQueue = clearTrackQueue(config, trackEventQueue);
+            trackEventQueue = clearTrackQueue(config);
         }
     });
 };
-const clearCancelledCart = () => {
-    window.localStorage.removeItem(storage.paypalCrCartExpiry);
-    window.localStorage.removeItem(storage.paypalCrCart);
-};
 
-export const Tracker = (config? : Config = defaultTrackerConfig) => {
-    /*
-     * Use the get param ?ppDebug=true to see logs
-     *
-     */
+// $FlowFixMe
+export const Tracker = (config? : Config = {}) => {
+    // $FlowFixMe
+    config = { ...defaultTrackerConfig, ...config };
+    config.currencyCode = config.currencyCode || getCurrency();
     
     const currentUrl = new URL(window.location.href);
+    // use the param ?ppDebug=true to see logs
     const debug = currentUrl.searchParams.get('ppDebug');
 
     if (debug) {
         // eslint-disable-next-line no-console
         console.log('PayPal Shopping: debug mode on.');
     }
-    
-    clearExpiredCart();
+
+    try {
+        getOrCreateValidCartId();
+        if (config && config.user && config.user.id) {
+            setUserId(config.user.id);
+        } else {
+            getOrCreateValidUserId();
+        }
+    } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err.message);
+        createNewCartId();
+        createNewUserId();
+    }
 
     const JL = getJetlore();
     const jetloreTrackTypes = [
@@ -388,42 +230,86 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     const trackers = {
         view: (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
         addToCart: (data : CartData) => {
-            let newCart;
+            try {
+                data = addToCartNormalizer(data);
+                validateAddItems(data);
+                return trackCartEvent(config, 'addToCart', data);
+            } catch (err) {
+                // eslint-disable-next-line no-console
+                console.error(err.message);
+            }
+        },
+        setCart: (data : CartData) => {
+            try {
+                data = setCartNormalizer(data);
+                validateAddItems(data);
+                return trackCartEvent(config, 'setCart', data);
+            } catch (err) {
+                // eslint-disable-next-line no-console
+                console.error(err.message);
+            }
+        },
+        setCartId: (cartId : string) => setCartId(cartId),
+        removeFromCart: (data : RemoveCartData) => {
+            try {
+                data = removeFromCartNormalizer(data);
+                validateRemoveItems(data);
+                return trackCartEvent(config, 'removeFromCart', data);
+            } catch (err) {
+                // eslint-disable-next-line no-console
+                console.error(err.message);
+            }
+        },
+        purchase: (data : PurchaseData) => {
+            try {
+                data = purchaseNormalizer(data);
+                validatePurchase(data);
+                return trackEvent(config, 'purchase', data);
+            } catch (err) {
+                // eslint-disable-next-line no-console
+                console.error(err.message);
+            }
+        },
+        cancelCart: () => {
+            const event = trackEvent(config, 'cancelCart', {});
+            // a new id can only be created AFTER the 'cancel' event has been fired
+            createNewCartId();
+            return event;
+        },
+        setUser: (data : UserData) => {
+            // $FlowFixMe
+            const oldUserId = getUserId().userId;
 
             try {
-                newCart = composeCart('add', data);
+                data = setUserNormalizer(data);
+                validateUser(data);
             } catch (err) {
-                console.error(err.message); // eslint-disable-line no-console
+                // eslint-disable-next-line no-console
+                console.error(err.message);
                 return;
             }
 
-            return trackCartEvent(config, 'addToCart', newCart);
-        },
-        setCart: (data : CartData) => {
-            const newCart = composeCart('set', data);
+            if (data.id) {
+                setUserId(data.id);
+            } else if (data.id === null) {
+                createNewUserId();
+            }
 
-            return trackCartEvent(config, 'setCart', newCart);
-        },
-        removeFromCart: (data : RemoveCartData) => {
-            composeCart('remove', data);
+            const configUser = config.user || {};
+            const userId = data.id !== undefined ? data.id : configUser.id;
+            const userEmail = data.email !== undefined ? data.email : configUser.email;
+            const userName = data.name !== undefined ? data.name : configUser.name;
 
-            trackCartEvent(config, 'removeFromCart', data);
-        },
-        purchase: (data : PurchaseData) => track(config, 'purchase', data),
-        setUser: (data : UserData) => {
             config = {
                 ...config,
                 user: {
-                    ...config.user,
-                    email: data.user.email || ((config && config.user) || {}).email,
-                    name: data.user.name || ((config && config.user) || {}).name
+                    id: userId,
+                    email: userEmail,
+                    name: userName
                 }
             };
-            track(config, 'setUser', { oldUserId: getUserIdCookie() });
-        },
-        cancelCart: (data : CancelCartData) => {
-            clearCancelledCart();
-            track(config, 'cancelCart', data);
+
+            trackEvent(config, 'setUser', { oldUserId });
         },
         setPropertyId: (id : string) => {
             config.propertyId = id;
@@ -463,7 +349,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     // https://github.com/paypal/paypal-muse-components/commit/b3e76554fadd72ad24b6a900b99b8ff75af08815
     const trackerFunctions = trackers;
 
-    const trackEvent = (type : string, data : Object) => {
+    const trackEventByType = (type : string, data : Object) => {
         const isJetloreType = config.jetlore
             ? jetloreTrackTypes.includes(type)
             : false;
@@ -512,7 +398,7 @@ export const Tracker = (config? : Config = defaultTrackerConfig) => {
     return {
         // bringing in tracking functions for backwards compatibility
         ...trackerFunctions,
-        track: trackEvent,
+        track: trackEventByType,
         identify,
         getJetlorePayload
     };

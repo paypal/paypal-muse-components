@@ -1,5 +1,4 @@
 /* @flow */
-
 export const getCookie = (cookieName : string) : string => {
     const name = `${ cookieName }=`;
     const cookies = document.cookie.split(';');
