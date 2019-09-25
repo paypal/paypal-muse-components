@@ -745,7 +745,7 @@ describe('paypal.Tracker', () => {
 
         expect(appendChildCalls).toBe(0);
         expect(fetchCalls.length).toBe(1);
-        expect(fetchCalls[0][0]).toBe('https://paypal.com/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost');
+        expect(fetchCalls[0][0]).toBe('https://www.paypal.com/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost');
     });
 
     it('should not fetch propertyId if one is provided', () => {
