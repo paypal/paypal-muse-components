@@ -3,10 +3,28 @@ import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 import { getOrCreateValidCartId, getOrCreateValidUserId } from './local-storage-utils';
 import { getDeviceInfo } from './get-device-info';
+import constants from './constants';
 import type {
     Config,
     TrackingType
 } from './types';
+
+const { imgElementId } = constants;
+
+const updateImgSrc = src => {
+    const oldImg = document.getElementById(imgElementId);
+
+    const newImg = document.createElement('img');
+    newImg.id = imgElementId;
+    newImg.style.display = 'none';
+    newImg.src = src;
+
+    if (!oldImg) {
+        document.body && document.body.appendChild(newImg);
+    } else {
+        document.body && document.body.replaceChild(newImg, oldImg);
+    }
+};
 
 export const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
@@ -14,9 +32,6 @@ export const track = <T>(config : Config, trackingType : TrackingType, trackingD
     const userId = getOrCreateValidUserId().userId;
     // $FlowFixMe
     const currencyCode = trackingData.currencyCode || config.currencyCode;
-
-    const img = document.createElement('img');
-    img.style.display = 'none';
 
     const user = {
         ...config.user,
@@ -37,18 +52,16 @@ export const track = <T>(config : Config, trackingType : TrackingType, trackingD
         version: 'TRANSITION_FLAG'
     };
 
+    let src;
     // paramsToBeaconUrl is a function that gives you the ability to override the beacon url
     // to whatever you want it to be based on the trackingType string and data object.
     // This can be useful for testing purposes, this feature won't be used by merchants.
     if (config.paramsToBeaconUrl) {
-        img.src = config.paramsToBeaconUrl({ trackingType, data });
+        src = config.paramsToBeaconUrl({ trackingType, data });
     } else {
-        img.src = `https://www.paypal.com/targeting/track/${ trackingType }?data=${ encodeData(data) }`;
+        src = `https://www.paypal.com/targeting/track/${ trackingType }?data=${ encodeData(data) }`;
     }
 
-    // TODO: this will add a new image EVERY time the 'track' method is called. There's no reason
-    // to clutter the DOM like this. We should replace the old image.
-    if (document.body) {
-        document.body.appendChild(img);
-    }
+    // Send tracking info via image url
+    updateImgSrc(src);
 };

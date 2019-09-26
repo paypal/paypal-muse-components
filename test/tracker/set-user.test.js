@@ -51,6 +51,7 @@ describe('setUser', () => {
     afterAll(() => {
         track.mockRestore();
         getPropertyId.mockRestore();
+        window.localStorage.removeItem(storage.paypalCrUser);
     });
 
     it('user should be set when the tracker is initialized', () => {
