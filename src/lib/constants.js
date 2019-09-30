@@ -13,6 +13,5 @@ export default {
             'email': null,
             'name': null
         }
-    },
-    'imgElementId': 'pp-cart-event-pixel'
+    }
 };

@@ -3,27 +3,18 @@ import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 import { getOrCreateValidCartId, getOrCreateValidUserId } from './local-storage-utils';
 import { getDeviceInfo } from './get-device-info';
-import constants from './constants';
 import type {
     Config,
     TrackingType
 } from './types';
 
-const { imgElementId } = constants;
-
-const updateImgSrc = src => {
-    const oldImg = document.getElementById(imgElementId);
-
+const createTrackingImg = src => {
     const newImg = document.createElement('img');
-    newImg.id = imgElementId;
     newImg.style.display = 'none';
     newImg.src = src;
 
-    if (!oldImg) {
-        document.body && document.body.appendChild(newImg);
-    } else {
-        document.body && document.body.replaceChild(newImg, oldImg);
-    }
+    newImg.addEventListener('load', () => newImg.remove());
+    newImg.addEventListener('error', () => newImg.remove());
 };
 
 export const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
@@ -63,5 +54,5 @@ export const track = <T>(config : Config, trackingType : TrackingType, trackingD
     }
 
     // Send tracking info via image url
-    updateImgSrc(src);
+    createTrackingImg(src);
 };

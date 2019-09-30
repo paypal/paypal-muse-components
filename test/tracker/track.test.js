@@ -1,11 +1,12 @@
 /* @flow */
-/* global it describe beforeEach afterAll expect */
+/* global it jest describe beforeEach afterAll expect */
 import { track } from '../../src/lib/track';
 import constants from '../../src/lib/constants';
 
-const { imgElementId, storage } = constants;
+const { storage } = constants;
 
 describe('track', () => {
+    const mockCreateElement = jest.spyOn(document, 'createElement');
     let mockConfig;
     let mockTrackingData;
 
@@ -37,48 +38,19 @@ describe('track', () => {
     });
 
     afterEach(() => {
-        const img = document.getElementById(imgElementId);
-
-        if (img) {
-            document.body.removeChild(img);
-        }
+        mockCreateElement.mockReset();
     });
 
     afterAll(() => {
         window.localStorage.removeItem(storage.paypalCrUser);
+        jest.restoreAllMocks();
     });
 
-    it('creates a new image element if one does not exist', () => {
-        let img = document.getElementById(imgElementId);
-
-        expect(img).toBe(null);
+    it('creates a new image element', () => {
         track(mockConfig, 'cartEvent', mockTrackingData);
-        img = document.getElementById(imgElementId);
-        expect(img).toBeTruthy();
-        expect(typeof img.src).toBe('string');
-        expect(img.src.length).toBeGreaterThan(0);
+        track(mockConfig, 'cartEvent', mockTrackingData);
+        track(mockConfig, 'cartEvent', mockTrackingData);
+
+        expect(mockCreateElement).toHaveBeenCalledTimes(3);
     });
-
-    it('updates an image element if one already exists', () => {
-        let img;
-
-        track(mockConfig, 'cartEvent', mockTrackingData);
-        img = document.getElementById(imgElementId);
-        const src1 = img.src;
-
-        mockTrackingData.total = '1000';
-        mockTrackingData.currencyCode = 'DARSEK';
-
-        track(mockConfig, 'cartEvent', mockTrackingData);
-        img = document.getElementById(imgElementId);
-        const src2 = img.src;
-
-        const imageElements = document.body.getElementsByTagName('img');
-
-        expect(typeof src1).toBe('string');
-        expect(typeof src2).toBe('string');
-        expect(src1).not.toBe(src2);
-        expect(imageElements.length).toBe(1);
-    });
-
 });
