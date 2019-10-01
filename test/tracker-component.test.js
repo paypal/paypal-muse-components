@@ -106,7 +106,7 @@ describe('paypal.Tracker', () => {
     // $FlowFixMe
     it('should be a function that returns a tracker', () => {
         const tracker = Tracker();
-        expect(tracker).toHaveProperty('view');
+        expect(tracker).toHaveProperty('viewPage');
         expect(tracker).toHaveProperty('addToCart');
         expect(tracker).toHaveProperty('setCart');
         expect(tracker).toHaveProperty('removeFromCart');

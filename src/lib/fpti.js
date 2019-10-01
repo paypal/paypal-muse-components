@@ -1,4 +1,6 @@
 /* @flow */
+import { getClientID, getMerchantID, getPartnerAttributionID } from '@paypal/sdk-client/src';
+
 import { getDeviceInfo } from './get-device-info';
 
 const sendBeacon = (src, data) => {
@@ -36,195 +38,103 @@ const filterFalsyValues = source => {
     return result;
 };
 
-const resolveTrackingData = data => {
+const resolveTrackingData = (config, data) => {
     const deviceInfo = getDeviceInfo();
 
     return {
-        identifier: 'tagmanagernodeweb',
-        website: 'muse',
-        feature: 'third-party',
-        s: 'ci',
-        subfeature1: '',
-        subfeature2: '',
-        sub_component: '',
-        pageType: '',
-        userType: '',
-        flavor: '',
-        es: '',
-        testVariant: '',
-        link: '',
-        erpg: '',
-        context: {},
-        flag_consume: '',
+        e: 'im',
+        page: `ppshopping:${ data.eventName }`,
         ...deviceInfo,
+        ...config,
         ...data
     };
 };
 
-const resolveTrackingVariables = (data, forceOverrides) => ({
-    // Page Group
-    pgrp: [
-        data.website,
-        data.feature,
-        data.subfeature1,
-        data.subfeature2,
-        data.pageType
-    ].join(':'),
-
-    // Page name
-    page: [
-        data.website,
-        data.feature,
-        data.subfeature1,
-        data.subfeature2,
-        data.pageType,
-        data.userType,
-        data.flavor,
-        data.testVariant
-    ].join(':'),
-
-    // Impression event
-    e: 'im',
-
-    // Source identifier
-    tsrce: data.identifier,
-
-    // Source identifier ("component" in fpti team's terms)
-    comp: data.identifier,
-
-    // Source identifier ("component" in fpti team's terms)
-    sub_component: data.sub_component,
-
-    // Originating source (client / server side)
-    s: data.s,
-
-    // Item originating the track
-    item: data.item,
-
-    // Flow Type
-    fltp: data.fltp,
-
-    // Link string identifier
-    link: data.link,
-
-    // Impression event name ("event subtype" in FPTI team's terms)
-    es: data.flavor,
-
-    // Encrypted customer account number
-    cust: data.cust,
-
-    // Encrypted merchant account number
-    mrid: data.mrid,
-
-    // Error string
-    erpg: data.erpg,
-
-    // Error/status code
-    error_code: data.error_code,
-
-    // PXP: experience user is seeing
-    xe: data.xe,
-
-    // PXP: treatment user is seeing
-    xt: data.xt,
-
-    // PXP: list of experiment ids
-    qe: data.qe,
-
-    // PXP: list of treatment ids
-    qt: data.qt,
-
-    // Partner BN Code
-    code: data.context.bn_code,
-
-    // Partner Name
-    partner_name: data.context.partner_name,
-
-    // EDS: flag for EDS to consume data into insights pipeline
-    flag_consume: data.flag_consume,
-
+const resolveTrackingVariables = (data) => ({
     // Device height
-    dh: data.dh || data.screenHeight,
+    dh: data.screenHeight,
 
     // Device width
-    dw: data.dw || data.screenWidth,
+    dw: data.screenWidth,
 
     // Browser height
-    bh: data.bh || data.browserHeight,
+    bh: data.browserHeight,
 
     // Browser width
-    bw: data.bw || data.browserWidth,
+    bw: data.browserWidth,
 
     // Color depth
-    cd: data.cd || data.colorDepth,
+    cd: data.colorDepth,
 
     // Screen height
-    sh: data.sh || data.screenHeight,
+    sh: data.screenHeight,
 
     // Screen width
-    sw: data.sw || data.screenWidth,
+    sw: data.screenWidth,
 
-    // Js client version
-    v: data.v,
+    // Device type
+    dvis: data.deviceType,
 
-    // Browser plugins
-    pl: data.pl,
+    // Browser type
+    btyp: data.browserType,
 
     // Rosetta language
-    rosetta_language: data.rosetta_language || data.rosettaLanguage,
+    rosetta_language: data.rosettaLanguage,
 
-    // Response correlation id
-    correlation_id: data.correlation_id,
-
-    // Merchant Recognized User
-    // Signifies if a merchant can independently identify a visitor
-    mru: data.mru,
+    // Page domain & path
+    ru: data.location,
 
     // Identification confidence score
-    unsc: data.unsc,
+    confidence_score: data.confidenceScore,
 
     // Identification type returned by VPNS
-    identifier_used: data.identifier_used,
+    identifier_used: data.identifierUsed,
 
-    // Offer program id
-    offer_id: data.offer_id,
+    // Unverified encrypted customer account number
+    unverified_cust_id: data.userEAN,
 
-    // Single offer id
-    soid: data.soid,
+    // Analytics identifier associated with the merchant site. XO container id.
+    item: data.propertyId,
 
-    // Anything can be overriden or added here
-    // forced overrides are not resolved, they are tracked "as is"
-    // ideally, it shouldn't be necessary, but ¯\_(ツ)_/¯
-    ...forceOverrides
+    // Merchant encrypted account number
+    mrid: getMerchantID(),
+
+    // ClientID
+    client_id: getClientID(),
+    
+    // Partner AttributionId
+    bn_code: getPartnerAttributionID(),
+
+    // Event Name
+    event_name: data.eventName,
+
+    // Event Type
+    event_type: data.eventType,
+
+    // Event Data
+    sinfo: data.eventData,
+
+    // Legacy value for filtering events in Herald
+    page: data.page,
+
+    // Legacy value for filtering events in Herald
+    pgrp: data.page,
+
+    // Legacy impression event
+    e: data.e
+
 });
 
-const knownEventTypes = [ 'pageView' ];
-
-const isKnownEvent = eventType => {
-    for (let i = 0; i < knownEventTypes.length; ++i) {
-        if (knownEventTypes[i] === eventType) {
-            return i;
-        }
-    }
-
-    return -1;
-};
-
-export default (eventType, data = {}, forceOverrides = {}) => {
+export default (config, data = {}) => {
     const fptiServer = 'https://t.paypal.com/ts';
 
-    if (!isKnownEvent(eventType)) {
-        return;
-    }
-
-    const resolvedData = resolveTrackingVariables(resolveTrackingData(data));
+    const resolvedData = resolveTrackingVariables(resolveTrackingData(config, data));
 
     const trackVariables = {
         ...resolvedData,
         e: 'im',
         t: new Date().getTime(),
-        g: new Date().getTimezoneOffset(),
-        ...forceOverrides
+        g: new Date().getTimezoneOffset()
     };
 
     sendBeacon(fptiServer, filterFalsyValues(trackVariables));

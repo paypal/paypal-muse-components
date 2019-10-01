@@ -229,7 +229,12 @@ export const Tracker = (config? : Config = {}) => {
     }
     const trackers = {
         viewPage: () => {
-            trackFpti();
+            const data = {
+                eventName: 'pageView',
+                eventType: 'view'
+            };
+
+            trackFpti(config, data);
         },
         addToCart: (data : CartData) => {
             try {
