@@ -17,6 +17,22 @@ const getBrowserHeight = () => window.innerHeight;
 
 const getBrowserWidth = () => window.innerWidth;
 
+const getScreenHeight = () => {
+    try {
+        return window.screen.height;
+    } catch (err) {
+        return null;
+    }
+};
+
+const getScreenWidth = () => {
+    try {
+        return window.screen.width;
+    } catch (err) {
+        return null;
+    }
+};
+
 const getDeviceHeight = () => {
     const screen = window.screen || {};
     const ratio = window.devicePixelRatio || 1;
@@ -66,6 +82,10 @@ const getRosettaLanguage = () => {
     }
 };
 
+const getLocation = () => {
+    return `${ window.location.origin }${ window.location.pathname }`;
+};
+
 const getDeviceInfo = () => {
     try {
         const browserWidth = getBrowserWidth();
@@ -79,10 +99,13 @@ const getDeviceInfo = () => {
             deviceType = 'Desktop';
         }
         return {
-            screenWidth: getDeviceWidth(),
-            screenHeight: getDeviceHeight(),
+            deviceWidth: getDeviceWidth(),
+            deviceHeight: getDeviceHeight(),
+            screenWidth: getScreenWidth(),
+            screenHeight: getScreenHeight(),
             colorDepth: screen && screen.colorDepth,
             rosettaLanguage: getRosettaLanguage(),
+            location: getLocation(),
             deviceType,
             browserHeight,
             browserWidth

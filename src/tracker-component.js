@@ -28,12 +28,12 @@ import {
 } from './lib/local-storage-utils';
 import { getPropertyId } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
+import trackFpti from './lib/fpti';
 import { track } from './lib/track';
 import constants from './lib/constants';
 import type {
     CartEventType,
     TrackingType,
-    ViewData,
     CartData,
     RemoveCartData,
     PurchaseData,
@@ -228,7 +228,9 @@ export const Tracker = (config? : Config = {}) => {
         JL.tracking(trackingConfig);
     }
     const trackers = {
-        view: (data : ViewData) => () => {}, // eslint-disable-line no-unused-vars,no-empty-function
+        viewPage: () => {
+            trackFpti();
+        },
         addToCart: (data : CartData) => {
             try {
                 data = addToCartNormalizer(data);
