@@ -113,14 +113,6 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
 
 let trackEventQueue = [];
 
-export const clearTrackQueue = (config : Config) => {
-    // TODO: replace 'filter' with 'forEach'
-    // $FlowFixMe
-    return trackEventQueue.filter(([ trackingType, trackingData ]) => { // eslint-disable-line array-callback-return
-        track(config, trackingType, trackingData);
-    });
-};
-
 export const trackEvent = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
     // CartId can be set by any event if it is provided
     // $FlowFixMe
@@ -140,11 +132,25 @@ export const trackEvent = <T>(config : Config, trackingType : TrackingType, trac
         return;
     }
 
-    track(config, trackingType, trackingData);
+    switch (trackingType) {
+    case 'view':
+        trackFpti(config, trackingData);
+        break;
+    default:
+        track(config, trackingType, trackingData);
+        break;
+    }
 };
 
 const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) =>
     trackEvent(config, 'cartEvent', { ...trackingData, cartEventType });
+
+export const clearTrackQueue = (config : Config) => {
+    trackEventQueue.forEach(([ trackingType, trackingData ]) => {
+        trackEvent(config, trackingType, trackingData);
+    });
+    trackEventQueue = [];
+};
 
 export const setImplicitPropertyId = (config : Config) => {
     /*
@@ -158,7 +164,7 @@ export const setImplicitPropertyId = (config : Config) => {
     getPropertyId(config).then(propertyId => {
         config.propertyId = propertyId;
         if (trackEventQueue.length) {
-            trackEventQueue = clearTrackQueue(config);
+            clearTrackQueue(config);
         }
     });
 };
@@ -234,7 +240,7 @@ export const Tracker = (config? : Config = {}) => {
                 eventType: 'view'
             };
 
-            trackFpti(config, data);
+            trackEvent(config, 'view', data);
         },
         addToCart: (data : CartData) => {
             try {

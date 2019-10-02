@@ -22,13 +22,12 @@ const sendBeacon = (src, data) => {
     beaconImage.src = `${ src }?${ query }`;
 };
 
+// removes empty strings, `undefined`, `null`, and `NaN` from fpti event
 const filterFalsyValues = source => {
     const result = {};
 
     for (const key in source) {
         if (source.hasOwnProperty(key)) {
-            // Only add to tracking source is values are truthy, `false`, or `0`
-            // (reject empty string, `undefined`, `null`, and `NaN`)
             if (source[key] || source[key] === false || source[key] === 0) {
                 result[key] = source[key];
             }
@@ -43,7 +42,10 @@ const resolveTrackingData = (config, data) => {
 
     return {
         e: 'im',
+        comp: 'ppshoppingsdk',
         page: `ppshopping:${ data.eventName }`,
+        t: new Date().getTime(),
+        g: new Date().getTimezoneOffset(),
         ...deviceInfo,
         ...config,
         ...data
@@ -121,21 +123,18 @@ const resolveTrackingVariables = (data) => ({
     pgrp: data.page,
 
     // Legacy impression event
-    e: data.e
+    e: data.e,
 
+    // Timestamp
+    t: data.t,
+
+    // Timestamp relative to user
+    g: data.g
 });
 
 export default (config, data = {}) => {
     const fptiServer = 'https://t.paypal.com/ts';
+    const trackingVariables = resolveTrackingVariables(resolveTrackingData(config, data));
 
-    const resolvedData = resolveTrackingVariables(resolveTrackingData(config, data));
-
-    const trackVariables = {
-        ...resolvedData,
-        e: 'im',
-        t: new Date().getTime(),
-        g: new Date().getTimezoneOffset()
-    };
-
-    sendBeacon(fptiServer, filterFalsyValues(trackVariables));
+    sendBeacon(fptiServer, filterFalsyValues(trackingVariables));
 };
