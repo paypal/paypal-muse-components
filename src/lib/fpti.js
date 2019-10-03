@@ -9,8 +9,8 @@ const sendBeacon = (src, data) => {
     }
 
     let query = Object.keys(data).map(key => {
-        return `${ encodeURIComponent(key) }=${ encodeURIComponent(data[key]) }`
-    })
+        return `${ encodeURIComponent(key) }=${ encodeURIComponent(data[key]) }`;
+    });
 
     query = query.join('&');
 
