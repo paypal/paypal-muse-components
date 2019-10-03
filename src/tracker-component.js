@@ -3,7 +3,6 @@ import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
 import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src';
 
-// $FlowFixMe
 import {
     validateAddItems,
     validateRemoveItems,
@@ -32,16 +31,17 @@ import trackFpti from './lib/fpti';
 import { track } from './lib/track';
 import constants from './lib/constants';
 import type {
-    CartEventType,
-    TrackingType,
+    UserData,
+    IdentityData,
     CartData,
     RemoveCartData,
     PurchaseData,
-    UserData,
-    IdentityData,
+    EventType,
+    CartEventType,
+    Config,
     JetloreConfig,
-    Config
-} from './lib/types';
+    FptiInput
+} from './types';
 
 const {
     accessTokenUrl,
@@ -113,14 +113,12 @@ const getJetlorePayload = (type : string, options : Object) : Object => {
 
 let trackEventQueue = [];
 
-export const trackEvent = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
+export const trackEvent = (config : Config, trackingType : EventType, trackingData : any) : void => {
     // CartId can be set by any event if it is provided
-    // $FlowFixMe
     if (trackingData.cartId) {
         setCartId(trackingData.cartId);
     }
 
-    // $FlowFixMe
     if (trackingData.currencyCode) {
         config.currencyCode = trackingData.currencyCode;
     }
@@ -142,8 +140,9 @@ export const trackEvent = <T>(config : Config, trackingType : TrackingType, trac
     }
 };
 
-const trackCartEvent = <T>(config : Config, cartEventType : CartEventType, trackingData : T) =>
+const trackCartEvent = (config : Config, cartEventType : CartEventType, trackingData : CartData | RemoveCartData) => {
     trackEvent(config, 'cartEvent', { ...trackingData, cartEventType });
+};
 
 export const clearTrackQueue = (config : Config) => {
     trackEventQueue.forEach(([ trackingType, trackingData ]) => {
@@ -255,7 +254,7 @@ export const Tracker = (config? : Config = {}) => {
             return config;
         },
         viewPage: () => {
-            const data = {
+            const data : FptiInput = {
                 eventName: 'pageView',
                 eventType: 'view'
             };
@@ -309,7 +308,7 @@ export const Tracker = (config? : Config = {}) => {
             createNewCartId();
             return event;
         },
-        setUser: (data : UserData) => {
+        setUser: (data : { user : UserData }) => {
             // $FlowFixMe
             const prevMerchantProvidedUserId = getUserId().merchantProvidedUserId;
 

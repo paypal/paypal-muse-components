@@ -1,5 +1,5 @@
 /* @flow */
 
-import type { MuseGlobalType } from './lib/types';
+import type { MuseGlobalType } from './types';
 
 declare var __muse__ : MuseGlobalType;

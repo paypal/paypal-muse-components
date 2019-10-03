@@ -1,23 +1,31 @@
 /* @flow */
 import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
-import { getOrCreateValidCartId, getOrCreateValidUserId } from './local-storage-utils';
-import { getDeviceInfo } from './get-device-info';
 import type {
     Config,
-    TrackingType
-} from './types';
+    EventType,
+    CartData,
+    RemoveCartData,
+    PurchaseData
+} from '../types';
+
+import { getOrCreateValidCartId, getOrCreateValidUserId } from './local-storage-utils';
+import { getDeviceInfo } from './get-device-info';
+
 
 const createTrackingImg = src => {
     const beaconImage = new window.Image();
     beaconImage.src = src;
 };
 
-export const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
+export const track = (
+    config : Config,
+    trackingType : EventType,
+    trackingData : CartData | RemoveCartData | PurchaseData
+) => {
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
     const cartId = getOrCreateValidCartId().cartId;
     const userId = getOrCreateValidUserId().userId;
-    // $FlowFixMe
     const currencyCode = trackingData.currencyCode || config.currencyCode;
 
     const user = {

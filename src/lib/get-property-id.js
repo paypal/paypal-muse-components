@@ -3,7 +3,7 @@ import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 import type {
     Config
-} from './types';
+} from '../types';
 
 export const getPropertyId = ({ paramsToPropertyIdUrl } : Config) => {
     // $FlowFixMe
