@@ -8,13 +8,9 @@ const sendBeacon = (src, data) => {
         return;
     }
 
-    let query = [];
-
-    for (const key in data) {
-        if (data.hasOwnProperty(key)) {
-            query.push(`${ encodeURIComponent(key) }=${ encodeURIComponent(data[key]) }`);
-        }
-    }
+    let query = Object.keys(data).map(key => {
+        return `${ encodeURIComponent(key) }=${ encodeURIComponent(data[key]) }`
+    })
 
     query = query.join('&');
 
@@ -24,17 +20,15 @@ const sendBeacon = (src, data) => {
 
 // removes empty strings, `undefined`, `null`, and `NaN` from fpti event
 const filterFalsyValues = source => {
-    const result = {};
+    Object.keys(source).forEach(key => {
+        const val = source[key];
 
-    for (const key in source) {
-        if (source.hasOwnProperty(key)) {
-            if (source[key] || source[key] === false || source[key] === 0) {
-                result[key] = source[key];
-            }
+        if (val === '' || val === undefined || val === null || Number.isNaN(val)) {
+            delete source[key];
         }
-    }
+    });
 
-    return result;
+    return source;
 };
 
 const resolveTrackingData = (config, data) => {
