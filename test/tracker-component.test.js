@@ -106,7 +106,7 @@ describe('paypal.Tracker', () => {
     // $FlowFixMe
     it('should be a function that returns a tracker', () => {
         const tracker = Tracker();
-        expect(tracker).toHaveProperty('view');
+        expect(tracker).toHaveProperty('viewPage');
         expect(tracker).toHaveProperty('addToCart');
         expect(tracker).toHaveProperty('setCart');
         expect(tracker).toHaveProperty('removeFromCart');
@@ -675,7 +675,8 @@ describe('paypal.Tracker', () => {
             email,
             name: userName
         }, propertyId });
-        expect(createElementCalls).toBe(0);
+        // viewPage will have been called once at the time the tracker is itialized
+        expect(createElementCalls).toBe(1);
         tracker.setPropertyId(propertyId);
         expect(fetchCalls.length).toBe(0);
         tracker.addToCart({
@@ -718,7 +719,7 @@ describe('paypal.Tracker', () => {
                 version: 'TRANSITION_FLAG'
             })
         );
-        expect(createElementCalls).toBe(1);
+        expect(createElementCalls).toBe(2);
     });
 
     it('should not fetch implicit propertyId route if one is not provided and propertyid is cached', () => {
