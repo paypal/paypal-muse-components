@@ -9,12 +9,8 @@ import type {
 } from './types';
 
 const createTrackingImg = src => {
-    const newImg = document.createElement('img');
-    newImg.style.display = 'none';
-    newImg.src = src;
-
-    newImg.addEventListener('load', () => newImg.remove());
-    newImg.addEventListener('error', () => newImg.remove());
+    const beaconImage = new window.Image();
+    beaconImage.src = src;
 };
 
 export const track = <T>(config : Config, trackingType : TrackingType, trackingData : T) => {
