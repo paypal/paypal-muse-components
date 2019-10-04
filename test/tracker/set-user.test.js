@@ -101,16 +101,6 @@ describe('setUser', () => {
         expect(typeof newUser).toBe('string');
     });
 
-    it('creates a userId if one exists but expired', () => {
-        const oldUser = { userId: 'oldvalue', createdAt: 500 };
-        window.localStorage.setItem(storage.paypalCrUser, JSON.stringify(oldUser));
-        Tracker();
-        const newUser = getUserId().userId;
-
-        expect(typeof newUser).toBe('string');
-        expect(newUser).not.toBe(oldUser.userId);
-    });
-
     it('should retain a userId if one exists when the tracker is initialized', () => {
         const oldUser = { userId: 'oldvalue', createdAt: Date.now() };
         window.localStorage.setItem(storage.paypalCrUser, JSON.stringify(oldUser));
@@ -125,28 +115,28 @@ describe('setUser', () => {
         window.localStorage.setItem(storage.paypalCrUser, JSON.stringify(oldUser));
         Tracker({ user: { id: 'newvalue' } });
     
-        const newUser = getUserId().userId;
+        const newUser = getUserId().merchantProvidedUserId;
         expect(newUser).toBe('newvalue');
-        expect(newUser).not.toBe(oldUser.userId);
+        expect(newUser).not.toBe(oldUser.merchantProvidedUserId);
     });
 
     it('should set a user to local storage when called', () => {
-        const oldUser = { userId: 'oldvalue', createdAt: Date.now() };
+        const oldUser = { merchantProvidedUserId: 'oldvalue' };
         window.localStorage.setItem(storage.paypalCrUser, JSON.stringify(oldUser));
         const tracker = Tracker({ user: { id: 'alsoanoldvalue' } });
         tracker.setUser({ id: 'newvalue' });
 
-        const newUser = getUserId().userId;
+        const newUser = getUserId().merchantProvidedUserId;
         expect(newUser).toBe('newvalue');
-        expect(newUser).not.toBe(oldUser.userId);
+        expect(newUser).not.toBe(oldUser.merchantProvidedUserId);
     });
 
     it('should clear a userId from local storage when null is passed', () => {
         const tracker = Tracker({ user: { id: 'oldvalue' } });
-        const oldUser = getUserId().userId;
+        const oldUser = getUserId().merchantProvidedUserId;
 
         tracker.setUser({ id: null });
-        const newUser = getUserId().userId;
+        const newUser = getUserId().merchantProvidedUserId;
         expect(oldUser).toBe('oldvalue');
         expect(newUser).not.toBe(oldUser);
     });
@@ -169,150 +159,52 @@ describe('setUser', () => {
     });
 
     it('user should be set when set user is called', () => {
-        const tracker = Tracker({ propertyId: 'somevalue' });
+        const tracker = Tracker({ user: { id: 'somevalue' } });
+        const prevMerchantProvidedUserId = tracker.getConfig().user.merchantProvidedUserId;
 
-        tracker.addToCart({
-            cartTotal: '5.00',
-            items: [ mockItem ]
-        });
-        tracker.removeFromCart({
-            cartTotal: '0.00',
-            items: [ mockItem ]
-        });
+        tracker.setUser({ id: '123' });
 
-        tracker.setUser(config.user);
-        tracker.addToCart({
-            cartTotal: '5.00',
-            items: [ mockItem ]
-        });
-        tracker.removeFromCart({
-            cartTotal: '0.00',
-            items: [ mockItem ]
-        });
+        const newMerchantProvidedUserId = tracker.getConfig().user.merchantProvidedUserId;
 
-        const args = track.mock.calls;
-        expect(args[0][0].user).toEqual(defaultTrackerConfig.user);
-        expect(args[1][0].user).toEqual(defaultTrackerConfig.user);
-        expect(args[2][0].user).toEqual(config.user);
-        expect(args[3][0].user).toEqual(config.user);
-        expect(args[4][0].user).toEqual(config.user);
+        expect(prevMerchantProvidedUserId).toBe('somevalue');
+        expect(newMerchantProvidedUserId).toBe('123');
     });
-
-    it('already-existing user should be updated when set user is called', () => {
-        const alternateUser = {
-            id: 'wut',
-            name: 'Steve Jobs',
-            email: 'steve@apple.com'
-        };
-
-        const tracker = Tracker(config);
-
-        tracker.addToCart({
-            cartTotal: '5.00',
-            items: [ mockItem ]
-        });
-        tracker.removeFromCart({
-            cartTotal: '0.00',
-            items: [ mockItem ]
-        });
-
-        tracker.setUser(alternateUser);
-
-        tracker.addToCart({
-            cartTotal: '5.00',
-            items: [ mockItem ]
-        });
-        tracker.removeFromCart({
-            cartTotal: '0.00',
-            items: [ mockItem ]
-        });
-
-        const args = track.mock.calls;
-        expect(args[0][0].user).toEqual(config.user);
-        expect(args[1][0].user).toEqual(config.user);
-        expect(args[2][0].user).toEqual(alternateUser);
-        expect(args[3][0].user).toEqual(alternateUser);
-        expect(args[4][0].user).toEqual(alternateUser);
-    });
-
 
     it('setUser accepts different types of input', () => {
-        const alternateUser = {
-            id: 'wut',
-            name: 'Steve Jobs',
-            email: 'steve@apple.com'
-        };
-    
-        const tracker = Tracker({ propertyId: 'somevalue' });
+        const tracker = Tracker();
 
-        tracker.setUser(alternateUser);
-        tracker.addToCart({
-            cartTotal: '5.00',
-            items: [ mockItem ]
-        });
-        tracker.removeFromCart({
-            cartTotal: '0.00',
-            items: [ mockItem ]
+        tracker.setUser({
+            user: {
+                id: 'foo'
+            }
         });
 
-        tracker.setUser({ user: config.user });
-        tracker.addToCart({
-            cartTotal: '5.00',
-            items: [ mockItem ]
-        });
-        tracker.removeFromCart({
-            cartTotal: '0.00',
-            items: [ mockItem ]
-        });
-        const args = track.mock.calls;
+        const firstId = tracker.getConfig().user.merchantProvidedUserId;
 
-        expect(args[0][0].user).toEqual(alternateUser);
-        expect(args[1][0].user).toEqual(alternateUser);
-        expect(args[2][0].user).toEqual(alternateUser);
-        expect(args[3][0].user).toEqual(config.user);
-        expect(args[4][0].user).toEqual(config.user);
-        expect(args[5][0].user).toEqual(config.user);
+        tracker.setUser({
+            id: 'bar'
+        });
+
+        const secondId = tracker.getConfig().user.merchantProvidedUserId;
+
+        expect(firstId).toBe('foo');
+        expect(secondId).toBe('bar');
     });
 
     it('user can be unset by passing null', () => {
-        const alternateUser = {
-            id: 'wut',
-            name: 'Steve Jobs',
-            email: 'steve@apple.com'
-        };
-        const tracker = Tracker(config);
-
-        tracker.setUser({
-            id: null,
-            email: null,
-            name: null
-        });
-        tracker.addToCart({
-            cartTotal: '5.00',
-            items: [ mockItem ]
-        });
-        tracker.removeFromCart({
-            cartTotal: '0.00',
-            items: [ mockItem ]
+        const tracker = Tracker({
+            user: {
+                id: 'foo'
+            }
         });
 
-        tracker.setUser(alternateUser);
-        tracker.addToCart({
-            cartTotal: '5.00',
-            items: [ mockItem ]
-        });
-        tracker.removeFromCart({
-            cartTotal: '0.00',
-            items: [ mockItem ]
-        });
-        const args = track.mock.calls;
-    
-        expect(args[0][0].user).toEqual(defaultTrackerConfig.user);
-        expect(args[1][0].user).toEqual(defaultTrackerConfig.user);
-        expect(args[2][0].user).toEqual(defaultTrackerConfig.user);
+        const prevMerchantProvidedUserId = tracker.getConfig().user.merchantProvidedUserId;
 
-        expect(args[3][0].user).toEqual(alternateUser);
-        expect(args[4][0].user).toEqual(alternateUser);
-        expect(args[5][0].user).toEqual(alternateUser);
+        tracker.setUser({ id: null });
+
+        const newMerchantProvidedUserId = tracker.getConfig().user.merchantProvidedUserId;
+
+        expect(prevMerchantProvidedUserId).toBe('foo');
+        expect(newMerchantProvidedUserId).toBe(null);
     });
 });

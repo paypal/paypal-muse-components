@@ -457,13 +457,12 @@ describe('paypal.Tracker', () => {
         expect(createElementCalls).toBe(1);
         expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
             JSON.stringify({
-                oldUserId: 'abc123',
                 currencyCode: 'USD',
                 cartId: 'abc123',
                 user: {
-                    id: 'abc123',
                     email: '__test__email9',
-                    name: '__test__userName9'
+                    name: '__test__userName9',
+                    id: 'abc123'
                 },
                 propertyId,
                 trackingType: 'setUser',
@@ -496,13 +495,14 @@ describe('paypal.Tracker', () => {
         // $FlowFixMe
         expect(JSON.stringify(dataParamObject)).toBe(
             JSON.stringify({
-                oldUserId: 'foo',
+                prevMerchantProvidedUserId: 'foo',
                 currencyCode: 'USD',
                 cartId: 'abc123',
                 user: {
-                    id: 'bar',
+                    merchantProvidedUserId: 'bar',
                     email: '__test__email@gmail.com',
-                    name: '__test__name'
+                    name: '__test__name',
+                    id: 'abc123'
                 },
                 propertyId,
                 trackingType: 'setUser',
@@ -555,9 +555,9 @@ describe('paypal.Tracker', () => {
                 total: '12345.67',
                 cartEventType: 'addToCart',
                 user: {
-                    id: 'abc123',
                     email: '__test__email2',
-                    name: '__test__name1'
+                    name: '__test__name1',
+                    id: 'abc123'
                 },
                 propertyId,
                 trackingType: 'cartEvent',
