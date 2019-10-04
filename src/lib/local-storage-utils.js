@@ -46,23 +46,54 @@ export const getOrCreateValidCartId = () => {
     return storedValue;
 };
 
-/* Sets a new userId to expire in one month */
-export const setUserId = (userId : string) => {
-    const storedValue = {
-        userId,
-        createdAt: Date.now()
-    };
+export const getUserStorage = () => {
+    let userStorage = window.localStorage.getItem(storage.paypalCrUser) || '{}';
 
-    window.localStorage.setItem(storage.paypalCrUser, JSON.stringify(storedValue));
+    try {
+        userStorage = JSON.parse(userStorage);
+    } catch (err) {
+        userStorage = {};
+    }
 
-    return storedValue;
+    return userStorage;
 };
 
-/* Generates a random userId to expire in one month */
-export const createNewUserId = () => {
-    const userId = `${ generate.generateId() }`;
+export const setUserStorage = (userStorage : Object, expiry? : Date) => {
+    userStorage.createdAt = expiry || Date.now();
 
-    return setUserId(userId);
+    window.localStorage.setItem(storage.paypalCrUser, JSON.stringify(userStorage));
+};
+
+// Generates a random user ID.
+// This method will set the userId field and generatedUserId field.
+export const setGeneratedUserId = (id? : string, expiry? : Date) => {
+    const userStorage = getUserStorage();
+
+    const userId = id || `${ generate.generateId() }`;
+
+    userStorage.userId = userId;
+
+    userStorage.generatedUserId = userId;
+
+    setUserStorage(userStorage, expiry);
+
+    return userStorage;
+};
+
+// Set the merchant provided user ID to the userId field and
+// the merchantProvidedUserId field.
+export const setMerchantProvidedUserId = (id : string) => {
+    const userStorage = getUserStorage();
+
+    userStorage.merchantProvidedUserId = id;
+
+    // The `userId` key will be merchantProvidedUserId || sdkGeneratedUserId for compatibility
+    // with the existing methods that send events.
+    userStorage.userId = id;
+
+    setUserStorage(userStorage);
+
+    return userStorage;
 };
 
 /* Returns a userId if one exists */
@@ -76,13 +107,22 @@ export const getUserId = () => {
     return null;
 };
 
-/* Returns an existing, valid userId or creates a new one */
+/* Returns an existing, valid userId or creates a new one if it doesn't exist or is expired */
 export const getOrCreateValidUserId = () => {
     const storedValue = getUserId();
     const now = Date.now();
 
     if (!storedValue || ((now - storedValue.createdAt) > oneMonth)) {
-        return createNewUserId();
+        // REVIEW: should we also clear the merchantProvidedUserId?
+        
+        return setGeneratedUserId();
+    }
+
+    // When we deploy this for the first time, existing user storage
+    // won't have the key `generatedUserId`. So, we'll set the `generateUserId` and expiry
+    // to the existing expiry and `userId` key.
+    if (storedValue && !storedValue.generatedUserId) {
+        setGeneratedUserId(storedValue.userId, storedValue.createdAt);
     }
 
     return storedValue;

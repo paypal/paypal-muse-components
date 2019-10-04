@@ -22,9 +22,9 @@ import {
     setCartId,
     createNewCartId,
     getUserId,
-    createNewUserId,
+    setGeneratedUserId,
     getOrCreateValidUserId,
-    setUserId
+    setMerchantProvidedUserId
 } from './lib/local-storage-utils';
 import { getPropertyId } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
@@ -180,16 +180,16 @@ export const Tracker = (config? : Config = {}) => {
 
     try {
         getOrCreateValidCartId();
+        getOrCreateValidUserId();
+
         if (config && config.user && config.user.id) {
-            setUserId(config.user.id);
-        } else {
-            getOrCreateValidUserId();
+            setMerchantProvidedUserId(config.user.id);
         }
     } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err.message);
         createNewCartId();
-        createNewUserId();
+        setGeneratedUserId();
     }
 
     const JL = getJetlore();
@@ -289,10 +289,12 @@ export const Tracker = (config? : Config = {}) => {
                 return;
             }
 
-            if (data.id) {
-                setUserId(data.id);
-            } else if (data.id === null) {
-                createNewUserId();
+            if (data.id || data.id === null) {
+                setMerchantProvidedUserId(data.id);
+
+                if (data.id === null) {
+                    setGeneratedUserId();
+                }
             }
 
             const configUser = config.user || {};
