@@ -408,6 +408,9 @@ export const Tracker = (config? : Config = {}) => {
             return cb ?  cb(identityPayload) : identityPayload;
         });
     };
+
+    trackerFunctions.viewPage();
+
     return {
         // bringing in tracking functions for backwards compatibility
         ...trackerFunctions,

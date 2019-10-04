@@ -108,7 +108,7 @@ const resolveTrackingVariables = (data) => ({
     event_type: data.eventType,
 
     // Event Data
-    sinfo: data.eventData,
+    sinfo: JSON.stringify(data.eventData),
 
     // Legacy value for filtering events in Herald
     page: data.page,
@@ -117,6 +117,8 @@ const resolveTrackingVariables = (data) => ({
     pgrp: data.page,
 
     // Legacy impression event
+    // TODO: currently hard-coded to 'im'. When additional events (add-to-cart, purchase, etc)
+    // are moved to fpti this value will need to be updated.
     e: data.e,
 
     // Timestamp
