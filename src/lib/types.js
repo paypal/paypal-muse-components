@@ -26,8 +26,6 @@ export type Product = {|
     quantity? : string
 |};
 
-export type ViewData = {| page : string, title? : string |};
-
 export type CartData = {|
     cartId? : string,
     items : $ReadOnlyArray<Product>,
@@ -66,7 +64,7 @@ export type IdentityData = {|
 
 export type ParamsToBeaconUrl = ({
     trackingType : TrackingType,
-    data : ViewData | CartData | RemoveCartData | PurchaseData
+    data : CartData | RemoveCartData | PurchaseData
 }) => string;
 
 export type ParamsToTokenUrl = () => string;

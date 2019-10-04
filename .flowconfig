@@ -11,6 +11,7 @@
 .*/test/tracker-component.test.js
 [untyped]
 .*/src/lib/jetlore
+.*/src/lib/fpti.js
 [include]
 [libs]
 flow-typed
