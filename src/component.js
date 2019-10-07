@@ -9,108 +9,108 @@ export const PPTM_ID = 'xo-pptm';
 Generates a URL for pptm.js, e.g. http://localhost:8001/tagmanager/pptm.js?id=www.merchant-site.com&t=xo&mrid=xyz&client_id=abc
 */
 export function getPptmScriptSrc(paypalDomain : string, mrid : ?string, clientId : ?string, url : string) : string {
-    // "xo" is a checkout container
-    const type = 'xo';
+  // "xo" is a checkout container
+  const type = 'xo';
 
-    // We send this so that we know what version of the Payments SDK the request originated from.
-    const version = getVersion();
+  // We send this so that we know what version of the Payments SDK the request originated from.
+  const version = getVersion();
 
-    const source = 'payments_sdk';
+  const source = 'payments_sdk';
 
-    const baseUrl = `${ paypalDomain }/tagmanager/pptm.js`;
+  const baseUrl = `${ paypalDomain }/tagmanager/pptm.js`;
 
-    let src = `${ baseUrl }?id=${ url }&t=${ type }&v=${ version }&source=${ source }`;
+  let src = `${ baseUrl }?id=${ url }&t=${ type }&v=${ version }&source=${ source }`;
 
-    // Optional in the payments SDK, but if it's here, we'll prefer
-    // to query pptm.js by the mrid.
-    if (mrid) {
-        src += `&mrid=${ mrid }`;
-    }
+  // Optional in the payments SDK, but if it's here, we'll prefer
+  // to query pptm.js by the mrid.
+  if (mrid) {
+    src += `&mrid=${ mrid }`;
+  }
 
-    // Technically, this is required by the Payments SDK
-    if (clientId) {
-        src += `&client_id=${ clientId }`;
-    }
+  // Technically, this is required by the Payments SDK
+  if (clientId) {
+    src += `&client_id=${ clientId }`;
+  }
 
-    return src;
+  return src;
 }
 
 function parseMerchantId() : ?string {
-    const merchantId = getMerchantID();
+  const merchantId = getMerchantID();
 
-    if (!merchantId.length || merchantId[0] === UNKNOWN) {
-        return;
-    }
+  if (!merchantId.length || merchantId[0] === UNKNOWN) {
+    return;
+  }
 
-    return merchantId[0];
+  return merchantId[0];
 }
 
 function _isPayPalDomain() : boolean {
-    return window.mockDomain === 'mock://www.paypal.com' || isPayPalDomain();
+  return window.mockDomain === 'mock://www.paypal.com' || isPayPalDomain();
 }
 
 // Inserts the pptm.js script tag. This is the `setupHandler` in __sdk__.js and will be called automatically
 // when the made SDK is initialized.
 export function insertPptm() {
-    try {
-        // When merchants use checkout buttons, they'll include the payments SDK on their
-        // website, and then it'll render an iframe from the PayPal domain which will in turn
-        // initialize the SDK again. We don't want to insert another pptm.js on the paypal.com
-        // domain, though.
-        if (!_isPayPalDomain()) {
-            const mrid = parseMerchantId();
-            const clientId = getClientID();
-            const url = window.location.hostname;
-            const paypalDomain = getPayPalDomain();
-            const script = document.createElement('script');
-            const head = document.querySelector('head');
+  try {
+    // When merchants use checkout buttons, they'll include the payments SDK on their
+    // website, and then it'll render an iframe from the PayPal domain which will in turn
+    // initialize the SDK again. We don't want to insert another pptm.js on the paypal.com
+    // domain, though.
+    if (!_isPayPalDomain()) {
+      const mrid = parseMerchantId();
+      const clientId = getClientID();
+      const url = window.location.hostname;
+      const paypalDomain = getPayPalDomain();
+      const script = document.createElement('script');
+      const head = document.querySelector('head');
 
-            const src = getPptmScriptSrc(paypalDomain, mrid, clientId, url);
+      const src = getPptmScriptSrc(paypalDomain, mrid, clientId, url);
 
-            script.src = src;
+      script.src = src;
 
-            script.id = PPTM_ID;
+      script.id = PPTM_ID;
 
-            script.async = true;
+      script.async = true;
 
-            if (head) {
-                head.appendChild(script);
-            }
-        }
-    } catch (err) {
-        window.console.error(err);
+      if (head) {
+        head.appendChild(script);
+      }
     }
+  } catch (err) {
+    window.console.error(err);
+  }
 }
 
 function listenForButtonRender() {
-    getEventEmitter().on('button_render', () => {
-        window.paypalDDL = window.paypalDDL || [];
-        const buttonRenderEvent = window.paypalDDL.filter(e => e.event === 'paypalButtonRender');
-        if (buttonRenderEvent.length === 0) {
-            window.paypalDDL.push({ event: 'paypalButtonRender' });
-        }
-    });
+  getEventEmitter().on('button_render', () => {
+    window.paypalDDL = window.paypalDDL || [];
+    const buttonRenderEvent = window.paypalDDL.filter(e => e.event === 'paypalButtonRender');
+    if (buttonRenderEvent.length === 0) {
+      window.paypalDDL.push({ event: 'paypalButtonRender' });
+    }
+  });
 }
 
 export function setup() {
-    document.addEventListener('DOMContentLoaded', insertPptm);
-    listenForButtonRender();
+  document.addEventListener('DOMContentLoaded', insertPptm);
+  listenForButtonRender();
 
-    const clientId = getClientID();
-    const merchantId = parseMerchantId();
+  const clientId = getClientID();
+  const merchantId = parseMerchantId();
 
-    const clientIdQuery = clientId ? `clientId=${ encodeURIComponent(clientId) }` : '';
-    const merchantIdQuery = merchantId ? `merchantId=${ encodeURIComponent(merchantId) }` : '';
-    const ampersand = clientId && merchantId ? '&' : '';
+  const clientIdQuery = clientId ? `clientId=${ encodeURIComponent(clientId) }` : '';
+  const merchantIdQuery = merchantId ? `merchantId=${ encodeURIComponent(merchantId) }` : '';
+  const ampersand = clientId && merchantId ? '&' : '';
 
-    const env = getEnv();
-    const musenodewebUri = env !== ENV.PRODUCTION && env !== ENV.SANDBOX
-        ? decodeURIComponent(new URLSearchParams(location.search).get('musenodewebUri') || '')
-        : undefined;
+  const env = getEnv();
+  const musenodewebUri = env !== ENV.PRODUCTION && env !== ENV.SANDBOX
+    ? decodeURIComponent(new URLSearchParams(location.search).get('musenodewebUri') || '')
+    : undefined;
 
-    const src =  musenodewebUri ? musenodewebUri : 'www.paypal.com/muse/api/merchant-list/add';
-    const query = `${ clientIdQuery }${ ampersand }${ merchantIdQuery }`;
-    const beaconImage = new window.Image();
+  const src =  musenodewebUri ? musenodewebUri : 'www.paypal.com/muse/api/merchant-list/add';
+  const query = `${ clientIdQuery }${ ampersand }${ merchantIdQuery }`;
+  const beaconImage = new window.Image();
 
-    beaconImage.src = `${ src }?${ query }`;
+  beaconImage.src = `${ src }?${ query }`;
 }

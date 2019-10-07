@@ -1,9 +1,9 @@
 /* @flow */
 import type { UserData  } from './user';
 import type {
-    ParamsToBeaconUrl,
-    ParamsToTokenUrl,
-    ParamsToPropertyIdUrl
+  ParamsToBeaconUrl,
+  ParamsToTokenUrl,
+  ParamsToPropertyIdUrl
 } from './util';
 
 export type Config = {|
