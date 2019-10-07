@@ -337,6 +337,7 @@ export const Tracker = (config? : Config = {}) => {
             config = {
                 ...config,
                 user: {
+                    id: configUser.id,
                     merchantProvidedUserId,
                     email: userEmail,
                     name: userName
