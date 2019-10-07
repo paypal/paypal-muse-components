@@ -200,7 +200,7 @@ module.exports = {
         'id-blacklist': 'off',
         'id-length': 'off',
         'id-match': 'off',
-        'indent': [ 'error', 4],
+        'indent': [ 'error', 2],
         'jsx-quotes': 'off',
         'key-spacing': [ 'error', { 'afterColon': true }],
         'keyword-spacing': 'error',

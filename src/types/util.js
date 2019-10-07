@@ -1,6 +1,6 @@
 /* @flow */
 import type {
-    EventType
+  EventType
 } from './events';
 
 export type ParamsToBeaconUrl = ({

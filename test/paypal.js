@@ -7,16 +7,16 @@ import { SDK_QUERY_KEYS } from '@paypal/sdk-constants/src';
 import * as muse from '../src';
 
 insertMockSDKScript({
-    query: {
-        [ SDK_QUERY_KEYS.MERCHANT_ID ]: 'xyz,hij,lmno'
-    }
+  query: {
+    [ SDK_QUERY_KEYS.MERCHANT_ID ]: 'xyz,hij,lmno'
+  }
 });
 
 setupSDK([
-    {
-        name: 'must',
-        requirer: () => muse
-    }
+  {
+    name: 'must',
+    requirer: () => muse
+  }
 ]);
 
 // JSDOM initializes with the 'DOMContentLoaded' event having
