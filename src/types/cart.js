@@ -20,7 +20,7 @@ export type CartData = {|
     currencyCode? : string
 |};
 
-export type RemoveCartData = {|
+export type RemoveFromCartData = {|
     cartId? : string,
     cartTotal? : string,
     total? : string,

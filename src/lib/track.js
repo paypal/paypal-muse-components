@@ -5,7 +5,7 @@ import type {
     Config,
     EventType,
     CartData,
-    RemoveCartData,
+    RemoveFromCartData,
     PurchaseData
 } from '../types';
 
@@ -21,7 +21,7 @@ const createTrackingImg = src => {
 export const track = (
     config : Config,
     trackingType : EventType,
-    trackingData : CartData | RemoveCartData | PurchaseData
+    trackingData : CartData | RemoveFromCartData | PurchaseData
 ) => {
     const encodeData = data => encodeURIComponent(btoa(JSON.stringify(data)));
     const cartId = getOrCreateValidCartId().cartId;

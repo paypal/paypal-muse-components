@@ -34,7 +34,7 @@ import type {
     UserData,
     IdentityData,
     CartData,
-    RemoveCartData,
+    RemoveFromCartData,
     PurchaseData,
     EventType,
     CartEventType,
@@ -140,7 +140,7 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
     }
 };
 
-const trackCartEvent = (config : Config, cartEventType : CartEventType, trackingData : CartData | RemoveCartData) => {
+const trackCartEvent = (config : Config, cartEventType : CartEventType, trackingData : CartData | RemoveFromCartData) => {
     trackEvent(config, 'cartEvent', { ...trackingData, cartEventType });
 };
 
@@ -282,7 +282,7 @@ export const Tracker = (config? : Config = {}) => {
             }
         },
         setCartId: (cartId : string) => setCartId(cartId),
-        removeFromCart: (data : RemoveCartData) => {
+        removeFromCart: (data : RemoveFromCartData) => {
             try {
                 data = removeFromCartNormalizer(data);
                 validateRemoveItems(data);
@@ -308,7 +308,7 @@ export const Tracker = (config? : Config = {}) => {
             createNewCartId();
             return event;
         },
-        setUser: (data : { user : UserData }) => {
+        setUser: (data : { user : UserData } | UserData) => {
             // $FlowFixMe
             const prevMerchantProvidedUserId = getUserId().merchantProvidedUserId;
 
