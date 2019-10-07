@@ -22,9 +22,9 @@ import {
     setCartId,
     createNewCartId,
     getUserId,
-    createNewUserId,
+    setGeneratedUserId,
     getOrCreateValidUserId,
-    setUserId
+    setMerchantProvidedUserId
 } from './lib/local-storage-utils';
 import { getPropertyId } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
@@ -171,9 +171,18 @@ export const setImplicitPropertyId = (config : Config) => {
 
 // $FlowFixMe
 export const Tracker = (config? : Config = {}) => {
-    // $FlowFixMe
-    config = { ...defaultTrackerConfig, ...config };
-    config.currencyCode = config.currencyCode || getCurrency();
+    /*
+        Bit of a tricky thing here. We allow the merchant to pass
+        in { user: { id } }. However, we convert that property
+        to config.user.merchantProvidedUserId instead of setting
+        it as config.user.id. This is because config.user.id is a
+        constant that we generate internally.
+    */
+    if (config.user && config.user.id) {
+        config.user.merchantProvidedUserId = config.user.id;
+
+        delete config.user.id;
+    }
     
     const currentUrl = new URL(window.location.href);
     // use the param ?ppDebug=true to see logs
@@ -184,19 +193,27 @@ export const Tracker = (config? : Config = {}) => {
         console.log('PayPal Shopping: debug mode on.');
     }
 
+    let userId;
+
     try {
         getOrCreateValidCartId();
-        if (config && config.user && config.user.id) {
-            setUserId(config.user.id);
-        } else {
-            getOrCreateValidUserId();
+        userId = getOrCreateValidUserId().userId;
+
+        if (config && config.user && config.user.merchantProvidedUserId) {
+            setMerchantProvidedUserId(config.user.merchantProvidedUserId);
         }
     } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err.message);
         createNewCartId();
-        createNewUserId();
+        userId = setGeneratedUserId().userId;
     }
+
+    // $FlowFixMe
+    config = { ...defaultTrackerConfig, ...config };
+    config.user = config.user || {};
+    config.user.id = userId;
+    config.currencyCode = config.currencyCode || getCurrency();
 
     const JL = getJetlore();
     const jetloreTrackTypes = [
@@ -234,6 +251,9 @@ export const Tracker = (config? : Config = {}) => {
         JL.tracking(trackingConfig);
     }
     const trackers = {
+        getConfig: () => {
+            return config;
+        },
         viewPage: () => {
             const data = {
                 eventName: 'pageView',
@@ -291,7 +311,7 @@ export const Tracker = (config? : Config = {}) => {
         },
         setUser: (data : UserData) => {
             // $FlowFixMe
-            const oldUserId = getUserId().userId;
+            const prevMerchantProvidedUserId = getUserId().merchantProvidedUserId;
 
             try {
                 data = setUserNormalizer(data);
@@ -302,27 +322,29 @@ export const Tracker = (config? : Config = {}) => {
                 return;
             }
 
-            if (data.id) {
-                setUserId(data.id);
-            } else if (data.id === null) {
-                createNewUserId();
+            if (data.id || data.id === null) {
+                setMerchantProvidedUserId(data.id);
+
+                if (data.id === null) {
+                    setGeneratedUserId();
+                }
             }
 
             const configUser = config.user || {};
-            const userId = data.id !== undefined ? data.id : configUser.id;
+            const merchantProvidedUserId = data.id !== undefined ? data.id : configUser.merchantProvidedUserId;
             const userEmail = data.email !== undefined ? data.email : configUser.email;
             const userName = data.name !== undefined ? data.name : configUser.name;
 
             config = {
                 ...config,
                 user: {
-                    id: userId,
+                    merchantProvidedUserId,
                     email: userEmail,
                     name: userName
                 }
             };
 
-            trackEvent(config, 'setUser', { oldUserId });
+            trackEvent(config, 'setUser', { prevMerchantProvidedUserId });
         },
         setPropertyId: (id : string) => {
             config.propertyId = id;

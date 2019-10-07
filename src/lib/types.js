@@ -50,6 +50,7 @@ export type PurchaseData = {|
 
 export type UserData = {|
     user : {|
+        merchantProvidedUserId? : string,
         id? : string,
         email? : string,
         name? : string
@@ -81,6 +82,7 @@ export type JetloreConfig = {|
 
 export type Config = {|
     user? : {|
+        merchantProvidedUserId? : string,
         id? : string,
         email? : string, // mandatory if unbranded cart recovery
         name? : string
