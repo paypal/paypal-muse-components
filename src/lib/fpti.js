@@ -1,14 +1,17 @@
 /* @flow */
 import { getClientID, getMerchantID, getPartnerAttributionID } from '@paypal/sdk-client/src';
 
+import type {
+    FptiInput,
+    FptiVariables,
+    Config
+} from '../types';
+
 import { getDeviceInfo } from './get-device-info';
 
-const sendBeacon = (src, data) => {
-    if (!src || !data) {
-        return;
-    }
-
+const sendBeacon = (src : string, data : FptiVariables) => {
     let query = Object.keys(data).map(key => {
+        // $FlowFixMe
         return `${ encodeURIComponent(key) }=${ encodeURIComponent(data[key]) }`;
     });
 
@@ -19,7 +22,7 @@ const sendBeacon = (src, data) => {
 };
 
 // removes empty strings, `undefined`, `null`, and `NaN` from fpti event
-const filterFalsyValues = source => {
+const filterFalsyValues = (source : FptiVariables) : FptiVariables => {
     Object.keys(source).forEach(key => {
         const val = source[key];
 
@@ -31,7 +34,7 @@ const filterFalsyValues = source => {
     return source;
 };
 
-const resolveTrackingData = (config, data) => {
+const resolveTrackingData = (config : Config, data : FptiInput) : any => {
     const deviceInfo = getDeviceInfo();
 
     return {
@@ -46,12 +49,12 @@ const resolveTrackingData = (config, data) => {
     };
 };
 
-const resolveTrackingVariables = (data) => ({
+const resolveTrackingVariables = (data : any) : FptiVariables => ({
     // Device height
-    dh: data.screenHeight,
+    dh: data.deviceHeight,
 
     // Device width
-    dw: data.screenWidth,
+    dw: data.deviceWidth,
 
     // Browser height
     bh: data.browserHeight,
@@ -93,7 +96,7 @@ const resolveTrackingVariables = (data) => ({
     item: data.propertyId,
 
     // Merchant encrypted account number
-    mrid: getMerchantID(),
+    mrid: getMerchantID()[0],
 
     // ClientID
     client_id: getClientID(),
@@ -116,6 +119,9 @@ const resolveTrackingVariables = (data) => ({
     // Legacy value for filtering events in Herald
     pgrp: data.page,
 
+    // Application name
+    comp: data.comp,
+
     // Legacy impression event
     // TODO: currently hard-coded to 'im'. When additional events (add-to-cart, purchase, etc)
     // are moved to fpti this value will need to be updated.
@@ -128,7 +134,7 @@ const resolveTrackingVariables = (data) => ({
     g: data.g
 });
 
-export default (config, data = {}) => {
+export default (config : Config, data : FptiInput) => {
     const fptiServer = 'https://t.paypal.com/ts';
     const trackingVariables = resolveTrackingVariables(resolveTrackingData(config, data));
 
