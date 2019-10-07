@@ -8,5 +8,5 @@ import { uniqueID } from 'belter/src';
 */
 
 export default {
-    generateId: uniqueID
+  generateId: uniqueID
 };
