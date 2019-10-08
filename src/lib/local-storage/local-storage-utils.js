@@ -1,6 +1,6 @@
 /* @flow */
-import constants from './constants';
-import generate from './generate-id';
+import constants from '../constants';
+import generate from '../generate-id';
 
 const { storage, sevenDays } = constants;
 

@@ -4,7 +4,7 @@ import { Tracker } from '../src/tracker-component';
 import constants from '../src/lib/constants';
 // $FlowFixMe
 import generateIdModule from '../src/lib/generate-id';
-import { getUserId, getCartId } from '../src/lib/local-storage-utils';
+import { getUserId, getCartId } from '../src/lib/local-storage/local-storage-utils';
 
 const { sevenDays, storage } = constants;
 
@@ -735,7 +735,7 @@ describe('paypal.Tracker', () => {
     const email = '__test__email3@gmail.com';
     const userName = '__test__userName3';
     // clear local storage to ensure a request happens
-    window.localStorage.removeItem('property-id-abcxyz123-xyz');
+    window.localStorage.removeItem(storage.paypalCrPropId);
     Tracker({ user: { email, name: userName } });
 
     expect(createElementCalls).toBe(0);
@@ -747,7 +747,7 @@ describe('paypal.Tracker', () => {
     const email = '__test__email3@gmail.com';
     const userName = '__test__userName3';
     // clear local storage to ensure a request happens
-    window.localStorage.removeItem('property-id-abcxyz123-xyz');
+    window.localStorage.removeItem(storage.paypalCrPropId);
 
     Tracker({ user: { email, name: userName }, propertyId: 'hello' });
     expect(fetchCalls.length).toBe(0);

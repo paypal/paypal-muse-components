@@ -24,8 +24,8 @@ import {
   setGeneratedUserId,
   getOrCreateValidUserId,
   setMerchantProvidedUserId
-} from './lib/local-storage-utils';
-import { getPropertyId } from './lib/get-property-id';
+} from './lib/local-storage/local-storage-utils';
+import { fetchPropertyId } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
 import trackFpti from './lib/fpti';
 import { track } from './lib/track';
@@ -160,7 +160,7 @@ export const setImplicitPropertyId = (config : Config) => {
   if (config.propertyId) {
     return;
   }
-  getPropertyId(config).then(propertyId => {
+  fetchPropertyId(config).then(propertyId => {
     config.propertyId = propertyId;
     if (trackEventQueue.length) {
       clearTrackQueue(config);

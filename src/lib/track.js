@@ -9,7 +9,7 @@ import type {
   PurchaseData
 } from '../types';
 
-import { getOrCreateValidCartId, getOrCreateValidUserId } from './local-storage-utils';
+import { getOrCreateValidCartId, getOrCreateValidUserId } from './local-storage/local-storage-utils';
 import { getDeviceInfo } from './get-device-info';
 
 

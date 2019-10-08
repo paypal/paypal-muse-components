@@ -5,7 +5,9 @@ export default {
   'accessTokenUrl': 'https://www.paypal.com/muse/api/partner-token',
   'storage': {
     'paypalCrUser': 'paypal-cr-user',
-    'paypalCrCart': 'paypal-cr-cart'
+    'paypalCrCart': 'paypal-cr-cart',
+    'paypalCrPropId': 'paypal-cr-propid',
+    'paypalCrContainer': 'paypal-cr-container'
   },
   'defaultTrackerConfig': {
     'user': {

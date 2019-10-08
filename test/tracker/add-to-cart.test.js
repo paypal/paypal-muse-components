@@ -2,14 +2,14 @@
 /* global it describe beforeEach afterAll expect jest */
 import { Tracker } from '../../src/tracker-component';
 import { track } from '../../src/lib/track';
-import { getPropertyId } from '../../src/lib/get-property-id';
+import { fetchPropertyId } from '../../src/lib/get-property-id';
 // eslint-disable-next-line no-console
 console.error = jest.fn();
 jest.mock('../../src/lib/track');
 jest.mock('../../src/lib/get-property-id', () => {
   return {
     // eslint-disable-next-line require-await
-    getPropertyId: async () => 'mockpropertyidofsomekind'
+    fetchPropertyId: async () => 'mockpropertyidofsomekind'
   };
 });
 
@@ -47,7 +47,7 @@ describe('addToCart', () => {
 
   afterAll(() => {
     track.mockRestore();
-    getPropertyId.mockRestore();
+    fetchPropertyId.mockRestore();
     // eslint-disable-next-line no-console
     console.error.mockRestore();
   });
