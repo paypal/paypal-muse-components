@@ -6,7 +6,7 @@ import type {
   Container
 } from '../types';
 
-import { getPropertyId, setPropertyId } from './local-storage/property-id';
+import { getPropertyId, setPropertyId } from './local-storage';
 
 
 const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> => {

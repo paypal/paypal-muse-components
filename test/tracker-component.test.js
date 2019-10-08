@@ -4,7 +4,7 @@ import { Tracker } from '../src/tracker-component';
 import constants from '../src/lib/constants';
 // $FlowFixMe
 import generateIdModule from '../src/lib/generate-id';
-import { getUserId, getCartId } from '../src/lib/local-storage/local-storage-utils';
+import { getUserId, getCartId } from '../src/lib/local-storage';
 
 const { sevenDays, storage } = constants;
 

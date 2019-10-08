@@ -24,7 +24,7 @@ import {
   setGeneratedUserId,
   getOrCreateValidUserId,
   setMerchantProvidedUserId
-} from './lib/local-storage/local-storage-utils';
+} from './lib/local-storage';
 import { fetchPropertyId } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
 import trackFpti from './lib/fpti';

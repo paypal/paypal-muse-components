@@ -2,7 +2,7 @@
 /* global it describe beforeEach afterAll expect jest */
 import { Tracker } from '../../src/tracker-component';
 import { fetchPropertyId } from '../../src/lib/get-property-id';
-import { getUserId } from '../../src/lib/local-storage/local-storage-utils';
+import { getUserId } from '../../src/lib/local-storage';
 import { track } from '../../src/lib/track';
 import constants from '../../src/lib/constants';
 

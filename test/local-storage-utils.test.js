@@ -6,7 +6,7 @@ import {
   getCartId,
   setCartId,
   getOrCreateValidCartId
-} from '../src/lib/local-storage/local-storage-utils';
+} from '../src/lib/local-storage';
 
 const { storage } = constants;
 
