@@ -12,11 +12,11 @@ import { getPropertyId, setPropertyId, setContainer, getValidContainer } from '.
 /* Takes the full container and transforms it into
 a format better suited for use by the SDK */
 const parseContainer = (container : Container) : ContainerSummary => {
-  const offerTag = container.tags.find(tag => tag.tag_definition_id === 'offers');
+  const offerTag = container.tags.filter(tag => tag.tag_definition_id === 'offers')[0];
   let storeCashProgramId;
 
   if (offerTag && offerTag.configuration) {
-    storeCashProgramId = offerTag.configuration.find(config => config.id === 'offer-program-id');
+    storeCashProgramId = offerTag.configuration.filter(config => config.id === 'offer-program-id')[0];
     storeCashProgramId = storeCashProgramId ? storeCashProgramId.value : null;
   } else {
     storeCashProgramId = null;
@@ -46,7 +46,7 @@ const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> =>
     });
 };
 
-export const fetchPropertyId = ({ paramsToPropertyIdUrl } : Config) : Promise<string> => {
+export const fetchPropertyId = ({ paramsToPropertyIdUrl, propertyId } : Config) : Promise<string> => {
   const cachedPropertyId = getPropertyId();
 
   if (cachedPropertyId) {
@@ -57,8 +57,13 @@ export const fetchPropertyId = ({ paramsToPropertyIdUrl } : Config) : Promise<st
     .then(parseContainer)
     .then(containerSummary => {
       // save to localstorage
-      setPropertyId(containerSummary.id);
       setContainer(containerSummary);
+
+      if (propertyId) {
+        setPropertyId(propertyId);
+      } else {
+        setPropertyId(containerSummary.id);
+      }
 
       return containerSummary.id;
     })
@@ -68,19 +73,24 @@ export const fetchPropertyId = ({ paramsToPropertyIdUrl } : Config) : Promise<st
     });
 };
 
-export const fetchContainerSettings = () : Promise<ContainerSummary> => {
+export const fetchContainerSettings = ({ paramsToPropertyIdUrl, propertyId } : Config) : Promise<ContainerSummary> => {
   const cachedContainer = getValidContainer();
 
   if (cachedContainer) {
     return Promise.resolve(cachedContainer);
   }
 
-  return getContainer()
+  return getContainer(paramsToPropertyIdUrl)
     .then(parseContainer)
     .then(containerSummary => {
       // save to localstorage
-      setPropertyId(containerSummary.id);
       setContainer(containerSummary);
+
+      if (propertyId) {
+        setPropertyId(propertyId);
+      } else {
+        setPropertyId(containerSummary.id);
+      }
 
       return containerSummary;
     })

@@ -2,7 +2,7 @@
 import constants from '../constants';
 import type { ContainerSummary } from '../../types';
 
-const { storage, oneDay } = constants;
+const { storage, oneHour } = constants;
 
 const getContainer = () : Object | null => {
   const storedValue = window.localStorage.getItem(storage.paypalCrContainer);
@@ -20,7 +20,7 @@ export const getValidContainer = () : ContainerSummary | null => {
   const storedValue = getContainer();
   const now = Date.now();
 
-  if (!storedValue || ((now - storedValue.createdAt) > oneDay)) {
+  if (!storedValue || ((now - storedValue.createdAt) > oneHour)) {
     window.localStorage.removeItem(storage.paypalCrContainer);
 
     return null;
@@ -30,10 +30,10 @@ export const getValidContainer = () : ContainerSummary | null => {
 };
 
 export const setContainer = (containerSummary : ContainerSummary) => {
-  const storedValue = {
+  const storedValue = JSON.stringify({
     containerSummary,
     createdAt: Date.now()
-  };
+  });
 
   window.localStorage.setItem(storage.paypalCrContainer, storedValue);
 };
