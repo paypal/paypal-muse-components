@@ -735,7 +735,7 @@ describe('paypal.Tracker', () => {
     const email = '__test__email3@gmail.com';
     const userName = '__test__userName3';
     // clear local storage to ensure a request happens
-    window.localStorage.removeItem(storage.paypalCrPropId);
+    window.localStorage.removeItem(storage.paypalCrPropertyId);
     Tracker({ user: { email, name: userName } });
 
     expect(createElementCalls).toBe(0);
@@ -747,7 +747,7 @@ describe('paypal.Tracker', () => {
     const email = '__test__email3@gmail.com';
     const userName = '__test__userName3';
     // clear local storage to ensure a request happens
-    window.localStorage.removeItem(storage.paypalCrPropId);
+    window.localStorage.removeItem(storage.paypalCrPropertyId);
 
     Tracker({ user: { email, name: userName }, propertyId: 'hello' });
     expect(fetchCalls.length).toBe(0);

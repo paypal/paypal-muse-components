@@ -4,7 +4,7 @@ import constants from '../constants';
 const { storage } = constants;
 
 export const getPropertyId = () : Object | null => {
-  const storedValue = window.localStorage.getItem(storage.paypalCrPropId);
+  const storedValue = window.localStorage.getItem(storage.paypalCrPropertyId);
 
   if (storedValue) {
     return JSON.parse(storedValue);
@@ -19,5 +19,5 @@ export const setPropertyId = (propertyId : string) : void => {
     createdAt: Date.now()
   };
 
-  window.localStorage.setItem(storage.paypalCrPropId, JSON.stringify(storedValue));
+  window.localStorage.setItem(storage.paypalCrPropertyId, JSON.stringify(storedValue));
 };

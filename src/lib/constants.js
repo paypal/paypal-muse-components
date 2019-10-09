@@ -6,7 +6,7 @@ export default {
   'storage': {
     'paypalCrUser': 'paypal-cr-user',
     'paypalCrCart': 'paypal-cr-cart',
-    'paypalCrPropId': 'paypal-cr-propid',
+    'paypalCrPropertyId': 'paypal-cr-propid',
     'paypalCrContainer': 'paypal-cr-container'
   },
   'defaultTrackerConfig': {
