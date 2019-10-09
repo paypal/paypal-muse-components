@@ -15,3 +15,5 @@ export {
 } from './user';
 
 export { getPropertyId, setPropertyId } from './property-id';
+
+export { setContainer, getValidContainer } from './container';

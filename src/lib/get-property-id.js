@@ -3,11 +3,32 @@ import { getMerchantID } from '@paypal/sdk-client/src';
 
 import type {
   Config,
-  Container
+  Container,
+  ContainerSummary
 } from '../types';
 
-import { getPropertyId, setPropertyId } from './local-storage';
+import { getPropertyId, setPropertyId, setContainer, getValidContainer } from './local-storage';
 
+/* Takes the full container and transforms it into
+a format better suited for use by the SDK */
+const parseContainer = (container : Container) : ContainerSummary => {
+  const offerTag = container.tags.find(tag => tag.tag_definition_id === 'offers');
+  let storeCashProgramId;
+
+  if (offerTag && offerTag.configuration) {
+    storeCashProgramId = offerTag.configuration.find(config => config.id === 'offer-program-id');
+    storeCashProgramId = storeCashProgramId ? storeCashProgramId.value : null;
+  } else {
+    storeCashProgramId = null;
+  }
+
+  return {
+    id: container.id,
+    integrationType: container.integration_type,
+    mrid: container.owner_id,
+    storeCashProgramId
+  };
+};
 
 const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> => {
   const merchantId = getMerchantID()[0];
@@ -33,11 +54,13 @@ export const fetchPropertyId = ({ paramsToPropertyIdUrl } : Config) : Promise<st
   }
 
   return getContainer(paramsToPropertyIdUrl)
-    .then(container => {
+    .then(parseContainer)
+    .then(containerSummary => {
       // save to localstorage
-      setPropertyId(container.id);
+      setPropertyId(containerSummary.id);
+      setContainer(containerSummary);
 
-      return container.id;
+      return containerSummary.id;
     })
     .catch(() => {
       // doing nothing for now since there's no logging
@@ -45,6 +68,25 @@ export const fetchPropertyId = ({ paramsToPropertyIdUrl } : Config) : Promise<st
     });
 };
 
-export const getContainerSettings = () : any => {
-  return {};
+export const fetchContainerSettings = () : Promise<ContainerSummary> => {
+  const cachedContainer = getValidContainer();
+
+  if (cachedContainer) {
+    return Promise.resolve(cachedContainer);
+  }
+
+  return getContainer()
+    .then(parseContainer)
+    .then(containerSummary => {
+      // save to localstorage
+      setPropertyId(containerSummary.id);
+      setContainer(containerSummary);
+
+      return containerSummary;
+    })
+    .catch(() => {
+      // doing nothing for now since there's no logging
+      // $FlowFixMe
+      return '';
+    });
 };

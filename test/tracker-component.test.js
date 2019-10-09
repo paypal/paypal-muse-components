@@ -4,7 +4,7 @@ import { Tracker } from '../src/tracker-component';
 import constants from '../src/lib/constants';
 // $FlowFixMe
 import generateIdModule from '../src/lib/generate-id';
-import { getUserId, getCartId } from '../src/lib/local-storage';
+import { getUserId, getCartId, setPropertyId } from '../src/lib/local-storage';
 
 const { sevenDays, storage } = constants;
 
@@ -725,7 +725,7 @@ describe('paypal.Tracker', () => {
   it('should not fetch implicit propertyId route if one is not provided and propertyid is cached', () => {
     const email = '__test__email3@gmail.com';
     const userName = '__test__userName3';
-
+    setPropertyId('arglebargleflimflam')
     Tracker({ user: { email, name: userName } });
     expect(createElementCalls).toBe(0);
     expect(fetchCalls.length).toBe(0);
