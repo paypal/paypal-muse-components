@@ -14,7 +14,9 @@ export const logger = {
           error: stringifyErrorMessage(errInfo)
         })
       });
-      loggerObj.error(name, stringifyError(errInfo));
+      loggerObj.error(name, {
+        err: stringifyError(errInfo)
+      });
       loggerObj.flush().catch(noop); // fire immediately
     } catch (err) {
 
