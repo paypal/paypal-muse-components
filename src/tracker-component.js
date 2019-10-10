@@ -3,6 +3,7 @@ import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
 import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src';
 
+import { logger } from './lib/logger';
 import {
   validateAddItems,
   validateRemoveItems,
@@ -428,6 +429,8 @@ export const Tracker = (config? : Config = {}) => {
         success: true
       };
       return cb ?  cb(identityPayload) : identityPayload;
+    }).catch(err => {
+      logger.error('identity', err);
     });
   };
 
