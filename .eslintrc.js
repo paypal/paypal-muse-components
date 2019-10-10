@@ -538,7 +538,6 @@ module.exports = {
         'prefer-destructuring': 'off',
         'prefer-numeric-literals': 'error',
         'prefer-promise-reject-errors': 'error',
-        'require-await': 'error',
         'rest-spread-spacing': 'error',
         'semi-style': 'error',
         'sort-keys': 'off',

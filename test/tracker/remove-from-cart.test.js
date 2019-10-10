@@ -2,13 +2,14 @@
 /* global it describe beforeEach afterAll expect jest */
 import { Tracker } from '../../src/tracker-component';
 import { track } from '../../src/lib/track';
-import { getPropertyId } from '../../src/lib/get-property-id';
+import { fetchPropertyId } from '../../src/lib/get-property-id';
+import { mockContainerSummary1 } from '../mocks';
 
 jest.mock('../../src/lib/track');
 jest.mock('../../src/lib/get-property-id', () => {
   return {
-    // eslint-disable-next-line require-await
-    getPropertyId: async () => 'mockpropertyidofsomekind'
+    fetchPropertyId: async () => 'mockpropertyidofsomekind',
+    fetchContainerSettings: async () => mockContainerSummary1
   };
 });
 
@@ -45,7 +46,7 @@ describe('removeFromCart', () => {
 
   afterAll(() => {
     track.mockRestore();
-    getPropertyId.mockRestore();
+    fetchPropertyId.mockRestore();
   });
 
   it('should pass removed items', () => {

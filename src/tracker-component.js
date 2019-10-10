@@ -24,8 +24,8 @@ import {
   setGeneratedUserId,
   getOrCreateValidUserId,
   setMerchantProvidedUserId
-} from './lib/local-storage-utils';
-import { getPropertyId } from './lib/get-property-id';
+} from './lib/local-storage';
+import { fetchContainerSettings } from './lib/get-property-id';
 import getJetlore from './lib/jetlore';
 import trackFpti from './lib/fpti';
 import { track } from './lib/track';
@@ -152,16 +152,16 @@ export const clearTrackQueue = (config : Config) => {
 };
 
 export const setImplicitPropertyId = (config : Config) => {
-  /*
-    ** this is used for backwards compatibility
-    ** we do not want to overwrite a propertyId if propertyId
-    ** has already been set using the SDK
-    */
-  if (config.propertyId) {
-    return;
-  }
-  getPropertyId(config).then(propertyId => {
-    config.propertyId = propertyId;
+
+  fetchContainerSettings(config).then(containerSummary => {
+    /* this is used for backwards compatibility we do not want to overwrite
+    a propertyId if propertyId has already been set using the SDK */
+    if (!config.propertyId) {
+      config.propertyId = containerSummary.id;
+    }
+
+    config.containerSummary = containerSummary;
+
     if (trackEventQueue.length) {
       clearTrackQueue(config);
     }
