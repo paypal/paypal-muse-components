@@ -1,5 +1,6 @@
 /* @flow */
 import type { UserData  } from './user';
+import type { ContainerSummary } from './container';
 import type {
   ParamsToBeaconUrl,
   ParamsToTokenUrl,
@@ -18,6 +19,7 @@ export type Config = {|
         div? : string,
         lang? : string
     |},
+    containerSummary? : ContainerSummary | null,
     paramsToPropertyIdUrl? : ParamsToPropertyIdUrl,
     currencyCode? : string
 |};

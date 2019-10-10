@@ -3,11 +3,32 @@ import { getMerchantID } from '@paypal/sdk-client/src';
 
 import type {
   Config,
-  Container
+  Container,
+  ContainerSummary
 } from '../types';
 
-import { getPropertyId, setPropertyId } from './local-storage';
+import { getPropertyId, setPropertyId, setContainer, getValidContainer } from './local-storage';
 
+/* Takes the full container and transforms it into
+a format better suited for use by the SDK */
+const parseContainer = (container : Container) : ContainerSummary => {
+  const offerTag = container.tags.filter(tag => tag.tag_definition_id === 'offers')[0];
+  let storeCashProgramId;
+
+  if (offerTag && offerTag.configuration) {
+    storeCashProgramId = offerTag.configuration.filter(config => config.id === 'offer-program-id')[0];
+    storeCashProgramId = storeCashProgramId ? storeCashProgramId.value : null;
+  } else {
+    storeCashProgramId = null;
+  }
+
+  return {
+    id: container.id,
+    integrationType: container.integration_type,
+    mrid: container.owner_id,
+    storeCashProgramId
+  };
+};
 
 const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> => {
   const merchantId = getMerchantID()[0];
@@ -25,7 +46,7 @@ const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> =>
     });
 };
 
-export const fetchPropertyId = ({ paramsToPropertyIdUrl } : Config) : Promise<string> => {
+export const fetchPropertyId = ({ paramsToPropertyIdUrl, propertyId } : Config) : Promise<string> => {
   const cachedPropertyId = getPropertyId();
 
   if (cachedPropertyId) {
@@ -33,11 +54,18 @@ export const fetchPropertyId = ({ paramsToPropertyIdUrl } : Config) : Promise<st
   }
 
   return getContainer(paramsToPropertyIdUrl)
-    .then(container => {
+    .then(parseContainer)
+    .then(containerSummary => {
       // save to localstorage
-      setPropertyId(container.id);
+      setContainer(containerSummary);
 
-      return container.id;
+      if (propertyId) {
+        setPropertyId(propertyId);
+      } else {
+        setPropertyId(containerSummary.id);
+      }
+
+      return containerSummary.id;
     })
     .catch(() => {
       // doing nothing for now since there's no logging
@@ -45,6 +73,30 @@ export const fetchPropertyId = ({ paramsToPropertyIdUrl } : Config) : Promise<st
     });
 };
 
-export const getContainerSettings = () : any => {
-  return {};
+export const fetchContainerSettings = ({ paramsToPropertyIdUrl, propertyId } : Config) : Promise<ContainerSummary> => {
+  const cachedContainer = getValidContainer();
+
+  if (cachedContainer) {
+    return Promise.resolve(cachedContainer);
+  }
+
+  return getContainer(paramsToPropertyIdUrl)
+    .then(parseContainer)
+    .then(containerSummary => {
+      // save to localstorage
+      setContainer(containerSummary);
+
+      if (propertyId) {
+        setPropertyId(propertyId);
+      } else {
+        setPropertyId(containerSummary.id);
+      }
+
+      return containerSummary;
+    })
+    .catch(() => {
+      // doing nothing for now since there's no logging
+      // $FlowFixMe
+      return '';
+    });
 };
