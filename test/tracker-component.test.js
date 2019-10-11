@@ -1,6 +1,7 @@
 /* globals describe beforeAll afterAll afterEach it expect jest */
 /* @flow */
 import { Tracker } from '../src/tracker-component';
+import { logger } from '../src/lib/logger';
 import constants from '../src/lib/constants';
 // $FlowFixMe
 import generateIdModule from '../src/lib/generate-id';
@@ -735,22 +736,20 @@ describe('paypal.Tracker', () => {
   });
 
   it('should gracefully fail in the event that malformed data exists in local storage', () => {
-    // eslint-disable-next-line no-console
-    console.error = jest.fn();
+    logger.error = jest.fn();
+
     window.localStorage.setItem(storage.paypalCrUser, 'this will cause an error');
     window.localStorage.setItem(storage.paypalCrCart, 'this will also cause an error');
 
-    // eslint-disable-next-line no-console
-    expect(console.error.mock.calls.length).toBe(0);
+    expect(logger.error.mock.calls.length).toBe(0);
     Tracker();
     const userId = getUserId().userId;
     const cartId = getCartId().cartId;
-    // eslint-disable-next-line no-console
-    expect(console.error.mock.calls.length).toBe(1);
+
+    expect(logger.error.mock.calls.length).toBe(1);
     expect(typeof userId).toBe('string');
     expect(typeof cartId).toBe('string');
 
-    // eslint-disable-next-line no-console
-    console.error.mockRestore();
+    logger.error.mockRestore();
   });
 });
