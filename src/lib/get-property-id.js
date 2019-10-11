@@ -70,6 +70,7 @@ export const fetchPropertyId = ({ paramsToPropertyIdUrl, propertyId } : Config) 
     })
     .catch((err) => {
       logger.error('getContainer', err);
+      return '';
     });
 };
 
@@ -96,5 +97,7 @@ export const fetchContainerSettings = ({ paramsToPropertyIdUrl, propertyId } : C
     })
     .catch((err) => {
       logger.error('getContainer', err);
+      // $FlowFixMe
+      return '';
     });
 };

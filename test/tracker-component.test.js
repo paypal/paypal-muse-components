@@ -92,6 +92,8 @@ describe('paypal.Tracker', () => {
   beforeEach(() => {
     window.localStorage.removeItem(storage.paypalCrCart);
     window.localStorage.removeItem(storage.paypalCrUser);
+
+    logger.error = jest.fn();
   });
 
   // $FlowFixMe
@@ -102,6 +104,8 @@ describe('paypal.Tracker', () => {
     window.localStorage.removeItem(storage.paypalCrUser);
     document.cookie = 'paypal-cr-cart=;';
     fetchCalls = [];
+
+    logger.error.mockRestore();
   });
 
   // $FlowFixMe
@@ -736,8 +740,6 @@ describe('paypal.Tracker', () => {
   });
 
   it('should gracefully fail in the event that malformed data exists in local storage', () => {
-    logger.error = jest.fn();
-
     window.localStorage.setItem(storage.paypalCrUser, 'this will cause an error');
     window.localStorage.setItem(storage.paypalCrCart, 'this will also cause an error');
 
@@ -746,10 +748,8 @@ describe('paypal.Tracker', () => {
     const userId = getUserId().userId;
     const cartId = getCartId().cartId;
 
-    expect(logger.error.mock.calls.length).toBe(1);
+    expect(logger.error.mock.calls.length).toBe(2);
     expect(typeof userId).toBe('string');
     expect(typeof cartId).toBe('string');
-
-    logger.error.mockRestore();
   });
 });

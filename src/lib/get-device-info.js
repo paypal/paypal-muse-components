@@ -1,5 +1,4 @@
 /* @flow */
-
 import { logger } from './logger';
 
 const _roundOffPerfTimer = num => {
@@ -89,7 +88,7 @@ const getLocation = () => {
   return `${ window.location.origin }${ window.location.pathname }`;
 };
 
-const getDeviceInfo = () => {
+export const getDeviceInfo = () => {
   try {
     const browserWidth = getBrowserWidth();
     const browserHeight = getBrowserHeight();
@@ -119,9 +118,3 @@ const getDeviceInfo = () => {
   }
 };
 
-/*
-** cannot use export default because it can't be overwritten by our tests
-** (which currently can't bring in sinon or it will error so this is the
-** only option)
-*/
-module.exports = { getDeviceInfo }; // eslint-disable-line import/no-commonjs
