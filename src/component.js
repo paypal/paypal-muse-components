@@ -3,6 +3,8 @@
 import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain, getEnv, getEventEmitter } from '@paypal/sdk-client/src';
 import { UNKNOWN, ENV } from '@paypal/sdk-constants/src';
 
+import { logger } from './lib/logger';
+
 export const PPTM_ID = 'xo-pptm';
 
 /*
@@ -78,7 +80,7 @@ export function insertPptm() {
       }
     }
   } catch (err) {
-    window.console.error(err);
+    logger.error('insertPPTM', err);
   }
 }
 

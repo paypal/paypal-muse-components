@@ -1,4 +1,7 @@
 /* @flow */
+
+import { logger } from './logger';
+
 const _roundOffPerfTimer = num => {
   let roundOffNumber = -1;
   if (typeof num !== 'undefined') {
@@ -111,6 +114,7 @@ const getDeviceInfo = () => {
       browserWidth
     };
   } catch (err) {
+    logger.error('getDeviceInfo', err);
     return {};
   }
 };
