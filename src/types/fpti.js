@@ -35,7 +35,7 @@ export type FptiInput = {|
   // Event Type
   eventType : string,
   // Event Data
-  sinfo? : ?string,
+  eventData? : ?string,
   // Legacy value for filtering events in Herald
   page? : string,
   // Legacy value for filtering events in Herald

@@ -9,6 +9,7 @@ import {
   validateRemoveItems,
   validateUser,
   validatePurchase,
+  validateCustomEvent,
   addToCartNormalizer,
   setCartNormalizer,
   removeFromCartNormalizer,
@@ -131,6 +132,7 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
 
   switch (trackingType) {
   case 'view':
+  case 'customEvent':
     trackFpti(config, trackingData);
     break;
   default:
@@ -376,14 +378,24 @@ export const Tracker = (config? : Config = {}) => {
           return {};
         });
     },
-    customEvent: (eventName : string, data : Object) : void => {
-      // const fptiInput : FptiInput = {
-      //   ...data,
-      //   eventName,
-      //   eventType: 'customEvent'
-      // };
+    customEvent: (eventName : string, data? : Object) => {
+      try {
+        validateCustomEvent(eventName, data);
 
-      // trackEvent(config, 'customEvent', fptiInput);
+        const fptiInput : FptiInput = {
+          eventName,
+          eventType: 'customEvent'
+        };
+
+        if (data) {
+          fptiInput.eventData = data;
+        }
+
+        trackEvent(config, 'customEvent', fptiInput);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err.message);
+      }
     }
   };
   setImplicitPropertyId(config);

@@ -11,6 +11,15 @@ const getType = (input : any) => {
   return typeof input;
 };
 
+export const checkValue = (input : any, expectedInput : $ReadOnlyArray<string>) => {
+  const actual = getType(input);
+  const expected = expectedInput.join(', or ');
+
+  if (!expectedInput.includes(actual)) {
+    throw new Error(`Input error: expected ${ actual } to be ${ expected }`);
+  }
+};
+
 // Performs 'typeof' check on every key in 'input'
 export const checkKeys = (input : any, expectedInput : any) => {
   // input must be an object
