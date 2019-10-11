@@ -4,7 +4,7 @@ import {
   validateAddItems,
   validateRemoveItems,
   validateUser
-} from '../src/lib/input-validation';
+} from '../src/lib/validation';
 
 describe('input validation', () => {
   describe('validateAddItems', () => {

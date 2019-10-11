@@ -8,15 +8,13 @@ import {
   validateAddItems,
   validateRemoveItems,
   validateUser,
-  validatePurchase
-} from './lib/input-validation';
-import {
+  validatePurchase,
   addToCartNormalizer,
   setCartNormalizer,
   removeFromCartNormalizer,
   purchaseNormalizer,
   setUserNormalizer
-} from './lib/deprecated-input-normalizers';
+} from './lib/validation';
 import {
   getOrCreateValidCartId,
   setCartId,
@@ -377,6 +375,15 @@ export const Tracker = (config? : Config = {}) => {
 
           return {};
         });
+    },
+    customEvent: (eventName : string, data : Object) : void => {
+      // const fptiInput : FptiInput = {
+      //   ...data,
+      //   eventName,
+      //   eventType: 'customEvent'
+      // };
+
+      // trackEvent(config, 'customEvent', fptiInput);
     }
   };
   setImplicitPropertyId(config);
