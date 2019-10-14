@@ -203,8 +203,7 @@ export const Tracker = (config? : Config = {}) => {
       setMerchantProvidedUserId(config.user.merchantProvidedUserId);
     }
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err.message);
+    logger.error('cart_or_shopper_id', err);
     createNewCartId();
     userId = setGeneratedUserId().userId;
   }
@@ -268,8 +267,7 @@ export const Tracker = (config? : Config = {}) => {
         validateAddItems(data);
         return trackCartEvent(config, 'addToCart', data);
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err.message);
+        logger.error('addToCart', err);
       }
     },
     setCart: (data : CartData) => {
@@ -278,8 +276,7 @@ export const Tracker = (config? : Config = {}) => {
         validateAddItems(data);
         return trackCartEvent(config, 'setCart', data);
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err.message);
+        logger.error('setCart', err);
       }
     },
     setCartId: (cartId : string) => setCartId(cartId),
@@ -289,8 +286,7 @@ export const Tracker = (config? : Config = {}) => {
         validateRemoveItems(data);
         return trackCartEvent(config, 'removeFromCart', data);
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err.message);
+        logger.error('removeFromCart', err);
       }
     },
     purchase: (data : PurchaseData) => {
@@ -299,8 +295,7 @@ export const Tracker = (config? : Config = {}) => {
         validatePurchase(data);
         return trackEvent(config, 'purchase', data);
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err.message);
+        logger.error('purchase', err);
       }
     },
     cancelCart: () => {
@@ -317,8 +312,7 @@ export const Tracker = (config? : Config = {}) => {
         data = setUserNormalizer(data);
         validateUser(data);
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err.message);
+        logger.error('setUser', err);
         return;
       }
 

@@ -8,6 +8,7 @@ import type {
 } from '../types';
 
 import { getPropertyId, setPropertyId, setContainer, getValidContainer } from './local-storage';
+import { logger } from './logger';
 
 /* Takes the full container and transforms it into
 a format better suited for use by the SDK */
@@ -67,8 +68,8 @@ export const fetchPropertyId = ({ paramsToPropertyIdUrl, propertyId } : Config) 
 
       return containerSummary.id;
     })
-    .catch(() => {
-      // doing nothing for now since there's no logging
+    .catch((err) => {
+      logger.error('getContainer', err);
       return '';
     });
 };
@@ -94,8 +95,8 @@ export const fetchContainerSettings = ({ paramsToPropertyIdUrl, propertyId } : C
 
       return containerSummary;
     })
-    .catch(() => {
-      // doing nothing for now since there's no logging
+    .catch((err) => {
+      logger.error('getContainer', err);
       // $FlowFixMe
       return '';
     });
