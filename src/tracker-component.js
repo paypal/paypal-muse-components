@@ -387,8 +387,7 @@ export const Tracker = (config? : Config = {}) => {
 
         trackEvent(config, 'customEvent', fptiInput);
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err.message);
+        logger.error('cutomEvent', err);
       }
     }
   };

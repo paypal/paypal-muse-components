@@ -3,12 +3,10 @@
 import { setContainer, setGeneratedUserId } from '../../src/lib/local-storage';
 import { Tracker } from '../../src/tracker-component';
 import { mockContainerSummary1 } from '../mocks';
+import { logger } from '../../src/lib/logger';
 
 jest.mock('../../src/lib/fpti')
 import trackFpti from '../../src/lib/fpti';
-
-// eslint-disable-next-line no-console
-console.error = jest.fn();
 
 jest.mock('../../src/lib/get-property-id', () => {
   return {
@@ -18,6 +16,7 @@ jest.mock('../../src/lib/get-property-id', () => {
 
 describe('customEvent', () => {
   let mockUserId = setGeneratedUserId().userId;
+  logger.error = jest.fn();
   let config;
 
   beforeEach(() => {
@@ -35,7 +34,7 @@ describe('customEvent', () => {
 
   afterEach(() => {
     trackFpti.mockReset();
-    console.error.mockReset();
+    logger.error.mockReset();
   });
 
   afterAll(() => {
@@ -102,7 +101,7 @@ describe('customEvent', () => {
     try {
       tracker.customEvent(undefined, 'you should really read the docs')
     } catch (err) {
-      expect(console.error).toHaveBeenCalledTimes(1)
+      expect(logger.error).toHaveBeenCalledTimes(1)
     }
 
   })
