@@ -8,15 +8,14 @@ import {
   validateAddItems,
   validateRemoveItems,
   validateUser,
-  validatePurchase
-} from './lib/input-validation';
-import {
+  validatePurchase,
+  validateCustomEvent,
   addToCartNormalizer,
   setCartNormalizer,
   removeFromCartNormalizer,
   purchaseNormalizer,
   setUserNormalizer
-} from './lib/deprecated-input-normalizers';
+} from './lib/validation';
 import {
   getOrCreateValidCartId,
   setCartId,
@@ -133,6 +132,7 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
 
   switch (trackingType) {
   case 'view':
+  case 'customEvent':
     trackFpti(config, trackingData);
     break;
   default:
@@ -371,6 +371,24 @@ export const Tracker = (config? : Config = {}) => {
 
           return {};
         });
+    },
+    customEvent: (eventName : string, data? : Object) => {
+      try {
+        validateCustomEvent(eventName, data);
+
+        const fptiInput : FptiInput = {
+          eventName,
+          eventType: 'customEvent'
+        };
+
+        if (data) {
+          fptiInput.eventData = data;
+        }
+
+        trackEvent(config, 'customEvent', fptiInput);
+      } catch (err) {
+        logger.error('cutomEvent', err);
+      }
     }
   };
   setImplicitPropertyId(config);
