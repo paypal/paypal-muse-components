@@ -106,3 +106,78 @@ export type FptiVariables = {|
   // Timestamp relative to user
   g : Date
 |};
+
+/* Workaround for the sake of supporting the 'legacy' store cash implementation. See 'StoreCashVariables' */
+export type StoreCashInput = {|
+
+|}
+
+/* Workaround for the sake of supporting the 'legacy' store cash implementation. 'legacy'
+store cash works via 3 different 'types' of fpti events:
+  - An event that fires at the time a user views a page with an SPB. This begins a potential 'dropoff'.
+  Currently the SDK is firing this via a 'customEvent' whenever a merchant wants, regardless if there's a
+  SPB present or not.
+  - A 'purchase' event at the time a customer completes a transaction.
+  - An event when a merchant can identify a customer.
+
+These events follow a completely different format from the rest of the events fired by the SDK.
+They will be removed at some point in the future.
+*/
+export type StoreCashVariables = {|
+  // Legacy value for filtering events in Herald
+  page : string,
+  // Legacy value for filtering events in Herald
+  pgrp : string,
+  // Traffic source
+  tsrce: string,
+  // Application name
+  comp : string,
+  // Source identifier ("component" in fpti team's terms)
+  sub_component: string,
+  // Originating source (client / server side)
+  s: string,
+  // Item originating the track ("container/propertyId in this context")
+  item: string,
+  // "Flow" Type (totally irrelevant boilerplate related to the UI in this context - see musenodeweb for details)
+  fltp: string,
+  // Impression event name ("event subtype" in FPTI team's terms)
+  es: string,
+  // Merchant encrypted account number
+  mrid : string,
+  // Partner BN Code
+  code: string,
+  // Partner Name
+  partner_name: string,
+  // page title
+  pt: string,
+  // Device height
+  dh : number,
+  // Device width
+  dw : number,
+  // Browser height
+  bh : number,
+  // Browser width
+  bw : number,
+  // Color depth
+  cd : number,
+  // Screen height
+  sh : number,
+  // Screen width
+  sw : number,
+  // Js client version
+  v: string,
+  // Browser plugins
+  pl: string,
+  // Rosetta language
+  rosetta_language : string,
+  // Store cash campaign offer program id
+  offer_id: string,
+  // 'event type' (will always be 'im'/impression in this context)
+  e: string,
+  // Timestamp
+  t : Date,
+  // Timestamp relative to user
+  g : Date,
+  // Page domain, path & querystring
+  completeurl: string
+|}

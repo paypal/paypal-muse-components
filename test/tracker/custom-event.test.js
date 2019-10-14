@@ -6,7 +6,7 @@ import { mockContainerSummary1 } from '../mocks';
 import { logger } from '../../src/lib/logger';
 
 jest.mock('../../src/lib/fpti')
-import trackFpti from '../../src/lib/fpti';
+import { trackFpti } from '../../src/lib/fpti';
 
 jest.mock('../../src/lib/get-property-id', () => {
   return {

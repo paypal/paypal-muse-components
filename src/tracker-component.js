@@ -26,8 +26,13 @@ import {
   setMerchantProvidedUserId
 } from './lib/local-storage';
 import { fetchContainerSettings } from './lib/get-property-id';
+import { 
+  storeCashInit,
+  storeCashCancel,
+  storeCashPurchase
+} from './lib/store-cash'
 import getJetlore from './lib/jetlore';
-import trackFpti from './lib/fpti';
+import { trackFpti } from './lib/fpti';
 import { track } from './lib/track';
 import constants from './lib/constants';
 import type {
@@ -130,11 +135,28 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
     return;
   }
 
+  const hasStoreCashCampaign = config.containerSummary && config.containerSummary.storeCashProgramId
+
   switch (trackingType) {
   case 'view':
   case 'customEvent':
+    if (hasStoreCashCampaign) {
+      switch (trackingData.eventName) {
+        case 'send-store-cash':
+          storeCashInit();
+          break;
+        case 'cancel-store-cash':
+          storeCashCancel();
+          break;
+      }
+    }
+
     trackFpti(config, trackingData);
     break;
+  case 'purchase':
+    if (hasStoreCashCampaign) {
+      storeCashPurchase();
+    }
   default:
     track(config, trackingType, trackingData);
     break;
