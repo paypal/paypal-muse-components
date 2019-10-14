@@ -1,6 +1,7 @@
 /* @flow */
 import constants from '../constants';
 import generate from '../generate-id';
+import { logger } from '../logger';
 
 const { storage } = constants;
 
@@ -10,6 +11,7 @@ export const getUserStorage = () => {
   try {
     userStorage = JSON.parse(userStorage);
   } catch (err) {
+    logger.error('getUserStorage', err);
     userStorage = {};
   }
 

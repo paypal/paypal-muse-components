@@ -2,10 +2,10 @@
 /* global it describe beforeEach afterAll expect jest */
 import { Tracker } from '../../src/tracker-component';
 import { track } from '../../src/lib/track';
+import { logger } from '../../src/lib/logger';
 import { fetchPropertyId } from '../../src/lib/get-property-id';
 import { mockContainerSummary1 } from '../mocks';
-// eslint-disable-next-line no-console
-console.error = jest.fn();
+
 jest.mock('../../src/lib/track');
 jest.mock('../../src/lib/get-property-id', () => {
   return {
@@ -36,12 +36,13 @@ describe('addToCart', () => {
       url: 'http://localhost.paypal.com:8080/us/gifts/brands/best-buy',
       quantity: 1
     };
+
+    logger.error = jest.fn();
   });
 
   afterEach(() => {
     track.mockReset();
-    // eslint-disable-next-line no-console
-    console.error.mockReset();
+    logger.error.mockReset();
     window.localStorage.removeItem('paypal-cr-cart');
     window.localStorage.removeItem('paypal-cr-cart-expirty');
   });
@@ -49,8 +50,6 @@ describe('addToCart', () => {
   afterAll(() => {
     track.mockRestore();
     fetchPropertyId.mockRestore();
-    // eslint-disable-next-line no-console
-    console.error.mockRestore();
   });
 
   it('should pass added items', () => {

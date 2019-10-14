@@ -1,7 +1,8 @@
-/* globals describe beforeAll afterEach it expect */
+/* globals describe beforeAll afterEach it expect jest */
 /* @flow */
 import { Tracker } from '../src/tracker-component';
 import getJetlore from '../src/lib/jetlore';
+import { logger } from '../src/lib/logger';
 
 /*
 ** moved into it's own file due to eslint max file size rule
@@ -47,6 +48,7 @@ describe('Tracker.track function', () => {
       div: undefined,
       lang: undefined
     };
+    logger.error = jest.fn();
   });
 
   afterEach(() => {
