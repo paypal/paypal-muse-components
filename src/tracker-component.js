@@ -26,11 +26,11 @@ import {
   setMerchantProvidedUserId
 } from './lib/local-storage';
 import { fetchContainerSettings } from './lib/get-property-id';
-import { 
+import {
   storeCashInit,
   storeCashCancel,
   storeCashPurchase
-} from './lib/store-cash'
+} from './lib/store-cash';
 import getJetlore from './lib/jetlore';
 import { trackFpti } from './lib/fpti';
 import { track } from './lib/track';
@@ -135,19 +135,19 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
     return;
   }
 
-  const hasStoreCashCampaign = config.containerSummary && config.containerSummary.storeCashProgramId
+  const hasStoreCashCampaign = config.containerSummary && config.containerSummary.storeCashProgramId;
 
   switch (trackingType) {
   case 'view':
   case 'customEvent':
     if (hasStoreCashCampaign) {
       switch (trackingData.eventName) {
-        case 'send-store-cash':
-          storeCashInit();
-          break;
-        case 'cancel-store-cash':
-          storeCashCancel();
-          break;
+      case 'send-store-cash':
+        storeCashInit(config);
+        break;
+      case 'cancel-store-cash':
+        storeCashCancel(config);
+        break;
       }
     }
 
@@ -155,7 +155,7 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
     break;
   case 'purchase':
     if (hasStoreCashCampaign) {
-      storeCashPurchase();
+      storeCashPurchase(config);
     }
   default:
     track(config, trackingType, trackingData);
@@ -409,7 +409,7 @@ export const Tracker = (config? : Config = {}) => {
 
         trackEvent(config, 'customEvent', fptiInput);
       } catch (err) {
-        logger.error('cutomEvent', err);
+        logger.error('customEvent', err);
       }
     }
   };

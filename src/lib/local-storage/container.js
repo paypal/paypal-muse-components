@@ -39,5 +39,5 @@ export const setContainer = (containerSummary : ContainerSummary) => {
 };
 
 export const clearContainer = () => {
-  window.localStorage.removeItem(storage.paypalCrContainer)
-}
+  window.localStorage.removeItem(storage.paypalCrContainer);
+};

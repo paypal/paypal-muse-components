@@ -104,13 +104,15 @@ export type FptiVariables = {|
   // Timestamp
   t : Date,
   // Timestamp relative to user
-  g : Date
+  g : Date,
+  // Number indicating if an event is client-side
+  cs : Number
 |};
 
 /* Workaround for the sake of supporting the 'legacy' store cash implementation. See 'StoreCashVariables' */
 export type StoreCashInput = {|
 
-|}
+|};
 
 /* Workaround for the sake of supporting the 'legacy' store cash implementation. 'legacy'
 store cash works via 3 different 'types' of fpti events:
@@ -129,27 +131,27 @@ export type StoreCashVariables = {|
   // Legacy value for filtering events in Herald
   pgrp : string,
   // Traffic source
-  tsrce: string,
-  // Application name
+  tsrce : string,
+  // Application name (MUST be "tagmanagernodeweb" in this context)
   comp : string,
   // Source identifier ("component" in fpti team's terms)
-  sub_component: string,
+  sub_component : string,
   // Originating source (client / server side)
-  s: string,
+  s : string,
   // Item originating the track ("container/propertyId in this context")
-  item: string,
-  // "Flow" Type (totally irrelevant boilerplate related to the UI in this context - see musenodeweb for details)
-  fltp: string,
+  item : string,
+  // "Flow" Type (MUST be "store-cash" in this context)
+  fltp : string,
   // Impression event name ("event subtype" in FPTI team's terms)
-  es: string,
+  es : string,
   // Merchant encrypted account number
   mrid : string,
   // Partner BN Code
-  code: string,
+  code : string,
   // Partner Name
-  partner_name: string,
+  partner_name : string,
   // page title
-  pt: string,
+  pt : string,
   // Device height
   dh : number,
   // Device width
@@ -164,20 +166,24 @@ export type StoreCashVariables = {|
   sh : number,
   // Screen width
   sw : number,
-  // Js client version
-  v: string,
+  // Js client version (NA by default in our case)
+  v : string,
   // Browser plugins
-  pl: string,
+  pl : string,
   // Rosetta language
   rosetta_language : string,
   // Store cash campaign offer program id
-  offer_id: string,
+  offer_id : string,
   // 'event type' (will always be 'im'/impression in this context)
-  e: string,
+  e : string,
   // Timestamp
   t : Date,
   // Timestamp relative to user
   g : Date,
   // Page domain, path & querystring
-  completeurl: string
-|}
+  completeurl : string,
+  // 'merchant recognized user'
+  mru : boolean,
+  // Flag indicating that an event originated from the sdk
+  sdk_event : boolean
+|};
