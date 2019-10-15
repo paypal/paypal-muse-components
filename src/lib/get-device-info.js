@@ -141,7 +141,7 @@ export const getBrowserPlugins = () => {
     }
     return pluginArray.join(',');
   } catch (err) {
-    console.error(err);
+    logger.error('getPlugins', err);
     return null;
   }
 };

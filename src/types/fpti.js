@@ -104,9 +104,7 @@ export type FptiVariables = {|
   // Timestamp
   t : Date,
   // Timestamp relative to user
-  g : Date,
-  // Number indicating if an event is client-side
-  cs : Number
+  g : Date
 |};
 
 /* Workaround for the sake of supporting the 'legacy' store cash implementation. See 'StoreCashVariables' */
@@ -135,7 +133,7 @@ export type StoreCashVariables = {|
   // Application name (MUST be "tagmanagernodeweb" in this context)
   comp : string,
   // Source identifier ("component" in fpti team's terms)
-  sub_component : string,
+  sub_comp : string,
   // Originating source (client / server side)
   s : string,
   // Item originating the track ("container/propertyId in this context")
@@ -147,9 +145,9 @@ export type StoreCashVariables = {|
   // Merchant encrypted account number
   mrid : string,
   // Partner BN Code
-  code : string,
+  code? : string,
   // Partner Name
-  partner_name : string,
+  partner_name? : string,
   // page title
   pt : string,
   // Device height
@@ -170,6 +168,10 @@ export type StoreCashVariables = {|
   v : string,
   // Browser plugins
   pl : string,
+  // Browser type
+  btyp : string,
+  // Device type
+  dvis : string,
   // Rosetta language
   rosetta_language : string,
   // Store cash campaign offer program id
@@ -183,7 +185,7 @@ export type StoreCashVariables = {|
   // Page domain, path & querystring
   completeurl : string,
   // 'merchant recognized user'
-  mru : boolean,
-  // Flag indicating that an event originated from the sdk
-  sdk_event : boolean
+  mru? : boolean,
+  // client side event
+  cs : number
 |};

@@ -1,4 +1,6 @@
 /* @flow */
-export const storeCashCancel = () => {
-  console.log('cancel');
+import type { Config } from '../../types';
+
+export const storeCashCancel = (config : Config) => {
+  
 };

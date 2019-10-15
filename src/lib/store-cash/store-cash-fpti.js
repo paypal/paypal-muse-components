@@ -1,6 +1,7 @@
 /* @flow */
-import { getClientID, getMerchantID, getPartnerAttributionID } from '@paypal/sdk-client/src';
+import { getMerchantID } from '@paypal/sdk-client/src';
 
+import type { Config, StoreCashVariables } from '../../types';
 import { sendBeacon, filterFalsyValues } from '../fpti';
 import {
   getPageTitle,
@@ -16,7 +17,7 @@ const resolveTrackingData = (config, data) => {
   const completeUrl = getWindowLocation();
   const browserPlugins = getBrowserPlugins();
   const pageTitle = getPageTitle();
-  const mrid = getMerchantID();
+  const mrid = getMerchantID()[0];
 
   return {
     ...deviceInfo,
@@ -37,7 +38,7 @@ const resolveTrackingData = (config, data) => {
   };
 };
 
-const resolveTrackingVariables = data => ({
+const resolveTrackingVariables = (data) : StoreCashVariables => ({
   pgrp: [
     data.website,
     data.feature,
@@ -95,7 +96,7 @@ const resolveTrackingVariables = data => ({
   btyp: data.browserType,
 
   // Browser plugins
-  bp: data.browserPlugins,
+  pl: data.browserPlugins,
 
   // Page title
   pt: data.pageTitle,
@@ -137,7 +138,7 @@ const resolveTrackingVariables = data => ({
   completeurl: data.completeUrl
 });
 
-export const storeCashFpti = (config, data) => {
+export const storeCashFpti = (config : Config, data : any) => {
   const fptiServer = 'https://t.paypal.com/ts';
   const trackingVariables = resolveTrackingVariables(resolveTrackingData(config, data));
 
