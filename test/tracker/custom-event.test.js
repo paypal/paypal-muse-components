@@ -4,9 +4,9 @@ import { setContainer, setGeneratedUserId } from '../../src/lib/local-storage';
 import { Tracker } from '../../src/tracker-component';
 import { mockContainerSummary1 } from '../mocks';
 import { logger } from '../../src/lib/logger';
+import { trackFpti } from '../../src/lib/fpti';
 
-jest.mock('../../src/lib/fpti')
-import trackFpti from '../../src/lib/fpti';
+jest.mock('../../src/lib/fpti');
 
 jest.mock('../../src/lib/get-property-id', () => {
   return {
@@ -15,12 +15,12 @@ jest.mock('../../src/lib/get-property-id', () => {
 });
 
 describe('customEvent', () => {
-  let mockUserId = setGeneratedUserId().userId;
+  const mockUserId = setGeneratedUserId().userId;
   logger.error = jest.fn();
   let config;
 
   beforeEach(() => {
-    setContainer(mockContainerSummary1)
+    setContainer(mockContainerSummary1);
 
     config = {
       user: {
@@ -39,21 +39,21 @@ describe('customEvent', () => {
 
   afterAll(() => {
     window.localStorage.clear();
-    jest.mockRestore()
+    jest.mockRestore();
   });
 
   it('should trigger a call to fpit', (done) => {
     const tracker = Tracker(config);
 
     setTimeout(() => {
-      tracker.customEvent('user_gets_upset')
-      tracker.customEvent('user_yells_at_monitor')
+      tracker.customEvent('user_gets_upset');
+      tracker.customEvent('user_yells_at_monitor');
 
       // called 3 times due to the sdk calling 'pageView' on init
-      expect(trackFpti).toHaveBeenCalledTimes(3)
-      done()
-    }, 50)
-  })
+      expect(trackFpti).toHaveBeenCalledTimes(3);
+      done();
+    }, 50);
+  });
 
   it('should pass along data in fpti sinfo', (done) => {
     const customConfig = {
@@ -63,7 +63,7 @@ describe('customEvent', () => {
         'name': 'Frank',
         'id': mockUserId
       }
-    }
+    };
 
     const tracker = Tracker(customConfig);
 
@@ -71,38 +71,38 @@ describe('customEvent', () => {
       guests: 25,
       hasPiñata: false,
       shouldHavePiñata: true,
-      salsaFlavors: ['mild', 'green', 'unknown']
-    }
+      salsaFlavors: [ 'mild', 'green', 'unknown' ]
+    };
 
     const expectedConfig = {
       ...customConfig,
       'currencyCode': 'USD',
-      containerSummary: mockContainerSummary1
-    }
+      'containerSummary': mockContainerSummary1
+    };
 
     const expectedEventData = {
       eventName: 'taco_party',
       eventType: 'customEvent',
       eventData
-    }
+    };
 
     setTimeout(() => {
-      tracker.customEvent('taco_party', eventData)
+      tracker.customEvent('taco_party', eventData);
 
-      expect(trackFpti).toHaveBeenCalledTimes(2)
-      expect(trackFpti).toHaveBeenCalledWith(expectedConfig, expectedEventData)
-      done()
-    }, 50)
-  })
+      expect(trackFpti).toHaveBeenCalledTimes(2);
+      expect(trackFpti).toHaveBeenCalledWith(expectedConfig, expectedEventData);
+      done();
+    }, 50);
+  });
 
   it('should throw when invalid input is passed as an argument', () => {
     const tracker = Tracker(config);
 
     try {
-      tracker.customEvent(undefined, 'you should really read the docs')
+      tracker.customEvent(undefined, 'you should really read the docs');
     } catch (err) {
-      expect(logger.error).toHaveBeenCalledTimes(1)
+      expect(logger.error).toHaveBeenCalledTimes(1);
     }
 
-  })
+  });
 });

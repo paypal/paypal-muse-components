@@ -106,3 +106,74 @@ export type FptiVariables = {|
   // Timestamp relative to user
   g : Date
 |};
+
+/* Workaround for the sake of supporting legacy analytics implementation.
+These events follow a completely different format from the rest of the events fired by the SDK.
+They will be removed at some point in the future.
+*/
+export type LegacyVariables = {|
+  // Legacy value for filtering events in Herald
+  page : string,
+  // Legacy value for filtering events in Herald
+  pgrp : string,
+  // Traffic source
+  tsrce : string,
+  // Application name (MUST be "tagmanagernodeweb" in this context)
+  comp : string,
+  // Source identifier ("component" in fpti team's terms)
+  sub_comp : string,
+  // Originating source (client / server side)
+  s : string,
+  // Item originating the track ("container/propertyId in this context")
+  item : string,
+  // "Flow" Type
+  fltp : string,
+  // Impression event name ("event subtype" in FPTI team's terms)
+  es : string,
+  // Merchant encrypted account number
+  mrid : string,
+  // Partner BN Code
+  code? : string,
+  // Partner Name
+  partner_name? : string,
+  // page title
+  pt : string,
+  // Device height
+  dh : number,
+  // Device width
+  dw : number,
+  // Browser height
+  bh : number,
+  // Browser width
+  bw : number,
+  // Color depth
+  cd : number,
+  // Screen height
+  sh : number,
+  // Screen width
+  sw : number,
+  // Js client version (NA by default in our case)
+  v : string,
+  // Browser plugins
+  pl : string,
+  // Browser type
+  btyp : string,
+  // Device type
+  dvis : string,
+  // Rosetta language
+  rosetta_language : string,
+  // offer program id
+  offer_id : string,
+  // 'event type' (will always be 'im'/impression in this context)
+  e : string,
+  // Timestamp
+  t : Date,
+  // Timestamp relative to user
+  g : Date,
+  // Page domain, path & querystring
+  completeurl : string,
+  // 'merchant recognized user'
+  mru? : boolean,
+  // client side event
+  cs : number
+|};

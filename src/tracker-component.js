@@ -26,8 +26,13 @@ import {
   setMerchantProvidedUserId
 } from './lib/local-storage';
 import { fetchContainerSettings } from './lib/get-property-id';
+import {
+  analyticsInit,
+  merchantUserEvent,
+  analyticsPurchase
+} from './lib/legacy-analytics';
 import getJetlore from './lib/jetlore';
-import trackFpti from './lib/fpti';
+import { trackFpti } from './lib/fpti';
 import { track } from './lib/track';
 import constants from './lib/constants';
 import type {
@@ -130,11 +135,28 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
     return;
   }
 
+  const programExists = config.containerSummary && config.containerSummary.programId;
+
   switch (trackingType) {
   case 'view':
   case 'customEvent':
+    if (programExists) {
+      switch (trackingData.eventName) {
+      case 'analytics-init':
+        analyticsInit(config);
+        break;
+      case 'analytics-cancel':
+        merchantUserEvent(config);
+        break;
+      }
+    }
+
     trackFpti(config, trackingData);
     break;
+  case 'purchase':
+    if (programExists) {
+      analyticsPurchase(config);
+    }
   default:
     track(config, trackingType, trackingData);
     break;
@@ -387,7 +409,7 @@ export const Tracker = (config? : Config = {}) => {
 
         trackEvent(config, 'customEvent', fptiInput);
       } catch (err) {
-        logger.error('cutomEvent', err);
+        logger.error('customEvent', err);
       }
     }
   };

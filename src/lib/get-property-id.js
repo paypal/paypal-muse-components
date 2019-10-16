@@ -14,20 +14,20 @@ import { logger } from './logger';
 a format better suited for use by the SDK */
 const parseContainer = (container : Container) : ContainerSummary => {
   const offerTag = container.tags.filter(tag => tag.tag_definition_id === 'offers')[0];
-  let storeCashProgramId;
+  let programId;
 
   if (offerTag && offerTag.configuration) {
-    storeCashProgramId = offerTag.configuration.filter(config => config.id === 'offer-program-id')[0];
-    storeCashProgramId = storeCashProgramId ? storeCashProgramId.value : null;
+    programId = offerTag.configuration.filter(config => config.id === 'offer-program-id')[0];
+    programId = programId ? programId.value : null;
   } else {
-    storeCashProgramId = null;
+    programId = null;
   }
 
   return {
     id: container.id,
     integrationType: container.integration_type,
     mrid: container.owner_id,
-    storeCashProgramId
+    programId
   };
 };
 

@@ -88,6 +88,66 @@ const getLocation = () => {
   return `${ window.location.origin }${ window.location.pathname }`;
 };
 
+export const getPageTitle = () => document.title;
+
+export const getBrowserPlugins = () => {
+  const getPluginData = () => {
+    return {
+      director: 'application/x-director',
+      mediaplayer: 'application/x-mplayer2',
+      pdf: 'application/pdf',
+      quicktime: 'video/quicktime',
+      real: 'audio/x-pn-realaudio-plugin',
+      silverlight: 'application/x-silverlight'
+    };
+  };
+
+  const getFlashVersion = () => {
+    let version = null;
+    if (window.navigator.plugins && window.navigator.plugins.length > 0) {
+      const type = 'application/x-shockwave-flash';
+      const mimeTypes = window.navigator.mimeTypes;
+      if (
+        mimeTypes &&
+        mimeTypes[type] &&
+        mimeTypes[type].enabledPlugin &&
+        mimeTypes[type].enabledPlugin.description
+      ) {
+        version = mimeTypes[type].enabledPlugin.description;
+      }
+    }
+    return version;
+  };
+
+  const detectPlugin = type => {
+    const mimeTypes = window.navigator.mimeTypes;
+    if (mimeTypes && mimeTypes.length) {
+      const plugin = mimeTypes[type];
+      return plugin && plugin.enabledPlugin;
+    }
+  };
+
+  try {
+    const pluginArray = [];
+    const plugins = getPluginData();
+    for (const name in plugins) {
+      if (detectPlugin(plugins[name])) {
+        pluginArray.push(name);
+      }
+    }
+    const flash = getFlashVersion();
+    if (flash) {
+      pluginArray.push(flash);
+    }
+    return pluginArray.join(',');
+  } catch (err) {
+    logger.error('getPlugins', err);
+    return null;
+  }
+};
+
+export const getWindowLocation = () => window.location.href;
+
 export const getDeviceInfo = () => {
   try {
     const browserWidth = getBrowserWidth();

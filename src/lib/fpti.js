@@ -4,12 +4,13 @@ import { getClientID, getMerchantID, getPartnerAttributionID } from '@paypal/sdk
 import type {
   FptiInput,
   FptiVariables,
+  LegacyVariables,
   Config
 } from '../types';
 
 import { getDeviceInfo } from './get-device-info';
 
-const sendBeacon = (src : string, data : FptiVariables) => {
+export const sendBeacon = (src : string, data : FptiVariables | LegacyVariables) => {
   let query = Object.keys(data).map(key => {
     // $FlowFixMe
     return `${ encodeURIComponent(key) }=${ encodeURIComponent(data[key]) }`;
@@ -22,7 +23,7 @@ const sendBeacon = (src : string, data : FptiVariables) => {
 };
 
 // removes empty strings, `undefined`, `null`, and `NaN` from fpti event
-const filterFalsyValues = (source : FptiVariables) : FptiVariables => {
+export const filterFalsyValues = (source : Object) : FptiVariables | LegacyVariables => {
   Object.keys(source).forEach(key => {
     const val = source[key];
 
@@ -134,7 +135,7 @@ const resolveTrackingVariables = (data : any) : FptiVariables => ({
   g: data.g
 });
 
-export default (config : Config, data : FptiInput) => {
+export const trackFpti = (config : Config, data : FptiInput) => {
   const fptiServer = 'https://t.paypal.com/ts';
   const trackingVariables = resolveTrackingVariables(resolveTrackingData(config, data));
 
