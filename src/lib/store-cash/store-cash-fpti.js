@@ -113,6 +113,9 @@ const resolveTrackingVariables = (data) : StoreCashVariables => ({
   // Store Cash programId
   offer_id: data.storeCashProgramId,
 
+  // Boolean that indicates if a merchant could identify a user using a paypal-independent method
+  mru: data.mru,
+
   // Impression event
   e: data.e,
 

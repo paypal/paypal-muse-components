@@ -107,11 +107,6 @@ export type FptiVariables = {|
   g : Date
 |};
 
-/* Workaround for the sake of supporting the 'legacy' store cash implementation. See 'StoreCashVariables' */
-export type StoreCashInput = {|
-
-|};
-
 /* Workaround for the sake of supporting the 'legacy' store cash implementation. 'legacy'
 store cash works via 3 different 'types' of fpti events:
   - An event that fires at the time a user views a page with an SPB. This begins a potential 'dropoff'.
