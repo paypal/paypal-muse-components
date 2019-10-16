@@ -1,10 +1,10 @@
 /* @flow */
 import type { Config } from '../../types';
 
-import { storeCashFpti } from './store-cash-fpti';
+import { legacyFpti } from './legacy-fpti';
 
-export const storeCashCancel = (config : Config) => {
-  storeCashFpti(config, {
+export const merchantUserEvent = (config : Config) => {
+  legacyFpti(config, {
     fltp: 'analytics',
     es: 'merchantRecognizedUser',
     mru: true,

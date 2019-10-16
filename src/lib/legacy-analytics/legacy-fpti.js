@@ -1,7 +1,7 @@
 /* @flow */
 import { getMerchantID } from '@paypal/sdk-client/src';
 
-import type { Config, StoreCashVariables } from '../../types';
+import type { Config, LegacyVariables } from '../../types';
 import { sendBeacon, filterFalsyValues } from '../fpti';
 import {
   getPageTitle,
@@ -11,7 +11,7 @@ import {
 } from '../get-device-info';
 
 const resolveTrackingData = (config, data) => {
-  const storeCashProgramId = config.containerSummary && config.containerSummary.storeCashProgramId;
+  const programId = config.containerSummary && config.containerSummary.programId;
 
   const deviceInfo = getDeviceInfo();
   const completeUrl = getWindowLocation();
@@ -34,11 +34,11 @@ const resolveTrackingData = (config, data) => {
     browserPlugins,
     pageTitle,
     mrid,
-    storeCashProgramId
+    programId
   };
 };
 
-const resolveTrackingVariables = (data) : StoreCashVariables => ({
+const resolveTrackingVariables = (data) : LegacyVariables => ({
   pgrp: [
     data.website,
     data.feature,
@@ -62,7 +62,7 @@ const resolveTrackingVariables = (data) : StoreCashVariables => ({
   // Traffic source
   tsrce: data.tsrce,
 
-  // "Flow" Type (MUST be "store-cash" for init event)
+  // "Flow" Type
   fltp: data.fltp,
 
   // Impression event name
@@ -110,8 +110,8 @@ const resolveTrackingVariables = (data) : StoreCashVariables => ({
   // Analytics identifier associated with the merchant site. container id.
   item: data.propertyId,
 
-  // Store Cash programId
-  offer_id: data.storeCashProgramId,
+  // ProgramId
+  offer_id: data.programId,
 
   // Boolean that indicates if a merchant could identify a user using a paypal-independent method
   mru: data.mru,
@@ -141,7 +141,7 @@ const resolveTrackingVariables = (data) : StoreCashVariables => ({
   completeurl: data.completeUrl
 });
 
-export const storeCashFpti = (config : Config, data : any) => {
+export const legacyFpti = (config : Config, data : any) => {
   const fptiServer = 'https://t.paypal.com/ts';
   const trackingVariables = resolveTrackingVariables(resolveTrackingData(config, data));
 

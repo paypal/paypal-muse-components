@@ -1,5 +1,5 @@
 /* @flow */
-export type { FptiVariables, FptiInput, StoreCashVariables } from './fpti';
+export type { FptiVariables, FptiInput, LegacyVariables } from './fpti';
 export type { EventType, CartEventType } from './events';
 export type { Config, JetloreConfig } from './config';
 export type { UserData, IdentityData } from './user';

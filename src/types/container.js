@@ -35,5 +35,5 @@ export type ContainerSummary = {|
   id : string,
   integrationType : string,
   mrid : string,
-  storeCashProgramId : string | null
+  programId : string | null
 |};

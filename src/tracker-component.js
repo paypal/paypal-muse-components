@@ -27,10 +27,10 @@ import {
 } from './lib/local-storage';
 import { fetchContainerSettings } from './lib/get-property-id';
 import {
-  storeCashInit,
-  storeCashCancel,
-  storeCashPurchase
-} from './lib/store-cash';
+  analyticsInit,
+  merchantUserEvent,
+  analyticsPurchase
+} from './lib/legacy-analytics';
 import getJetlore from './lib/jetlore';
 import { trackFpti } from './lib/fpti';
 import { track } from './lib/track';
@@ -135,18 +135,18 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
     return;
   }
 
-  const hasStoreCashCampaign = config.containerSummary && config.containerSummary.storeCashProgramId;
+  const programExists = config.containerSummary && config.containerSummary.programId;
 
   switch (trackingType) {
   case 'view':
   case 'customEvent':
-    if (hasStoreCashCampaign) {
+    if (programExists) {
       switch (trackingData.eventName) {
-      case 'send-store-cash':
-        storeCashInit(config);
+      case 'analytics-init':
+        analyticsInit(config);
         break;
-      case 'cancel-store-cash':
-        storeCashCancel(config);
+      case 'analytics-cancel':
+        merchantUserEvent(config);
         break;
       }
     }
@@ -154,8 +154,8 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
     trackFpti(config, trackingData);
     break;
   case 'purchase':
-    if (hasStoreCashCampaign) {
-      storeCashPurchase(config);
+    if (programExists) {
+      analyticsPurchase(config);
     }
   default:
     track(config, trackingType, trackingData);

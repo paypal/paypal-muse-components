@@ -4,13 +4,13 @@ import { getClientID, getMerchantID, getPartnerAttributionID } from '@paypal/sdk
 import type {
   FptiInput,
   FptiVariables,
-  StoreCashVariables,
+  LegacyVariables,
   Config
 } from '../types';
 
 import { getDeviceInfo } from './get-device-info';
 
-export const sendBeacon = (src : string, data : FptiVariables | StoreCashVariables) => {
+export const sendBeacon = (src : string, data : FptiVariables | LegacyVariables) => {
   let query = Object.keys(data).map(key => {
     // $FlowFixMe
     return `${ encodeURIComponent(key) }=${ encodeURIComponent(data[key]) }`;
@@ -23,7 +23,7 @@ export const sendBeacon = (src : string, data : FptiVariables | StoreCashVariabl
 };
 
 // removes empty strings, `undefined`, `null`, and `NaN` from fpti event
-export const filterFalsyValues = (source : Object) : FptiVariables | StoreCashVariables => {
+export const filterFalsyValues = (source : Object) : FptiVariables | LegacyVariables => {
   Object.keys(source).forEach(key => {
     const val = source[key];
 

@@ -107,18 +107,11 @@ export type FptiVariables = {|
   g : Date
 |};
 
-/* Workaround for the sake of supporting the 'legacy' store cash implementation. 'legacy'
-store cash works via 3 different 'types' of fpti events:
-  - An event that fires at the time a user views a page with an SPB. This begins a potential 'dropoff'.
-  Currently the SDK is firing this via a 'customEvent' whenever a merchant wants, regardless if there's a
-  SPB present or not.
-  - A 'purchase' event at the time a customer completes a transaction.
-  - An event when a merchant can identify a customer.
-
+/* Workaround for the sake of supporting legacy analytics implementation.
 These events follow a completely different format from the rest of the events fired by the SDK.
 They will be removed at some point in the future.
 */
-export type StoreCashVariables = {|
+export type LegacyVariables = {|
   // Legacy value for filtering events in Herald
   page : string,
   // Legacy value for filtering events in Herald
@@ -133,7 +126,7 @@ export type StoreCashVariables = {|
   s : string,
   // Item originating the track ("container/propertyId in this context")
   item : string,
-  // "Flow" Type (MUST be "store-cash" in this context)
+  // "Flow" Type
   fltp : string,
   // Impression event name ("event subtype" in FPTI team's terms)
   es : string,
@@ -169,7 +162,7 @@ export type StoreCashVariables = {|
   dvis : string,
   // Rosetta language
   rosetta_language : string,
-  // Store cash campaign offer program id
+  // offer program id
   offer_id : string,
   // 'event type' (will always be 'im'/impression in this context)
   e : string,

@@ -56,7 +56,7 @@ export const mockContainer1 = {
           'config_value': 'offer',
           'config_type': 'string',
           'config_required': true,
-          'value': 'store-cash'
+          'value': 'meteor'
         },
         {
           'id': 'mobile-variant',
@@ -72,7 +72,7 @@ export const mockContainer1 = {
           'config_value': 'offer',
           'config_type': 'string',
           'config_required': true,
-          'value': 'store-cash'
+          'value': 'meteor'
         },
         {
           'id': 'limit',
@@ -190,5 +190,5 @@ export const mockContainerSummary1 = {
   id: mockContainer1.id,
   integrationType: mockContainer1.integration_type,
   mrid: mockContainer1.owner_id,
-  storeCashProgramId: 'C4ENKKFUEUJ4J'
+  programId: 'C4ENKKFUEUJ4J'
 };

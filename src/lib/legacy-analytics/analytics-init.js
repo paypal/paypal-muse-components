@@ -1,10 +1,10 @@
 /* @flow */
 import type { Config } from '../../types';
 
-import { storeCashFpti } from './store-cash-fpti';
+import { legacyFpti } from './legacy-fpti';
 
-export const storeCashInit = (config : Config) => {
-  storeCashFpti(config, {
+export const analyticsInit = (config : Config) => {
+  legacyFpti(config, {
     fltp: 'store-cash',
     es: 'connectionStarted',
     website: 'muse',

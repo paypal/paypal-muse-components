@@ -44,7 +44,7 @@ describe('get-property-id', () => {
         id: mockContainer1.id,
         integrationType: mockContainer1.integration_type,
         mrid: mockContainer1.owner_id,
-        storeCashProgramId: 'C4ENKKFUEUJ4J'
+        programId: 'C4ENKKFUEUJ4J'
       };
 
       const result = await fetchContainerSettings({});
@@ -59,7 +59,7 @@ describe('get-property-id', () => {
         id: mockContainer1.id,
         integrationType: mockContainer1.integration_type,
         mrid: mockContainer1.owner_id,
-        storeCashProgramId: 'C4ENKKFUEUJ4J'
+        programId: 'C4ENKKFUEUJ4J'
       };
 
       const resultSummary = await fetchContainerSettings({ propertyId: 'arglebargleflimflam' });
@@ -76,7 +76,7 @@ describe('get-property-id', () => {
         id: mockContainer1.id,
         integrationType: mockContainer1.integration_type,
         mrid: mockContainer1.owner_id,
-        storeCashProgramId: 'C4ENKKFUEUJ4J'
+        programId: 'C4ENKKFUEUJ4J'
       };
 
       await fetchContainerSettings({});
@@ -104,7 +104,7 @@ describe('get-property-id', () => {
         id: 'a-totally-new-id',
         integrationType: 'manual',
         mrid: 'totatty-different-mrid',
-        storeCashProgramId: 'a-program-id'
+        programId: 'a-program-id'
       };
 
       setContainer(expected);
