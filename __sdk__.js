@@ -10,7 +10,7 @@ module.exports = {
     'muse': {
         entry: './src/index',
         staticNamespace: '__muse__',
-        automatic: false
+        automatic: true
     },
     'tracker': {
         entry: './src/tracker',
