@@ -23,7 +23,8 @@ import {
   getUserId,
   setGeneratedUserId,
   getOrCreateValidUserId,
-  setMerchantProvidedUserId
+  setMerchantProvidedUserId,
+  getCartId
 } from './lib/local-storage';
 import { fetchContainerSettings } from './lib/get-property-id';
 import {
@@ -236,6 +237,20 @@ export const Tracker = (config? : Config = {}) => {
   config.user.id = userId;
   config.currencyCode = config.currencyCode || getCurrency();
 
+  /*
+    Quick devnote here:
+
+    If a merchant doesn't provide a user ID during initialization or call setUser,
+    then any previously-stored merchant provided user ID will *not* be pulled into
+    config.user.merchantProvidedUserId.
+
+    This differs in behavior from the SDK generated user ID ("shopper ID"). The shopper ID
+    will be created, stored in storage, and set in config.user.id, or if it already exists
+    in local storage, then it will be pulled into config.user.id.
+
+    The difference in behavior is intended.
+  */
+
   const JL = getJetlore();
   const jetloreTrackTypes = [
     'view',
@@ -276,9 +291,19 @@ export const Tracker = (config? : Config = {}) => {
       return config;
     },
     viewPage: () => {
+      // $FlowFixMe
+      const merchantProvidedUserId = getUserId().merchantProvidedUserId;
+      // $FlowFixMe
+      const shopperId = getUserId().userId;
+      // $FlowFixMe
+      const cartId = getCartId().cartId;
+
       const data : FptiInput = {
         eventName: 'pageView',
-        eventType: 'view'
+        eventType: 'view',
+        shopperId,
+        merchantProvidedUserId,
+        cartId
       };
 
       trackEvent(config, 'view', data);
@@ -361,7 +386,9 @@ export const Tracker = (config? : Config = {}) => {
         }
       };
 
-      trackEvent(config, 'setUser', { prevMerchantProvidedUserId });
+      if (merchantProvidedUserId !== undefined || userEmail || userName) {
+        trackEvent(config, 'setUser', { prevMerchantProvidedUserId });
+      }
     },
     setPropertyId: (id : string) => {
       config.propertyId = id;

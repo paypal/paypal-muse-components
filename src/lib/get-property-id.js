@@ -31,20 +31,24 @@ const parseContainer = (container : Container) : ContainerSummary => {
   };
 };
 
-const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> => {
+const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> | Promise<Object> => {
   const merchantId = getMerchantID()[0];
 
-  const currentLocation = `${ window.location.protocol }//${ window.location.host }`;
-  const url = paramsToPropertyIdUrl ? paramsToPropertyIdUrl() : 'https://www.paypal.com/tagmanager/containers/xo';
+  if (merchantId) {
+    const currentLocation = `${ window.location.protocol }//${ window.location.host }`;
+    const url = paramsToPropertyIdUrl ? paramsToPropertyIdUrl() : 'https://www.paypal.com/tagmanager/containers/xo';
 
-  return fetch(`${ url }?mrid=${ merchantId }&url=${ encodeURIComponent(currentLocation) }`)
-    .then(res => {
-      if (res.status !== 200) {
-        throw new Error(`Failed to fetch propertyId: status ${ res.status }`);
-      }
+    return fetch(`${ url }?mrid=${ merchantId }&url=${ encodeURIComponent(currentLocation) }`)
+      .then(res => {
+        if (res.status !== 200) {
+          throw new Error(`Failed to fetch propertyId: status ${ res.status }`);
+        }
 
-      return res.json();
-    });
+        return res.json();
+      });
+  } else {
+    return Promise.resolve({});
+  }
 };
 
 export const fetchPropertyId = ({ paramsToPropertyIdUrl, propertyId } : Config) : Promise<string> => {
