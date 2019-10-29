@@ -784,7 +784,6 @@ describe('paypal.Tracker', () => {
             pgrp: 'ppshopping%3ApageView',
             comp: 'ppshoppingsdk',
             e: 'im',
-            g: '420',
             shopper_id: 'abc123',
             merchant_cart_id: 'abc123',
             product: 'ppshopping'
