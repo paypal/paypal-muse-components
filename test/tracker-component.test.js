@@ -22,6 +22,12 @@ const extractDataParam = (url : string) : string => {
   );
 };
 
+const queryToObject = (src : string) => {
+  const search = src.split('?')[1];
+
+  return JSON.parse(`{"${ decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(new RegExp('=', 'g'), '":"') }"}`);
+};
+
 const autoPropertyId = 'wow-so-auto';
 let fetchCalls = [];
 
@@ -751,5 +757,40 @@ describe('paypal.Tracker', () => {
     expect(logger.error.mock.calls.length).toBe(2);
     expect(typeof userId).toBe('string');
     expect(typeof cartId).toBe('string');
+  });
+
+  describe('#viewPage', () => {
+    it('should fire a well-formed page view event', () => {
+      const tracker = Tracker();
+      tracker.setPropertyId(propertyId);
+
+      tracker.viewPage();
+
+      expect(queryToObject(imgMock.src)).toEqual(
+        expect.objectContaining(
+          {
+            bh: '400',
+            bw: '400',
+            cd: '300',
+            sh: '750',
+            sw: '1000',
+            dvis: 'desktop',
+            item: 'hello-there',
+            mrid: 'xyz',
+            client_id: 'abcxyz123',
+            event_name: 'pageView',
+            event_type: 'view',
+            page: 'ppshopping%3ApageView',
+            pgrp: 'ppshopping%3ApageView',
+            comp: 'ppshoppingsdk',
+            e: 'im',
+            g: '420',
+            shopper_id: 'abc123',
+            merchant_cart_id: 'abc123',
+            product: 'ppshopping'
+          }
+        )
+      );
+    });
   });
 });

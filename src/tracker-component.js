@@ -386,7 +386,9 @@ export const Tracker = (config? : Config = {}) => {
         }
       };
 
-      trackEvent(config, 'setUser', { prevMerchantProvidedUserId });
+      if (merchantProvidedUserId !== undefined) {
+        trackEvent(config, 'setUser', { prevMerchantProvidedUserId });
+      }
     },
     setPropertyId: (id : string) => {
       config.propertyId = id;

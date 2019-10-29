@@ -18,7 +18,7 @@ export const sendBeacon = (src : string, data : FptiVariables | LegacyVariables)
 
   query = query.join('&');
 
-  const beaconImage = new window.Image();
+  const beaconImage = document.createElement('img');
   beaconImage.src = `${ src }?${ query }`;
 };
 
