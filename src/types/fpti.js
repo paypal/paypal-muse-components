@@ -47,7 +47,13 @@ export type FptiInput = {|
   // Timestamp
   t? : ?Date,
   // Timestamp relative to user
-  g? : ?Date
+  g? : ?Date,
+  // Cart ID
+  cartId? : string,
+  // SDK generated user ID
+  shopperId? : string,
+  // Merchant provided user ID
+  merchantProvidedUserId? : string
 |};
 
 export type FptiVariables = {|
@@ -104,7 +110,16 @@ export type FptiVariables = {|
   // Timestamp
   t : Date,
   // Timestamp relative to user
-  g : Date
+  g : Date,
+  // Cart ID
+  merchant_cart_id : string,
+  // SDK generated user ID
+  shopper_id : string,
+  // Merchant provided user ID
+  external_id : string,
+
+  // Constant: ppshopping (switchboard filter)
+  product : string
 |};
 
 /* Workaround for the sake of supporting legacy analytics implementation.

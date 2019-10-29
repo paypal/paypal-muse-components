@@ -39,6 +39,7 @@ const resolveTrackingData = (config : Config, data : FptiInput) : any => {
   const deviceInfo = getDeviceInfo();
 
   return {
+    product: 'ppshopping',
     e: 'im',
     comp: 'ppshoppingsdk',
     page: `ppshopping:${ data.eventName }`,
@@ -132,7 +133,15 @@ const resolveTrackingVariables = (data : any) : FptiVariables => ({
   t: data.t,
 
   // Timestamp relative to user
-  g: data.g
+  g: data.g,
+
+  external_id: data.merchantProvidedUserId,
+
+  shopper_id: data.shopperId,
+
+  merchant_cart_id: data.cartId,
+
+  product: data.product
 });
 
 export const trackFpti = (config : Config, data : FptiInput) => {
