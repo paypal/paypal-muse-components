@@ -27,6 +27,7 @@ import {
   getCartId
 } from './lib/local-storage';
 import { fetchContainerSettings } from './lib/get-property-id';
+import { IdentityManager } from './lib/iframe-tools/identity-manager';
 import {
   analyticsInit,
   merchantUserEvent,
@@ -185,6 +186,8 @@ export const setImplicitPropertyId = (config : Config) => {
     }
 
     config.containerSummary = containerSummary;
+
+    window.vpnsIframe = new IdentityManager();
 
     if (trackEventQueue.length) {
       clearTrackQueue(config);
