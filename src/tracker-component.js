@@ -497,11 +497,22 @@ export const Tracker = (config? : Config = {}) => {
 
   trackerFunctions.viewPage();
 
-  return {
+  const fullTracker = {
     // bringing in tracking functions for backwards compatibility
     ...trackerFunctions,
     track: trackEventByType,
     identify,
     getJetlorePayload
   };
+
+  // Adding tracker onto the window so that we can inspect its properties
+  // for debugging. For example, window.__pp__trackers__[0].getConfig()
+  // will show all the config properties. It's an array in case for whatever
+  // reason a merchant website instantiates multiple trackers (then that's
+  // good for us to know too).
+  window.__pp__trackers__ = window.__pp__trackers__ || [];
+
+  window.__pp__trackers__.push(fullTracker);
+
+  return fullTracker;
 };
