@@ -2,32 +2,44 @@ import createIframe from './create-iframe'
 
 export class IframeManager {
   constructor(config) {
+    this.url = new URL(config.src)
     this.iframe = createIframe(config.src)
-    this.listeners = config.listeners || [];
-
-    window.addEventListener('message', this._messageListener)
+    this.messageListeners = config.messageListeners || [];
+ 
+    this.iframe.addEventListener('load', this._onIframeLoad)
+    window.addEventListener('message', this._onMessage)
   }
 
-  _messageListener = (e) => {
+  _onIframeLoad = (e) => {
+    if (this.onIframeLoad) {
+      this.onIframeLoad(e)
+    }
+  }
+
+  _onMessage = (e) => {
     if (e.source.window !== this.iframe.contentWindow) {
       return
     }
 
-    for (let i = 0; i < this.listeners.length; i++) {
+    if (e.origin !== this.url.origin) {
+      return
+    }
+
+    for (let i = 0; i < this.messageListeners.length; i++) {
       try {
-        this.listeners[i](e)
+        this.messageListeners[i](e)
       } catch (err) {
-        console.error(err, this.listeners[i], e)
+        console.error(err, this.messageListeners[i], e)
       }
     }
   }
 
-  addListener = (listener) => {
+  addMessageListener = (listener) => {
     if (typeof listener !== 'function') {
       console.error('listener must be a function')
       return
     }
 
-    this.listeners.push(listener)
+    this.messageListeners.push(listener)
   }
 }
