@@ -31,7 +31,14 @@ const parseContainer = (container : Container) : ContainerSummary => {
   };
 };
 
-const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> | Promise<Object> => {
+const emptyContainer : Container = {
+  id: '',
+  integration_type: '',
+  owner_id: '',
+  tags: []
+};
+
+const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> => {
   const merchantId = getMerchantID()[0];
 
   if (merchantId) {
@@ -47,7 +54,7 @@ const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> | 
         return res.json();
       });
   } else {
-    return Promise.resolve({});
+    return Promise.resolve(emptyContainer);
   }
 };
 
