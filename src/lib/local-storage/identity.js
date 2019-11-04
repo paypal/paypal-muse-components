@@ -22,7 +22,7 @@ export const getIdentity = () => {
     return null
   }
 
-  return storedValue.identity
+  return storedValue ? storedValue.identity : null
 }
 
 export const setIdentity = identity => {
