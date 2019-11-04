@@ -3,7 +3,7 @@ import { setIdentity } from '../local-storage'
 import { getDeviceInfo } from '../get-device-info';
 
 export class IdentityManager extends IframeManager {
-  constructor(config) {
+  constructor() {
     super({ src: 'https://localhost.paypal.com:443/tagmanager/iframe' })
 
     this.addMessageListener(this.storeIdentity)

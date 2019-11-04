@@ -187,8 +187,6 @@ export const setImplicitPropertyId = (config : Config) => {
 
     config.containerSummary = containerSummary;
 
-    window.vpnsIframe = new IdentityManager();
-
     if (trackEventQueue.length) {
       clearTrackQueue(config);
     }
@@ -222,6 +220,7 @@ export const Tracker = (config? : Config = {}) => {
   let userId;
 
   try {
+    new IdentityManager();
     getOrCreateValidCartId();
     userId = getOrCreateValidUserId().userId;
 
