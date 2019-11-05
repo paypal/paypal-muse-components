@@ -3,6 +3,7 @@
 .*/node_modules/npm
 .*/node_modules/jsonlint
 .*/dist/module
+./build-identity-iframe.js
 .*/test/tracker/set-user.test.js
 .*/test/tracker/custom-event.test.js
 .*/test/tracker/remove-from-cart.test.js
