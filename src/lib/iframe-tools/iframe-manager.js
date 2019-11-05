@@ -1,4 +1,5 @@
 import createIframe from './create-iframe'
+import { logger } from '../logger'
 
 export class IframeManager {
   constructor(config) {
@@ -25,18 +26,18 @@ export class IframeManager {
       return
     }
 
-    for (let i = 0; i < this.messageListeners.length; i++) {
+    this.messageListeners.forEach((listener) => {
       try {
-        this.messageListeners[i](e)
+        listener(e)
       } catch (err) {
-        console.error(err, this.messageListeners[i], e)
+        logger.error(err, listener, e)
       }
-    }
+    })
   }
 
   addMessageListener = (listener) => {
     if (typeof listener !== 'function') {
-      console.error('listener must be a function')
+      logger.error('iframe listener must be a function')
       return
     }
 

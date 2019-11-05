@@ -1,9 +1,16 @@
 const env = process.env.NODE_ENV
+// local targetingnodeweb instance (optional for developing locally)
+const localTargetingUrl = process.env.TARGETING_URL
+
 let targetingUrl
 
 switch (env) {
-  case 'staging':
   case 'development':
+    if (localTargetingUrl) {
+      targetingUrl = localTargetingUrl
+      break
+    }
+  case 'staging':
     targetingUrl = 'https://www.msmaster.qa.paypal.com/targeting/qraphql'
     break;
   case 'sandbox':
@@ -14,9 +21,8 @@ switch (env) {
     break;
 }
 
-const fetchVisitorInfo = (data) => {
-  const deviceInfo = encodeURIComponent(JSON.stringify(data.deviceInfo))
-  const country = data.country
+const fetchVisitorInfo = ({ deviceInfo, country }) => {
+  const encodedDeviceInfo = encodeURIComponent(JSON.stringify(deviceInfo))
 
   const fetchOptions = {
     method: 'POST',
@@ -28,7 +34,7 @@ const fetchVisitorInfo = (data) => {
     body: JSON.stringify({
       query: `{ visitorInfo(
         country: "${country}",
-        deviceInfo: "${deviceInfo}"
+        deviceInfo: "${encodedDeviceInfo}"
       ) }`
     })
   }
@@ -51,10 +57,6 @@ const fetchVisitorInfo = (data) => {
 }
 
 window.addEventListener('message', async (e) => {
-  if (e.source.window !== window.parent.window) {
-    return
-  }
-
   if (e.data.type !== 'fetch_identity_request') {
     return
   }
@@ -66,6 +68,10 @@ window.addEventListener('message', async (e) => {
       payload: visitorInfo
     }, '*')
   } catch (err) {
-    //surface error in some way
+    // surface error to parent window
+    window.parent.postMessage({
+      type: 'fetch_identity_error',
+      payload: err
+    }, '*')
   }
 })

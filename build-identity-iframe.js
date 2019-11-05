@@ -3,6 +3,11 @@ const webpackTemplate = require('html-webpack-template')
 const webpack = require('webpack')
 const path = require('path')
 
+// endpoint serving the iframe (optional for developing locally)
+const localIframeEndpoint = process.argv[2]
+// local targetingnodeweb instance (optional for developing locally)
+const localTargetingUrl = process.argv[3]
+
 let acceptedEnvironments = ['production', 'staging', 'development', 'sandbox']
 let environment = process.env.NODE_ENV
 let baseHref
@@ -12,8 +17,16 @@ if (!acceptedEnvironments.includes(environment)) {
 }
 
 switch (environment) {
-  case 'staging':
   case 'development':
+    if (localTargetingUrl) {
+      process.env.TARGETING_URL = localTargetingUrl
+    }
+
+    if (localIframeEndpoint) {
+      baseHref = localIframeEndpoint
+      break
+    }
+  case 'staging':
     baseHref = 'https://www.paypalobjects.com/muse/stage/identity'
     break;
   case 'sandbox':
@@ -46,7 +59,7 @@ const babelConfig = {
     '@babel/flow'
   ],
   'plugins': [
-    'transform-inline-environment-variables',
+    ['transform-inline-environment-variables'],
     'babel-plugin-transform-es2015-modules-commonjs',
     [ '@babel/plugin-syntax-dynamic-import', { 'loose': true } ],
     [ '@babel/plugin-proposal-decorators', { 'loose': true, 'legacy': true } ],

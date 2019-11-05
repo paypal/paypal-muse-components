@@ -1,6 +1,7 @@
 import { IframeManager } from './iframe-manager'
 import { setIdentity } from '../local-storage'
-import { getDeviceInfo } from '../get-device-info';
+import { getDeviceInfo } from '../get-device-info'
+import { logger } from '../logger'
 
 export class IdentityManager extends IframeManager {
   constructor(config) {
@@ -9,7 +10,7 @@ export class IdentityManager extends IframeManager {
     if (config.paramsToIdentityUrl) {
       iframeUrl = config.paramsToIdentityUrl()
     } else {
-      iframeUrl = 'https://www.paypalobjects.com/'
+      iframeUrl = 'https://www.paypalobjects.com/muse/identity/index.html'
     }
 
     super({ src: iframeUrl })
@@ -19,6 +20,14 @@ export class IdentityManager extends IframeManager {
 
   onIframeLoad = (e) => {
     this.fetchIdentity()
+  }
+
+  logIframeError = (e) => {
+    if (e.data.type !== 'fetch_identity_error') {
+      return
+    }
+
+    logger.error('identity iframe error:', e.data.payload)
   }
 
   storeIdentity = (e) => {
