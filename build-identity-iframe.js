@@ -1,12 +1,28 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const webpackTemplate = require('html-webpack-template')
 const webpack = require('webpack')
 const path = require('path')
 
 let acceptedEnvironments = ['production', 'staging', 'development', 'sandbox']
 let environment = process.env.NODE_ENV
+let baseHref
 
 if (!acceptedEnvironments.includes(environment)) {
   throw new Error(`Environment ${environment} not supported`)
+}
+
+switch (environment) {
+  case 'staging':
+  case 'development':
+    baseHref = 'https://www.paypalobjects.com/muse/stage/identity'
+    break;
+  case 'sandbox':
+    baseHref = 'https://www.paypalobjects.com/muse/sandbox/identity'
+    break;
+  case 'production':
+  default:
+    baseHref = 'https://www.paypalobjects.com/muse/identity'
+    break;
 }
 
 const babelConfig = {
@@ -48,9 +64,11 @@ const webpackConfig = {
     filename: 'identity.js'
   },
   plugins: [new HtmlWebpackPlugin({
+    inject: false,
+    template: webpackTemplate,
     title: 'Identity',
-    filename: 'identity.html',
-    showErrors: false
+    showErrors: false,
+    baseHref
   })],
   module: {
     rules: [{
