@@ -3,8 +3,16 @@ import { setIdentity } from '../local-storage'
 import { getDeviceInfo } from '../get-device-info';
 
 export class IdentityManager extends IframeManager {
-  constructor() {
-    super({ src: 'https://localhost.paypal.com:443/tagmanager/iframe' })
+  constructor(config) {
+    let iframeUrl
+    
+    if (config.paramsToIdentityUrl) {
+      iframeUrl = config.paramsToIdentityUrl()
+    } else {
+      iframeUrl = 'https://www.paypalobjects.com/'
+    }
+
+    super({ src: iframeUrl })
 
     this.addMessageListener(this.storeIdentity)
   }
@@ -33,6 +41,6 @@ export class IdentityManager extends IframeManager {
         deviceInfo,
         country
       }
-    }, 'https://localhost.paypal.com')
+    }, this.url.origin)
   }
 }

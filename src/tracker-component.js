@@ -220,7 +220,7 @@ export const Tracker = (config? : Config = {}) => {
   let userId;
 
   try {
-    new IdentityManager();
+    new IdentityManager(config);
     getOrCreateValidCartId();
     userId = getOrCreateValidUserId().userId;
 
