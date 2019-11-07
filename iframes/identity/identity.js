@@ -1,26 +1,3 @@
-const env = process.env.NODE_ENV
-// local targetingnodeweb instance (optional for developing locally)
-const localTargetingUrl = process.env.TARGETING_URL
-
-let targetingUrl
-
-switch (env) {
-  case 'development':
-    if (localTargetingUrl) {
-      targetingUrl = localTargetingUrl
-      break
-    }
-  case 'staging':
-    targetingUrl = 'https://www.msmaster.qa.paypal.com/targeting/qraphql'
-    break;
-  case 'sandbox':
-    targetingUrl = 'https://www.sandbox.paypal.com/targeting/graphql'
-  case 'production':
-  default:
-    targetingUrl = 'https://www.paypal.com/targeting/graphql'
-    break;
-}
-
 const fetchVisitorInfo = ({ deviceInfo, country }) => {
   const encodedDeviceInfo = encodeURIComponent(JSON.stringify(deviceInfo))
 
@@ -39,7 +16,7 @@ const fetchVisitorInfo = ({ deviceInfo, country }) => {
     })
   }
 
-  return fetch(targetingUrl, fetchOptions)
+  return fetch('/targeting/graphql', fetchOptions)
     .then(res => {
       if (res.status !== 200) {
         throw new Error(`targeting responded with statuscode ${res.status}`)

@@ -3,40 +3,7 @@ const webpackTemplate = require('html-webpack-template')
 const webpack = require('webpack')
 const path = require('path')
 
-// endpoint serving the iframe (optional for developing locally)
-const localIframeEndpoint = process.argv[2]
-// local targetingnodeweb instance (optional for developing locally)
-const localTargetingUrl = process.argv[3]
-
-let acceptedEnvironments = ['production', 'staging', 'development', 'sandbox']
-let environment = process.env.NODE_ENV
-let baseHref
-
-if (!acceptedEnvironments.includes(environment)) {
-  throw new Error(`Environment ${environment} not supported`)
-}
-
-switch (environment) {
-  case 'development':
-    if (localTargetingUrl) {
-      process.env.TARGETING_URL = localTargetingUrl
-    }
-
-    if (localIframeEndpoint) {
-      baseHref = localIframeEndpoint
-      break
-    }
-  case 'staging':
-    baseHref = 'https://www.paypalobjects.com/muse/stage/identity'
-    break;
-  case 'sandbox':
-    baseHref = 'https://www.paypalobjects.com/muse/sandbox/identity'
-    break;
-  case 'production':
-  default:
-    baseHref = 'https://www.paypalobjects.com/muse/identity'
-    break;
-}
+let baseHref = '/muse/identity/'
 
 const babelConfig = {
   'presets': [
