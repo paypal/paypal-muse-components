@@ -9,7 +9,7 @@ import type {
 } from '../types';
 
 import { getDeviceInfo } from './get-device-info';
-import { getIdentity } from './local-storage'
+import { getIdentity } from './local-storage';
 
 export const sendBeacon = (src : string, data : FptiVariables | LegacyVariables) => {
   let query = Object.keys(data).map(key => {

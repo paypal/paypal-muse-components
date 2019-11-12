@@ -1,9 +1,12 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const webpackTemplate = require('html-webpack-template')
-const webpack = require('webpack')
-const path = require('path')
+/* @flow */
+const path = require('path');
 
-let baseHref = '/muse/identity/'
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpackTemplate = require('html-webpack-template');
+const webpack = require('webpack');
+
+
+const baseHref = '/muse/identity/';
 
 const babelConfig = {
   'presets': [
@@ -26,7 +29,7 @@ const babelConfig = {
     '@babel/flow'
   ],
   'plugins': [
-    ['transform-inline-environment-variables'],
+    [ 'transform-inline-environment-variables' ],
     'babel-plugin-transform-es2015-modules-commonjs',
     [ '@babel/plugin-syntax-dynamic-import', { 'loose': true } ],
     [ '@babel/plugin-proposal-decorators', { 'loose': true, 'legacy': true } ],
@@ -34,7 +37,7 @@ const babelConfig = {
     [ '@babel/plugin-transform-for-of', { 'assumeArray': true } ],
     [ '@babel/plugin-transform-runtime', { 'corejs': false, 'helpers': true, 'regenerator': false } ]
   ]
-}
+};
 
 const webpackConfig = {
   mode: 'production',
@@ -43,29 +46,28 @@ const webpackConfig = {
     path: path.resolve(__dirname, 'dist/identity'),
     filename: 'identity.js'
   },
-  plugins: [new HtmlWebpackPlugin({
+  plugins: [ new HtmlWebpackPlugin({
     inject: false,
     template: webpackTemplate,
     title: 'Identity',
     showErrors: false,
     baseHref
-  })],
+  }) ],
   module: {
-    rules: [{
+    rules: [ {
       test: /\.js$/,
       loader: 'babel-loader',
       options: babelConfig
-    }]
+    } ]
   }
-}
+};
 
 const compiler = webpack(webpackConfig);
 
 compiler.run((err, stats) => {
   if (err) {
-    console.error(err)
+    console.error(err);
   }
-})
-
+});
 
 

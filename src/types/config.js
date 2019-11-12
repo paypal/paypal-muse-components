@@ -12,7 +12,7 @@ export type Config = {|
     user? : UserData,
     propertyId? : string,
     paramsToBeaconUrl? : ParamsToBeaconUrl,
-    paramsToIdentityUrl?: ParamsToIdentityUrl,
+    paramsToIdentityUrl? : ParamsToIdentityUrl,
     paramsToTokenUrl? : ParamsToTokenUrl,
     jetlore? : {|
         user_id : string,

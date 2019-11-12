@@ -18,4 +18,4 @@ export { getPropertyId, setPropertyId } from './property-id';
 
 export { setContainer, getValidContainer } from './container';
 
-export { setIdentity, getIdentity, clearIdentity } from './identity'
+export { setIdentity, getIdentity, clearIdentity } from './identity';

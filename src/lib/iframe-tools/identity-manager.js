@@ -1,56 +1,58 @@
-import { IframeManager } from './iframe-manager'
-import { setIdentity, getIdentity } from '../local-storage'
-import { getDeviceInfo } from '../get-device-info'
-import { logger } from '../logger'
+/* @flow */
+import { setIdentity, getIdentity } from '../local-storage';
+import { getDeviceInfo } from '../get-device-info';
+import { logger } from '../logger';
+
+import { IframeManager } from './iframe-manager';
 
 export class IdentityManager extends IframeManager {
   constructor(config) {
-    let iframeUrl
+    let iframeUrl;
     
     if (config.paramsToIdentityUrl) {
-      iframeUrl = config.paramsToIdentityUrl()
+      iframeUrl = config.paramsToIdentityUrl();
     } else {
-      iframeUrl = 'https://www.paypal.com/muse/identity/index.html'
+      iframeUrl = 'https://www.paypal.com/muse/identity/index.html';
     }
 
-    super({ src: iframeUrl })
+    super({ src: iframeUrl });
 
-    this.addMessageListener(this.storeIdentity)
+    this.addMessageListener(this.storeIdentity);
   }
 
-  onIframeLoad = (e) => {
-    this.fetchIdentity()
+  onIframeLoad = () => {
+    this.fetchIdentity();
   }
 
   logIframeError = (e) => {
     if (e.data.type !== 'fetch_identity_error') {
-      return
+      return;
     }
 
-    logger.error('identity iframe error:', e.data.payload)
+    logger.error('identity iframe error:', e.data.payload);
   }
 
   storeIdentity = (e) => {
     if (e.data.type !== 'fetch_identity_response') {
-      return
+      return;
     }
 
-    const identity = e.data.payload
+    const identity = e.data.payload;
 
-    setIdentity(identity)
+    setIdentity(identity);
   }
 
   fetchIdentity = () => {
     const cachedIdentity = getIdentity();
 
-    /* Do not fetch if identity data 
+    /* Do not fetch if identity data
     has recently be cached. */
     if (cachedIdentity) {
-      return
+      return;
     }
 
     const deviceInfo = getDeviceInfo();
-    const country = 'US'
+    const country = 'US';
 
     this.iframe.contentWindow.postMessage({
       type: 'fetch_identity_request',
@@ -58,6 +60,6 @@ export class IdentityManager extends IframeManager {
         deviceInfo,
         country
       }
-    }, this.url.origin)
+    }, this.url.origin);
   }
 }
