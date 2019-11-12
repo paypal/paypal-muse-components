@@ -17,6 +17,7 @@ export const getIdentity = () => {
     return null
   }
 
+  /* Discard identity information more than an hour old. */
   if (storedValue && (now - storedValue.createdAt) > oneHour) {
     clearIdentity()
     return null

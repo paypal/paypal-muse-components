@@ -1,5 +1,5 @@
 import { IframeManager } from './iframe-manager'
-import { setIdentity } from '../local-storage'
+import { setIdentity, getIdentity } from '../local-storage'
 import { getDeviceInfo } from '../get-device-info'
 import { logger } from '../logger'
 
@@ -41,6 +41,14 @@ export class IdentityManager extends IframeManager {
   }
 
   fetchIdentity = () => {
+    const cachedIdentity = getIdentity();
+
+    /* Do not fetch if identity data 
+    has recently be cached. */
+    if (cachedIdentity) {
+      return
+    }
+
     const deviceInfo = getDeviceInfo();
     const country = 'US'
 
