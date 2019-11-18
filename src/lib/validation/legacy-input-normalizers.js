@@ -1,4 +1,6 @@
 /* @flow */
+import { limitCartItems } from './limit-cart-items';
+
 /* Returns values from the v1 'user' key.  Warns in the event a 'deprecated' value is passed */
 export const setUserNormalizer = (input : any) => {
   if (input) {
@@ -16,6 +18,7 @@ export const setUserNormalizer = (input : any) => {
 TODO: 'total' should eventually be replaced with 'cartTotal' on the backend. */
 export const addToCartNormalizer = (input : any) => {
   if (input) {
+    input = limitCartItems(input);
     if (input.total !== undefined) {
       // eslint-disable-next-line no-console
       console.warn('"total" has been deprecated. use "cartTotal" instead');
@@ -24,7 +27,6 @@ export const addToCartNormalizer = (input : any) => {
       delete input.cartTotal;
     }
   }
-
   return input;
 };
 

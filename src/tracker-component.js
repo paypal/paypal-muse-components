@@ -14,8 +14,7 @@ import {
   setCartNormalizer,
   removeFromCartNormalizer,
   purchaseNormalizer,
-  setUserNormalizer,
-  limitSetCartItems
+  setUserNormalizer
 } from './lib/validation';
 import {
   getOrCreateValidCartId,
@@ -321,7 +320,6 @@ export const Tracker = (config? : Config = {}) => {
     setCart: (data : CartData) => {
       try {
         data = setCartNormalizer(data);
-        data = limitSetCartItems(data);
         validateAddItems(data);
         return trackCartEvent(config, 'setCart', data);
       } catch (err) {
