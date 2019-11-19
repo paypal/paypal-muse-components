@@ -492,7 +492,7 @@ describe('paypal.Tracker', () => {
     );
   });
 
-  it.only('should allow you to instantiate a user and then set the user', () => {
+  it('should allow you to instantiate a user and then set the user', () => {
     const tracker = Tracker({
       user: {
         id: 'foo',
@@ -500,7 +500,7 @@ describe('paypal.Tracker', () => {
       }
     });
     tracker.setPropertyId(propertyId);
-    expect(createElementCalls).toBe(1);
+    expect(createElementCalls).toBe(2);
     tracker.setUser({
       user: {
         id: 'bar',
@@ -508,7 +508,7 @@ describe('paypal.Tracker', () => {
         name: '__test__name'
       }
     });
-    expect(createElementCalls).toBe(2);
+    expect(createElementCalls).toBe(3);
     const dataParamObject = extractDataParam(imgMock.src);
     // $FlowFixMe
     expect(JSON.stringify(dataParamObject)).toBe(
