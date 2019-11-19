@@ -9,285 +9,23 @@ import { getUserId, getCartId } from '../src/lib/local-storage';
 
 const { sevenDays, storage } = constants;
 
-const addCartWithExtraItems = [
+const sampleItem = [
   {
     title: 'sultan of cairo',
     imgUrl: 'animageurl',
     price: 'tree fiddy',
-    id: '__test__productId0',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId1',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId2',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId3',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId4',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId5',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productI6',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId7',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId8',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId9',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId10',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId11',
+    id: '__test__productId',
     url: 'https://example.com/__test__productId0'
   }
 ];
 
-const setCartWithExtraItems = [
-  {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId21',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId22',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId23',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId24',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId25',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId26',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productI27',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId28',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId29',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId30',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId31',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId32',
-    url: 'https://example.com/__test__productId0'
+const generateItems = (input, result = []) => {
+  if (result.length >= input) {
+    return result;
   }
-];
-
-const truncatedAddCart = [
-  {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId0',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId1',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId2',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId3',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId4',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId5',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productI6',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId7',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId8',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId9',
-    url: 'https://example.com/__test__productId0'
-  }
-];
-
-const truncatedSetCart = [
-  {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId21',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId22',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId23',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId24',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId25',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId26',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productI27',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId28',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId29',
-    url: 'https://example.com/__test__productId0'
-  }, {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId30',
-    url: 'https://example.com/__test__productId0'
-  }
-];
+  result.push({ ...sampleItem[0], id: `${ sampleItem[0].id }${ result.length }` });
+  return generateItems(input, result);
+};
 
 const decode = (encodedDataParam : string) : string => {
   return JSON.parse(atob(decodeURIComponent(encodedDataParam)));
@@ -601,7 +339,7 @@ describe('paypal.Tracker', () => {
     expect(createElementCalls).toBe(1);
     tracker.addToCart({
       cartId: '__test__cartId0',
-      items: addCartWithExtraItems,
+      items: generateItems(15),
       emailCampaignId: '__test__emailCampaignId0',
       cartTotal: '102345.67',
       currencyCode: 'USD'
@@ -610,7 +348,7 @@ describe('paypal.Tracker', () => {
     expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
       JSON.stringify({
         cartId: '__test__cartId0',
-        items: truncatedAddCart,
+        items: generateItems(10),
         emailCampaignId: '__test__emailCampaignId0',
         currencyCode: 'USD',
         total: '102345.67',
@@ -636,7 +374,7 @@ describe('paypal.Tracker', () => {
     expect(createElementCalls).toBe(1);
     tracker.setCart({
       cartId: '__test__cartId1',
-      items: setCartWithExtraItems,
+      items: generateItems(13),
       emailCampaignId: '__test__emailCampaignId0',
       cartTotal: '102345.67',
       currencyCode: 'USD'
@@ -645,7 +383,7 @@ describe('paypal.Tracker', () => {
     expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
       JSON.stringify({
         cartId: '__test__cartId1',
-        items: truncatedSetCart,
+        items: generateItems(10),
         emailCampaignId: '__test__emailCampaignId0',
         currencyCode: 'USD',
         total: '102345.67',
