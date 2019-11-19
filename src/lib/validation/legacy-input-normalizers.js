@@ -24,8 +24,8 @@ export const addToCartNormalizer = (input : any) => {
     } else if (input.cartTotal) {
       input.total = input.cartTotal;
       delete input.cartTotal;
-      input = limitCartItems(input);
     }
+    input = limitCartItems(input);
   }
   return input;
 };
