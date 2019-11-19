@@ -9,6 +9,286 @@ import { getUserId, getCartId } from '../src/lib/local-storage';
 
 const { sevenDays, storage } = constants;
 
+const addCartWithExtraItems = [
+  {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId0',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId1',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId2',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId3',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId4',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId5',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productI6',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId7',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId8',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId9',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId10',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId11',
+    url: 'https://example.com/__test__productId0'
+  }
+];
+
+const setCartWithExtraItems = [
+  {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId21',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId22',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId23',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId24',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId25',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId26',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productI27',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId28',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId29',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId30',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId31',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId32',
+    url: 'https://example.com/__test__productId0'
+  }
+];
+
+const truncatedAddCart = [
+  {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId0',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId1',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId2',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId3',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId4',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId5',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productI6',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId7',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId8',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId9',
+    url: 'https://example.com/__test__productId0'
+  }
+];
+
+const truncatedSetCart = [
+  {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId21',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId22',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId23',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId24',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId25',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId26',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productI27',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId28',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId29',
+    url: 'https://example.com/__test__productId0'
+  }, {
+    title: 'sultan of cairo',
+    imgUrl: 'animageurl',
+    price: 'tree fiddy',
+    id: '__test__productId30',
+    url: 'https://example.com/__test__productId0'
+  }
+];
+
 const decode = (encodedDataParam : string) : string => {
   return JSON.parse(atob(decodeURIComponent(encodedDataParam)));
 };
@@ -309,6 +589,77 @@ describe('paypal.Tracker', () => {
       })
     );
     expect(createElementCalls).toBe(3);
+  });
+
+
+  it('truncate cart for addToCart when it has more than 10 items', () => {
+    const email = '__test__email10@gmail.com';
+    const userName = '__test__userName10';
+    const id = 'abc123';
+    const tracker = Tracker({ user: { email, name: userName } });
+    tracker.setPropertyId(propertyId);
+    expect(createElementCalls).toBe(1);
+    tracker.addToCart({
+      cartId: '__test__cartId0',
+      items: addCartWithExtraItems,
+      emailCampaignId: '__test__emailCampaignId0',
+      cartTotal: '102345.67',
+      currencyCode: 'USD'
+    });
+
+    expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
+      JSON.stringify({
+        cartId: '__test__cartId0',
+        items: truncatedAddCart,
+        emailCampaignId: '__test__emailCampaignId0',
+        currencyCode: 'USD',
+        total: '102345.67',
+        cartEventType: 'addToCart',
+        user: { email, name: userName, id },
+        propertyId,
+        trackingType: 'cartEvent',
+        clientId: 'abcxyz123',
+        merchantId: 'xyz,hij,lmno',
+        deviceInfo,
+        version: 'TRANSITION_FLAG'
+      })
+    );
+    expect(createElementCalls).toBe(2);
+  });
+
+  it('truncate cart for setCart when it has more than 10 items', () => {
+    const email = '__test__email11@gmail.com';
+    const userName = '__test__userName11';
+    const id = 'abc123';
+    const tracker = Tracker({ user: { email, name: userName } });
+    tracker.setPropertyId(propertyId);
+    expect(createElementCalls).toBe(1);
+    tracker.setCart({
+      cartId: '__test__cartId1',
+      items: setCartWithExtraItems,
+      emailCampaignId: '__test__emailCampaignId0',
+      cartTotal: '102345.67',
+      currencyCode: 'USD'
+    });
+
+    expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
+      JSON.stringify({
+        cartId: '__test__cartId1',
+        items: truncatedSetCart,
+        emailCampaignId: '__test__emailCampaignId0',
+        currencyCode: 'USD',
+        total: '102345.67',
+        cartEventType: 'setCart',
+        user: { email, name: userName, id },
+        propertyId,
+        trackingType: 'cartEvent',
+        clientId: 'abcxyz123',
+        merchantId: 'xyz,hij,lmno',
+        deviceInfo,
+        version: 'TRANSITION_FLAG'
+      })
+    );
+    expect(createElementCalls).toBe(2);
   });
 
   it('should send removeFromCart events', () => {
@@ -758,6 +1109,7 @@ describe('paypal.Tracker', () => {
     expect(typeof userId).toBe('string');
     expect(typeof cartId).toBe('string');
   });
+
 
   describe('#viewPage', () => {
     it('should fire a well-formed page view event', () => {
