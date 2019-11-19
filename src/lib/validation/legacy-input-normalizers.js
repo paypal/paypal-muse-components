@@ -18,13 +18,13 @@ export const setUserNormalizer = (input : any) => {
 TODO: 'total' should eventually be replaced with 'cartTotal' on the backend. */
 export const addToCartNormalizer = (input : any) => {
   if (input) {
-    input = limitCartItems(input);
     if (input.total !== undefined) {
       // eslint-disable-next-line no-console
       console.warn('"total" has been deprecated. use "cartTotal" instead');
     } else if (input.cartTotal) {
       input.total = input.cartTotal;
       delete input.cartTotal;
+      input = limitCartItems(input);
     }
   }
   return input;
