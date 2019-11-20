@@ -341,7 +341,7 @@ describe('paypal.Tracker', () => {
     const id = 'abc123';
     const tracker = Tracker({ user: { email, name: userName } });
     tracker.setPropertyId(propertyId);
-    expect(createElementCalls).toBe(1);
+    expect(createElementCalls).toBe(2);
     tracker.addToCart({
       cartId: '__test__cartId0',
       items: generateItems(15),
@@ -367,7 +367,7 @@ describe('paypal.Tracker', () => {
         version: 'TRANSITION_FLAG'
       })
     );
-    expect(createElementCalls).toBe(2);
+    expect(createElementCalls).toBe(3);
   });
 
   it('truncate cart for setCart when it has more than 10 items', () => {
@@ -376,7 +376,7 @@ describe('paypal.Tracker', () => {
     const id = 'abc123';
     const tracker = Tracker({ user: { email, name: userName } });
     tracker.setPropertyId(propertyId);
-    expect(createElementCalls).toBe(1);
+    expect(createElementCalls).toBe(2);
     tracker.setCart({
       cartId: '__test__cartId1',
       items: generateItems(13),
@@ -402,7 +402,7 @@ describe('paypal.Tracker', () => {
         version: 'TRANSITION_FLAG'
       })
     );
-    expect(createElementCalls).toBe(2);
+    expect(createElementCalls).toBe(3);
   });
 
   it('should send removeFromCart events', () => {
