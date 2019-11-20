@@ -27,6 +27,7 @@ import {
   getCartId
 } from './lib/local-storage';
 import { fetchContainerSettings } from './lib/get-property-id';
+import { IdentityManager } from './lib/iframe-tools/identity-manager';
 import {
   analyticsInit,
   merchantUserEvent,
@@ -219,6 +220,7 @@ export const Tracker = (config? : Config = {}) => {
   let userId;
 
   try {
+    new IdentityManager(config);
     getOrCreateValidCartId();
     userId = getOrCreateValidUserId().userId;
 
