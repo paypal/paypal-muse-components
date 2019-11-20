@@ -9,21 +9,19 @@ import { getUserId, getCartId } from '../src/lib/local-storage';
 
 const { sevenDays, storage } = constants;
 
-const sampleItem = [
-  {
-    title: 'sultan of cairo',
-    imgUrl: 'animageurl',
-    price: 'tree fiddy',
-    id: '__test__productId',
-    url: 'https://example.com/__test__productId0'
-  }
-];
+const sampleItem = {
+  title: 'sultan of cairo',
+  imgUrl: 'animageurl',
+  price: 'tree fiddy',
+  id: '__test__productId',
+  url: 'https://example.com/__test__productId0'
+};
 
 const generateItems = (input, result = []) => {
   if (result.length >= input) {
     return result;
   }
-  result.push({ ...sampleItem[0], id: `${ sampleItem[0].id }${ result.length }` });
+  result.push({ ...sampleItem, id: `${ sampleItem.id }${ result.length }` });
   return generateItems(input, result);
 };
 
