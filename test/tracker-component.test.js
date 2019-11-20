@@ -9,6 +9,22 @@ import { getUserId, getCartId } from '../src/lib/local-storage';
 
 const { sevenDays, storage } = constants;
 
+const sampleItem = {
+  title: 'sultan of cairo',
+  imgUrl: 'animageurl',
+  price: 'tree fiddy',
+  id: '__test__productId',
+  url: 'https://example.com/__test__productId0'
+};
+
+const generateItems = (input, result = []) => {
+  if (result.length >= input) {
+    return result;
+  }
+  result.push({ ...sampleItem, id: `${ sampleItem.id }${ result.length }` });
+  return generateItems(input, result);
+};
+
 const decode = (encodedDataParam : string) : string => {
   return JSON.parse(atob(decodeURIComponent(encodedDataParam)));
 };
@@ -316,6 +332,77 @@ describe('paypal.Tracker', () => {
       })
     );
     expect(createElementCalls).toBe(4);
+  });
+
+
+  it('truncate cart for addToCart when it has more than 10 items', () => {
+    const email = '__test__email10@gmail.com';
+    const userName = '__test__userName10';
+    const id = 'abc123';
+    const tracker = Tracker({ user: { email, name: userName } });
+    tracker.setPropertyId(propertyId);
+    expect(createElementCalls).toBe(2);
+    tracker.addToCart({
+      cartId: '__test__cartId0',
+      items: generateItems(15),
+      emailCampaignId: '__test__emailCampaignId0',
+      cartTotal: '102345.67',
+      currencyCode: 'USD'
+    });
+
+    expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
+      JSON.stringify({
+        cartId: '__test__cartId0',
+        items: generateItems(10),
+        emailCampaignId: '__test__emailCampaignId0',
+        currencyCode: 'USD',
+        total: '102345.67',
+        cartEventType: 'addToCart',
+        user: { email, name: userName, id },
+        propertyId,
+        trackingType: 'cartEvent',
+        clientId: 'abcxyz123',
+        merchantId: 'xyz,hij,lmno',
+        deviceInfo,
+        version: 'TRANSITION_FLAG'
+      })
+    );
+    expect(createElementCalls).toBe(3);
+  });
+
+  it('truncate cart for setCart when it has more than 10 items', () => {
+    const email = '__test__email11@gmail.com';
+    const userName = '__test__userName11';
+    const id = 'abc123';
+    const tracker = Tracker({ user: { email, name: userName } });
+    tracker.setPropertyId(propertyId);
+    expect(createElementCalls).toBe(2);
+    tracker.setCart({
+      cartId: '__test__cartId1',
+      items: generateItems(13),
+      emailCampaignId: '__test__emailCampaignId0',
+      cartTotal: '102345.67',
+      currencyCode: 'USD'
+    });
+
+    expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
+      JSON.stringify({
+        cartId: '__test__cartId1',
+        items: generateItems(10),
+        emailCampaignId: '__test__emailCampaignId0',
+        currencyCode: 'USD',
+        total: '102345.67',
+        cartEventType: 'setCart',
+        user: { email, name: userName, id },
+        propertyId,
+        trackingType: 'cartEvent',
+        clientId: 'abcxyz123',
+        merchantId: 'xyz,hij,lmno',
+        deviceInfo,
+        version: 'TRANSITION_FLAG'
+      })
+    );
+    expect(createElementCalls).toBe(3);
   });
 
   it('should send removeFromCart events', () => {
@@ -765,6 +852,7 @@ describe('paypal.Tracker', () => {
     expect(typeof userId).toBe('string');
     expect(typeof cartId).toBe('string');
   });
+
 
   describe('#viewPage', () => {
     it('should fire a well-formed page view event', () => {

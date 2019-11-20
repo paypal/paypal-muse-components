@@ -1,4 +1,6 @@
 /* @flow */
+import { limitCartItems } from './limit-cart-items';
+
 /* Returns values from the v1 'user' key.  Warns in the event a 'deprecated' value is passed */
 export const setUserNormalizer = (input : any) => {
   if (input) {
@@ -23,8 +25,8 @@ export const addToCartNormalizer = (input : any) => {
       input.total = input.cartTotal;
       delete input.cartTotal;
     }
+    input = limitCartItems(input);
   }
-
   return input;
 };
 
