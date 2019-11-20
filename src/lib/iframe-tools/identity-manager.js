@@ -18,6 +18,7 @@ export class IdentityManager extends IframeManager {
     super({ src: iframeUrl });
 
     this.addMessageListener(this.storeIdentity);
+    this.addMessageListener(this.logIframeError);
   }
 
   onIframeLoad = () => {
