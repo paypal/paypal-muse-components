@@ -1,4 +1,5 @@
 node_modules
+dist
 coverage
 flow-typed
 package-lock.json

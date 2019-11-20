@@ -25,9 +25,9 @@ export type FptiInput = {|
   // Identification confidence score
   confidenceScore? : ?number,
   // Identification type returned by VPNS
-  identifierUsed? : ?string,
+  identificationType? : ?string,
   // Unverified encrypted customer account number
-  userEAN? : ?string,
+  encryptedAccountNumber? : ?string,
   // Analytics identifier associated with the merchant site. XO container id.
   propertyId? : ?string,
   // Event Name
