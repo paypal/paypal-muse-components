@@ -9,6 +9,7 @@ import type {
 } from '../types';
 
 import { getDeviceInfo } from './get-device-info';
+import { getIdentity } from './local-storage';
 
 export const sendBeacon = (src : string, data : FptiVariables | LegacyVariables) => {
   let query = Object.keys(data).map(key => {
@@ -37,6 +38,7 @@ export const filterFalsyValues = (source : Object) : FptiVariables | LegacyVaria
 
 const resolveTrackingData = (config : Config, data : FptiInput) : any => {
   const deviceInfo = getDeviceInfo();
+  const identity = getIdentity() || {};
 
   return {
     product: 'ppshopping',
@@ -47,7 +49,8 @@ const resolveTrackingData = (config : Config, data : FptiInput) : any => {
     g: new Date().getTimezoneOffset(),
     ...deviceInfo,
     ...config,
-    ...data
+    ...data,
+    ...identity
   };
 };
 
@@ -89,10 +92,10 @@ const resolveTrackingVariables = (data : any) : FptiVariables => ({
   confidence_score: data.confidenceScore,
 
   // Identification type returned by VPNS
-  identifier_used: data.identifierUsed,
+  identifier_used: data.identificationType,
 
   // Unverified encrypted customer account number
-  unverified_cust_id: data.userEAN,
+  unverified_cust_id: data.encryptedAccountNumber,
 
   // Analytics identifier associated with the merchant site. XO container id.
   item: data.propertyId,

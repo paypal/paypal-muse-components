@@ -1,12 +1,12 @@
 /* globals describe beforeEach it expect */
 /* @flow */
-import constants from '../src/lib/constants';
+import constants from '../../src/lib/constants';
 import {
   createNewCartId,
   getCartId,
   setCartId,
   getOrCreateValidCartId
-} from '../src/lib/local-storage';
+} from '../../src/lib/local-storage';
 
 const { storage } = constants;
 

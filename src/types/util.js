@@ -12,6 +12,8 @@ export type ParamsToTokenUrl = () => string;
 
 export type ParamsToPropertyIdUrl = () => string;
 
+export type ParamsToIdentityUrl = () => string;
+
 export const TYPES = true;
 
 export type MuseServerConfigType = {|

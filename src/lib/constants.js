@@ -9,7 +9,8 @@ export default {
     'paypalCrUser': 'paypal-cr-user',
     'paypalCrCart': 'paypal-cr-cart',
     'paypalCrPropertyId': 'paypal-cr-propid',
-    'paypalCrContainer': 'paypal-cr-container'
+    'paypalCrContainer': 'paypal-cr-container',
+    'paypalSDKIdentity': 'paypal-sdk-identity'
   },
   'defaultTrackerConfig': {
     'user': {

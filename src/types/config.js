@@ -4,13 +4,15 @@ import type { ContainerSummary } from './container';
 import type {
   ParamsToBeaconUrl,
   ParamsToTokenUrl,
-  ParamsToPropertyIdUrl
+  ParamsToPropertyIdUrl,
+  ParamsToIdentityUrl
 } from './util';
 
 export type Config = {|
     user? : UserData,
     propertyId? : string,
     paramsToBeaconUrl? : ParamsToBeaconUrl,
+    paramsToIdentityUrl? : ParamsToIdentityUrl,
     paramsToTokenUrl? : ParamsToTokenUrl,
     jetlore? : {|
         user_id : string,
