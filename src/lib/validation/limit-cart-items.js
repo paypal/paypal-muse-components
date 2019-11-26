@@ -1,6 +1,5 @@
 /* @flow */
 import constants from '../constants';
-import { logger } from '../logger';
 
 export const limitCartItems = (input : any)  => {
   const { cartLimit } = constants;
