@@ -55,6 +55,36 @@ describe('muse', () => {
       expect(script).toBe(null);
     });
 
+    describe('sandbox environment special cases', () => {
+      let isDebug;
+
+      beforeEach(() => {
+        isDebug = false;
+      });
+    
+      // $FlowFixMe
+      it('should not insert pptms.js if in sandbox environment but not in debug mode', () => {
+        component.insertPptm(ENV.SANDBOX, isDebug);
+
+        const script = document.getElementById(component.PPTM_ID);
+
+        // $FlowFixMe
+        expect(script).toBe(null);
+      });
+
+      // $FlowFixMe
+      it('should only insert pptms.js if in sandbox environment and debug mode is on', () => {
+        isDebug = true;
+
+        component.insertPptm(ENV.SANDBOX, isDebug);
+
+        const script = document.getElementById(component.PPTM_ID);
+
+        // $FlowFixMe
+        expect(script).not.toBe(null);
+      });
+    });
+
     // $FlowFixMe
     it('should push one and only one `paypalButtonRender` event to paypalDDL when button is rendered', () => {
       component.setup();
