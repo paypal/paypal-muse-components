@@ -11,7 +11,7 @@ let jlEnabled = false;
 
 const validFn = (fn) => {
   return (...args) => {
-    if (!jlEnabled) {
+    if (!jlEnabled || !JL || !JL.trackActivity || (typeof JL.trackActivity !== 'function')) {
       return;
     }
     fn(...args);
@@ -19,34 +19,40 @@ const validFn = (fn) => {
 };
 
 function addJLFunctionsToSDK(tracker = {}) : null {
-  tracker.viewSection = validFn(() : null => {
-    return null;
+  tracker.viewSection = validFn((data : {}) : null => {
+    JL.trackActivity('viewSection', { payload: data });
   });
-  tracker.viewPromotion = validFn(() : null => {
-    return null;
+  tracker.viewPromotion = validFn((data : {}) : null => {
+    JL.trackActivity('viewPromotion', { payload: data });
   });
-  tracker.viewProduct = validFn(() : null => {
-    return null;
+  tracker.viewProduct = validFn((data : {}) : null => {
+    JL.trackActivity('viewProduct', { payload: data });
   });
-  tracker.setWishList = validFn(() : null => {
-    return null;
+  tracker.setWishList = validFn((data : {}) : null => {
+    JL.trackActivity('setWishList', { payload: data });
   });
-  tracker.setFavoriteList = validFn(() : null => {
-    return null;
+  tracker.setFavoriteList = validFn((data : {}) : null => {
+    JL.trackActivity('setFavoriteList', { payload: data });
   });
 }
 
 const initializeJL = (config = {}) => {
   const trackTypes = [
     'view',
+    'viewSection',
+    'viewPromotion',
+    'viewProduct',
     'addToCart',
+    'setCart',
     'removeFromCart',
     'purchase',
     'search',
     'browse_section',
     'addToWishList',
     'removeFromWishList',
+    'setWishList',
     'addToFavorites',
+    'setFavoriteList',
     'removeFromFavorites',
     'track'
   ];
@@ -54,6 +60,8 @@ const initializeJL = (config = {}) => {
   const getJetlorePayload = (type : string, options : Object) : Object => {
     const { payload } = options;
     switch (type) {
+    case 'setCart':
+      return payload || {};
     case 'addToCart':
     case 'removeFromCart':
       return {
@@ -88,8 +96,10 @@ const initializeJL = (config = {}) => {
         id: payload.id
       };
     case 'addToWishList':
+    case 'setWishList':
     case 'removeFromWishList':
     case 'addToFavorites':
+    case 'setFavoriteList':
     case 'removeFromFavorites':
     case 'track':
       return payload;
