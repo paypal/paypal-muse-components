@@ -8,7 +8,7 @@ import Tracker from './jetloreTracker';
 
 let JL;
 
-const getJetlore = (config) => {
+const getJetlore = (config = {}) => {
   let jlEnabled = false;
   if (JL) {
     return JL;
