@@ -117,7 +117,6 @@ const initializeJL = (config = {}) => {
         return null;
       }
       const jlData = getJetlorePayload(type, data);
-      JL.tracker[type] && JL.tracker[type](jlData);
       if (type === 'viewPromotion') {
         return JL.tracker.browse_promo && JL.tracker.browse_promo(jlData);
       }
@@ -126,6 +125,10 @@ const initializeJL = (config = {}) => {
       }
       if (type === 'viewProduct') {
         return JL.tracker.browse_catalog && JL.tracker.browse_catalog(jlData);
+      }
+      JL.tracker[type] && JL.tracker[type](jlData);
+      if (type === 'setCart') {
+        return JL.tracker.setCart && JL.tracker.setCart(data);
       }
       return null;
     },
