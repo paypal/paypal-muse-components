@@ -126,10 +126,10 @@ const initializeJL = (config = {}) => {
       if (type === 'viewProduct') {
         return JL.tracker.browse_catalog && JL.tracker.browse_catalog(jlData);
       }
-      JL.tracker[type] && JL.tracker[type](jlData);
       if (type === 'setCart') {
         return JL.tracker.setCart && JL.tracker.setCart(data);
       }
+      JL.tracker[type] && JL.tracker[type](jlData);
       return null;
     },
     addJLFunctionsToSDK

@@ -11,7 +11,7 @@ import { logger } from '../src/lib/logger';
 */
 describe('Tracker setCart', () => {
   it('should fire setCart events', () => {
-    Tracker({ jetlore: { access_token: '1234' } });
+    Tracker({ jetlore: { user_id: 'u123', feed_id: 'ff123', access_token: '1234' } });
     const JL = getJetlore();
     JL.tracker.setCart = jest.fn();
     JL.trackActivity('setCart', {
