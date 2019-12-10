@@ -366,8 +366,12 @@ export const Tracker = (config? : Config = {}) => {
   const trackerFunctions = trackers;
 
   const trackEventByType = (type : string, data : Object) => {
-    const JL = getJetlore(config);
-    JL.trackActivity(type, data);
+    try {
+      const JL = getJetlore(config);
+      JL.trackActivity(type, data);
+    } catch (err) {
+      logger.error('JL Error', err);
+    }
     if (trackers[type]) {
       trackers[type](data);
     }
