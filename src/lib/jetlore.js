@@ -100,6 +100,7 @@ const initializeJL = (config = {}) => {
 
   JL = {
     trackActivity(type, data) : null {
+      console.log(type, data);
       if (!jlEnabled || !trackTypes.includes(type)) {
         return null;
       }

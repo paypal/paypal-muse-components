@@ -2,6 +2,7 @@
 /* @flow */
 import { Tracker } from '../src/tracker-component';
 import { logger } from '../src/lib/logger';
+import getJetlore from '../src/lib/jetlore';
 import constants from '../src/lib/constants';
 // $FlowFixMe
 import generateIdModule from '../src/lib/generate-id';
@@ -276,7 +277,10 @@ describe('paypal.Tracker', () => {
   it('should send setCart events', () => {
     const email = '__test__email4@gmail.com';
     const userName = '__test__userName4';
-    const tracker = Tracker({ user: { email, name: userName } });
+    const tracker = Tracker({ user: { email, name: userName }, jetlore: { access_token: '1234' } });
+    const JL = getJetlore();
+    JL.trackActivity = jest.fn();
+
     tracker.setPropertyId(propertyId);
     expect(createElementCalls).toBe(2);
     tracker.addToCart({
@@ -339,6 +343,23 @@ describe('paypal.Tracker', () => {
       })
     );
     expect(createElementCalls).toBe(4);
+    expect(JL.trackActivity.mock.calls.length).toEqual(1);
+    expect(JL.trackActivity.mock.calls[0][0]).toEqual('setCart');
+    expect(JL.trackActivity.mock.calls[0][1]).toEqual({
+      cartId: '__test__cartId',
+      items: [
+        {
+          title: 'william of normandy',
+          imgUrl: 'animageurl',
+          price: 'tree fiddy',
+          id: '__test__productId',
+          url: 'https://example.com/__test__productId'
+        }
+      ],
+      emailCampaignId: '__test__emailCampaignId',
+      currencyCode: 'USD',
+      total: '12345.67'
+    });
   });
 
 
