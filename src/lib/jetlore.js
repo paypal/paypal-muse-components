@@ -96,6 +96,9 @@ const initializeJL = (config = {}) => {
         id: payload.id
       };
     case 'addToWishList':
+    case 'viewProduct':
+    case 'viewPromotion':
+    case 'viewSection':
     case 'setWishList':
     case 'removeFromWishList':
     case 'addToFavorites':
@@ -115,6 +118,15 @@ const initializeJL = (config = {}) => {
       }
       const jlData = getJetlorePayload(type, data);
       JL.tracker[type] && JL.tracker[type](jlData);
+      if (type === 'viewPromotion') {
+        return JL.tracker.browse_promo && JL.tracker.browse_promo(jlData);
+      }
+      if (type === 'viewSection') {
+        return JL.tracker.browse_section && JL.tracker.browse_section(jlData);
+      }
+      if (type === 'viewProduct') {
+        return JL.tracker.browse_catalog && JL.tracker.browse_catalog(jlData);
+      }
       return null;
     },
     addJLFunctionsToSDK
