@@ -3,17 +3,40 @@ import type {
   JetloreConfig
 } from '../types';
 
+import { logger } from './logger';
 import Tracker from './jetloreTracker';
 
-
 let JL;
+let jlEnabled = false;
 
-const getJetlore = (config = {}) => {
-  let jlEnabled = false;
-  if (JL) {
-    return JL;
-  }
+const validFn = (fn) => {
+  return (...args) => {
+    if (!jlEnabled) {
+      return;
+    }
+    fn(...args);
+  };
+};
 
+function addJLFunctionsToSDK(tracker = {}) : null {
+  tracker.viewSection = validFn(() : null => {
+    return null;
+  });
+  tracker.viewPromotion = validFn(() : null => {
+    return null;
+  });
+  tracker.viewProduct = validFn(() : null => {
+    return null;
+  });
+  tracker.setWishList = validFn(() : null => {
+    return null;
+  });
+  tracker.setFavoriteList = validFn(() : null => {
+    return null;
+  });
+}
+
+const initializeJL = (config = {}) => {
   const trackTypes = [
     'view',
     'addToCart',
@@ -81,9 +104,10 @@ const getJetlore = (config = {}) => {
         return null;
       }
       const jlData = getJetlorePayload(type, data);
-      JL.tracker[type](jlData);
+      JL.tracker[type] && JL.tracker[type](jlData);
       return null;
-    }
+    },
+    addJLFunctionsToSDK
   };
 
   if (config.jetlore) {
@@ -110,6 +134,29 @@ const getJetlore = (config = {}) => {
   }
 
   return JL;
+};
+
+// This function should never throw an error,
+// no matter what the circumstances are
+const getJetlore = (config = {}) => {
+  if (JL) {
+    return JL;
+  }
+
+  try {
+    JL = initializeJL(config);
+    return JL;
+  } catch (err) {
+    logger.error('initializeJL', err);
+    JL = {
+      trackActivity() : null {
+        return null;
+      },
+      tracker: {},
+      addJLFunctionsToSDK
+    };
+    return JL;
+  }
 };
 
 export default getJetlore;

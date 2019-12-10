@@ -148,6 +148,13 @@ describe('paypal.Tracker', () => {
     expect(tracker).toHaveProperty('track');
     expect(tracker).toHaveProperty('getIdentity');
     expect(tracker).toHaveProperty('cancelCart');
+
+    // JL specific functions
+    expect(typeof tracker.viewSection).toEqual('function');
+    expect(typeof tracker.viewPromotion).toEqual('function');
+    expect(typeof tracker.viewProduct).toEqual('function');
+    expect(typeof tracker.setWishList).toEqual('function');
+    expect(typeof tracker.setFavoriteList).toEqual('function');
   });
 
   it('should clear stored cart content if cart is expired', () => {

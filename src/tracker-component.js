@@ -361,21 +361,37 @@ export const Tracker = (config? : Config = {}) => {
   };
   setImplicitPropertyId(config);
 
+  // Initialize JL Module. Note: getJetlore must never throw an error
+  // Which is why getJetlore is wrapped around a try catch
+  const JL = getJetlore(config);
+
+  try {
+    // This will add JL specific functions to trackers object
+    //   This function will have a side effect, which is necessary.
+    //   Since tracking SDK don't support these functions, they should
+    //   be handled directly by JL instead of going through trackers (more error prone)
+    JL.addJLFunctionsToSDK(trackers);
+  } catch (err) {
+    logger.error('JL.addJLFunctionsToSDK', err);
+  }
+
   // To disable functions, refer to this PR:
   // https://github.com/paypal/paypal-muse-components/commit/b3e76554fadd72ad24b6a900b99b8ff75af08815
   const trackerFunctions = trackers;
 
+  // To future developers. This is only for supporting an undocumented
+  // Tracker.track function call.
   const trackEventByType = (type : string, data : Object) => {
     try {
-      const JL = getJetlore(config);
       JL.trackActivity(type, data);
     } catch (err) {
-      logger.error('JL Error', err);
+      logger.error('JL.trackActivity', err);
     }
     if (trackers[type]) {
       trackers[type](data);
     }
   };
+
   const identify = (cb? : function) => {
     let url;
     if (config.paramsToTokenUrl) {
