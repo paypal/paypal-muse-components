@@ -205,6 +205,10 @@ export const Tracker = (config? : Config = {}) => {
     The difference in behavior is intended.
   */
 
+  // Initialize JL Module. Note: getJetlore must never throw an error
+  // Which is why getJetlore is wrapped around a try catch
+  const JL = getJetlore(config);
+
   const trackers = {
     getConfig: () => {
       return config;
@@ -239,6 +243,7 @@ export const Tracker = (config? : Config = {}) => {
     setCart: (data : CartData) => {
       try {
         data = setCartNormalizer(data);
+        JL.trackActivity('setCart', data);
         validateAddItems(data);
         return trackCartEvent(config, 'setCart', data);
       } catch (err) {
@@ -360,10 +365,6 @@ export const Tracker = (config? : Config = {}) => {
     }
   };
   setImplicitPropertyId(config);
-
-  // Initialize JL Module. Note: getJetlore must never throw an error
-  // Which is why getJetlore is wrapped around a try catch
-  const JL = getJetlore(config);
 
   try {
     // This will add JL specific functions to trackers object
