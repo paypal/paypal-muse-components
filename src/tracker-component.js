@@ -46,7 +46,6 @@ import type {
   EventType,
   CartEventType,
   Config,
-  JetloreConfig,
   FptiInput
 } from './types';
 
@@ -69,53 +68,6 @@ const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
   }).then(r => r.json()).then(data => {
     return data;
   });
-};
-
-const getJetlorePayload = (type : string, options : Object) : Object => {
-  const { payload } = options;
-  switch (type) {
-  case 'addToCart':
-  case 'removeFromCart':
-    return {
-      deal_id: payload.deal_id,
-      option_id: payload.option_id,
-      count: payload.count,
-      price: payload.price
-    };
-  case 'purchase':
-    return {
-      deal_id: payload.deal_id,
-      option_id: payload.option_id,
-      count: payload.count
-    };
-  case 'search':
-    return {
-      text: payload.text
-    };
-  case 'view':
-    return {
-      deal_id: payload.deal_id,
-      option_id: payload.option_id
-    };
-  case 'browse_section':
-    return {
-      name: payload.name,
-      refinements: payload.refinements
-    };
-  case 'browse_promo':
-    return {
-      name: payload.name,
-      id: payload.id
-    };
-  case 'addToWishList':
-  case 'removeFromWishList':
-  case 'addToFavorites':
-  case 'removeFromFavorites':
-  case 'track':
-    return payload;
-  default:
-    return {};
-  }
 };
 
 let trackEventQueue = [];
@@ -253,41 +205,10 @@ export const Tracker = (config? : Config = {}) => {
     The difference in behavior is intended.
   */
 
-  const JL = getJetlore();
-  const jetloreTrackTypes = [
-    'view',
-    'addToCart',
-    'removeFromCart',
-    'purchase',
-    'search',
-    'browse_section',
-    'addToWishList',
-    'removeFromWishList',
-    'addToFavorites',
-    'removeFromFavorites',
-    'track'
-  ];
-  if (config.jetlore) {
-    const {
-      user_id,
-      access_token,
-      feed_id,
-      div,
-      lang
-    } = config && config.jetlore;
-    const trackingConfig : JetloreConfig = {
-      cid: access_token,
-      user_id,
-      feed_id
-    };
-    if (!div) {
-      trackingConfig.div = div;
-    }
-    if (!lang) {
-      trackingConfig.lang = lang;
-    }
-    JL.tracking(trackingConfig);
-  }
+  // Initialize JL Module. Note: getJetlore must never throw an error
+  // Which is why getJetlore is wrapped around a try catch
+  const JL = getJetlore(config);
+
   const trackers = {
     getConfig: () => {
       return config;
@@ -322,6 +243,7 @@ export const Tracker = (config? : Config = {}) => {
     setCart: (data : CartData) => {
       try {
         data = setCartNormalizer(data);
+        JL.trackActivity('setCart', data);
         validateAddItems(data);
         return trackCartEvent(config, 'setCart', data);
       } catch (err) {
@@ -444,22 +366,33 @@ export const Tracker = (config? : Config = {}) => {
   };
   setImplicitPropertyId(config);
 
+  try {
+    // This will add JL specific functions to trackers object
+    //   This function will have a side effect, which is necessary.
+    //   Since tracking SDK don't support these functions, they should
+    //   be handled directly by JL instead of going through trackers (more error prone)
+    JL.addJLFunctionsToSDK(trackers);
+  } catch (err) {
+    logger.error('JL.addJLFunctionsToSDK', err);
+  }
+
   // To disable functions, refer to this PR:
   // https://github.com/paypal/paypal-muse-components/commit/b3e76554fadd72ad24b6a900b99b8ff75af08815
   const trackerFunctions = trackers;
 
+  // To future developers. This is only for supporting an undocumented
+  // Tracker.track function call.
   const trackEventByType = (type : string, data : Object) => {
-    const isJetloreType = config.jetlore
-      ? jetloreTrackTypes.includes(type)
-      : false;
-    if (config.jetlore && isJetloreType && data) {
-      const jlData = getJetlorePayload(type, data);
-      JL.tracker[type](jlData);
+    try {
+      JL.trackActivity(type, data);
+    } catch (err) {
+      logger.error('JL.trackActivity', err);
     }
     if (trackers[type]) {
       trackers[type](data);
     }
   };
+
   const identify = (cb? : function) => {
     let url;
     if (config.paramsToTokenUrl) {
@@ -503,8 +436,7 @@ export const Tracker = (config? : Config = {}) => {
     // bringing in tracking functions for backwards compatibility
     ...trackerFunctions,
     track: trackEventByType,
-    identify,
-    getJetlorePayload
+    identify
   };
 
   // Adding tracker onto the window so that we can inspect its properties
