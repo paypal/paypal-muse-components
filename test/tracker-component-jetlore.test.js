@@ -9,6 +9,30 @@ import { logger } from '../src/lib/logger';
 ** - had to mock everything manually because sinon/rewire cannot be imported.
 **   was getting error "Uncaught Error: Module build failed: Error: Final loader (./node_modules/imports/index.js) didn't return a Buffer or String"
 */
+describe('Tracker setCart', () => {
+  it('should fire setCart events', () => {
+    Tracker({ jetlore: { user_id: 'u123', feed_id: 'ff123', access_token: '1234' } });
+    const JL = getJetlore();
+    JL.tracker.setCart = jest.fn();
+    JL.trackActivity('setCart', {
+      cartId: '__test__cartId',
+      items: [
+        {
+          title: 'william of normandy',
+          imgUrl: 'animageurl',
+          price: 'tree fiddy',
+          id: '__test__productId',
+          url: 'https://example.com/__test__productId'
+        }
+      ],
+      emailCampaignId: '__test__emailCampaignId',
+      currencyCode: 'USD',
+      total: '12345.67'
+    });
+    expect(JL.tracker.setCart.mock.calls.length).toEqual(1);
+  });
+});
+
 describe('Tracker.track function', () => {
   let initTrackerOpts;
   let originalJLTracking;

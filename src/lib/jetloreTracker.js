@@ -157,6 +157,12 @@ Tracker.prototype.addToCart = function addToCart(data) {
   tracker.performAction(tracker.convertDealData, tracker.a_add_to_cart, data);
 };
 
+Tracker.prototype.setCart = function setCart(data) {
+  const tracker = this;
+  tracker.log('SetCart action initiated');
+  tracker.performAction(tracker.convertDealData, tracker.a_set_cart, data);
+};
+
 Tracker.prototype.removeFromCart = function removeFromCart(data) {
   const tracker = this;
   tracker.log('RemoveFromCart action initiated');
@@ -175,6 +181,12 @@ Tracker.prototype.removeFromWishList = function removeFromWishList(data) {
   tracker.performAction(tracker.convertDealData, tracker.a_remove_from_wishlist, data);
 };
 
+Tracker.prototype.setWishList = function setWishList(data) {
+  const tracker = this;
+  tracker.log('SetWishList action initiated');
+  tracker.performAction(tracker.convertDealData, tracker.a_set_wishlist, data);
+};
+
 Tracker.prototype.addToFavorites = function addToFavorites(data) {
   const tracker = this;
   tracker.log('AddToFavorites action initiated');
@@ -185,6 +197,12 @@ Tracker.prototype.removeFromFavorites = function removeFromFavorites(data) {
   const tracker = this;
   tracker.log('RemoveFromFavorites action initiated');
   tracker.performAction(tracker.convertDealData, tracker.a_remove_from_favorites, data);
+};
+
+Tracker.prototype.setFavoriteList = function setFavoriteList(data) {
+  const tracker = this;
+  tracker.log('SetFavoriteList action initiated');
+  tracker.performAction(tracker.convertDealData, tracker.a_set_favorites, data);
 };
 
 Tracker.prototype.browse_promo = function browse_promo(data) {
@@ -376,11 +394,14 @@ Tracker.prototype.log = function log(text) {
 Tracker.prototype.a_purchase = 'purch';
 Tracker.prototype.a_click = 'click';
 Tracker.prototype.a_add_to_cart = 'add_to_cart';
+Tracker.prototype.a_set_cart = 'set_cart';
 Tracker.prototype.a_remove_from_cart = 'remove_from_cart';
 Tracker.prototype.a_add_to_wishlist = 'add_to_wishlist';
+Tracker.prototype.a_set_wishlist = 'set_wishlist';
 Tracker.prototype.a_remove_from_wishlist = 'remove_from_wishlist';
 Tracker.prototype.a_add_to_favorites = 'add_to_favorites';
 Tracker.prototype.a_remove_from_favorites = 'remove_from_favorites';
+Tracker.prototype.a_set_favorites = 'set_favorites';
 Tracker.prototype.a_browse_promo = 'browse_promo';
 Tracker.prototype.a_browse_catalog = 'browse_catalog';
 Tracker.prototype.a_browse_section = 'browse_section';
