@@ -1,7 +1,7 @@
 /* @flow */
 
-import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain, getEventEmitter } from '@paypal/sdk-client/src';
-import { UNKNOWN } from '@paypal/sdk-constants/src';
+import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain, getEventEmitter, getDebug, getEnv } from '@paypal/sdk-client/src';
+import { UNKNOWN, ENV } from '@paypal/sdk-constants/src';
 
 import { logger } from './lib/logger';
 
@@ -53,13 +53,22 @@ function _isPayPalDomain() : boolean {
 
 // Inserts the pptm.js script tag. This is the `setupHandler` in __sdk__.js and will be called automatically
 // when the made SDK is initialized.
-export function insertPptm() {
+export function insertPptm(env : string = getEnv(), isDebug : boolean = getDebug()) {
   try {
     // When merchants use checkout buttons, they'll include the payments SDK on their
     // website, and then it'll render an iframe from the PayPal domain which will in turn
     // initialize the SDK again. We don't want to insert another pptm.js on the paypal.com
     // domain, though.
     if (!_isPayPalDomain()) {
+      // https://engineering.paypalcorp.com/jira/browse/PPPLMER-79439
+      // When merchants test the SDK using a sandbox client ID, it pulls in tagmanager/pptm.js
+      // and that code makes calls to QA FPTI since it infers the environment as sandbox.
+      // These calls fail on the public internet, so we only want to make these calls
+      // if __DEBUG__ is manually set to true.
+      if (env === ENV.SANDBOX && isDebug !== true) {
+        return;
+      }
+
       const mrid = parseMerchantId();
       const clientId = getClientID();
       const url = window.location.hostname;
@@ -95,6 +104,8 @@ function listenForButtonRender() {
 }
 
 export function setup() {
-  document.addEventListener('DOMContentLoaded', insertPptm);
+  document.addEventListener('DOMContentLoaded', () => {
+    insertPptm(getEnv(), getDebug());
+  });
   listenForButtonRender();
 }
