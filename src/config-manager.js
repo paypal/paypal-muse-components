@@ -24,9 +24,10 @@ import { installTrackerFunctions, clearTrackQueue } from './tracker-functions';
 export const createConfigManager = (config? : Config = {}) => {
   const configStore = { ...constants.defaultTrackerConfig, ...config };
 
-  const JL = getJetlore(configStore);
-
   const configHelper = {};
+
+  const JL = getJetlore(configStore);
+  installTrackerFunctions(configHelper, configStore, JL);
 
   configHelper.setupConfigUser = () => {
     /*
@@ -80,8 +81,6 @@ export const createConfigManager = (config? : Config = {}) => {
     configStore.user.id = userId;
     configStore.currencyCode = configStore.currencyCode || getCurrency();
   };
-
-  installTrackerFunctions(configHelper, configStore);
 
   configHelper.setImplicitPropertyId = () => {
     fetchContainerSettings(configStore).then(containerSummary => {
