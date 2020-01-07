@@ -33,8 +33,20 @@ function addJLFunctionsToSDK(tracker = {}) : null {
     tracker.viewProduct = validFn((data : {}) : null => {
       JL.trackActivity('viewProduct', { payload: data });
     });
+    tracker.addToWishList = validFn((data : {}) : null => {
+      JL.trackActivity('addToWishList', { payload: data });
+    });
+    tracker.removeFromWishList = validFn((data : {}) : null => {
+      JL.trackActivity('removeFromWishList', { payload: data });
+    });
     tracker.setWishList = validFn((data : {}) : null => {
       JL.trackActivity('setWishList', { payload: data });
+    });
+    tracker.addToFavorites = validFn((data : {}) : null => {
+      JL.trackActivity('addToFavorites', { payload: data });
+    });
+    tracker.removeFromFavorites = validFn((data : {}) : null => {
+      JL.trackActivity('removeFromFavorites', { payload: data });
     });
     tracker.setFavoriteList = validFn((data : {}) : null => {
       JL.trackActivity('setFavoriteList', { payload: data });
