@@ -5,20 +5,12 @@ import { getClientID } from '@paypal/sdk-client/src';
 
 import { logger } from './lib/logger';
 import {
-  validateAddItems,
-  validateRemoveItems,
   validateUser,
-  validatePurchase,
   validateCustomEvent,
-  addToCartNormalizer,
-  setCartNormalizer,
-  removeFromCartNormalizer,
-  purchaseNormalizer,
   setUserNormalizer
 } from './lib/validation';
 import {
   setCartId,
-  createNewCartId,
   getUserId,
   setGeneratedUserId,
   setMerchantProvidedUserId
@@ -38,7 +30,6 @@ import type {
   IdentityData,
   CartData,
   RemoveFromCartData,
-  PurchaseData,
   EventType,
   CartEventType,
   Config,
@@ -172,41 +163,11 @@ export const Tracker = (config? : Config = {}) => {
     getConfig: configHelper.getConfig,
     viewPage: configHelper.viewPage,
     addToCart: configHelper.addToCart,
-    setCart: (data : CartData) => {
-      try {
-        data = setCartNormalizer(data);
-        JL.trackActivity('setCart', data);
-        validateAddItems(data);
-        return trackCartEvent(config, 'setCart', data);
-      } catch (err) {
-        logger.error('setCart', err);
-      }
-    },
-    setCartId: (cartId : string) => setCartId(cartId),
-    removeFromCart: (data : RemoveFromCartData) => {
-      try {
-        data = removeFromCartNormalizer(data);
-        validateRemoveItems(data);
-        return trackCartEvent(config, 'removeFromCart', data);
-      } catch (err) {
-        logger.error('removeFromCart', err);
-      }
-    },
-    purchase: (data : PurchaseData) => {
-      try {
-        data = purchaseNormalizer(data);
-        validatePurchase(data);
-        return trackEvent(config, 'purchase', data);
-      } catch (err) {
-        logger.error('purchase', err);
-      }
-    },
-    cancelCart: () => {
-      const event = trackEvent(config, 'cancelCart', {});
-      // a new id can only be created AFTER the 'cancel' event has been fired
-      createNewCartId();
-      return event;
-    },
+    setCart: configHelper.setCart,
+    setCartId: configHelper.setCartId,
+    removeFromCart: configHelper.removeFromCart,
+    purchase: configHelper.purchase,
+    cancelCart: configHelper.cancelCart,
     setUser: (data : { user : UserData } | UserData) => {
       // $FlowFixMe
       const prevMerchantProvidedUserId = getUserId().merchantProvidedUserId;

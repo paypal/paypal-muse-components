@@ -3,18 +3,25 @@ import _ from 'lodash';
 import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src';
 
 import constants from './lib/constants';
+import getJetlore from './lib/jetlore';
 import { IdentityManager } from './lib/iframe-tools/identity-manager';
 import type {
   Config,
   CartData,
   EventType,
   RemoveFromCartData,
+  PurchaseData,
   CartEventType,
   FptiInput
 } from './types';
 import {
+  validateRemoveItems,
   addToCartNormalizer,
-  validateAddItems
+  setCartNormalizer,
+  removeFromCartNormalizer,
+  purchaseNormalizer,
+  validateAddItems,
+  validatePurchase
 } from './lib/validation';
 import { logger } from './lib/logger';
 import {
@@ -38,7 +45,6 @@ import { track } from './lib/track';
 import type {
   UserData,
   IdentityData,
-  PurchaseData,
   Config,
 } from './types';
 */
@@ -213,6 +219,45 @@ export const createConfigHelper = () => {
     } catch (err) {
       logger.error('addToCart', err);
     }
+  };
+
+  configHelper.setCart = (data : CartData) => {
+    const JL = getJetlore(configHelper.getConfig());
+    try {
+      data = setCartNormalizer(data);
+      JL.trackActivity('setCart', data);
+      validateAddItems(data);
+      return trackCartEvent(configHelper.getConfig(), 'setCart', data);
+    } catch (err) {
+      logger.error('setCart', err);
+    }
+  };
+
+  configHelper.setCartId = (cartId : string) => setCartId(cartId);
+  configHelper.removeFromCart = (data : RemoveFromCartData) => {
+    try {
+      data = removeFromCartNormalizer(data);
+      validateRemoveItems(data);
+      return trackCartEvent(configHelper.getConfig(), 'removeFromCart', data);
+    } catch (err) {
+      logger.error('removeFromCart', err);
+    }
+  };
+  configHelper.purchase = (data : PurchaseData) => {
+    try {
+      data = purchaseNormalizer(data);
+      validatePurchase(data);
+      return trackEvent(configHelper.getConfig(), 'purchase', data);
+    } catch (err) {
+      logger.error('purchase', err);
+    }
+  };
+
+  configHelper.cancelCart = () => {
+    const event = trackEvent(configHelper.getConfig(), 'cancelCart', {});
+    // a new id can only be created AFTER the 'cancel' event has been fired
+    createNewCartId();
+    return event;
   };
 
   return configHelper;
