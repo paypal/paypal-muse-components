@@ -1,4 +1,6 @@
 /* @flow */
+import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
+
 import _ from 'lodash';
 import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src';
 
@@ -10,9 +12,11 @@ import type {
   CartData,
   EventType,
   RemoveFromCartData,
+  IdentityData,
   PurchaseData,
   CartEventType,
-  FptiInput
+  FptiInput,
+  UserData
 } from './types';
 import {
   validateRemoveItems,
@@ -21,7 +25,9 @@ import {
   removeFromCartNormalizer,
   purchaseNormalizer,
   validateAddItems,
-  validatePurchase
+  validatePurchase,
+  validateUser,
+  setUserNormalizer
 } from './lib/validation';
 import { logger } from './lib/logger';
 import {
@@ -44,12 +50,27 @@ import { track } from './lib/track';
 /*
 import type {
   UserData,
-  IdentityData,
   Config,
 } from './types';
 */
 
 const trackEventQueue = [];
+
+const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
+  return fetch(url, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      mrid,
+      clientId: getClientID()
+    })
+  }).then(r => r.json()).then(data => {
+    return data;
+  });
+};
 
 export const trackEvent = (config : Config, trackingType : EventType, trackingData : any) : void => {
   // CartId can be set by any event if it is provided
@@ -258,6 +279,81 @@ export const createConfigHelper = () => {
     // a new id can only be created AFTER the 'cancel' event has been fired
     createNewCartId();
     return event;
+  };
+
+  configHelper.setUser = (data : { user : UserData } | UserData) => {
+    // $FlowFixMe
+    const prevMerchantProvidedUserId = getUserId().merchantProvidedUserId;
+
+    try {
+      data = setUserNormalizer(data);
+      validateUser(data);
+    } catch (err) {
+      logger.error('setUser', err);
+      return;
+    }
+
+    if (data.id || data.id === null) {
+      setMerchantProvidedUserId(data.id);
+
+      if (data.id === null) {
+        setGeneratedUserId();
+      }
+    }
+
+    const configUser = configStore.user || {};
+    const merchantProvidedUserId = data.id !== undefined ? data.id : configUser.merchantProvidedUserId;
+    const userEmail = data.email !== undefined ? data.email : configUser.email;
+    const userName = data.name !== undefined ? data.name : configUser.name;
+
+    configStore = {
+      ...configStore,
+      user: {
+        id: configUser.id,
+        merchantProvidedUserId,
+        email: userEmail,
+        name: userName
+      }
+    };
+
+    if (merchantProvidedUserId !== undefined || userEmail || userName) {
+      trackEvent(configHelper.getConfig(), 'setUser', { prevMerchantProvidedUserId });
+    }
+  };
+
+  configHelper.setPropertyId = (id : string) => {
+    configStore.propertyId = id;
+  };
+
+  const {
+    accessTokenUrl
+  } = constants;
+  configHelper.getIdentity = (data : IdentityData, url? : string = accessTokenUrl) : Promise<Object> => {
+    return getAccessToken(url, data.mrid).then(accessToken => {
+      if (accessToken.data) {
+        if (data.onIdentification) {
+          data.onIdentification({ getAccessToken: () => accessToken.data });
+        }
+      } else {
+        if (data.onError) {
+          data.onError({
+            message: 'No token could be created',
+            error: accessToken
+          });
+        }
+      }
+      return accessToken;
+
+    }).catch(err => {
+      if (data.onError) {
+        data.onError({
+          message: 'No token could be created',
+          error: err
+        });
+      }
+
+      return {};
+    });
   };
 
   return configHelper;

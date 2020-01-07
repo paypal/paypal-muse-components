@@ -1,19 +1,10 @@
 /* @flow */
-import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
-
-import { getClientID } from '@paypal/sdk-client/src';
-
 import { logger } from './lib/logger';
 import {
-  validateUser,
-  validateCustomEvent,
-  setUserNormalizer
+  validateCustomEvent
 } from './lib/validation';
 import {
-  setCartId,
-  getUserId,
-  setGeneratedUserId,
-  setMerchantProvidedUserId
+  setCartId
 } from './lib/local-storage';
 import { fetchContainerSettings } from './lib/get-property-id';
 import {
@@ -24,40 +15,14 @@ import {
 import getJetlore from './lib/jetlore';
 import { trackFpti } from './lib/fpti';
 import { track } from './lib/track';
-import constants from './lib/constants';
 import type {
-  UserData,
-  IdentityData,
-  CartData,
-  RemoveFromCartData,
   EventType,
-  CartEventType,
   Config,
   FptiInput
 } from './types';
 import {
   createConfigHelper
 } from './tracker-helpers';
-
-const {
-  accessTokenUrl
-} = constants;
-
-const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
-  return fetch(url, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      mrid,
-      clientId: getClientID()
-    })
-  }).then(r => r.json()).then(data => {
-    return data;
-  });
-};
 
 let trackEventQueue = [];
 
@@ -104,10 +69,6 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
     track(config, trackingType, trackingData);
     break;
   }
-};
-
-const trackCartEvent = (config : Config, cartEventType : CartEventType, trackingData : CartData | RemoveFromCartData) => {
-  trackEvent(config, 'cartEvent', { ...trackingData, cartEventType });
 };
 
 export const clearTrackQueue = (config : Config) => {
@@ -168,76 +129,9 @@ export const Tracker = (config? : Config = {}) => {
     removeFromCart: configHelper.removeFromCart,
     purchase: configHelper.purchase,
     cancelCart: configHelper.cancelCart,
-    setUser: (data : { user : UserData } | UserData) => {
-      // $FlowFixMe
-      const prevMerchantProvidedUserId = getUserId().merchantProvidedUserId;
-
-      try {
-        data = setUserNormalizer(data);
-        validateUser(data);
-      } catch (err) {
-        logger.error('setUser', err);
-        return;
-      }
-
-      if (data.id || data.id === null) {
-        setMerchantProvidedUserId(data.id);
-
-        if (data.id === null) {
-          setGeneratedUserId();
-        }
-      }
-
-      const configUser = config.user || {};
-      const merchantProvidedUserId = data.id !== undefined ? data.id : configUser.merchantProvidedUserId;
-      const userEmail = data.email !== undefined ? data.email : configUser.email;
-      const userName = data.name !== undefined ? data.name : configUser.name;
-
-      config = {
-        ...config,
-        user: {
-          id: configUser.id,
-          merchantProvidedUserId,
-          email: userEmail,
-          name: userName
-        }
-      };
-
-      if (merchantProvidedUserId !== undefined || userEmail || userName) {
-        trackEvent(config, 'setUser', { prevMerchantProvidedUserId });
-      }
-    },
-    setPropertyId: (id : string) => {
-      config.propertyId = id;
-    },
-    getIdentity: (data : IdentityData, url? : string = accessTokenUrl) : Promise<Object> => {
-      return getAccessToken(url, data.mrid)
-        .then(accessToken => {
-          if (accessToken.data) {
-            if (data.onIdentification) {
-              data.onIdentification({ getAccessToken: () => accessToken.data });
-            }
-          } else {
-            if (data.onError) {
-              data.onError({
-                message: 'No token could be created',
-                error: accessToken
-              });
-            }
-          }
-          return accessToken;
-
-        }).catch(err => {
-          if (data.onError) {
-            data.onError({
-              message: 'No token could be created',
-              error: err
-            });
-          }
-
-          return {};
-        });
-    },
+    setUser: configHelper.setUser,
+    setPropertyId: configHelper.setPropertyId,
+    getIdentity: configHelper.getIdentity,
     customEvent: (eventName : string, data? : Object) => {
       try {
         validateCustomEvent(eventName, data);
