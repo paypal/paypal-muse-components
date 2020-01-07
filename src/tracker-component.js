@@ -1,7 +1,7 @@
 /* @flow */
 import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
-import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src';
+import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
 
 import { logger } from './lib/logger';
 import {
@@ -17,17 +17,14 @@ import {
   setUserNormalizer
 } from './lib/validation';
 import {
-  getOrCreateValidCartId,
   setCartId,
   createNewCartId,
   getUserId,
   setGeneratedUserId,
-  getOrCreateValidUserId,
   setMerchantProvidedUserId,
   getCartId
 } from './lib/local-storage';
 import { fetchContainerSettings } from './lib/get-property-id';
-import { IdentityManager } from './lib/iframe-tools/identity-manager';
 import {
   analyticsInit,
   merchantUserEvent,
@@ -48,10 +45,14 @@ import type {
   Config,
   FptiInput
 } from './types';
+import {
+  checkDebugMode,
+  setupConfigUser,
+  setupUserAndCart
+} from './tracker-helpers';
 
 const {
-  accessTokenUrl,
-  defaultTrackerConfig
+  accessTokenUrl
 } = constants;
 
 const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
@@ -147,50 +148,11 @@ export const setImplicitPropertyId = (config : Config) => {
 
 // $FlowFixMe
 export const Tracker = (config? : Config = {}) => {
-  /*
-        Bit of a tricky thing here. We allow the merchant to pass
-        in { user: { id } }. However, we convert that property
-        to config.user.merchantProvidedUserId instead of setting
-        it as config.user.id. This is because config.user.id is a
-        constant that we generate internally.
-    */
-  if (config.user && config.user.id) {
-    config.user.merchantProvidedUserId = config.user.id;
+  setupConfigUser(config);
+  checkDebugMode();
 
-    delete config.user.id;
-  }
+  setupUserAndCart();
     
-  const currentUrl = new URL(window.location.href);
-  // use the param ?ppDebug=true to see logs
-  const debug = currentUrl.searchParams.get('ppDebug');
-
-  if (debug) {
-    // eslint-disable-next-line no-console
-    console.log('PayPal Shopping: debug mode on.');
-  }
-
-  let userId;
-
-  try {
-    new IdentityManager(config);
-    getOrCreateValidCartId();
-    userId = getOrCreateValidUserId().userId;
-
-    if (config && config.user && config.user.merchantProvidedUserId) {
-      setMerchantProvidedUserId(config.user.merchantProvidedUserId);
-    }
-  } catch (err) {
-    logger.error('cart_or_shopper_id', err);
-    createNewCartId();
-    userId = setGeneratedUserId().userId;
-  }
-
-  // $FlowFixMe
-  config = { ...defaultTrackerConfig, ...config };
-  config.user = config.user || {};
-  config.user.id = userId;
-  config.currencyCode = config.currencyCode || getCurrency();
-
   /*
     Quick devnote here:
 
