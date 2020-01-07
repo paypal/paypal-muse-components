@@ -24,7 +24,7 @@ export const Tracker = (config? : Config = {}) => {
   */
 
   const configHelper = createConfigHelper(config);
-  configHelper.setupConfigUser(config);
+  configHelper.setupConfigUser();
   configHelper.checkDebugMode();
   configHelper.setupUserAndCart();
     

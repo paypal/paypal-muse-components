@@ -130,11 +130,11 @@ const trackCartEvent = (config : Config, cartEventType : CartEventType, tracking
   trackEvent(config, 'cartEvent', { ...trackingData, cartEventType });
 };
 
-export const createConfigHelper = () => {
-  let configStore = { ...constants.defaultTrackerConfig };
+export const createConfigHelper = (config? : Config = {}) => {
+  let configStore = { ...constants.defaultTrackerConfig, ...config };
 
   const configHelper = {};
-  configHelper.setupConfigUser = (config? : Config = {}) => {
+  configHelper.setupConfigUser = () => {
     /*
       Bit of a tricky thing here. We allow the merchant to pass
       in { user: { id } }. However, we convert that property
@@ -142,13 +142,11 @@ export const createConfigHelper = () => {
       it as config.user.id. This is because config.user.id is a
       constant that we generate internally.
       */
-    if (config.user && config.user.id) {
-      config.user.merchantProvidedUserId = config.user.id;
-
-      delete config.user.id;
+    const merchantUserId = _.get(configStore, 'user.id');
+    if (merchantUserId) {
+      configStore.user.merchantProvidedUserId = merchantUserId;
+      delete configStore.user.id;
     }
-
-    configStore = { ...config };
   };
 
   configHelper.checkDebugMode = () => {
