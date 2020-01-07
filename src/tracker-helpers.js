@@ -4,6 +4,7 @@ import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 import _ from 'lodash';
 import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src';
 
+import { fetchContainerSettings } from './lib/get-property-id';
 import constants from './lib/constants';
 import getJetlore from './lib/jetlore';
 import { IdentityManager } from './lib/iframe-tools/identity-manager';
@@ -55,7 +56,7 @@ import type {
 } from './types';
 */
 
-const trackEventQueue = [];
+let trackEventQueue = [];
 
 const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
   return fetch(url, {
@@ -116,6 +117,13 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
     track(config, trackingType, trackingData);
     break;
   }
+};
+
+export const clearTrackQueue = (config : Config) => {
+  trackEventQueue.forEach(([ trackingType, trackingData ]) => {
+    trackEvent(config, trackingType, trackingData);
+  });
+  trackEventQueue = [];
 };
 
 const trackCartEvent = (config : Config, cartEventType : CartEventType, trackingData : CartData | RemoveFromCartData) => {
@@ -357,7 +365,6 @@ export const createConfigHelper = () => {
     });
   };
 
-
   configHelper.customEvent = (eventName : string, data? : Object) => {
     try {
       validateCustomEvent(eventName, data);
@@ -375,6 +382,22 @@ export const createConfigHelper = () => {
     } catch (err) {
       logger.error('customEvent', err);
     }
+  };
+
+  configHelper.setImplicitPropertyId = () => {
+    fetchContainerSettings(configStore).then(containerSummary => {
+      /* this is used for backwards compatibility we do not want to overwrite
+    a propertyId if propertyId has already been set using the SDK */
+      if (!configStore.propertyId) {
+        configStore.propertyId = containerSummary.id;
+      }
+
+      configStore.containerSummary = containerSummary;
+
+      if (trackEventQueue.length) {
+        clearTrackQueue(configStore);
+      }
+    });
   };
 
   return configHelper;

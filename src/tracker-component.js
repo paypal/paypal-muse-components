@@ -1,94 +1,11 @@
 /* @flow */
-import {
-  setCartId
-} from './lib/local-storage';
-import { fetchContainerSettings } from './lib/get-property-id';
-import {
-  analyticsInit,
-  merchantUserEvent,
-  analyticsPurchase
-} from './lib/legacy-analytics';
 import getJetlore from './lib/jetlore';
-import { trackFpti } from './lib/fpti';
-import { track } from './lib/track';
 import type {
-  EventType,
   Config
 } from './types';
 import {
   createConfigHelper
 } from './tracker-helpers';
-
-let trackEventQueue = [];
-
-export const trackEvent = (config : Config, trackingType : EventType, trackingData : any) : void => {
-  // CartId can be set by any event if it is provided
-  if (trackingData.cartId) {
-    setCartId(trackingData.cartId);
-  }
-
-  if (trackingData.currencyCode) {
-    config.currencyCode = trackingData.currencyCode;
-  }
-
-  // Events cannot be fired without a propertyId. We add events
-  // to a queue if a propertyId has not yet been returned.
-  if (!config.propertyId) {
-    trackEventQueue.push([ trackingType, trackingData ]);
-    return;
-  }
-
-  const programExists = config.containerSummary && config.containerSummary.programId;
-
-  switch (trackingType) {
-  case 'view':
-  case 'customEvent':
-    if (programExists) {
-      switch (trackingData.eventName) {
-      case 'analytics-init':
-        analyticsInit(config);
-        break;
-      case 'analytics-cancel':
-        merchantUserEvent(config);
-        break;
-      }
-    }
-
-    trackFpti(config, trackingData);
-    break;
-  case 'purchase':
-    if (programExists) {
-      analyticsPurchase(config);
-    }
-  default:
-    track(config, trackingType, trackingData);
-    break;
-  }
-};
-
-export const clearTrackQueue = (config : Config) => {
-  trackEventQueue.forEach(([ trackingType, trackingData ]) => {
-    trackEvent(config, trackingType, trackingData);
-  });
-  trackEventQueue = [];
-};
-
-export const setImplicitPropertyId = (config : Config) => {
-
-  fetchContainerSettings(config).then(containerSummary => {
-    /* this is used for backwards compatibility we do not want to overwrite
-    a propertyId if propertyId has already been set using the SDK */
-    if (!config.propertyId) {
-      config.propertyId = containerSummary.id;
-    }
-
-    config.containerSummary = containerSummary;
-
-    if (trackEventQueue.length) {
-      clearTrackQueue(config);
-    }
-  });
-};
 
 // $FlowFixMe
 export const Tracker = (config? : Config = {}) => {
@@ -129,7 +46,8 @@ export const Tracker = (config? : Config = {}) => {
     getIdentity: configHelper.getIdentity,
     customEvent: configHelper.customEvent
   };
-  setImplicitPropertyId(config);
+
+  configHelper.setImplicitPropertyId();
 
   JL.addJLFunctionsToSDK(trackers);
 
