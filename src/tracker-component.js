@@ -1,7 +1,7 @@
 /* @flow */
 import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
-import { getClientID, getMerchantID } from '@paypal/sdk-client/src';
+import { getClientID } from '@paypal/sdk-client/src';
 
 import { logger } from './lib/logger';
 import {
@@ -21,8 +21,7 @@ import {
   createNewCartId,
   getUserId,
   setGeneratedUserId,
-  setMerchantProvidedUserId,
-  getCartId
+  setMerchantProvidedUserId
 } from './lib/local-storage';
 import { fetchContainerSettings } from './lib/get-property-id';
 import {
@@ -46,9 +45,7 @@ import type {
   FptiInput
 } from './types';
 import {
-  checkDebugMode,
-  setupConfigUser,
-  setupUserAndCart
+  createConfigHelper
 } from './tracker-helpers';
 
 const {
@@ -148,11 +145,6 @@ export const setImplicitPropertyId = (config : Config) => {
 
 // $FlowFixMe
 export const Tracker = (config? : Config = {}) => {
-  setupConfigUser(config);
-  checkDebugMode();
-
-  setupUserAndCart();
-    
   /*
     Quick devnote here:
 
@@ -167,41 +159,19 @@ export const Tracker = (config? : Config = {}) => {
     The difference in behavior is intended.
   */
 
+  const configHelper = createConfigHelper(config);
+  configHelper.setupConfigUser(config);
+  configHelper.checkDebugMode();
+  configHelper.setupUserAndCart();
+    
   // Initialize JL Module. Note: getJetlore must never throw an error
   // Which is why getJetlore is wrapped around a try catch
-  const JL = getJetlore(config);
+  const JL = getJetlore(configHelper.getConfig());
 
   const trackers = {
-    getConfig: () => {
-      return config;
-    },
-    viewPage: () => {
-      // $FlowFixMe
-      const merchantProvidedUserId = getUserId().merchantProvidedUserId;
-      // $FlowFixMe
-      const shopperId = getUserId().userId;
-      // $FlowFixMe
-      const cartId = getCartId().cartId;
-
-      const data : FptiInput = {
-        eventName: 'pageView',
-        eventType: 'view',
-        shopperId,
-        merchantProvidedUserId,
-        cartId
-      };
-
-      trackEvent(config, 'view', data);
-    },
-    addToCart: (data : CartData) => {
-      try {
-        data = addToCartNormalizer(data);
-        validateAddItems(data);
-        return trackCartEvent(config, 'addToCart', data);
-      } catch (err) {
-        logger.error('addToCart', err);
-      }
-    },
+    getConfig: configHelper.getConfig,
+    viewPage: configHelper.viewPage,
+    addToCart: configHelper.addToCart,
     setCart: (data : CartData) => {
       try {
         data = setCartNormalizer(data);
@@ -340,7 +310,6 @@ export const Tracker = (config? : Config = {}) => {
 
   // To disable functions, refer to this PR:
   // https://github.com/paypal/paypal-muse-components/commit/b3e76554fadd72ad24b6a900b99b8ff75af08815
-  const trackerFunctions = trackers;
 
   // To future developers. This is only for supporting an undocumented
   // Tracker.track function call.
@@ -355,50 +324,13 @@ export const Tracker = (config? : Config = {}) => {
     }
   };
 
-  const identify = (cb? : function) => {
-    let url;
-    if (config.paramsToTokenUrl) {
-      url = config.paramsToTokenUrl();
-    } else {
-      url = 'https://paypal.com/muse/api/partner-token';
-    }
-    return window.fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        merchantId: getMerchantID()[0],
-        clientId: getClientID()
-      })
-    }).then(res => {
-      if (res.status !== 200) {
-        return false;
-      }
-      return res.json();
-    }).then(data => {
-      if (!data) {
-        const failurePayload = { success: false };
-        return cb ? cb(failurePayload) : failurePayload;
-      }
-      const identityPayload = {
-        ...data,
-        success: true
-      };
-      return cb ?  cb(identityPayload) : identityPayload;
-    }).catch(err => {
-      logger.error('identity', err);
-    });
-  };
-
-  trackerFunctions.viewPage();
+  trackers.viewPage();
 
   const fullTracker = {
     // bringing in tracking functions for backwards compatibility
-    ...trackerFunctions,
+    ...trackers,
     track: trackEventByType,
-    identify
+    identify: configHelper.getUserAccessToken
   };
 
   // Adding tracker onto the window so that we can inspect its properties
