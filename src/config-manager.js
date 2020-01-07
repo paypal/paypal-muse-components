@@ -21,7 +21,7 @@ import {
 } from './lib/local-storage';
 import { installTrackerFunctions, clearTrackQueue } from './tracker-functions';
 
-export const createConfigHelper = (config? : Config = {}) => {
+export const createConfigManager = (config? : Config = {}) => {
   const configStore = { ...constants.defaultTrackerConfig, ...config };
 
   const JL = getJetlore(configStore);

@@ -3,8 +3,8 @@ import type {
   Config
 } from './types';
 import {
-  createConfigHelper
-} from './tracker-helpers';
+  createConfigManager
+} from './config-manager';
 
 // $FlowFixMe
 export const Tracker = (config? : Config = {}) => {
@@ -22,37 +22,37 @@ export const Tracker = (config? : Config = {}) => {
     The difference in behavior is intended.
   */
 
-  const configHelper = createConfigHelper(config);
-  configHelper.setupConfigUser();
-  configHelper.checkDebugMode();
-  configHelper.setupUserAndCart();
+  const configManager = createConfigManager(config);
+  configManager.setupConfigUser();
+  configManager.checkDebugMode();
+  configManager.setupUserAndCart();
     
   const trackers = {
-    getConfig: configHelper.getConfig,
-    viewPage: configHelper.viewPage,
-    addToCart: configHelper.addToCart,
-    setCart: configHelper.setCart,
-    setCartId: configHelper.setCartId,
-    removeFromCart: configHelper.removeFromCart,
-    purchase: configHelper.purchase,
-    cancelCart: configHelper.cancelCart,
-    setUser: configHelper.setUser,
-    setPropertyId: configHelper.setPropertyId,
-    getIdentity: configHelper.getIdentity,
-    customEvent: configHelper.customEvent,
+    getConfig: configManager.getConfig,
+    viewPage: configManager.viewPage,
+    addToCart: configManager.addToCart,
+    setCart: configManager.setCart,
+    setCartId: configManager.setCartId,
+    removeFromCart: configManager.removeFromCart,
+    purchase: configManager.purchase,
+    cancelCart: configManager.cancelCart,
+    setUser: configManager.setUser,
+    setPropertyId: configManager.setPropertyId,
+    getIdentity: configManager.getIdentity,
+    customEvent: configManager.customEvent,
 
     // To future developers. This is only for supporting an undocumented
     // Tracker.track function call
     // Used in PPDG
-    track: configHelper.deprecatedTrack,
+    track: configManager.deprecatedTrack,
 
     // Identity calls are used by CIQ to get user identity
-    identify: configHelper.getUserAccessToken
+    identify: configManager.getUserAccessToken
   };
 
-  configHelper.setImplicitPropertyId();
+  configManager.setImplicitPropertyId();
 
-  configHelper.setupJL(trackers);
+  configManager.setupJL(trackers);
 
   // To disable functions, refer to this PR:
   // https://github.com/paypal/paypal-muse-components/commit/b3e76554fadd72ad24b6a900b99b8ff75af08815
