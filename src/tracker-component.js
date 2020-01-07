@@ -1,5 +1,4 @@
 /* @flow */
-import getJetlore from './lib/jetlore';
 import type {
   Config
 } from './types';
@@ -28,10 +27,6 @@ export const Tracker = (config? : Config = {}) => {
   configHelper.checkDebugMode();
   configHelper.setupUserAndCart();
     
-  // Initialize JL Module. Note: getJetlore must never throw an error
-  // Which is why getJetlore is wrapped around a try catch
-  const JL = getJetlore(configHelper.getConfig());
-
   const trackers = {
     getConfig: configHelper.getConfig,
     viewPage: configHelper.viewPage,
@@ -44,31 +39,25 @@ export const Tracker = (config? : Config = {}) => {
     setUser: configHelper.setUser,
     setPropertyId: configHelper.setPropertyId,
     getIdentity: configHelper.getIdentity,
-    customEvent: configHelper.customEvent
+    customEvent: configHelper.customEvent,
+
+    // To future developers. This is only for supporting an undocumented
+    // Tracker.track function call
+    // Used in PPDG
+    track: configHelper.deprecatedTrack,
+
+    // Identity calls are used by CIQ to get user identity
+    identify: configHelper.getUserAccessToken
   };
 
   configHelper.setImplicitPropertyId();
 
-  JL.addJLFunctionsToSDK(trackers);
+  configHelper.setupJL(trackers);
 
   // To disable functions, refer to this PR:
   // https://github.com/paypal/paypal-muse-components/commit/b3e76554fadd72ad24b6a900b99b8ff75af08815
 
   trackers.viewPage();
-
-  const fullTracker = {
-    // bringing in tracking functions for backwards compatibility
-    ...trackers,
-    track: (type : string, data : Object) => {
-      // To future developers. This is only for supporting an undocumented
-      // Tracker.track function call.
-      JL.trackActivity(type, data);
-      if (typeof trackers[type] === 'function') {
-        trackers[type](data);
-      }
-    },
-    identify: configHelper.getUserAccessToken
-  };
 
   // Adding tracker onto the window so that we can inspect its properties
   // for debugging. For example, window.__pp__trackers__[0].getConfig()
@@ -77,7 +66,7 @@ export const Tracker = (config? : Config = {}) => {
   // good for us to know too).
   window.__pp__trackers__ = window.__pp__trackers__ || [];
 
-  window.__pp__trackers__.push(fullTracker);
+  window.__pp__trackers__.push(trackers);
 
-  return fullTracker;
+  return trackers;
 };

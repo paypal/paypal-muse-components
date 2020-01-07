@@ -133,7 +133,10 @@ const trackCartEvent = (config : Config, cartEventType : CartEventType, tracking
 export const createConfigHelper = (config? : Config = {}) => {
   let configStore = { ...constants.defaultTrackerConfig, ...config };
 
+  const JL = getJetlore(configStore);
+
   const configHelper = {};
+
   configHelper.setupConfigUser = () => {
     /*
       Bit of a tricky thing here. We allow the merchant to pass
@@ -149,6 +152,10 @@ export const createConfigHelper = (config? : Config = {}) => {
     }
   };
 
+  configHelper.setupJL = (tracker : Object) => {
+    JL.addJLFunctionsToSDK(tracker);
+  };
+
   configHelper.checkDebugMode = () => {
     const currentUrl = new URL(window.location.href);
     // use the param ?ppDebug=true to see logs
@@ -157,6 +164,19 @@ export const createConfigHelper = (config? : Config = {}) => {
     if (debug) {
       // eslint-disable-next-line no-console
       console.log('PayPal Shopping: debug mode on.');
+    }
+  };
+
+  configHelper.deprecatedTrack = (type : string, data : Object) => {
+    // To future developers. This is only for supporting an undocumented
+    // Tracker.track function call.
+    JL.trackActivity(type, data);
+    if (typeof configHelper[type] === 'function') {
+      try {
+        configHelper[type](data);
+      } catch (err) {
+        logger.error('deprecated_track', err);
+      }
     }
   };
 
@@ -250,7 +270,6 @@ export const createConfigHelper = (config? : Config = {}) => {
   };
 
   configHelper.setCart = (data : CartData) => {
-    const JL = getJetlore(configHelper.getConfig());
     try {
       data = setCartNormalizer(data);
       JL.trackActivity('setCart', data);
