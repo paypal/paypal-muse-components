@@ -1,8 +1,4 @@
 /* @flow */
-import { logger } from './lib/logger';
-import {
-  validateCustomEvent
-} from './lib/validation';
 import {
   setCartId
 } from './lib/local-storage';
@@ -17,8 +13,7 @@ import { trackFpti } from './lib/fpti';
 import { track } from './lib/track';
 import type {
   EventType,
-  Config,
-  FptiInput
+  Config
 } from './types';
 import {
   createConfigHelper
@@ -132,59 +127,28 @@ export const Tracker = (config? : Config = {}) => {
     setUser: configHelper.setUser,
     setPropertyId: configHelper.setPropertyId,
     getIdentity: configHelper.getIdentity,
-    customEvent: (eventName : string, data? : Object) => {
-      try {
-        validateCustomEvent(eventName, data);
-
-        const fptiInput : FptiInput = {
-          eventName,
-          eventType: 'customEvent'
-        };
-
-        if (data) {
-          fptiInput.eventData = data;
-        }
-
-        trackEvent(config, 'customEvent', fptiInput);
-      } catch (err) {
-        logger.error('customEvent', err);
-      }
-    }
+    customEvent: configHelper.customEvent
   };
   setImplicitPropertyId(config);
 
-  try {
-    // This will add JL specific functions to trackers object
-    //   This function will have a side effect, which is necessary.
-    //   Since tracking SDK don't support these functions, they should
-    //   be handled directly by JL instead of going through trackers (more error prone)
-    JL.addJLFunctionsToSDK(trackers);
-  } catch (err) {
-    logger.error('JL.addJLFunctionsToSDK', err);
-  }
+  JL.addJLFunctionsToSDK(trackers);
 
   // To disable functions, refer to this PR:
   // https://github.com/paypal/paypal-muse-components/commit/b3e76554fadd72ad24b6a900b99b8ff75af08815
-
-  // To future developers. This is only for supporting an undocumented
-  // Tracker.track function call.
-  const trackEventByType = (type : string, data : Object) => {
-    try {
-      JL.trackActivity(type, data);
-    } catch (err) {
-      logger.error('JL.trackActivity', err);
-    }
-    if (trackers[type]) {
-      trackers[type](data);
-    }
-  };
 
   trackers.viewPage();
 
   const fullTracker = {
     // bringing in tracking functions for backwards compatibility
     ...trackers,
-    track: trackEventByType,
+    track: (type : string, data : Object) => {
+      // To future developers. This is only for supporting an undocumented
+      // Tracker.track function call.
+      JL.trackActivity(type, data);
+      if (typeof trackers[type] === 'function') {
+        trackers[type](data);
+      }
+    },
     identify: configHelper.getUserAccessToken
   };
 

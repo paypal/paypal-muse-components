@@ -27,6 +27,7 @@ import {
   validateAddItems,
   validatePurchase,
   validateUser,
+  validateCustomEvent,
   setUserNormalizer
 } from './lib/validation';
 import { logger } from './lib/logger';
@@ -354,6 +355,26 @@ export const createConfigHelper = () => {
 
       return {};
     });
+  };
+
+
+  configHelper.customEvent = (eventName : string, data? : Object) => {
+    try {
+      validateCustomEvent(eventName, data);
+
+      const fptiInput : FptiInput = {
+        eventName,
+        eventType: 'customEvent'
+      };
+
+      if (data) {
+        fptiInput.eventData = data;
+      }
+
+      trackEvent(configHelper.getConfig(), 'customEvent', fptiInput);
+    } catch (err) {
+      logger.error('customEvent', err);
+    }
   };
 
   return configHelper;

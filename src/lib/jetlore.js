@@ -19,21 +19,29 @@ const validFn = (fn) => {
 };
 
 function addJLFunctionsToSDK(tracker = {}) : null {
-  tracker.viewSection = validFn((data : {}) : null => {
-    JL.trackActivity('viewSection', { payload: data });
-  });
-  tracker.viewPromotion = validFn((data : {}) : null => {
-    JL.trackActivity('viewPromotion', { payload: data });
-  });
-  tracker.viewProduct = validFn((data : {}) : null => {
-    JL.trackActivity('viewProduct', { payload: data });
-  });
-  tracker.setWishList = validFn((data : {}) : null => {
-    JL.trackActivity('setWishList', { payload: data });
-  });
-  tracker.setFavoriteList = validFn((data : {}) : null => {
-    JL.trackActivity('setFavoriteList', { payload: data });
-  });
+  // This will add JL specific functions to trackers object
+  //   This function will have a side effect, which is necessary.
+  //   Since tracking SDK don't support these functions, they should
+  //   be handled directly by JL instead of going through trackers (more error prone)
+  try {
+    tracker.viewSection = validFn((data : {}) : null => {
+      JL.trackActivity('viewSection', { payload: data });
+    });
+    tracker.viewPromotion = validFn((data : {}) : null => {
+      JL.trackActivity('viewPromotion', { payload: data });
+    });
+    tracker.viewProduct = validFn((data : {}) : null => {
+      JL.trackActivity('viewProduct', { payload: data });
+    });
+    tracker.setWishList = validFn((data : {}) : null => {
+      JL.trackActivity('setWishList', { payload: data });
+    });
+    tracker.setFavoriteList = validFn((data : {}) : null => {
+      JL.trackActivity('setFavoriteList', { payload: data });
+    });
+  } catch (err) {
+    logger.error('JL.addJLFunctionsToSDK', err);
+  }
 }
 
 const initializeJL = (config = {}) => {
@@ -113,24 +121,28 @@ const initializeJL = (config = {}) => {
 
   JL = {
     trackActivity(type, data) : null {
-      if (!jlEnabled || !trackTypes.includes(type)) {
+      try {
+        if (!jlEnabled || !trackTypes.includes(type)) {
+          return null;
+        }
+        const jlData = getJetlorePayload(type, data);
+        if (type === 'viewPromotion') {
+          return JL.tracker.browse_promo && JL.tracker.browse_promo(jlData);
+        }
+        if (type === 'viewSection') {
+          return JL.tracker.browse_section && JL.tracker.browse_section(jlData);
+        }
+        if (type === 'viewProduct') {
+          return JL.tracker.browse_catalog && JL.tracker.browse_catalog(jlData);
+        }
+        if (type === 'setCart') {
+          return JL.tracker.setCart && JL.tracker.setCart(data);
+        }
+        JL.tracker[type] && JL.tracker[type](jlData);
         return null;
+      } catch (err) {
+        logger.error('JL.trackActivity', err);
       }
-      const jlData = getJetlorePayload(type, data);
-      if (type === 'viewPromotion') {
-        return JL.tracker.browse_promo && JL.tracker.browse_promo(jlData);
-      }
-      if (type === 'viewSection') {
-        return JL.tracker.browse_section && JL.tracker.browse_section(jlData);
-      }
-      if (type === 'viewProduct') {
-        return JL.tracker.browse_catalog && JL.tracker.browse_catalog(jlData);
-      }
-      if (type === 'setCart') {
-        return JL.tracker.setCart && JL.tracker.setCart(data);
-      }
-      JL.tracker[type] && JL.tracker[type](jlData);
-      return null;
     },
     addJLFunctionsToSDK
   };
