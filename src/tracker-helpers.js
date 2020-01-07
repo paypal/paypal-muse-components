@@ -20,12 +20,6 @@ import {
   setMerchantProvidedUserId
 } from './lib/local-storage';
 import { installTrackerFunctions, clearTrackQueue } from './tracker-functions';
-/*
-import type {
-  UserData,
-  Config,
-} from './types';
-*/
 
 export const createConfigHelper = (config? : Config = {}) => {
   const configStore = { ...constants.defaultTrackerConfig, ...config };
