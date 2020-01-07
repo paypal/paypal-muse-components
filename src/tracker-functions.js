@@ -146,6 +146,7 @@ export const installTrackerFunctions = (configHelper : Object, configStore : Obj
   configHelper.addToCart = (data : CartData) => {
     try {
       data = addToCartNormalizer(data);
+      JL.trackActivity('addToCart', data);
       validateAddItems(data);
       return trackCartEvent(configHelper.getConfig(), 'addToCart', data);
     } catch (err) {
