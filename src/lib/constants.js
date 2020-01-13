@@ -14,9 +14,10 @@ export default {
   },
   'defaultTrackerConfig': {
     'user': {
-      'id': null,
-      'email': null,
-      'name': null
+      'id': '',
+      'email': '',
+      'name': '',
+      'merchantProvidedUserId': ''
     }
   }
 };
