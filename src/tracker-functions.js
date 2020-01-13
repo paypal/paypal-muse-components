@@ -302,7 +302,11 @@ export const installTrackerFunctions = (configHelper : Object, configStore : Obj
   };
 
   configHelper.getUserAccessToken = (cb? : function) => {
-    const url = _.get(configStore, 'paramsToTokenUrl') || 'https://paypal.com/muse/api/partner-token';
+    const getUrl = _.get(configStore, 'paramsToTokenUrl');
+    let url = 'https://paypal.com/muse/api/partner-token';
+    if (typeof getUrl === 'function') {
+      url = getUrl();
+    }
 
     return window.fetch(url, {
       method: 'POST',

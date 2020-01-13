@@ -343,9 +343,10 @@ describe('paypal.Tracker', () => {
       })
     );
     expect(createElementCalls).toBe(4);
-    expect(JL.trackActivity.mock.calls.length).toEqual(1);
-    expect(JL.trackActivity.mock.calls[0][0]).toEqual('setCart');
-    expect(JL.trackActivity.mock.calls[0][1]).toEqual({
+    expect(JL.trackActivity.mock.calls.length).toEqual(2);
+    expect(JL.trackActivity.mock.calls[0][0]).toEqual('addToCart');
+    expect(JL.trackActivity.mock.calls[1][0]).toEqual('setCart');
+    expect(JL.trackActivity.mock.calls[1][1]).toEqual({
       cartId: '__test__cartId',
       items: [
         {

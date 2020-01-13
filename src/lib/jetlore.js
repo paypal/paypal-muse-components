@@ -151,7 +151,6 @@ const initializeJL = (config = {}) => {
           return JL.tracker.setCart && JL.tracker.setCart(data);
         }
         JL.tracker[type] && JL.tracker[type](jlData);
-        console.log('JL', JL.tracker[type], data, jlData);
         return null;
       } catch (err) {
         logger.error('JL.trackActivity', err);

@@ -37,7 +37,7 @@ export const createConfigManager = (config? : Config = {}) => {
       it as config.user.id. This is because config.user.id is a
       constant that we generate internally.
       */
-    const merchantUserId = _.get(configStore, 'user.id');
+    const merchantUserId = _.get(config, 'user.id');
     if (merchantUserId) {
       configStore.user.merchantProvidedUserId = merchantUserId;
       delete configStore.user.id;
