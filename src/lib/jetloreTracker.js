@@ -102,7 +102,8 @@ const JL_UTIL = {
 function Tracker(init_data) {
   const tracker = this;
   tracker.access_token = init_data.cid;
-  tracker.user_id = getUserId().merchantProvidedUserId || getUserId().userId;
+  const userData = getUserId() || {};
+  tracker.user_id = userData.merchantProvidedUserId || userData.userId;
   tracker.feed_id = typeof init_data.feed_id === 'undefined' || !init_data.feed_id ? 'any_feed' : init_data.feed_id;
   tracker.div = init_data.div;
   tracker.lang = init_data.lang;
