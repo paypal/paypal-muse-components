@@ -152,7 +152,7 @@ describe('paypal.Tracker', () => {
 
     // JL specific functions
     expect(typeof tracker.viewSection).toEqual('function');
-    expect(typeof tracker.viewPromotion).toEqual('function');
+    expect(typeof tracker.viewPromo).toEqual('function');
     expect(typeof tracker.viewProduct).toEqual('function');
     expect(typeof tracker.setWishList).toEqual('function');
     expect(typeof tracker.setFavoriteList).toEqual('function');
@@ -864,7 +864,7 @@ describe('paypal.Tracker', () => {
 
     expect(createElementCalls).toBe(1);
     expect(fetchCalls.length).toBe(1);
-    expect(fetchCalls[0][0]).toBe('https://www.paypal.com/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost');
+    expect(fetchCalls[0][0]).toBe('https://www.paypal.com/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost&jlAccessToken=true');
   });
 
   it('should gracefully fail in the event that malformed data exists in local storage', () => {

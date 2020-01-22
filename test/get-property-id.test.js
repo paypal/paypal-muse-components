@@ -31,7 +31,7 @@ describe('get-property-id', () => {
     });
 
     it('requests a container using merchantId and browser location', async (done) => {
-      const expectedUrl = 'https://www.paypal.com/tagmanager/containers/xo?mrid=759SBALRW3ZTY&url=http%3A%2F%2Flocalhost';
+      const expectedUrl = 'https://www.paypal.com/tagmanager/containers/xo?mrid=759SBALRW3ZTY&url=http%3A%2F%2Flocalhost&jlAccessToken=true';
       await fetchContainerSettings({});
 
       expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -104,7 +104,8 @@ describe('get-property-id', () => {
         id: 'a-totally-new-id',
         integrationType: 'manual',
         mrid: 'totatty-different-mrid',
-        programId: 'a-program-id'
+        programId: 'a-program-id',
+        jlAccessToken: ''
       };
 
       setContainer(expected);
