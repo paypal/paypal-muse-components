@@ -36,7 +36,8 @@ const emptyContainer : Container = {
   id: '',
   integration_type: '',
   owner_id: '',
-  tags: []
+  tags: [],
+  jlAccessToken: ''
 };
 
 const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> => {

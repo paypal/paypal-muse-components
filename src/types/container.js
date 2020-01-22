@@ -36,5 +36,6 @@ export type ContainerSummary = {|
   id : string,
   integrationType : string,
   mrid : string,
-  programId : string | null
+  programId : string | null,
+  jlAccessToken : string
 |};
