@@ -292,15 +292,22 @@ Tracker.prototype.urlQuery = function urlQuery() : any {
   return query_string;
 };
 
+const extractJLToken = () => {
+  const containerSummary = getValidContainer() || {};
+  const jlAccessToken = containerSummary && containerSummary.jlAccessToken;
+  return jlAccessToken;
+};
+
 Tracker.prototype.action = function takeAction(convertData, action, data) : any {
   let did; // TODO: JL bug because did is undefined. Figure out what this is, and when/how this is used
   const tracker = this;
 
-  const containerSummary = getValidContainer() || {};
-  const jlAccessToken = containerSummary && containerSummary.jlAccessToken;
+  const jlAccessToken = extractJLToken();
   if (jlAccessToken) {
     tracker.access_token = jlAccessToken;
   }
+
+  // Access Token may be initialized during initialization
   if (!tracker.access_token) {
     return;
   }

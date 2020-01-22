@@ -1,4 +1,4 @@
-/* global it describe beforeEach afterEach expect */
+/* global expect */
 /* @flow */
 
 import { ENV } from '@paypal/sdk-constants/src';

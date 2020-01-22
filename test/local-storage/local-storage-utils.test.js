@@ -1,4 +1,4 @@
-/* globals describe beforeEach it expect */
+/* globals expect */
 /* @flow */
 import constants from '../../src/lib/constants';
 import {

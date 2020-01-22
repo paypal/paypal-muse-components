@@ -1,4 +1,4 @@
-/* globals describe jest beforeEach it expect */
+/* globals jest expect */
 /* @flow */
 import {
   getIdentity,

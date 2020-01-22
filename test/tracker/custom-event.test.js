@@ -1,5 +1,5 @@
 /* @flow */
-/* global it describe beforeEach afterAll expect jest */
+/* global afterAll expect jest */
 import { setContainer, setGeneratedUserId } from '../../src/lib/local-storage';
 import { Tracker } from '../../src/tracker-component';
 import { mockContainerSummary1 } from '../mocks';

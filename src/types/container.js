@@ -29,12 +29,13 @@ export type Container = {|
   owner_id : string,
   /* Array containing different elements to load. */
   tags : $ReadOnlyArray<tag>,
-  jlAccessToken : string
+  jlAccessToken : string | null
 |};
 
 export type ContainerSummary = {|
   id : string,
   integrationType : string,
   mrid : string,
-  programId : string | null
+  programId : string | null,
+  jlAccessToken : string | null
 |};
