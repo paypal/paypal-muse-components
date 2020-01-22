@@ -1,5 +1,5 @@
 /* @flow */
-/* global it describe beforeEach afterAll afterEach expect jest */
+/* global afterAll expect jest */
 import { fetchContainerSettings } from '../src/lib/get-property-id';
 import { getPropertyId, getValidContainer, setContainer } from '../src/lib/local-storage';
 
