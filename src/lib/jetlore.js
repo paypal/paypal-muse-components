@@ -22,11 +22,23 @@ function addJLFunctionsToSDK(tracker = {}) : null {
   tracker.viewSection = validFn((data : {}) : null => {
     JL.trackActivity('viewSection', { payload: data });
   });
-  tracker.viewPromotion = validFn((data : {}) : null => {
-    JL.trackActivity('viewPromotion', { payload: data });
+  tracker.viewPromo = validFn((data : {}) : null => {
+    JL.trackActivity('viewPromo', { payload: data });
   });
   tracker.viewProduct = validFn((data : {}) : null => {
     JL.trackActivity('viewProduct', { payload: data });
+  });
+  tracker.addToFavorites = validFn((data : {}) : null => {
+    JL.trackActivity('addToFavorites', { payload: data });
+  });
+  tracker.removeFromFavorites = validFn((data : {}) : null => {
+    JL.trackActivity('removeFromFavorites', { payload: data });
+  });
+  tracker.addToWishList = validFn((data : {}) : null => {
+    JL.trackActivity('addToWishList', { payload: data });
+  });
+  tracker.removeFromWishList = validFn((data : {}) : null => {
+    JL.trackActivity('removeFromWishList', { payload: data });
   });
   tracker.setWishList = validFn((data : {}) : null => {
     JL.trackActivity('setWishList', { payload: data });
@@ -34,13 +46,16 @@ function addJLFunctionsToSDK(tracker = {}) : null {
   tracker.setFavoriteList = validFn((data : {}) : null => {
     JL.trackActivity('setFavoriteList', { payload: data });
   });
+  tracker.search = validFn((data : {}) : null => {
+    JL.trackActivity('search', { payload: data });
+  });
 }
 
 const initializeJL = (config = {}) => {
   const trackTypes = [
     'view',
     'viewSection',
-    'viewPromotion',
+    'viewPromo',
     'viewProduct',
     'addToCart',
     'setCart',
@@ -95,15 +110,19 @@ const initializeJL = (config = {}) => {
         name: payload.name,
         id: payload.id
       };
-    case 'addToWishList':
     case 'viewProduct':
-    case 'viewPromotion':
+    case 'addToFavorites':
+    case 'removeFromFavorites':
+    case 'addToWishList':
+    case 'removeFromWishList':
+      return {
+        deal_id: payload.dealId,
+        item_group_id: payload.item_group_id
+      };
+    case 'viewPromo':
     case 'viewSection':
     case 'setWishList':
-    case 'removeFromWishList':
-    case 'addToFavorites':
     case 'setFavoriteList':
-    case 'removeFromFavorites':
     case 'track':
       return payload;
     default:
@@ -117,14 +136,14 @@ const initializeJL = (config = {}) => {
         return null;
       }
       const jlData = getJetlorePayload(type, data);
-      if (type === 'viewPromotion') {
+      if (type === 'viewPromo') {
         return JL.tracker.browse_promo && JL.tracker.browse_promo(jlData);
       }
       if (type === 'viewSection') {
         return JL.tracker.browse_section && JL.tracker.browse_section(jlData);
       }
       if (type === 'viewProduct') {
-        return JL.tracker.browse_catalog && JL.tracker.browse_catalog(jlData);
+        return JL.tracker.browse_product && JL.tracker.browse_product(jlData);
       }
       if (type === 'setCart') {
         return JL.tracker.setCart && JL.tracker.setCart(data);
