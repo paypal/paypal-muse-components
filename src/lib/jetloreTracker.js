@@ -6,7 +6,8 @@
 */
 
 import {
-  getUserId
+  getUserId,
+  getValidContainer
 } from './local-storage';
 
 const JL_UTIL = {
@@ -294,6 +295,16 @@ Tracker.prototype.urlQuery = function urlQuery() : any {
 Tracker.prototype.action = function takeAction(convertData, action, data) : any {
   let did; // TODO: JL bug because did is undefined. Figure out what this is, and when/how this is used
   const tracker = this;
+
+  const containerSummary = getValidContainer() || {};
+  const jlAccessToken = containerSummary && containerSummary.jlAccessToken;
+  if (jlAccessToken) {
+    tracker.access_token = jlAccessToken;
+  }
+  if (!tracker.access_token) {
+    return;
+  }
+
   const urlQuery = tracker.urlQuery();
 
   const url_w_user = `${ tracker.api_url  }?action=${  action  }&id=${  tracker.user_id }`;
