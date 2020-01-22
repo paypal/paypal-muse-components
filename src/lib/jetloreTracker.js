@@ -100,9 +100,10 @@ const JL_UTIL = {
 
 /* @flow */
 function Tracker(init_data) {
+  const sysUserId = getUserId() || {};
   const tracker = this;
   tracker.access_token = init_data.cid;
-  tracker.user_id = getUserId().merchantProvidedUserId || getUserId().userId;
+  tracker.user_id = sysUserId.merchantProvidedUserId || sysUserId.userId;
   tracker.feed_id = typeof init_data.feed_id === 'undefined' || !init_data.feed_id ? 'any_feed' : init_data.feed_id;
   tracker.div = init_data.div;
   tracker.lang = init_data.lang;
@@ -244,6 +245,9 @@ Tracker.prototype.page_view = function page_view() {
 Tracker.prototype.performAction = function performAction(convertData, action, data) {
   const tracker = this;
   if (data) {
+    const sysUserId = getUserId() || {};
+    data.id = sysUserId.merchantProvidedUserId || sysUserId.userId || data.id;
+
     // ignore if data is undefined or null
     if (data.constructor === Array) {
       tracker.action(convertData, action, data);
