@@ -1,5 +1,5 @@
 /* @flow */
-/* global it describe beforeEach afterAll expect jest */
+/* global expect jest */
 import { Tracker } from '../../src/tracker-component';
 import { track } from '../../src/lib/track';
 import { logger } from '../../src/lib/logger';

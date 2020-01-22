@@ -1,4 +1,4 @@
-/* globals describe beforeAll afterAll afterEach it expect jest */
+/* globals beforeAll afterAll expect jest */
 /* @flow */
 import { Tracker } from '../src/tracker-component';
 import { logger } from '../src/lib/logger';

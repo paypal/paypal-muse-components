@@ -1,5 +1,5 @@
 /* @flow */
-/* global it jest describe beforeEach afterAll expect */
+/* global jest afterAll expect */
 import { track } from '../../src/lib/track';
 import constants from '../../src/lib/constants';
 

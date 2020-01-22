@@ -1,4 +1,4 @@
-/* global it describe beforeEach expect */
+/* global expect */
 /* @flow */
 import {
   validateAddItems,

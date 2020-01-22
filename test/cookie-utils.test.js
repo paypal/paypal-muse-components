@@ -1,4 +1,4 @@
-/* globals describe it expect */
+/* globals expect */
 /* @flow */
 import { getCookie, setCookie } from '../src/lib/cookie-utils';
 
