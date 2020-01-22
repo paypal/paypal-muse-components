@@ -154,14 +154,15 @@ const initializeJL = (config = {}) => {
     addJLFunctionsToSDK
   };
 
-  if (config.jetlore) {
+  const jetloreConfig = config.jetlore || config || {};
+  if (jetloreConfig) {
     const {
       user_id,
       access_token,
       feed_id,
       div,
       lang
-    } = config && config.jetlore;
+    } = jetloreConfig;
     const trackingConfig : JetloreConfig = {
       cid: access_token,
       user_id,
