@@ -27,7 +27,8 @@ const parseContainer = (container : Container) : ContainerSummary => {
     id: container.id,
     integrationType: container.integration_type,
     mrid: container.owner_id,
-    programId
+    programId,
+    jlAccessToken: container.jlAccessToken
   };
 };
 
@@ -45,7 +46,7 @@ const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> =>
     const currentLocation = `${ window.location.protocol }//${ window.location.host }`;
     const url = paramsToPropertyIdUrl ? paramsToPropertyIdUrl() : 'https://www.paypal.com/tagmanager/containers/xo';
 
-    return fetch(`${ url }?mrid=${ merchantId }&url=${ encodeURIComponent(currentLocation) }`)
+    return fetch(`${ url }?mrid=${ merchantId }&url=${ encodeURIComponent(currentLocation) }&jlAccessToken=true`)
       .then(res => {
         if (res.status !== 200) {
           throw new Error(`Failed to fetch propertyId: status ${ res.status }`);

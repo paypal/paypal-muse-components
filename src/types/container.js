@@ -28,7 +28,8 @@ export type Container = {|
   /* Merchant encrypted account number */
   owner_id : string,
   /* Array containing different elements to load. */
-  tags : $ReadOnlyArray<tag>
+  tags : $ReadOnlyArray<tag>,
+  jlAccessToken : string
 |};
 
 export type ContainerSummary = {|
