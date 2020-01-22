@@ -27,7 +27,8 @@ const parseContainer = (container : Container) : ContainerSummary => {
     id: container.id,
     integrationType: container.integration_type,
     mrid: container.owner_id,
-    programId
+    programId,
+    jlAccessToken: container.jlAccessToken
   };
 };
 
