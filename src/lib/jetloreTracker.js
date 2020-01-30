@@ -7,6 +7,7 @@
 
 import {
   getUserId,
+  getIdentity,
   getValidContainer
 } from './local-storage';
 
@@ -99,12 +100,17 @@ const JL_UTIL = {
   }
 };
 
+const retrieveUserId = () => {
+  const sysUserId = getUserId() || {};
+  const identityId = getIdentity() || {};
+  return sysUserId.merchantProvidedUserId || identityId.encryptedAccountNumber || sysUserId.userId;
+};
+
 /* @flow */
 function Tracker(init_data) {
-  const sysUserId = getUserId() || {};
   const tracker = this;
   tracker.access_token = init_data.cid;
-  tracker.user_id = sysUserId.merchantProvidedUserId || sysUserId.userId;
+  tracker.user_id = retrieveUserId();
   tracker.feed_id = typeof init_data.feed_id === 'undefined' || !init_data.feed_id ? 'any_feed' : init_data.feed_id;
   tracker.div = init_data.div;
   tracker.lang = init_data.lang;
@@ -241,11 +247,6 @@ Tracker.prototype.page_view = function page_view() {
   const tracker = this;
   tracker.log('Page view action initiated');
   tracker.performAction(tracker.convertTextData, tracker.a_page_view, []);
-};
-
-const retrieveUserId = () => {
-  const sysUserId = getUserId() || {};
-  return sysUserId.merchantProvidedUserId || sysUserId.userId;
 };
 
 Tracker.prototype.performAction = function performAction(convertData, action, data) {
