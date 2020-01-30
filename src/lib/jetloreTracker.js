@@ -7,6 +7,7 @@
 
 import {
   getUserId,
+  getIdentity,
   getValidContainer
 } from './local-storage';
 
@@ -99,12 +100,17 @@ const JL_UTIL = {
   }
 };
 
+const retrieveUserId = () => {
+  const sysUserId = getUserId() || {};
+  const identityId = getIdentity() || {};
+  return sysUserId.merchantProvidedUserId || identityId.encryptedAccountNumber || sysUserId.userId;
+};
+
 /* @flow */
 function Tracker(init_data) {
-  const sysUserId = getUserId() || {};
   const tracker = this;
   tracker.access_token = init_data.cid;
-  tracker.user_id = sysUserId.merchantProvidedUserId || sysUserId.userId;
+  tracker.user_id = retrieveUserId();
   tracker.feed_id = typeof init_data.feed_id === 'undefined' || !init_data.feed_id ? 'any_feed' : init_data.feed_id;
   tracker.div = init_data.div;
   tracker.lang = init_data.lang;
@@ -246,8 +252,7 @@ Tracker.prototype.page_view = function page_view() {
 Tracker.prototype.performAction = function performAction(convertData, action, data) {
   const tracker = this;
   if (data) {
-    const sysUserId = getUserId() || {};
-    data.id = sysUserId.merchantProvidedUserId || sysUserId.userId || data.id;
+    data.id = retrieveUserId() || data.id;
 
     // ignore if data is undefined or null
     if (data.constructor === Array) {
@@ -303,14 +308,12 @@ Tracker.prototype.action = function takeAction(convertData, action, data) : any 
   const tracker = this;
 
   const jlAccessToken = extractJLToken();
-  if (jlAccessToken) {
-    tracker.access_token = jlAccessToken;
-  }
-
-  // Access Token may be initialized during initialization
-  if (!tracker.access_token) {
+  if (!jlAccessToken) {
     return;
   }
+  tracker.access_token = jlAccessToken;
+
+  tracker.user_id = retrieveUserId() || tracker.user_id;
 
   const urlQuery = tracker.urlQuery();
 

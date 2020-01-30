@@ -343,8 +343,10 @@ describe('paypal.Tracker', () => {
       })
     );
     expect(createElementCalls).toBe(4);
-    expect(JL.trackActivity.mock.calls.length).toEqual(1);
-    expect(JL.trackActivity.mock.calls[0][0]).toEqual('setCart');
+    expect(JL.trackActivity.mock.calls.length).toEqual(2);
+    expect(JL.trackActivity.mock.calls[0][0]).toEqual('addToCart');
+    /* JL does not support proper setCart Calls */
+    /*
     expect(JL.trackActivity.mock.calls[0][1]).toEqual({
       cartId: '__test__cartId',
       items: [
@@ -360,6 +362,7 @@ describe('paypal.Tracker', () => {
       currencyCode: 'USD',
       total: '12345.67'
     });
+    */
   });
 
 

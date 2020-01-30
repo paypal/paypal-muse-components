@@ -233,9 +233,10 @@ export const Tracker = (config? : Config = {}) => {
     },
     addToCart: (data : CartData) => {
       try {
-        data = addToCartNormalizer(data);
-        validateAddItems(data);
-        return trackCartEvent(config, 'addToCart', data);
+        const trackerData = addToCartNormalizer(data);
+        validateAddItems(trackerData);
+        trackCartEvent(config, 'addToCart', trackerData);
+        return JL.trackActivity('addToCart', data);
       } catch (err) {
         logger.error('addToCart', err);
       }
@@ -253,18 +254,20 @@ export const Tracker = (config? : Config = {}) => {
     setCartId: (cartId : string) => setCartId(cartId),
     removeFromCart: (data : RemoveFromCartData) => {
       try {
-        data = removeFromCartNormalizer(data);
-        validateRemoveItems(data);
-        return trackCartEvent(config, 'removeFromCart', data);
+        const trackerData = removeFromCartNormalizer(data);
+        validateRemoveItems(trackerData);
+        trackCartEvent(config, 'removeFromCart', trackerData);
+        return JL.trackActivity('removeFromCart', data);
       } catch (err) {
         logger.error('removeFromCart', err);
       }
     },
     purchase: (data : PurchaseData) => {
       try {
-        data = purchaseNormalizer(data);
-        validatePurchase(data);
-        return trackEvent(config, 'purchase', data);
+        const trackerData = purchaseNormalizer(data);
+        validatePurchase(trackerData);
+        trackEvent(config, 'purchase', trackerData);
+        return JL.trackActivity('purchase', data);
       } catch (err) {
         logger.error('purchase', err);
       }
