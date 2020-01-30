@@ -72,6 +72,16 @@ const initializeJL = (config = {}) => {
     'track'
   ];
 
+  const getItems = (items : any) => {
+    const allItems = Array.isArray(items) ? items : [];
+    return allItems.filter(item => item.id).map(item => ({
+      deal_id: item.id,
+      option_id: item.optionId,
+      count: item.quantity,
+      price: item.price
+    }));
+  };
+
   const getJetlorePayload = (type : string, options : Object) : Object => {
     const { payload } = options;
     switch (type) {
@@ -79,18 +89,8 @@ const initializeJL = (config = {}) => {
       return payload || {};
     case 'addToCart':
     case 'removeFromCart':
-      return {
-        deal_id: payload.deal_id,
-        option_id: payload.option_id,
-        count: payload.count,
-        price: payload.price
-      };
     case 'purchase':
-      return {
-        deal_id: payload.deal_id,
-        option_id: payload.option_id,
-        count: payload.count
-      };
+      return getItems(options.items);
     case 'search':
       return {
         text: payload.text
