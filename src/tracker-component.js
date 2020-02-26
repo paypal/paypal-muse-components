@@ -28,6 +28,7 @@ import {
 } from './lib/local-storage';
 import {
   sendStoreCash,
+  convertStoreCash,
   excludeStoreCash
 } from './storeCash';
 import { fetchContainerSettings } from './lib/get-property-id';
@@ -112,6 +113,7 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
     trackFpti(config, trackingData);
     break;
   case 'purchase':
+    convertStoreCash(trackingData);
     if (programExists) {
       analyticsPurchase(config);
     }
@@ -287,9 +289,9 @@ export const Tracker = (config? : Config = {}) => {
       const prevMerchantProvidedUserId = getUserId().merchantProvidedUserId;
 
       try {
+        excludeStoreCash();
         data = setUserNormalizer(data);
         validateUser(data);
-        excludeStoreCash(config);
       } catch (err) {
         logger.error('setUser', err);
         return;
@@ -463,7 +465,7 @@ export const Tracker = (config? : Config = {}) => {
   }
 
   if (config.user) {
-    excludeStoreCash(config);
+    excludeStoreCash();
   }
 
   return fullTracker;
