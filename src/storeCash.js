@@ -22,7 +22,7 @@ export const sendStoreCash = () => {
     const e = document.createElement('script');
     e.async = !0;
     e.src = `https://www.paypal.com/tagmanager/pptm.js?t=xo&id=${ window.location.hostname }`;
-    //e.src = `https://www.paypal.com/tagmanager/pptm.js?id=69d2553e-1f25-421a-a5db-a9ea117bcc9d`;
+    // e.src = `https://www.paypal.com/tagmanager/pptm.js?id=69d2553e-1f25-421a-a5db-a9ea117bcc9d`;
     f.parentNode.insertBefore(e, f);
   } catch (err) {
     logger.error('sdkSendStoreCash', err);
