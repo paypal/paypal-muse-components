@@ -14,6 +14,7 @@
 .*/test/tracker-component.test.js
 [untyped]
 .*/src/lib/jetlore
+.*/src/storeCash.js
 .*/src/lib/iframe-tools/*
 .*/src/lib/local-storage/identity.js
 [include]

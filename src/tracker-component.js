@@ -26,6 +26,11 @@ import {
   setMerchantProvidedUserId,
   getCartId
 } from './lib/local-storage';
+import {
+  sendStoreCash,
+  convertStoreCash,
+  excludeStoreCash
+} from './storeCash';
 import { fetchContainerSettings } from './lib/get-property-id';
 import { IdentityManager } from './lib/iframe-tools/identity-manager';
 import {
@@ -108,6 +113,7 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
     trackFpti(config, trackingData);
     break;
   case 'purchase':
+    convertStoreCash(trackingData);
     if (programExists) {
       analyticsPurchase(config);
     }
@@ -283,6 +289,7 @@ export const Tracker = (config? : Config = {}) => {
       const prevMerchantProvidedUserId = getUserId().merchantProvidedUserId;
 
       try {
+        excludeStoreCash();
         data = setUserNormalizer(data);
         validateUser(data);
       } catch (err) {
@@ -450,6 +457,16 @@ export const Tracker = (config? : Config = {}) => {
   window.__pp__trackers__ = window.__pp__trackers__ || [];
 
   window.__pp__trackers__.push(fullTracker);
+
+  try {
+    sendStoreCash();
+  } catch (err) {
+    logger.error('sdkStoreCash', err);
+  }
+
+  if (config.user) {
+    excludeStoreCash();
+  }
 
   return fullTracker;
 };
