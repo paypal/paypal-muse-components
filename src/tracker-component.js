@@ -27,7 +27,8 @@ import {
   getCartId
 } from './lib/local-storage';
 import {
-  sendStoreCash
+  sendStoreCash,
+  excludeStoreCash
 } from './storeCash';
 import { fetchContainerSettings } from './lib/get-property-id';
 import { IdentityManager } from './lib/iframe-tools/identity-manager';
@@ -288,6 +289,7 @@ export const Tracker = (config? : Config = {}) => {
       try {
         data = setUserNormalizer(data);
         validateUser(data);
+        excludeStoreCash(config);
       } catch (err) {
         logger.error('setUser', err);
         return;
@@ -458,6 +460,10 @@ export const Tracker = (config? : Config = {}) => {
     sendStoreCash();
   } catch (err) {
     logger.error('sdkStoreCash', err);
+  }
+
+  if (config.user) {
+    excludeStoreCash(config);
   }
 
   return fullTracker;
