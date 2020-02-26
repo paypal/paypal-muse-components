@@ -26,6 +26,9 @@ import {
   setMerchantProvidedUserId,
   getCartId
 } from './lib/local-storage';
+import {
+  sendStoreCash
+} from './storeCash';
 import { fetchContainerSettings } from './lib/get-property-id';
 import { IdentityManager } from './lib/iframe-tools/identity-manager';
 import {
@@ -450,6 +453,12 @@ export const Tracker = (config? : Config = {}) => {
   window.__pp__trackers__ = window.__pp__trackers__ || [];
 
   window.__pp__trackers__.push(fullTracker);
+
+  try {
+    sendStoreCash();
+  } catch (err) {
+    logger.error('sdkStoreCash', err);
+  }
 
   return fullTracker;
 };
