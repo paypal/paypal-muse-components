@@ -3,11 +3,26 @@ import { logger } from './lib/logger';
 
 let initialized = false;
 
+/* This function is needed because of this reported issue:
+ * We are from GDS ART and Identity Component team.
+ * We have built a group of variables with MUSE data and a model on top of the muse variables for PPDG to detect fraud.
+ * Recently we found a lot records with value = ‘identified’ in the field ‘cust_id’ 
+ * As a solution, we temporarily suppress PPDG storecash events via Shopping SDK
+ */
+const shouldSuppress = () => {
+  try {
+    return window.location.hostname.includes('paypal.com')
+  } catch (err) {
+    logger.error('sdkSuppressStoreCash', err);
+  }
+  return false
+}
+
 // Testing Tag
 // `https://www.paypal.com/tagmanager/pptm.js?id=69d2553e-1f25-421a-a5db-a9ea117bcc9d`;
 //
 export const sendStoreCash = () => {
-  if (initialized) {
+  if (initialized || shouldSuppress() {
     return;
   }
   try {
@@ -30,6 +45,9 @@ export const sendStoreCash = () => {
 };
 
 export const excludeStoreCash = () => {
+  if (shouldSuppress()) {
+    return
+  }
   try {
     const paypalDDL = window.paypalDDL || [];
     paypalDDL.push({
@@ -42,6 +60,9 @@ export const excludeStoreCash = () => {
 };
 
 export const convertStoreCash = (data = {}) => {
+  if (shouldSuppress()) {
+    return
+  }
   try {
     const txn_id = data.cartId || data.id || 'txn_id';
     const srce = data.source || 'source';
