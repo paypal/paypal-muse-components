@@ -215,7 +215,7 @@ export const Tracker = (config? : Config = {}) => {
   // Which is why getJetlore is wrapped around a try catch
   const JL = getJetlore(config);
 
-  const cartIdentifier = 'shopping-sdk-cart';
+  const cartIdentifier = 'paypal-cart-items';
   const trackers = {
     getConfig: () => {
       return config;
