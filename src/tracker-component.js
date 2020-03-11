@@ -215,6 +215,7 @@ export const Tracker = (config? : Config = {}) => {
   // Which is why getJetlore is wrapped around a try catch
   const JL = getJetlore(config);
 
+  const cartIdentifier = 'shopping-sdk-cart';
   const trackers = {
     getConfig: () => {
       return config;
@@ -252,10 +253,23 @@ export const Tracker = (config? : Config = {}) => {
         data = setCartNormalizer(data);
         JL.trackActivity('setCart', data);
         validateAddItems(data);
-        return trackCartEvent(config, 'setCart', data);
+        trackCartEvent(config, 'setCart', data);
+        localStorage.setItem(cartIdentifier, JSON.stringify(data));
+        return;
       } catch (err) {
         logger.error('setCart', err);
       }
+    },
+    getCart: function getCart() : Promise<any> {
+      return new Promise((resolve, reject) => {
+        try {
+          const data = JSON.parse(localStorage.getItem(cartIdentifier) || '{}');
+          resolve(data);
+        } catch (err) {
+          logger.error('setCart', err);
+          reject(err);
+        }
+      });
     },
     setCartId: (cartId : string) => setCartId(cartId),
     removeFromCart: (data : RemoveFromCartData) => {
@@ -282,6 +296,7 @@ export const Tracker = (config? : Config = {}) => {
       const event = trackEvent(config, 'cancelCart', {});
       // a new id can only be created AFTER the 'cancel' event has been fired
       createNewCartId();
+      localStorage.setItem(cartIdentifier, '');
       return event;
     },
     setUser: (data : { user : UserData } | UserData) => {
