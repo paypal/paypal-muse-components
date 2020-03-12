@@ -9,11 +9,9 @@ See [src/index.js](./src/index.js)
 
 #### Tests
 
-- Run the tests:
-
-  ```bash
-  npm test
-  ```
+```bash
+npm test
+```
 
 #### Testing with different/multiple browsers
 
