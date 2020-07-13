@@ -1,6 +1,6 @@
 /* @flow */
 
-import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain, getEventEmitter, getDebug, getEnv } from '@paypal/sdk-client/src';
+import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain, getEventEmitter, getDebug, getEnv, getVault, getSDKQueryParam } from '@paypal/sdk-client/src';
 import { UNKNOWN, ENV } from '@paypal/sdk-constants/src';
 
 import { logger } from './lib/logger';
@@ -34,6 +34,20 @@ export function getPptmScriptSrc(paypalDomain : string, mrid : ?string, clientId
     src += `&client_id=${ clientId }`;
   }
 
+  /*
+   * Add a subtype of checkout, based on query params passed to the sdk.
+   * st - subtype
+   * Examples:
+   *   ucc (unbranded credit card) - /sdk/js?components=hosted-fields,buttons (src: https://developer.paypal.com/docs/business/checkout/advanced-card-payments/)
+   *   subscription - /sdk/js?vault=true (src: https://developer.paypal.com/docs/business/subscriptions/)
+  */
+  const componentsQuery = getSDKQueryParam('components');
+  if (componentsQuery && componentsQuery.includes('hosted-fields')) {
+    src += `&st=ucc`;
+  } else if (getVault()) {
+    src += `&st=subscription`;
+  }
+  
   return src;
 }
 
