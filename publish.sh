@@ -12,8 +12,6 @@ if ! git diff-index --quiet --cached HEAD; then
     exit 1;
 fi;
 
-npm test;
-
 echo "running patch"
 npm version patch;
 echo "patched"
