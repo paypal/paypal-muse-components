@@ -1,6 +1,6 @@
 /* @flow */
 
-import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain, getEventEmitter, getDebug, getEnv } from '@paypal/sdk-client/src';
+import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain, getEventEmitter, getDebug, getEnv, getVault, getSDKQueryParam } from '@paypal/sdk-client/src';
 import { UNKNOWN, ENV } from '@paypal/sdk-constants/src';
 
 import { logger } from './lib/logger';
@@ -34,6 +34,22 @@ export function getPptmScriptSrc(paypalDomain : string, mrid : ?string, clientId
     src += `&client_id=${ clientId }`;
   }
 
+  /*
+    Add components query param passed to sdk
+    Documentation - https://developer.paypal.com/docs/checkout/reference/customize-sdk/#components
+    sample values (comma separated) - hosted-fields, buttons, marks, messages
+  */
+  if (getSDKQueryParam('components')) {
+    src += `&comp=${ String(getSDKQueryParam('components')) }`;
+  }
+  
+  /*
+    Add the vault query passed to sdk
+    Documentation - https://developer.paypal.com/docs/checkout/reference/customize-sdk/#vault
+  */
+  src += `&vault=${ String(getVault()) }`;
+  
+  
   return src;
 }
 
