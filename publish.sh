@@ -25,5 +25,5 @@ git push --tags;
 echo "pushed"
 
 echo "running push publish using code $2"
-npm publish --otp $2 --registry https://registry.npmjs.org;
+npm publish --otp=$2 --registry https://registry.npmjs.org;
 echo "published"
