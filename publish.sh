@@ -24,6 +24,6 @@ echo "running push tags"
 git push --tags;
 echo "pushed"
 
-echo "running push publish"
+echo "running push publish using code $2"
 npm publish --otp $2;
 echo "published"
