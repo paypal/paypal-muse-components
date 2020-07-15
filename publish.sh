@@ -13,8 +13,19 @@ if ! git diff-index --quiet --cached HEAD; then
 fi;
 
 npm test;
-npm version patch;
 
+echo "running patch"
+npm version patch;
+echo "patched"
+
+echo "running push"
 git push;
+echo "pushed"
+
+echo "running push tags"
 git push --tags;
+echo "pushed"
+
+echo "running push publish"
 npm publish;
+echo "published"
