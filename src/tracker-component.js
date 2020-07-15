@@ -299,7 +299,7 @@ export const Tracker = (config? : Config = {}) => {
       localStorage.setItem(cartIdentifier, '');
       return event;
     },
-    setUser: (data : { user : UserData } | UserData) => {
+    setUser: (data : {| user : UserData |} | UserData) => {
       // $FlowFixMe
       const prevMerchantProvidedUserId = getUserId().merchantProvidedUserId;
 
