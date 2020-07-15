@@ -25,5 +25,5 @@ git push --tags;
 echo "pushed"
 
 echo "running push publish"
-npm publish;
+npm publish --otp $2;
 echo "published"
