@@ -40,7 +40,6 @@ import {
 } from './lib/legacy-analytics';
 import getJetlore from './lib/jetlore';
 import { trackFpti } from './lib/fpti';
-import { track } from './lib/track';
 import constants from './lib/constants';
 import type {
   UserData,
@@ -118,7 +117,6 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
       analyticsPurchase(config);
     }
   default:
-    track(config, trackingType, trackingData);
     break;
   }
 };
