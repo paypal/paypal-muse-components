@@ -225,7 +225,9 @@ export const Tracker = (config? : Config = {}) => {
         };
   
         trackFpti(config, fptiInput)
-      } catch(e){}
+      } catch(e){
+        // continue regardless of error
+      }
     };
   };
 
