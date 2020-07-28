@@ -2,7 +2,6 @@
 /* @flow */
 import {
   validateAddItems,
-  validateRemoveItems,
   validateUser
 } from '../src/lib/validation';
 
@@ -115,52 +114,6 @@ describe('input validation', () => {
 
     it('works normally when input is valid', () => {
       validateAddItems(validInput);
-    });
-  });
-
-  describe('validateRemoveItems', () => {
-    let validInput;
-
-    beforeEach(() => {
-      validInput = {
-        total: '00.00',
-        items: [ {
-          id: 'changedmymind',
-          quantity: 5
-        }, {
-          id: 'whywouldibuythis'
-        }, {
-          id: 'illwaittillitsonsale',
-          quantity: 3
-        } ]
-      };
-    });
-
-    it('throws when input is invalid', () => {
-      const invalidInput = [ 'thataintright' ];
-
-      try {
-        validateRemoveItems(invalidInput);
-      } catch (err) {
-        expect(err.message).toBe('Input error: expected array to be object');
-      }
-    });
-
-    it('throws when quantity is invalid', () => {
-      const invalidInput = {
-        total: '25.00',
-        items: [ { id: 'foobar', quantity: 'pizza' } ]
-      };
-
-      try {
-        validateRemoveItems(invalidInput);
-      } catch (err) {
-        expect(err.message).toBe('Input error for quantity: expected string to be number');
-      }
-    });
-
-    it('works normally when input is valid', () => {
-      validateRemoveItems(validInput);
     });
   });
 

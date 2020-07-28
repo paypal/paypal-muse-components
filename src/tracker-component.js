@@ -6,12 +6,10 @@ import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src'
 import { logger } from './lib/logger';
 import {
   validateAddItems,
-  validateRemoveItems,
   validateUser,
   validatePurchase,
   validateCustomEvent,
   addToCartNormalizer,
-  removeFromCartNormalizer,
   purchaseNormalizer,
   setUserNormalizer
 } from './lib/validation';
@@ -277,16 +275,7 @@ export const Tracker = (config? : Config = {}) => {
       });
     },
     setCartId: (cartId : string) => setCartId(cartId),
-    removeFromCart: (data : RemoveFromCartData) => {
-      try {
-        const trackerData = removeFromCartNormalizer(data);
-        validateRemoveItems(trackerData);
-        trackCartEvent(config, 'removeFromCart', trackerData);
-        return JL.trackActivity('removeFromCart', data);
-      } catch (err) {
-        logger.error('removeFromCart', err);
-      }
-    },
+    removeFromCart: noop('removeFromCart'),
     purchase: (data : PurchaseData) => {
       try {
         const trackerData = purchaseNormalizer(data);
