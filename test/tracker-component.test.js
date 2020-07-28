@@ -2,7 +2,6 @@
 /* @flow */
 import { Tracker } from '../src/tracker-component';
 import { logger } from '../src/lib/logger';
-import getJetlore from '../src/lib/jetlore';
 import constants from '../src/lib/constants';
 // $FlowFixMe
 import generateIdModule from '../src/lib/generate-id';

@@ -58,11 +58,11 @@ const {
   defaultTrackerConfig
 } = constants;
 
-const noop = (eventName) => {
+const noop = () => { // todo - should take in event name
   return () => {
     // TODO: Fire FPTI to figure out which functions are still used in production
-  }
-}
+  };
+};
 
 const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
   return fetch(url, {
@@ -293,7 +293,7 @@ export const Tracker = (config? : Config = {}) => {
       localStorage.setItem(cartIdentifier, '');
       return event;
     },
-    setUser: (data : { user : UserData } | UserData) => {
+    setUser: (data : {| user : UserData |} | UserData) => {
       // $FlowFixMe
       const prevMerchantProvidedUserId = getUserId().merchantProvidedUserId;
 
