@@ -266,16 +266,7 @@ export const Tracker = (config? : Config = {}) => {
       });
     },
     setCartId: (cartId : string) => setCartId(cartId),
-    removeFromCart: (data : RemoveFromCartData) => {
-      try {
-        const trackerData = removeFromCartNormalizer(data);
-        validateRemoveItems(trackerData);
-        trackCartEvent(config, 'removeFromCart', trackerData);
-        return JL.trackActivity('removeFromCart', data);
-      } catch (err) {
-        logger.error('removeFromCart', err);
-      }
-    },
+    removeFromCart: noop('removeFromCart'),
     purchase: (data : PurchaseData) => {
       try {
         const trackerData = purchaseNormalizer(data);

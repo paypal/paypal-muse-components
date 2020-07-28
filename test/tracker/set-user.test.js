@@ -62,14 +62,10 @@ describe('setUser', () => {
       cartTotal: '5.00',
       items: [ mockItem ]
     });
-    tracker.removeFromCart({
-      total: '0.00',
-      items: [ mockItem ] });
 
     const args = track.mock.calls;
 
     expect(args[0][0].user).toEqual(config.user);
-    expect(args[1][0].user).toEqual(config.user);
   });
 
   it('no user should be set if no configuration is passed to initialization', (done) => {
@@ -81,14 +77,9 @@ describe('setUser', () => {
         cartTotal: '5.00',
         items: [ mockItem ]
       });
-      tracker.removeFromCart({
-        cartTotal: '0.00',
-        items: [ mockItem ]
-      });
 
       const args = track.mock.calls;
       expect(args[0][0].user).toEqual(defaultTrackerConfig.user);
-      expect(args[1][0].user).toEqual(defaultTrackerConfig.user);
       done();
     }, 100);
   });
@@ -149,14 +140,9 @@ describe('setUser', () => {
       cartTotal: '5.00',
       items: [ mockItem ]
     });
-    tracker.removeFromCart({
-      cartTotal: '0.00',
-      items: [ mockItem ]
-    });
 
     const args = track.mock.calls;
     expect(args[0][0].user).toEqual(defaultTrackerConfig.user);
-    expect(args[1][0].user).toEqual(defaultTrackerConfig.user);
   });
 
   it('user should be set when set user is called', () => {

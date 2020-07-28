@@ -308,50 +308,6 @@ describe('paypal.Tracker', () => {
     expect(createElementCalls).toBe(3);
   });
 
-  it('should send removeFromCart events', () => {
-    const email = '__test__email5@gmail.com';
-    const userName = '__test__userName5';
-    const tracker = Tracker({ user: { email, name: userName } });
-    tracker.setPropertyId(propertyId);
-    expect(createElementCalls).toBe(2);
-    tracker.removeFromCart({
-      currencyCode: 'LARGE_SHINY_ROCKS',
-      cartId: '__test__cartId',
-      cartTotal: '5.00',
-      items: [
-        {
-          id: '__test__productId',
-          url: 'https://example.com/__test__productId'
-        }
-      ]
-    });
-
-    expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
-      JSON.stringify({
-        currencyCode: 'LARGE_SHINY_ROCKS',
-        cartId: '__test__cartId',
-        items: [ {
-          id: '__test__productId',
-          url: 'https://example.com/__test__productId'
-        } ],
-        total: '5.00',
-        cartEventType: 'removeFromCart',
-        user: {
-          email: '__test__email5@gmail.com',
-          name: '__test__userName5',
-          id: 'abc123'
-        },
-        propertyId,
-        trackingType: 'cartEvent',
-        clientId: 'abcxyz123',
-        merchantId: 'xyz,hij,lmno',
-        deviceInfo,
-        version: 'TRANSITION_FLAG'
-      })
-    );
-    expect(createElementCalls).toBe(3);
-  });
-
   it('should send purchase events', () => {
     const email = '__test__email6@gmail.com';
     const userName = '__test__userName6';
