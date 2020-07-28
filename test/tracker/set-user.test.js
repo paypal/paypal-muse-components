@@ -91,27 +91,6 @@ describe('setUser', () => {
     expect(newMerchantProvidedUserId).toBe('123');
   });
 
-  it('setUser accepts different types of input', () => {
-    const tracker = Tracker();
-
-    tracker.setUser({
-      user: {
-        id: 'foo'
-      }
-    });
-
-    const firstId = tracker.getConfig().user.merchantProvidedUserId;
-
-    tracker.setUser({
-      id: 'bar'
-    });
-
-    const secondId = tracker.getConfig().user.merchantProvidedUserId;
-
-    expect(firstId).toBe('foo');
-    expect(secondId).toBe('bar');
-  });
-
   it('user can be unset by passing null', () => {
     const tracker = Tracker({
       user: {

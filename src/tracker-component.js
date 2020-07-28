@@ -5,9 +5,7 @@ import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src'
 
 import { logger } from './lib/logger';
 import {
-  validateUser,
-  validateCustomEvent,
-  setUserNormalizer
+  validateCustomEvent
 } from './lib/validation';
 import {
   getOrCreateValidCartId,
@@ -274,8 +272,6 @@ export const Tracker = (config? : Config = {}) => {
 
       try {
         excludeStoreCash();
-        data = setUserNormalizer(data);
-        validateUser(data);
       } catch (err) {
         logger.error('setUser', err);
         return;
@@ -303,10 +299,6 @@ export const Tracker = (config? : Config = {}) => {
           name: userName
         }
       };
-
-      if (merchantProvidedUserId !== undefined || userEmail || userName) {
-        trackEvent(config, 'setUser', { prevMerchantProvidedUserId });
-      }
     },
     setPropertyId: (id : string) => {
       config.propertyId = id;
