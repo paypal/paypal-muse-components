@@ -58,12 +58,6 @@ const {
   defaultTrackerConfig
 } = constants;
 
-const noop = () => { // todo - should take in event name
-  return () => {
-    // TODO: Fire FPTI to figure out which functions are still used in production
-  };
-};
-
 const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
   return fetch(url, {
     method: 'POST',
@@ -219,6 +213,21 @@ export const Tracker = (config? : Config = {}) => {
   // Initialize JL Module. Note: getJetlore must never throw an error
   // Which is why getJetlore is wrapped around a try catch
   const JL = getJetlore(config);
+
+  const noop = (eventName: string) => {
+    return () => {
+      // Send FPTI event for us to see who is still using deprecated functions.
+      //   Helps with elegant deprecation for partners.
+      try {
+        const fptiInput : FptiInput = {
+          eventName,
+          eventType: 'noop'
+        };
+  
+        trackFpti(config, fptiInput)
+      } catch(e){}
+    };
+  };
 
   const cartIdentifier = 'paypal-cart-items';
   const trackers = {
