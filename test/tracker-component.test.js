@@ -9,10 +9,6 @@ import { getUserId, getCartId } from '../src/lib/local-storage';
 
 const { sevenDays, storage } = constants;
 
-const decode = (encodedDataParam : string) : string => {
-  return JSON.parse(atob(decodeURIComponent(encodedDataParam)));
-};
-
 const queryToObject = (src : string) => {
   const search = src.split('?')[1];
 
