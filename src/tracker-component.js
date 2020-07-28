@@ -6,12 +6,10 @@ import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src'
 import { logger } from './lib/logger';
 import {
   validateAddItems,
-  validateRemoveItems,
   validateUser,
   validatePurchase,
   validateCustomEvent,
   addToCartNormalizer,
-  removeFromCartNormalizer,
   purchaseNormalizer,
   setUserNormalizer
 } from './lib/validation';

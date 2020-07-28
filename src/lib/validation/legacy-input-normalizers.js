@@ -31,4 +31,3 @@ export const addToCartNormalizer = (input : any) => {
 };
 
 export const purchaseNormalizer = addToCartNormalizer;
-export const removeFromCartNormalizer = addToCartNormalizer;
