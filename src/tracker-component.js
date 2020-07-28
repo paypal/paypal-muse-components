@@ -11,7 +11,6 @@ import {
   validatePurchase,
   validateCustomEvent,
   addToCartNormalizer,
-  setCartNormalizer,
   removeFromCartNormalizer,
   purchaseNormalizer,
   setUserNormalizer
@@ -215,6 +214,23 @@ export const Tracker = (config? : Config = {}) => {
   // Which is why getJetlore is wrapped around a try catch
   const JL = getJetlore(config);
 
+  const noop = (eventName: string) => {
+    return () => {
+      // Send FPTI event for us to see who is still using deprecated functions.
+      //   Helps with elegant deprecation for partners.
+      try {
+        const fptiInput : FptiInput = {
+          eventName,
+          eventType: 'noop'
+        };
+  
+        trackFpti(config, fptiInput)
+      } catch(e){
+        // continue regardless of error
+      }
+    };
+  };
+
   const cartIdentifier = 'paypal-cart-items';
   const trackers = {
     getConfig: () => {
@@ -248,18 +264,7 @@ export const Tracker = (config? : Config = {}) => {
         logger.error('addToCart', err);
       }
     },
-    setCart: (data : CartData) => {
-      try {
-        data = setCartNormalizer(data);
-        JL.trackActivity('setCart', data);
-        validateAddItems(data);
-        trackCartEvent(config, 'setCart', data);
-        localStorage.setItem(cartIdentifier, JSON.stringify(data));
-        return;
-      } catch (err) {
-        logger.error('setCart', err);
-      }
-    },
+    setCart: noop('setcart'),
     getCart: function getCart() : Promise<any> {
       return new Promise((resolve, reject) => {
         try {
@@ -299,7 +304,7 @@ export const Tracker = (config? : Config = {}) => {
       localStorage.setItem(cartIdentifier, '');
       return event;
     },
-    setUser: (data : { user : UserData } | UserData) => {
+    setUser: (data : {| user : UserData |} | UserData) => {
       // $FlowFixMe
       const prevMerchantProvidedUserId = getUserId().merchantProvidedUserId;
 

@@ -2,7 +2,6 @@
 /* @flow */
 import { Tracker } from '../src/tracker-component';
 import { logger } from '../src/lib/logger';
-import getJetlore from '../src/lib/jetlore';
 import constants from '../src/lib/constants';
 // $FlowFixMe
 import generateIdModule from '../src/lib/generate-id';
@@ -274,98 +273,6 @@ describe('paypal.Tracker', () => {
     );
   });
 
-  it('should send setCart events', () => {
-    const email = '__test__email4@gmail.com';
-    const userName = '__test__userName4';
-    const tracker = Tracker({ user: { email, name: userName }, jetlore: { access_token: '1234' } });
-    const JL = getJetlore();
-    JL.trackActivity = jest.fn();
-
-    tracker.setPropertyId(propertyId);
-    expect(createElementCalls).toBe(2);
-    tracker.addToCart({
-      cartId: '__test__cartId0',
-      items: [
-        {
-          title: 'sultan of cairo',
-          imgUrl: 'animageurl',
-          price: 'tree fiddy',
-          id: '__test__productId0',
-          url: 'https://example.com/__test__productId0'
-        }
-      ],
-      emailCampaignId: '__test__emailCampaignId0',
-      cartTotal: '102345.67',
-      currencyCode: 'USD'
-    });
-    tracker.setCart({
-      cartId: '__test__cartId',
-      items: [
-        {
-          title: 'william of normandy',
-          imgUrl: 'animageurl',
-          price: 'tree fiddy',
-          id: '__test__productId',
-          url: 'https://example.com/__test__productId'
-        }
-      ],
-      emailCampaignId: '__test__emailCampaignId',
-      currencyCode: 'USD',
-      total: '12345.67'
-    });
-    expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
-      JSON.stringify({
-        cartId: '__test__cartId',
-        items: [
-          {
-            title: 'william of normandy',
-            imgUrl: 'animageurl',
-            price: 'tree fiddy',
-            id: '__test__productId',
-            url: 'https://example.com/__test__productId'
-          }
-        ],
-        emailCampaignId: '__test__emailCampaignId',
-        currencyCode: 'USD',
-        total: '12345.67',
-        cartEventType: 'setCart',
-        user: {
-          email: '__test__email4@gmail.com',
-          name: '__test__userName4',
-          id: 'abc123'
-        },
-        propertyId,
-        trackingType: 'cartEvent',
-        clientId: 'abcxyz123',
-        merchantId: 'xyz,hij,lmno',
-        deviceInfo,
-        version: 'TRANSITION_FLAG'
-      })
-    );
-    expect(createElementCalls).toBe(4);
-    expect(JL.trackActivity.mock.calls.length).toEqual(2);
-    expect(JL.trackActivity.mock.calls[0][0]).toEqual('addToCart');
-    /* JL does not support proper setCart Calls */
-    /*
-    expect(JL.trackActivity.mock.calls[0][1]).toEqual({
-      cartId: '__test__cartId',
-      items: [
-        {
-          title: 'william of normandy',
-          imgUrl: 'animageurl',
-          price: 'tree fiddy',
-          id: '__test__productId',
-          url: 'https://example.com/__test__productId'
-        }
-      ],
-      emailCampaignId: '__test__emailCampaignId',
-      currencyCode: 'USD',
-      total: '12345.67'
-    });
-    */
-  });
-
-
   it('truncate cart for addToCart when it has more than 10 items', () => {
     const email = '__test__email10@gmail.com';
     const userName = '__test__userName10';
@@ -389,41 +296,6 @@ describe('paypal.Tracker', () => {
         currencyCode: 'USD',
         total: '102345.67',
         cartEventType: 'addToCart',
-        user: { email, name: userName, id },
-        propertyId,
-        trackingType: 'cartEvent',
-        clientId: 'abcxyz123',
-        merchantId: 'xyz,hij,lmno',
-        deviceInfo,
-        version: 'TRANSITION_FLAG'
-      })
-    );
-    expect(createElementCalls).toBe(3);
-  });
-
-  it('truncate cart for setCart when it has more than 10 items', () => {
-    const email = '__test__email11@gmail.com';
-    const userName = '__test__userName11';
-    const id = 'abc123';
-    const tracker = Tracker({ user: { email, name: userName } });
-    tracker.setPropertyId(propertyId);
-    expect(createElementCalls).toBe(2);
-    tracker.setCart({
-      cartId: '__test__cartId1',
-      items: generateItems(13),
-      emailCampaignId: '__test__emailCampaignId0',
-      cartTotal: '102345.67',
-      currencyCode: 'USD'
-    });
-
-    expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
-      JSON.stringify({
-        cartId: '__test__cartId1',
-        items: generateItems(10),
-        emailCampaignId: '__test__emailCampaignId0',
-        currencyCode: 'USD',
-        total: '102345.67',
-        cartEventType: 'setCart',
         user: { email, name: userName, id },
         propertyId,
         trackingType: 'cartEvent',
