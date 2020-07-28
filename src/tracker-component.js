@@ -267,9 +267,6 @@ export const Tracker = (config? : Config = {}) => {
       return event;
     },
     setUser: (data : {| user : UserData |} | UserData) => {
-      // $FlowFixMe
-      const prevMerchantProvidedUserId = getUserId().merchantProvidedUserId;
-
       try {
         excludeStoreCash();
       } catch (err) {

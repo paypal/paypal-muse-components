@@ -13,15 +13,6 @@ const decode = (encodedDataParam : string) : string => {
   return JSON.parse(atob(decodeURIComponent(encodedDataParam)));
 };
 
-const extractDataParam = (url : string) : string => {
-  return decode(
-    (url.match(/\?data=(.+)$/) || [
-      '',
-      encodeURIComponent(btoa(JSON.stringify({})))
-    ])[1]
-  );
-};
-
 const queryToObject = (src : string) => {
   const search = src.split('?')[1];
 
