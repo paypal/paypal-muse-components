@@ -177,143 +177,12 @@ describe('paypal.Tracker', () => {
     expect(afterStorage.createdAt).toBeGreaterThan(twoWeeksAgo);
   });
 
-  it('should send addToCart events', () => {
-    const email = '__test__email3@gmail.com';
-    const userName = '__test__userName3';
-    const tracker = Tracker({ currencyCode: 'FOO', user: { email, name: userName } });
-    expect(createElementCalls).toBe(1);
-    tracker.setPropertyId(propertyId);
-    tracker.addToCart({
-      cartId: '__test__cartId',
-      items: [
-        {
-          title: 'archbishop of canterbury',
-          imgUrl: 'animageurl',
-          price: 'tree fiddy',
-          id: '__test__productId',
-          url: 'https://example.com/__test__productId'
-        }
-      ],
-      emailCampaignId: '__test__emailCampaignId',
-      cartTotal: '12345.67'
-    });
-    expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
-      JSON.stringify({
-        cartId: '__test__cartId',
-        items: [
-          {
-            title: 'archbishop of canterbury',
-            imgUrl: 'animageurl',
-            price: 'tree fiddy',
-            id: '__test__productId',
-            url: 'https://example.com/__test__productId'
-          }
-        ],
-        emailCampaignId: '__test__emailCampaignId',
-        total: '12345.67',
-        cartEventType: 'addToCart',
-        currencyCode: 'FOO',
-        user: {
-          email: '__test__email3@gmail.com',
-          name: '__test__userName3',
-          id: 'abc123'
-        },
-        propertyId,
-        trackingType: 'cartEvent',
-        clientId: 'abcxyz123',
-        merchantId: 'xyz,hij,lmno',
-        deviceInfo,
-        version: 'TRANSITION_FLAG'
-      })
-    );
-    expect(createElementCalls).toBe(2);
-    tracker.addToCart({
-      cartId: '__test__cartId0',
-      items: [
-        {
-          title: 'duke of lancaster',
-          imgUrl: 'animageurl',
-          price: 'tree fiddy',
-          id: '__test__productId0',
-          url: 'https://example.com/__test__productId0'
-        }
-      ],
-      emailCampaignId: '__test__emailCampaignId0',
-      cartTotal: '102345.67',
-      currencyCode: 'USD'
-    });
-    expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
-      JSON.stringify({
-        cartId: '__test__cartId0',
-        items: [
-          {
-            title: 'duke of lancaster',
-            imgUrl: 'animageurl',
-            price: 'tree fiddy',
-            id: '__test__productId0',
-            url: 'https://example.com/__test__productId0'
-          }
-        ],
-        emailCampaignId: '__test__emailCampaignId0',
-        currencyCode: 'USD',
-        total: '102345.67',
-        cartEventType: 'addToCart',
-        user: {
-          email: '__test__email3@gmail.com',
-          name: '__test__userName3',
-          id: 'abc123'
-        },
-        propertyId,
-        trackingType: 'cartEvent',
-        clientId: 'abcxyz123',
-        merchantId: 'xyz,hij,lmno',
-        deviceInfo,
-        version: 'TRANSITION_FLAG'
-      })
-    );
-  });
-
-  it('truncate cart for addToCart when it has more than 10 items', () => {
-    const email = '__test__email10@gmail.com';
-    const userName = '__test__userName10';
-    const id = 'abc123';
-    const tracker = Tracker({ user: { email, name: userName } });
-    tracker.setPropertyId(propertyId);
-    expect(createElementCalls).toBe(2);
-    tracker.addToCart({
-      cartId: '__test__cartId0',
-      items: generateItems(15),
-      emailCampaignId: '__test__emailCampaignId0',
-      cartTotal: '102345.67',
-      currencyCode: 'USD'
-    });
-
-    expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
-      JSON.stringify({
-        cartId: '__test__cartId0',
-        items: generateItems(10),
-        emailCampaignId: '__test__emailCampaignId0',
-        currencyCode: 'USD',
-        total: '102345.67',
-        cartEventType: 'addToCart',
-        user: { email, name: userName, id },
-        propertyId,
-        trackingType: 'cartEvent',
-        clientId: 'abcxyz123',
-        merchantId: 'xyz,hij,lmno',
-        deviceInfo,
-        version: 'TRANSITION_FLAG'
-      })
-    );
-    expect(createElementCalls).toBe(3);
-  });
-
   it('should send purchase events', () => {
     const email = '__test__email6@gmail.com';
     const userName = '__test__userName6';
     const tracker = Tracker({ currencyCode: 'COWRIESHELLS', user: { email, name: userName } });
     tracker.setPropertyId(propertyId);
-    expect(createElementCalls).toBe(2);
+    expect(createElementCalls).toBe(1);
     tracker.purchase({
       currencyCode: 'USD',
       cartId: '__test__cartId'
@@ -335,7 +204,7 @@ describe('paypal.Tracker', () => {
         version: 'TRANSITION_FLAG'
       })
     );
-    expect(createElementCalls).toBe(3);
+    expect(createElementCalls).toBe(2);
   });
 
   it('should send cancelCart events and clear localStorage upon cancelling cart', () => {
@@ -478,61 +347,6 @@ describe('paypal.Tracker', () => {
     );
   });
 
-  it('should send last user set with setUser', () => {
-    const tracker = Tracker();
-    tracker.setPropertyId(propertyId);
-    tracker.setUser({
-      user: { email: '__test__email1', name: '__test__name1' }
-    });
-    tracker.setUser({ user: { email: '__test__email2' } });
-    tracker.addToCart({
-      cartId: '__test__cartId',
-      items: [
-        {
-          title: 'duke of york',
-          imgUrl: 'animageurl',
-          price: 'tree fiddy',
-          id: '__test__productId',
-          url: 'https://example.com/__test__productId'
-        }
-      ],
-      emailCampaignId: '__test__emailCampaignId',
-      cartTotal: '12345.67',
-      currencyCode: 'USD'
-    });
-    const dataParamObject = extractDataParam(imgMock.src);
-    // $FlowFixMe
-    expect(JSON.stringify(dataParamObject)).toBe(
-      JSON.stringify({
-        cartId: '__test__cartId',
-        items: [
-          {
-            title: 'duke of york',
-            imgUrl: 'animageurl',
-            price: 'tree fiddy',
-            id: '__test__productId',
-            url: 'https://example.com/__test__productId'
-          }
-        ],
-        emailCampaignId: '__test__emailCampaignId',
-        currencyCode: 'USD',
-        total: '12345.67',
-        cartEventType: 'addToCart',
-        user: {
-          id: 'abc123',
-          email: '__test__email2',
-          name: '__test__name1'
-        },
-        propertyId,
-        trackingType: 'cartEvent',
-        clientId: 'abcxyz123',
-        merchantId: 'xyz,hij,lmno',
-        deviceInfo,
-        version: 'TRANSITION_FLAG'
-      })
-    );
-  });
-
   it('should set the cartId when setCartId is called', () => {
     const tracker = Tracker();
     const beforeStorage = JSON.parse(window.localStorage.getItem(storage.paypalCrCart));
@@ -643,47 +457,6 @@ describe('paypal.Tracker', () => {
     expect(createElementCalls).toBe(2);
     tracker.setPropertyId(propertyId);
     expect(fetchCalls.length).toBe(1);
-    tracker.addToCart({
-      cartId: '__test__cartId',
-      items: [
-        {
-          title: 'consul of rome',
-          imgUrl: 'animageurl',
-          price: 'tree fiddy',
-          id: '__test__productId',
-          url: 'https://example.com/__test__productId'
-        }
-      ],
-      emailCampaignId: '__test__emailCampaignId',
-      cartTotal: '12345.67',
-      currencyCode: 'USD'
-    });
-    expect(JSON.stringify(extractDataParam(imgMock.src))).toBe(
-      JSON.stringify({
-        cartId: '__test__cartId',
-        items: [
-          {
-            title: 'consul of rome',
-            imgUrl: 'animageurl',
-            price: 'tree fiddy',
-            id: '__test__productId',
-            url: 'https://example.com/__test__productId'
-          }
-        ],
-        emailCampaignId: '__test__emailCampaignId',
-        currencyCode: 'USD',
-        total: '12345.67',
-        cartEventType: 'addToCart',
-        user: { email, name: userName, id },
-        propertyId,
-        trackingType: 'cartEvent',
-        clientId: 'abcxyz123',
-        merchantId: 'xyz,hij,lmno',
-        deviceInfo,
-        version: 'TRANSITION_FLAG'
-      })
-    );
-    expect(createElementCalls).toBe(3);
   });
 
   it('should fetch implicit propertyId route if one is not provided', () => {

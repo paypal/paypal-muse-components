@@ -252,16 +252,7 @@ export const Tracker = (config? : Config = {}) => {
 
       trackEvent(config, 'view', data);
     },
-    addToCart: (data : CartData) => {
-      try {
-        const trackerData = addToCartNormalizer(data);
-        validateAddItems(trackerData);
-        trackCartEvent(config, 'addToCart', trackerData);
-        return JL.trackActivity('addToCart', data);
-      } catch (err) {
-        logger.error('addToCart', err);
-      }
-    },
+    addToCart: noop('addToCart'),
     setCart: noop('setcart'),
     getCart: function getCart() : Promise<any> {
       return new Promise((resolve, reject) => {

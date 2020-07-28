@@ -55,35 +55,6 @@ describe('setUser', () => {
     window.localStorage.removeItem(storage.paypalCrUser);
   });
 
-  it('user should be set when the tracker is initialized', () => {
-    const tracker = Tracker(config);
-
-    tracker.addToCart({
-      cartTotal: '5.00',
-      items: [ mockItem ]
-    });
-
-    const args = track.mock.calls;
-
-    expect(args[0][0].user).toEqual(config.user);
-  });
-
-  it('no user should be set if no configuration is passed to initialization', (done) => {
-    const tracker = Tracker();
-
-    // wait for mock propertyId to resolve
-    setTimeout(() => {
-      tracker.addToCart({
-        cartTotal: '5.00',
-        items: [ mockItem ]
-      });
-
-      const args = track.mock.calls;
-      expect(args[0][0].user).toEqual(defaultTrackerConfig.user);
-      done();
-    }, 100);
-  });
-
   it('creates a userId if none exists when the tracker is initialized', () => {
     const oldUser = getUserId();
     Tracker();
@@ -131,18 +102,6 @@ describe('setUser', () => {
     const newUser = getUserId().merchantProvidedUserId;
     expect(oldUser).toBe('oldvalue');
     expect(newUser).not.toBe(oldUser);
-  });
-
-  it('no user should be set if no user is passed to initialization', () => {
-    const tracker = Tracker({ propertyId: 'somevalue' });
-
-    tracker.addToCart({
-      cartTotal: '5.00',
-      items: [ mockItem ]
-    });
-
-    const args = track.mock.calls;
-    expect(args[0][0].user).toEqual(defaultTrackerConfig.user);
   });
 
   it('user should be set when set user is called', () => {
