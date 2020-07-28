@@ -16,7 +16,7 @@ export const setUserNormalizer = (input : any) => {
 
 /* sets cartTotal to total. Warns in the event a 'deprecated' value is passed
 TODO: 'total' should eventually be replaced with 'cartTotal' on the backend. */
-export const addToCartNormalizer = (input : any) => {
+export const purchaseNormalizer = (input : any) => {
   if (input) {
     if (input.total !== undefined) {
       // eslint-disable-next-line no-console
@@ -29,5 +29,3 @@ export const addToCartNormalizer = (input : any) => {
   }
   return input;
 };
-
-export const purchaseNormalizer = addToCartNormalizer;
