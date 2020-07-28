@@ -5,11 +5,9 @@ import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src'
 
 import { logger } from './lib/logger';
 import {
-  validateAddItems,
   validateUser,
   validatePurchase,
   validateCustomEvent,
-  addToCartNormalizer,
   purchaseNormalizer,
   setUserNormalizer
 } from './lib/validation';
@@ -42,11 +40,8 @@ import constants from './lib/constants';
 import type {
   UserData,
   IdentityData,
-  CartData,
-  RemoveFromCartData,
   PurchaseData,
   EventType,
-  CartEventType,
   Config,
   FptiInput
 } from './types';
@@ -118,10 +113,6 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
     track(config, trackingType, trackingData);
     break;
   }
-};
-
-const trackCartEvent = (config : Config, cartEventType : CartEventType, trackingData : CartData | RemoveFromCartData) => {
-  trackEvent(config, 'cartEvent', { ...trackingData, cartEventType });
 };
 
 export const clearTrackQueue = (config : Config) => {
@@ -212,7 +203,7 @@ export const Tracker = (config? : Config = {}) => {
   // Which is why getJetlore is wrapped around a try catch
   const JL = getJetlore(config);
 
-  const noop = (eventName: string) => {
+  const noop = (eventName : string) => {
     return () => {
       // Send FPTI event for us to see who is still using deprecated functions.
       //   Helps with elegant deprecation for partners.
@@ -222,8 +213,8 @@ export const Tracker = (config? : Config = {}) => {
           eventType: 'noop'
         };
   
-        trackFpti(config, fptiInput)
-      } catch(e){
+        trackFpti(config, fptiInput);
+      } catch (err) {
         // continue regardless of error
       }
     };
@@ -252,16 +243,7 @@ export const Tracker = (config? : Config = {}) => {
 
       trackEvent(config, 'view', data);
     },
-    addToCart: (data : CartData) => {
-      try {
-        const trackerData = addToCartNormalizer(data);
-        validateAddItems(trackerData);
-        trackCartEvent(config, 'addToCart', trackerData);
-        return JL.trackActivity('addToCart', data);
-      } catch (err) {
-        logger.error('addToCart', err);
-      }
-    },
+    addToCart: noop('addToCart'),
     setCart: noop('setcart'),
     getCart: function getCart() : Promise<any> {
       return new Promise((resolve, reject) => {
