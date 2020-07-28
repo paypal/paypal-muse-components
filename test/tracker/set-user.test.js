@@ -16,31 +16,10 @@ jest.mock('../../src/lib/get-property-id', () => {
 });
 
 describe('setUser', () => {
-  const { defaultTrackerConfig, storage } = constants;
-
-  let config;
-  let mockItem;
+  const { storage } = constants;
 
   beforeEach(() => {
     window.localStorage.removeItem(storage.paypalCrUser);
-
-    config = {
-      propertyId: 'foobar',
-      user: {
-        id: 'arglebargle123',
-        name: 'Bob Ross',
-        email: 'bossrob21@pbs.org'
-      }
-    };
-
-    mockItem = {
-      id: 'XL novelty hat',
-      imgUrl: 'https://www.paypalobjects.com/digitalassets/c/gifts/media/catalog/product/b/e/bestbuy.jpg',
-      price: '100.00',
-      title: 'Best Buy',
-      url: 'http://localhost.paypal.com:8080/us/gifts/brands/best-buy',
-      quantity: 1
-    };
   });
 
   afterEach(() => {

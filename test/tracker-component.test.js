@@ -9,22 +9,6 @@ import { getUserId, getCartId } from '../src/lib/local-storage';
 
 const { sevenDays, storage } = constants;
 
-const sampleItem = {
-  title: 'sultan of cairo',
-  imgUrl: 'animageurl',
-  price: 'tree fiddy',
-  id: '__test__productId',
-  url: 'https://example.com/__test__productId0'
-};
-
-const generateItems = (input, result = []) => {
-  if (result.length >= input) {
-    return result;
-  }
-  result.push({ ...sampleItem, id: `${ sampleItem.id }${ result.length }` });
-  return generateItems(input, result);
-};
-
 const decode = (encodedDataParam : string) : string => {
   return JSON.parse(atob(decodeURIComponent(encodedDataParam)));
 };
@@ -448,7 +432,6 @@ describe('paypal.Tracker', () => {
   it('should not fetch implicit propertyId route if one is provided', () => {
     const email = '__test__email3@gmail.com';
     const userName = '__test__userName3';
-    const id = 'abc123';
     const tracker = Tracker({ user: {
       email,
       name: userName

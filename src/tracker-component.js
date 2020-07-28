@@ -40,11 +40,8 @@ import constants from './lib/constants';
 import type {
   UserData,
   IdentityData,
-  CartData,
-  RemoveFromCartData,
   PurchaseData,
   EventType,
-  CartEventType,
   Config,
   FptiInput
 } from './types';
@@ -116,10 +113,6 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
     track(config, trackingType, trackingData);
     break;
   }
-};
-
-const trackCartEvent = (config : Config, cartEventType : CartEventType, trackingData : CartData | RemoveFromCartData) => {
-  trackEvent(config, 'cartEvent', { ...trackingData, cartEventType });
 };
 
 export const clearTrackQueue = (config : Config) => {
@@ -210,7 +203,7 @@ export const Tracker = (config? : Config = {}) => {
   // Which is why getJetlore is wrapped around a try catch
   const JL = getJetlore(config);
 
-  const noop = (eventName: string) => {
+  const noop = (eventName : string) => {
     return () => {
       // Send FPTI event for us to see who is still using deprecated functions.
       //   Helps with elegant deprecation for partners.
@@ -220,8 +213,8 @@ export const Tracker = (config? : Config = {}) => {
           eventType: 'noop'
         };
   
-        trackFpti(config, fptiInput)
-      } catch(e){
+        trackFpti(config, fptiInput);
+      } catch (err) {
         // continue regardless of error
       }
     };
