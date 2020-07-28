@@ -6,9 +6,7 @@ import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src'
 import { logger } from './lib/logger';
 import {
   validateUser,
-  validatePurchase,
   validateCustomEvent,
-  purchaseNormalizer,
   setUserNormalizer
 } from './lib/validation';
 import {
@@ -258,9 +256,7 @@ export const Tracker = (config? : Config = {}) => {
     removeFromCart: noop('removeFromCart'),
     purchase: (data : PurchaseData) => {
       try {
-        const trackerData = purchaseNormalizer(data);
-        validatePurchase(trackerData);
-        trackEvent(config, 'purchase', trackerData);
+        trackEvent(config, 'purchase', data);
       } catch (err) {
         logger.error('purchase', err);
       }
