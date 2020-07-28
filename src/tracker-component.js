@@ -11,7 +11,6 @@ import {
   validatePurchase,
   validateCustomEvent,
   addToCartNormalizer,
-  setCartNormalizer,
   removeFromCartNormalizer,
   purchaseNormalizer,
   setUserNormalizer
@@ -58,6 +57,12 @@ const {
   accessTokenUrl,
   defaultTrackerConfig
 } = constants;
+
+const noop = (eventName) => {
+  return () => {
+    // TODO: Fire FPTI to figure out which functions are still used in production
+  }
+}
 
 const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
   return fetch(url, {
@@ -248,18 +253,7 @@ export const Tracker = (config? : Config = {}) => {
         logger.error('addToCart', err);
       }
     },
-    setCart: (data : CartData) => {
-      try {
-        data = setCartNormalizer(data);
-        JL.trackActivity('setCart', data);
-        validateAddItems(data);
-        trackCartEvent(config, 'setCart', data);
-        localStorage.setItem(cartIdentifier, JSON.stringify(data));
-        return;
-      } catch (err) {
-        logger.error('setCart', err);
-      }
-    },
+    setCart: noop('setcart'),
     getCart: function getCart() : Promise<any> {
       return new Promise((resolve, reject) => {
         try {

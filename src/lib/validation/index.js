@@ -8,6 +8,5 @@ export {
   setUserNormalizer,
   addToCartNormalizer,
   purchaseNormalizer,
-  setCartNormalizer,
   removeFromCartNormalizer
 } from './legacy-input-normalizers';
