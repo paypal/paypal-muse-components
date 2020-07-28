@@ -5,11 +5,7 @@ import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src'
 
 import { logger } from './lib/logger';
 import {
-  validateUser,
-  validatePurchase,
-  validateCustomEvent,
-  purchaseNormalizer,
-  setUserNormalizer
+  validateCustomEvent
 } from './lib/validation';
 import {
   getOrCreateValidCartId,
@@ -35,7 +31,6 @@ import {
 } from './lib/legacy-analytics';
 import getJetlore from './lib/jetlore';
 import { trackFpti } from './lib/fpti';
-import { track } from './lib/track';
 import constants from './lib/constants';
 import type {
   UserData,
@@ -110,7 +105,6 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
       analyticsPurchase(config);
     }
   default:
-    track(config, trackingType, trackingData);
     break;
   }
 };
@@ -260,10 +254,7 @@ export const Tracker = (config? : Config = {}) => {
     removeFromCart: noop('removeFromCart'),
     purchase: (data : PurchaseData) => {
       try {
-        const trackerData = purchaseNormalizer(data);
-        validatePurchase(trackerData);
-        trackEvent(config, 'purchase', trackerData);
-        return JL.trackActivity('purchase', data);
+        trackEvent(config, 'purchase', data);
       } catch (err) {
         logger.error('purchase', err);
       }
@@ -276,13 +267,8 @@ export const Tracker = (config? : Config = {}) => {
       return event;
     },
     setUser: (data : {| user : UserData |} | UserData) => {
-      // $FlowFixMe
-      const prevMerchantProvidedUserId = getUserId().merchantProvidedUserId;
-
       try {
         excludeStoreCash();
-        data = setUserNormalizer(data);
-        validateUser(data);
       } catch (err) {
         logger.error('setUser', err);
         return;
@@ -310,10 +296,6 @@ export const Tracker = (config? : Config = {}) => {
           name: userName
         }
       };
-
-      if (merchantProvidedUserId !== undefined || userEmail || userName) {
-        trackEvent(config, 'setUser', { prevMerchantProvidedUserId });
-      }
     },
     setPropertyId: (id : string) => {
       config.propertyId = id;
