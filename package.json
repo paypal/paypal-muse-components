@@ -1,6 +1,6 @@
 {
   "name": "@paypal/muse-components",
-  "version": "1.3.42",
+  "version": "1.3.43",
   "description": "MUSE component for unified PayPal/Braintree web sdk",
   "main": "index.js",
   "scripts": {
