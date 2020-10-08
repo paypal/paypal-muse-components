@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "@paypal/sdk-client": "^4.0.1",
+    "belter": "^1.0.141",
     "whatwg-fetch": "^3.0.0"
   },
   "jest": {
