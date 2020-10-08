@@ -120,8 +120,6 @@ function listenForButtonRender() {
 }
 
 export function setup() {
-  document.addEventListener('DOMContentLoaded', () => {
-    insertPptm(getEnv(), getDebug());
-  });
+  insertPptm(getEnv(), getDebug());
   listenForButtonRender();
 }
