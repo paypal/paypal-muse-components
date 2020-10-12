@@ -62,7 +62,11 @@
       "__HOSTNAME__": "test.paypal.com",
       "__PATH__": "/sdk/js",
       "__VERSION__": "1.0.55",
-      "__NAMESPACE__": "testpaypal"
+      "__NAMESPACE__": "testpaypal",
+      "__TEST__": true,
+      "__WEB__": true,
+      "__CORRELATION_ID__": "abc123",
+      "__SDK_HOST__": "test.paypal.com"
     },
     "moduleDirectories": [
       "node_modules"
