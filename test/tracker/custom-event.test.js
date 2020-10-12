@@ -30,6 +30,16 @@ describe('customEvent', () => {
       }
     };
 
+    const xhrMockObj = {
+      open: jest.fn(),
+      send: jest.fn(),
+      setRequestHeader: jest.fn(),
+      readyState: 4,
+      status: 200,
+      addEventListener: jest.fn()
+    };
+
+    window.XMLHttpRequest = jest.fn().mockImplementation(() => xhrMockObj);
   });
 
   afterEach(() => {
