@@ -16,5 +16,10 @@ module.exports = {
     entry: './src/tracker',
     staticNamespace: '__tracker__',
     automatic: false
+  },
+  'shopping': {
+    entry: './src/shopping',
+    staticNamespace: '__shopping__',
+    automatic: false
   }
 };
