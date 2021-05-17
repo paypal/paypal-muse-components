@@ -1,47 +1,59 @@
 /* @flow */
-import type { PageView, EventType, ProductView } from '../types/shopping-events';
+import type {
+  PageView,
+  EventType,
+  ProductView
+} from '../types/shopping-events';
 import type { FptiInput, Config } from '../types';
 
 import { getUserId } from './local-storage';
 
-export type EventName = "pageView" | "purchase";
-
 export type EventToFptiInputMapping = (event : Object) => FptiInput;
 
-const eventToFpti = (config : Config) => (
+function getStoredUserIds() : Object {
+  const storedUserIds = getUserId();
+  if (storedUserIds) {
+    return {
+      shopperId: storedUserIds.userId,
+      merchantProvidedUserId: storedUserIds.merchantProvidedUserId
+    };
+  } else {
+    return {};
+  }
+}
+
+function convertShoppingEventToFptiInput(
+  config : Config,
   event : Object,
   eventType : EventType
-) : FptiInput => {
-
-  viewData['currency'] = viewData['currency'] ? viewData['currency'] : config['currency']
-  // $FlowFixMe
-  const merchantProvidedUserId = getUserId().merchantProvidedUserId;
-  // $FlowFixMe
-  const shopperId = getUserId().userId;
-
+) : FptiInput {
   if (!event.user) {
     event.user = config.user;
   }
 
+  const storedUserIds = getStoredUserIds();
+
   const data : FptiInput = {
     eventName: eventType,
     eventType,
-    shopperId,
-    merchantProvidedUserId,
-    eventData: JSON.stringify(event)
+    eventData: JSON.stringify(event),
+    shopperId: storedUserIds.shopperId,
+    merchantProvidedUserId: storedUserIds.merchantProvidedUserId
   };
 
   return data;
-};
+}
 
 export const eventToFptiConverters = (config : Config) => {
-  const eventToFptiConverter = eventToFpti(config);
   return {
     viewPageToFpti: (viewData : PageView) : FptiInput => {
-      return eventToFptiConverter(viewData, 'pageView');
+      return convertShoppingEventToFptiInput(config, viewData, 'pageView');
     },
-    viewProductToFpti: (viewData : ProductView) : FptiInput => {      
-      return eventToFptiConverter(viewData, 'productView');
+    viewProductToFpti: (viewData : ProductView) : FptiInput => {
+      viewData.currency = viewData.currency
+        ? viewData.currency
+        : config.currencyCode;
+      return convertShoppingEventToFptiInput(config, viewData, 'productView');
     }
   };
 };

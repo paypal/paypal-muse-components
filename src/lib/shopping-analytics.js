@@ -26,7 +26,7 @@ export const setupTrackers = (config : Config) => {
   const converters = eventToFptiConverters(config);
 
   const viewPage = eventPublisher(converters.viewPageToFpti);
-  const productViewed = eventPublisher(converters.viewProductToFpti);
+  const viewProduct = eventPublisher(converters.viewProductToFpti);
    
-  return { viewPage, productViewed};
+  return { viewPage, viewProduct };
 };
