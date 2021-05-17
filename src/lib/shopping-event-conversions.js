@@ -1,5 +1,5 @@
 /* @flow */
-import type { PageView, EventType } from '../types/shopping-events';
+import type { PageView, EventType, ProductView } from '../types/shopping-events';
 import type { FptiInput, Config } from '../types';
 
 import { getUserId } from './local-storage';
@@ -12,6 +12,8 @@ const eventToFpti = (config : Config) => (
   event : Object,
   eventType : EventType
 ) : FptiInput => {
+
+  viewData['currency'] = viewData['currency'] ? viewData['currency'] : config['currency']
   // $FlowFixMe
   const merchantProvidedUserId = getUserId().merchantProvidedUserId;
   // $FlowFixMe
@@ -37,6 +39,9 @@ export const eventToFptiConverters = (config : Config) => {
   return {
     viewPageToFpti: (viewData : PageView) : FptiInput => {
       return eventToFptiConverter(viewData, 'pageView');
+    },
+    viewProductToFpti: (viewData : ProductView) : FptiInput => {      
+      return eventToFptiConverter(viewData, 'productView');
     }
   };
 };

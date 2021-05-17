@@ -8,6 +8,7 @@ const initEventPublisher = (config : Config) => {
   return (converterToFpti : EventToFptiInputMapping) => {
     return (event : Object) => {
       const fptiInput : FptiInput = converterToFpti(event);
+
       trackFptiV2(config, fptiInput);
     };
   };
@@ -16,6 +17,9 @@ const initEventPublisher = (config : Config) => {
 export const setupTrackers = (config : Config) => {
   const eventPublisher = initEventPublisher(config);
   const converters = eventToFptiConverters(config);
+
   const viewPage = eventPublisher(converters.viewPageToFpti);
-  return { viewPage };
+  const productViewed = eventPublisher(converters.viewProductToFpti);
+   
+  return { viewPage, productViewed};
 };
