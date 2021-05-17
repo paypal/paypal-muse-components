@@ -18,14 +18,26 @@ function fetchMerchantContainer(config : Config) {
   });
 }
 
+/**
+ *  Parse merchant provided config and cache the user details passed
+ *  in by the merchant if any as well as try to identify the user by calling VPNS.
+ *
+ * Further, fetch and cache the container associated with the propertyId or the url.
+ * @param config
+ * @returns {{viewPage: function(Object): void}}
+ * @constructor
+ */
 // $FlowFixMe
 export const ShoppingAnalytics = (config? : Config = {}) => {
   // $FlowFixMe
   config = { ...defaultTrackerConfig, ...config };
   setupUserDetails(config);
   fetchMerchantContainer(config);
+
   const shoppingAnalytics = setupTrackers(config);
+
   window.__pp__trackers__ = window.__pp__trackers__ || [];
   window.__pp__trackers__.push(shoppingAnalytics);
+
   return shoppingAnalytics;
 };

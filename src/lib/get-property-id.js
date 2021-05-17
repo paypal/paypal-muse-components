@@ -87,6 +87,16 @@ export const fetchPropertyId = ({ paramsToPropertyIdUrl, propertyId } : Config) 
     });
 };
 
+/**
+ * Fetch container settings and parse them into custom format before caching
+ * in localStorage.
+ *
+ * Also handles missing propertyId in config by setting it to the returned
+ * containers id.
+ * @param paramsToPropertyIdUrl
+ * @param propertyId
+ * @returns {Promise<unknown>|Promise<ContainerSummary>}
+ */
 export const fetchContainerSettings = ({ paramsToPropertyIdUrl, propertyId } : Config) : Promise<ContainerSummary> => {
   const cachedContainer = getValidContainer();
 

@@ -14,6 +14,13 @@ const initEventPublisher = (config : Config) => {
   };
 };
 
+/**
+ * Setup the various trackers which are a part of the shopping analytics
+ * api. The trackers setup essentially is a converter that marshalls event
+ * data in a format fpti likes.
+ * @param config
+ * @returns {{viewPage: (function(...[*]=))}}
+ */
 export const setupTrackers = (config : Config) => {
   const eventPublisher = initEventPublisher(config);
   const converters = eventToFptiConverters(config);
