@@ -12,6 +12,7 @@
 .*/test/tracker/track.test.js
 .*/test/local-storage/local-storage-utils.test.js
 .*/test/tracker-component.test.js
+.*/test/.*
 [untyped]
 .*/src/lib/jetlore
 .*/src/storeCash.js

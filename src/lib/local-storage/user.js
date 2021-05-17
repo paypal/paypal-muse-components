@@ -23,7 +23,7 @@ export const setUserStorage = (userStorage : Object) => {
 };
 
 // Generates a random user ID.
-// This method will set the userId field and generatedUserId field.
+// Further cache the generated userId in LocalStorage.
 export const setGeneratedUserId = () => {
   const userStorage = getUserStorage();
 
@@ -57,7 +57,8 @@ export const getUserId = () => {
   return null;
 };
 
-/* Returns an existing, valid userId or creates a new one if it doesn't exist */
+/** Returns an existing, valid userId cached in localStorage
+or creates a new one if one doesn't exist **/
 export const getOrCreateValidUserId = () => {
   const storedValue = getUserId();
 

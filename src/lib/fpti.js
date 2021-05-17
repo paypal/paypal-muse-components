@@ -11,6 +11,7 @@ import type {
 import { getDeviceInfo } from './get-device-info';
 import { getIdentity } from './local-storage';
 
+
 export const sendBeacon = (src : string, data : FptiVariables | LegacyVariables) => {
   let query = Object.keys(data).map(key => {
     // $FlowFixMe
@@ -36,15 +37,15 @@ export const filterFalsyValues = (source : Object) : FptiVariables | LegacyVaria
   return source;
 };
 
-const resolveTrackingData = (config : Config, data : FptiInput) : any => {
+export const resolveTrackingData = (config : Config, data : FptiInput, product? : string = 'ppshopping', comp? : string = 'ppshoppingsdk') : any => {
   const deviceInfo = getDeviceInfo();
   const identity = getIdentity() || {};
 
   return {
-    product: 'ppshopping',
+    product,
     e: 'im',
-    comp: 'ppshoppingsdk',
-    page: `ppshopping:${ data.eventName }`,
+    comp,
+    page: `${ product }:${ data.eventName }`,
     t: new Date().getTime(),
     g: new Date().getTimezoneOffset(),
     ...deviceInfo,
@@ -150,6 +151,13 @@ const resolveTrackingVariables = (data : any) : FptiVariables => ({
 export const trackFpti = (config : Config, data : FptiInput) => {
   const fptiServer = 'https://t.paypal.com/ts';
   const trackingVariables = resolveTrackingVariables(resolveTrackingData(config, data));
+
+  sendBeacon(fptiServer, filterFalsyValues(trackingVariables));
+};
+
+export const trackFptiV2 = (config : Config, data : FptiInput) => {
+  const fptiServer = 'https://t.paypal.com/ts';
+  const trackingVariables = resolveTrackingVariables(resolveTrackingData(config, data, 'ppshopping_v2', 'ppshoppingsdk_v2'));
 
   sendBeacon(fptiServer, filterFalsyValues(trackingVariables));
 };

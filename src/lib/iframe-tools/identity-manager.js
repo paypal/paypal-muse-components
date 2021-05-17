@@ -5,10 +5,19 @@ import { logger } from '../logger';
 
 import { IframeManager } from './iframe-manager';
 
+/**
+ * Make a call to VPNS by loading the identity iframe and
+ * try to do our own identifying of the user. Store this in the local storage.
+ *
+ * The call to VPNS is done by loading an iframe specific to identity which loads
+ * identity.js (probably from musenodeweb) which calls VPNS.
+ *
+ * Store the result from VPNS in the local storage.
+ */
 export class IdentityManager extends IframeManager {
   constructor(config) {
     let iframeUrl;
-    
+
     if (config.paramsToIdentityUrl) {
       iframeUrl = config.paramsToIdentityUrl();
     } else {
