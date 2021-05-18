@@ -10,50 +10,93 @@ import { getUserId } from './local-storage';
 
 export type EventToFptiInputMapping = (event : Object) => FptiInput;
 
-function getStoredUserIds() : Object {
+const getDefaultFPTIEvent = () => {
   const storedUserIds = getUserId();
-  if (storedUserIds) {
-    return {
-      shopperId: storedUserIds.userId,
-      merchantProvidedUserId: storedUserIds.merchantProvidedUserId
-    };
-  } else {
-    return {};
-  }
-}
 
-function convertShoppingEventToFptiInput(
-  config : Config,
-  event : Object,
-  eventType : EventType
-) : FptiInput {
-  if (!event.user) {
-    event.user = config.user;
-  }
+  const data = {
+    shopperId: storedUserIds ? storedUserIds.userId : undefined,
+    merchantProvidedUserId: storedUserIds ? storedUserIds.merchantProvidedUserId : undefined
+  };
 
-  const storedUserIds = getStoredUserIds();
+  return data;
+};
+
+function getDefaultFPTIEventFromShoppingEvent(config : Config,
+  shoppingEvent : Object,
+  eventType : EventType) : FptiInput {
+
+  const eventData = {
+    ...shoppingEvent,
+    user: shoppingEvent.user || config.user
+  };
 
   const data : FptiInput = {
     eventName: eventType,
     eventType,
-    eventData: JSON.stringify(event),
-    shopperId: storedUserIds.shopperId,
-    merchantProvidedUserId: storedUserIds.merchantProvidedUserId
+    eventData
   };
 
   return data;
 }
 
+/**
+ * Generic function that performs the default conversion for events
+ * by stringifying the event object
+ *
+ * @param config
+ * @param shoppingEvent
+ * @param eventType
+ * @returns {FptiInput}
+ */
+const getDefaultConvertor = (config : Config,
+  shoppingEvent : Object,
+  eventType : EventType) => {
+
+  const defaultConvertedEvent =
+      getDefaultFPTIEventFromShoppingEvent(config, shoppingEvent, eventType);
+
+  const data : FptiInput =
+      Object.assign(
+        getDefaultFPTIEvent(),
+        { ...defaultConvertedEvent,
+          eventData: JSON.stringify(defaultConvertedEvent.eventData) }
+      );
+
+  return data;
+};
+
+const getViewProductEventConvertor = (config : Config,
+  shoppingEvent : Object,
+  eventType : EventType) => {
+
+  const defaultConvertedEvent =
+      getDefaultFPTIEventFromShoppingEvent(config, shoppingEvent, eventType);
+
+  // Add additional data to event data
+  const eventData = {
+    ...defaultConvertedEvent.eventData,
+    currency: defaultConvertedEvent.eventData.currency || config.currencyCode
+  };
+
+  // Now stringify event data
+  const viewProductFPTIEvent = {
+    ...defaultConvertedEvent,
+    eventData: JSON.stringify(eventData)
+  };
+
+  const data : FptiInput =
+      Object.assign(getDefaultFPTIEvent(), viewProductFPTIEvent);
+
+  return data;
+};
+
 export const eventToFptiConverters = (config : Config) => {
   return {
-    viewPageToFpti: (viewData : PageView) : FptiInput => {
-      return convertShoppingEventToFptiInput(config, viewData, 'pageView');
+    viewPageToFpti: (pageViewData : PageView) : FptiInput => {
+      return getDefaultConvertor(config, pageViewData, 'pageView');
     },
-    viewProductToFpti: (viewData : ProductView) : FptiInput => {
-      viewData.currency = viewData.currency
-        ? viewData.currency
-        : config.currencyCode;
-      return convertShoppingEventToFptiInput(config, viewData, 'productView');
+    viewProductToFpti: (productViewData : ProductView) : FptiInput => {
+      return getViewProductEventConvertor(config, productViewData, 'productView');
     }
   };
 };
