@@ -1,5 +1,4 @@
-/* @disabled-flow */
-/* Disabling flow because it does not understand the Object.assign return values */
+/* @flow */
 import type {
   PageView,
   EventType,
