@@ -29,9 +29,11 @@ const pageViewSimple : PageView = {
 
 const productView : ProductView = {
   product_id: '427b0021-00b3-4411-bf65-520b13841232',
-  product_name: 'HOME_PAGE',
+  product_name: 'Reebok Shoe ® R,™ TM, © C -- 1231 asd | +=..,/ á, é, í, ó, ú, ü, ñ, ¿, ¡',
   price: '200.00',
-  currency: 'USD'
+  currency: 'USD',
+  url: 'https://xyz.com/products/puffy-lux-mattress?type=hybrid',
+  brand: "Reebok® á, é, í, ó, ú, ü, ñ, ¿, ¡"
 };
 
 jest.mock('../../src/lib/local-storage');
