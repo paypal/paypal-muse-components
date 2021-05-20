@@ -19,12 +19,12 @@ export type PageView = {|
 |};
 
 export type ProductView = {|
-    product_id : string,
+    product_id : string, // the product id or SKU
     product_name? : string,
     category? : Category,
-    price? : string,
-    currency? : string,
+    price? : string, // eg 200.00
+    currency? : string, // ISO code
     url? : string,
-    brand?: string,
+    brand?: string, // product brand
     user? : UserData
 |};
