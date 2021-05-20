@@ -17,8 +17,8 @@ const pageView : PageView = {
     name: 'Shoes'
   },
   user: {
-    id: "6fbbc29f-3a15-4cf8-889a-34624a74496c",
-    first_time_visit: "true"
+    id: '6fbbc29f-3a15-4cf8-889a-34624a74496c',
+    first_time_visit: 'true'
   }
 };
 
@@ -33,7 +33,7 @@ const productView : ProductView = {
   price: '200.00',
   currency: 'USD',
   url: 'https://xyz.com/products/puffy-lux-mattress?type=hybrid',
-  brand: "Reebok® á, é, í, ó, ú, ü, ñ, ¿, ¡"
+  brand: 'Reebok® á, é, í, ó, ú, ü, ñ, ¿, ¡'
 };
 
 jest.mock('../../src/lib/local-storage');
