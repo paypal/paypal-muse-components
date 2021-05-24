@@ -17,8 +17,16 @@ const initEventPublisher = (config : Config) => {
 
 /**
  * Setup the various trackers which are a part of the shopping analytics
- * api. The trackers setup essentially is a converter that marshalls event
- * data in a format fpti likes.
+ * api.
+ *
+ * There are two phases :
+ * 1) Converter - converts from the SDK object to an fpti object.
+ *                There are specific converters for different SDK endpoint and payload objects
+ * 2) Publisher - publishes event to fpti taking care of fetching necessary container data from the server
+ *                before publishing
+ *                There is a single fpti publisher that takes the FPTI payload from any converter
+ *                and sends to FPTI
+ *
  * @param config
  * @returns {{viewPage: (function(...[*]=))}}
  */
