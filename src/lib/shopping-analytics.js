@@ -36,6 +36,6 @@ export const setupTrackers = (config : Config) => {
 
   const viewPage = eventPublisher(converters.viewPageToFpti);
   const viewProduct = eventPublisher(converters.viewProductToFpti);
-   
+
   return { viewPage, viewProduct };
 };
