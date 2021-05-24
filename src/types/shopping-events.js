@@ -25,6 +25,6 @@ export type ProductView = {|
     price? : string, // eg 200.00
     currency? : string, // ISO code
     url? : string,
-    brand?: string, // product brand
+    brand? : string, // product brand
     user? : UserData
 |};

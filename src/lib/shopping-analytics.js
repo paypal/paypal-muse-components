@@ -1,15 +1,16 @@
 /* @flow */
 import type { FptiInput, Config } from '../types';
 
-import { trackFptiV2 } from './fpti';
+import { ShoppingEventPublisher } from './shopping-fpti-event-publisher';
 import { eventToFptiConverters, type EventToFptiInputMapping } from './shopping-event-conversions';
 
+
 const initEventPublisher = (config : Config) => {
+  const fptiEventPubisher = ShoppingEventPublisher(config);
   return (converterToFpti : EventToFptiInputMapping) => {
     return (event : Object) => {
       const fptiInput : FptiInput = converterToFpti(event);
-
-      trackFptiV2(config, fptiInput);
+      fptiEventPubisher.publishFptiEvent(fptiInput);
     };
   };
 };
