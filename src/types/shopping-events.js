@@ -3,11 +3,13 @@
 import type { UserData  } from './user';
 
 export type EventType = 'pageView' | 'productView' | 'purchase' | 'setUser' | 'cancelCart' | 'customEvent';
-export type PageType = 'HOME_PAGE' | 'CATEGORY' | 'SEARCH_RESULTS' | 'DEALS' | 'CART' | 'CHECKOUT' | 'ORDER_CONFIRMATION';
+export type PageType = 'HOME' | 'CATEGORY' | 'SEARCH_RESULTS' | 'DEALS' | 'PRODUCT' | 'CART' | 'CHECKOUT' | 'ORDER_CONFIRMATION';
 
 export type Category = {|
     id : string,
-    name? : string
+    name? : string,
+    subcategory_id?: string, 
+    subcategory_name?: string, 
 |};
 
 export type PageView = {|
@@ -19,7 +21,8 @@ export type PageView = {|
 |};
 
 export type ProductView = {|
-    product_id : string, // the product id or SKU
+    product_id : string, // the product id 
+    sku_id? : string, // SKU Id
     product_name? : string,
     category? : Category,
     price? : string, // eg 200.00
