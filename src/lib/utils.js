@@ -1,31 +1,49 @@
 /* @flow */
 
-const autoGenerateProductPayload = () => {
-  const tags = {
+/* parse the open graph meta tags on the page.
+ eg meta tag : <meta property="og:title" content="NOT Case - iPhone 12"> */
+type GeneratedProductPayload = {|
+  product_name? : string,
+  price? : string, // eg 200.00
+  currency? : string, // ISO code
+  url? : string
+|};
+const autoGenerateProductPayload = () : ?GeneratedProductPayload => {
+  type OpenGraphTag = 'og:title' | 'product:price:amount' | 'product:price:currency' | 'og:url';
+  type PayloadAttribute = 'product_name' | 'price' | 'currency' | 'url';
+  type _tags = {
+      [OpenGraphTag] : PayloadAttribute
+  };
+
+  const tags : _tags = {
     'og:title': 'product_name',
     'product:price:amount': 'price',
     'product:price:currency': 'currency',
-    'og:description': 'description',
     'og:url': 'url'
   };
 
-  const attributes = Object.entries(tags).map(([ k, v ]) => {
-    const metaTag : ?HTMLElement = document.querySelector(`meta[property="${ k }"]`);
-    const result = {};
+  const parseTagValue = (ogTag : OpenGraphTag) : ?string => {
+    const openGraphMetaTag : ?HTMLElement = document.querySelector(`meta[property="${ ogTag }"]`);
 
-    if (metaTag && (metaTag instanceof HTMLMetaElement)) {
-      // $FlowFixMe - flow does not like result[v] and there is no accepted fix
-      result[v] = metaTag.content;
+    if (openGraphMetaTag && (openGraphMetaTag instanceof HTMLMetaElement)) {
+      return openGraphMetaTag.content;
     }
+  };
 
-    return result;
-  });
+  const reducer = (acc, curr) => {
+    const [ ogTag : OpenGraphTag, payloadAttribute : PayloadAttribute ] = curr; // $FlowFixMe
+    const ogTagValue = parseTagValue(ogTag);
+    if (ogTagValue) {
+      // $FlowFixMe - flow does not like result[v] and there is no accepted fix
+      acc[payloadAttribute] = ogTagValue;
+    }
+    return acc;
+  };
 
-  const payload = attributes.reduce((accm, curr) => {
-    return Object.assign(accm, curr);
-  });
+  // $FlowFixMe
+  const attributes : GeneratedProductPayload = Object.entries(tags).reduce(reducer, {});
 
-  return Object.keys(payload).length > 0 ? payload : null;
+  return Object.keys(attributes).length > 0 ? attributes : null;
 };
 
 export default autoGenerateProductPayload;
