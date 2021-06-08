@@ -1,6 +1,7 @@
 /* @flow */
 import type { FptiInput, Config } from '../types';
 
+import autoGenerateProductPayload from './utils';
 import { ShoppingEventPublisher } from './shopping-fpti-event-publisher';
 import { eventToFptiConverters, type EventToFptiInputMapping } from './shopping-event-conversions';
 
@@ -36,6 +37,6 @@ export const setupTrackers = (config : Config) => {
 
   const viewPage = eventPublisher(converters.viewPageToFpti);
   const viewProduct = eventPublisher(converters.viewProductToFpti);
-   
-  return { viewPage, viewProduct };
+
+  return { viewPage, viewProduct, autoGenerateProductPayload };
 };
