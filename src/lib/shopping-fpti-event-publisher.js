@@ -25,11 +25,12 @@ export const ShoppingEventPublisher = (config : Config) => {
    * @returns {boolean}
    */
   function isAllowedToPublishEvent() : boolean {
-    const isContainerIdSet =
-      config.propertyId !== undefined &&
-      config.propertyId !== null &&
-      config.propertyId.length > 0;
-    return isContainerIdSet;
+    // const isContainerIdSet =
+    //   config.propertyId !== undefined &&
+    //   config.propertyId !== null &&
+    //   config.propertyId.length > 0;
+    // return isContainerIdSet;
+    return true;
   }
 
   /**
