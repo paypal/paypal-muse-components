@@ -23,7 +23,8 @@ export type Config = {|
     |},
     containerSummary? : ContainerSummary | null,
     paramsToPropertyIdUrl? : ParamsToPropertyIdUrl,
-    currencyCode? : string
+    currencyCode? : string,
+    shoppingAttributes? : Object
 |};
 
 export type JetloreConfig = {|
