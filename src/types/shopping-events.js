@@ -1,30 +1,21 @@
 /* @flow */
 
-import type { UserData  } from './user';
-
 export type EventType = 'pageView' | 'productView' | 'purchase' | 'setUser' | 'cancelCart' | 'customEvent';
-export type PageType = 'HOME_PAGE' | 'CATEGORY' | 'SEARCH_RESULTS' | 'DEALS' | 'CART' | 'CHECKOUT' | 'ORDER_CONFIRMATION';
-
-export type Category = {|
-    id : string,
-    name? : string
-|};
 
 export type PageView = {|
     id? : string,
-    page_type? : PageType,
+    page_type? : string,
     name? : string,
-    category? : Category,
-    user? : UserData
+    category? : string
 |};
 
 export type ProductView = {|
-    product_id : string, // the product id or SKU
+    product_id : string, // the product id
+    sku_id? : string, // SKU Id
     product_name? : string,
-    category? : Category,
+    category? : string,
     price? : string, // eg 200.00
     currency? : string, // ISO code
     url? : string,
-    brand? : string, // product brand
-    user? : UserData
+    brand? : string // product brand
 |};

@@ -30,6 +30,7 @@ jest.mock('../../src/lib/shopping-event-conversions');
 
 const viewPageToFptiMock = jest.fn();
 const viewProductToFptiMock = jest.fn();
+const eventToFptiMock = jest.fn();
 const fptiPublishMock = jest.fn();
 
 describe('test eventTracker setup', () => {
@@ -37,7 +38,8 @@ describe('test eventTracker setup', () => {
     eventToFptiConverters.mockClear();
     eventToFptiConverters.mockReturnValue({
       viewPageToFpti: viewPageToFptiMock,
-      viewProductToFpti: viewProductToFptiMock
+      viewProductToFpti: viewProductToFptiMock,
+      eventToFpti: eventToFptiMock
     });
 
     ShoppingEventPublisher.mockClear();
@@ -48,6 +50,9 @@ describe('test eventTracker setup', () => {
 
     viewProductToFptiMock.mockClear();
     viewProductToFptiMock.mockReturnValue(mockFptiInput);
+
+    eventToFptiMock.mockClear();
+    eventToFptiMock.mockReturnValue(mockFptiInput);
 
   });
   
@@ -62,6 +67,13 @@ describe('test eventTracker setup', () => {
     const trackers = setupTrackers(config);
     trackers.viewProduct(productView);
     expect(viewProductToFptiMock).toBeCalledWith(productView);
+    expect(fptiPublishMock).toBeCalledWith(mockFptiInput);
+  });
+
+  it('should send() handle generic events', () => {
+    const trackers = setupTrackers(config);
+    trackers.send('testEvent', productView);
+    expect(eventToFptiMock).toBeCalledWith('testEvent', productView);
     expect(fptiPublishMock).toBeCalledWith(mockFptiInput);
   });
 

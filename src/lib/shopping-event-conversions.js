@@ -27,6 +27,7 @@ function convertShoppingEventToFptiInput(
   event : Object,
   eventType : EventType
 ) : FptiInput {
+
   if (!event.user) {
     event.user = config.user;
   }
@@ -54,6 +55,9 @@ export const eventToFptiConverters = (config : Config) => {
         ? viewData.currency
         : config.currencyCode;
       return convertShoppingEventToFptiInput(config, viewData, 'productView');
+    },
+    eventToFpti: (event : EventType, payload : Object) : FptiInput => {
+      return convertShoppingEventToFptiInput(config, payload, event);
     }
   };
 };

@@ -69,4 +69,13 @@ describe('test event converters to FPTI input', () => {
     expect(fptiEvent.shopperId).toEqual(generatedUserId);
     expect(fptiEvent.merchantProvidedUserId).toEqual(merchantProvidedUserId);
   });
+
+  it('should map generic event to FPTI input', () => {
+    const fptiEvent = eventConverters.eventToFpti('productView', productView);
+    expect(fptiEvent.eventName).toEqual('productView');
+    expect(fptiEvent.eventType).toEqual('productView');
+    expect(fptiEvent.eventData).toEqual(JSON.stringify(productView));
+    expect(fptiEvent.shopperId).toEqual(generatedUserId);
+    expect(fptiEvent.merchantProvidedUserId).toEqual(merchantProvidedUserId);
+  });
 });
