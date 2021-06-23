@@ -77,9 +77,27 @@ describe('test eventTracker setup', () => {
     expect(fptiPublishMock).toBeCalledWith(mockFptiInput);
   });
 
+  it('should send() handle generic event include shopping attributes', () => {
+    config.shoppingAttributes = { dummyAttrib: 'test' };
+    const trackers = setupTrackers(config);
+    
+    trackers.send('testEvent', productView);
+
+    const expectedPayload = { ...productView, dummyAttrib: 'test' };
+    expect(eventToFptiMock).toBeCalledWith('testEvent', expectedPayload);
+
+    expect(fptiPublishMock).toBeCalledWith(mockFptiInput);
+  });
+
   it('should include autoGenerateProductPayload', () => {
     const trackers = setupTrackers(config);
     expect(trackers.autoGenerateProductPayload).toBeInstanceOf(Function);
+  });
+
+  it('should update shopping attributes. set() ', () => {
+    const trackers = setupTrackers(config);
+    trackers.set({ dummyAttrib: '1234' });
+    expect(config.shoppingAttributes).toEqual({ dummyAttrib: '1234' });
   });
 
 });
