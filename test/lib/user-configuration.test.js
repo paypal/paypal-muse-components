@@ -1,6 +1,6 @@
 /* global expect jest */
 /* @flow */
-import { setupUserDetails } from '../../src/lib/user-configuration';
+import { setupUserDetails, setUser } from '../../src/lib/user-configuration';
 import {
   getOrCreateValidUserId,
   setGeneratedUserId,
@@ -49,5 +49,16 @@ describe('sets up user details', () => {
     expect(createNewCartId).toHaveBeenCalledTimes(1);
     expect(setGeneratedUserId).toHaveBeenCalledTimes(1);
     expect(config.user.id).toEqual(mockedUserId);
+  });
+
+  it('should set up user details for configuration with user details passed to setUser', () => {
+    const user = { id: 'test_user' };
+    setUser(user);
+    const config = { user };
+    expect(IdentityManager).toBeCalledWith(config);
+    expect(getOrCreateValidUserId).toHaveBeenCalledTimes(1);
+    expect(config.user.id).toEqual(mockedUserId);
+    expect(setMerchantProvidedUserId).toBeCalledWith('test_user');
+    expect(config.user.merchantProvidedUserId).toEqual('test_user');
   });
 });

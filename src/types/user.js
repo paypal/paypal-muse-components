@@ -3,7 +3,9 @@ export type UserData = {|
   merchantProvidedUserId? : string,
   id? : string,
   email? : string,
-  name? : string
+  name? : string,
+  first_visit? : boolean,
+  user_tags? : $ReadOnlyArray<string>
 |};
 
 export type IdentityData = {|

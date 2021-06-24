@@ -1,5 +1,5 @@
 /* @flow */
-import type { Config } from '../types';
+import type { Config, UserData } from '../types';
 
 import {
   getOrCreateValidUserId as fetchOrSetupUserIdInLocalStorage,
@@ -56,4 +56,8 @@ export const setupUserDetails = (config : Config) => {
   // $FlowFixMe
     config.user.id = userId;
   }
+};
+
+export const setUser = (user : UserData) => {
+  setupUserDetails({ user });
 };
