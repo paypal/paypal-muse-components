@@ -3,7 +3,7 @@ import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
 import constants from './lib/constants';
 import { setupUserDetails } from './lib/user-configuration';
-import { setupTrackers } from './lib/shopping-analytics';
+import { shoppingAnalyticsSetup } from './lib/shopping-analytics';
 import type { Config } from './types';
 
 const { defaultTrackerConfig } = constants;
@@ -21,8 +21,8 @@ const { defaultTrackerConfig } = constants;
 export const ShoppingAnalytics = (config? : Config = {}) => {
   // $FlowFixMe
   config = { ...defaultTrackerConfig, ...config };
-  setupUserDetails(config);
-  const shoppingAnalytics = setupTrackers(config);
+  const shoppingAnalytics = shoppingAnalyticsSetup(config);
+  setupUserDetails(config, shoppingAnalytics.onUserIdentityFetch);
 
   window.__pp__trackers__ = window.__pp__trackers__ || [];
   window.__pp__trackers__.push(shoppingAnalytics);
