@@ -7,13 +7,16 @@ import { logger } from './lib/logger';
 
 export const PPTM_ID = 'xo-pptm';
 
+const SHOPPING_COMPONENT = 'shopping';
+
+
 /*
 Generates a URL for pptm.js, e.g. http://localhost:8001/tagmanager/pptm.js?id=www.merchant-site.com&t=xo&mrid=xyz&client_id=abc
 */
 export function getPptmScriptSrc(paypalDomain : string, mrid : ?string, clientId : ?string, url : string) : string {
   // "xo" is a checkout container
   const type = 'xo';
-
+  
   // We send this so that we know what version of the Payments SDK the request originated from.
   const version = getVersion();
 
@@ -63,9 +66,21 @@ function parseMerchantId() : ?string {
   return merchantId[0];
 }
 
+
 function _isPayPalDomain() : boolean {
   return window.mockDomain === 'mock://www.paypal.com' || isPayPalDomain();
 }
+
+function _getComponents() : $ReadOnlyArray<string> {
+  return (getSDKQueryParam('components') || '').toLowerCase().split(',');
+}
+
+
+function _isShoppingSdkComponent() : boolean {
+  const components = _getComponents();
+  return components.indexOf(SHOPPING_COMPONENT) >= 0;
+}
+
 
 // Inserts the pptm.js script tag. This is the `setupHandler` in __sdk__.js and will be called automatically
 // when the made SDK is initialized.
@@ -75,7 +90,12 @@ export function insertPptm(env : string = getEnv(), isDebug : boolean = getDebug
     // website, and then it'll render an iframe from the PayPal domain which will in turn
     // initialize the SDK again. We don't want to insert another pptm.js on the paypal.com
     // domain, though.
-    if (!_isPayPalDomain()) {
+
+    // We do not want to load pptm.js for shopping component. Merchant may always add muse, checkout button  to load pptms.js if neeeded.
+    // However, shopping component will be a replacement of pptm.js. Some merchant may use it to publish store cash events.
+    // https://engineering.paypalcorp.com/jira/browse/DTSHOPSDK-295
+    
+    if ((!_isPayPalDomain()) && (!_isShoppingSdkComponent())) {
       // https://engineering.paypalcorp.com/jira/browse/PPPLMER-79439
       // When merchants test the SDK using a sandbox client ID, it pulls in tagmanager/pptm.js
       // and that code makes calls to QA FPTI since it infers the environment as sandbox.
