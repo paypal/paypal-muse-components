@@ -1,6 +1,6 @@
 /* @flow */
 
-export type EventType = 'pageView' | 'productView' | 'purchase' | 'setUser' | 'cancelCart' | 'customEvent';
+export type EventType = 'pageView' | 'productView' | 'purchase' | 'cancelCart' | 'customEvent';
 
 export type PageView = {|
     id? : string,

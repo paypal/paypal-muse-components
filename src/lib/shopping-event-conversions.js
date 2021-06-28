@@ -28,18 +28,17 @@ function convertShoppingEventToFptiInput(
   eventType : EventType
 ) : FptiInput {
 
-  if (!event.user) {
-    event.user = config.user;
-  }
-
   const storedUserIds = getStoredUserIds();
 
+  const eventDataPayload = { ...event };
+  // remove user_id property from event_payload since it is passed separately
+  delete eventDataPayload.user_id;
   const data : FptiInput = {
     eventName: eventType,
     eventType,
-    eventData: JSON.stringify(event),
+    eventData: JSON.stringify(eventDataPayload),
     shopperId: storedUserIds.shopperId,
-    merchantProvidedUserId: storedUserIds.merchantProvidedUserId
+    merchantProvidedUserId: event.user_id
   };
 
   return data;
