@@ -8,7 +8,6 @@ import {
   eventToFptiConverters,
   type EventToFptiInputMapping
 } from './shopping-event-conversions';
-import { setUser } from './user-configuration';
 import { shoppingAttributes } from './shopping-attributes';
 
 
@@ -56,5 +55,5 @@ export const setupTrackers = (config : Config) => {
   const viewProduct = eventPublisher(converters.viewProductToFpti);
   const send = initGenericEventPublisher(config).publishEvent;
   const set = shoppingAttributes(config).updateShoppingAttributes;
-  return { viewPage, viewProduct, send, setUser, set, autoGenerateProductPayload };
+  return { viewPage, viewProduct, send, set, autoGenerateProductPayload };
 };

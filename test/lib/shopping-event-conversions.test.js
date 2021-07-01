@@ -43,39 +43,71 @@ describe('test event converters to FPTI input', () => {
     getUserId.mockClear();
     getUserId.mockReturnValue({ userId: generatedUserId, merchantProvidedUserId });
   });
-  it('should map HOME_PAGE pageView event with optional fields to FPTI input', () => {
-    const fptiEvent = eventConverters.viewPageToFpti(pageView);
-    expect(fptiEvent.eventName).toEqual('pageView');
-    expect(fptiEvent.eventType).toEqual('pageView');
-    expect(fptiEvent.eventData).toEqual(JSON.stringify(pageView));
-    expect(fptiEvent.shopperId).toEqual(generatedUserId);
-    expect(fptiEvent.merchantProvidedUserId).toEqual(merchantProvidedUserId);
+
+  describe('viewPageToFpti', () => {
+    it('should map HOME_PAGE pageView event with optional fields to FPTI input', () => {
+      const fptiEvent = eventConverters.viewPageToFpti(pageView);
+      expect(fptiEvent.eventName).toEqual('pageView');
+      expect(fptiEvent.eventType).toEqual('pageView');
+      expect(fptiEvent.eventData).toEqual(JSON.stringify(pageView));
+      expect(fptiEvent.shopperId).toEqual(generatedUserId);
+    });
+
+    it('should map HOME_PAGE pageView event without optional fields to FPTI input', () => {
+      const fptiEvent = eventConverters.viewPageToFpti(pageViewSimple);
+      expect(fptiEvent.eventName).toEqual('pageView');
+      expect(fptiEvent.eventType).toEqual('pageView');
+      expect(fptiEvent.eventData).toEqual(JSON.stringify(pageViewSimple));
+      expect(fptiEvent.shopperId).toEqual(generatedUserId);
+    });
   });
 
-  it('should map HOME_PAGE pageView event without optional fields to FPTI input', () => {
-    const fptiEvent = eventConverters.viewPageToFpti(pageViewSimple);
-    expect(fptiEvent.eventName).toEqual('pageView');
-    expect(fptiEvent.eventType).toEqual('pageView');
-    expect(fptiEvent.eventData).toEqual(JSON.stringify(pageViewSimple));
-    expect(fptiEvent.shopperId).toEqual(generatedUserId);
-    expect(fptiEvent.merchantProvidedUserId).toEqual(merchantProvidedUserId);
+  describe('viewProductToFpti', () => {
+    it('should map productView event to FPTI input', () => {
+      const fptiEvent = eventConverters.viewProductToFpti(productView);
+      expect(fptiEvent.eventName).toEqual('productView');
+      expect(fptiEvent.eventType).toEqual('productView');
+      expect(fptiEvent.eventData).toEqual(JSON.stringify(productView));
+      expect(fptiEvent.shopperId).toEqual(generatedUserId);
+    });
   });
 
-  it('should map productView event to FPTI input', () => {
-    const fptiEvent = eventConverters.viewProductToFpti(productView);
-    expect(fptiEvent.eventName).toEqual('productView');
-    expect(fptiEvent.eventType).toEqual('productView');
-    expect(fptiEvent.eventData).toEqual(JSON.stringify(productView));
-    expect(fptiEvent.shopperId).toEqual(generatedUserId);
-    expect(fptiEvent.merchantProvidedUserId).toEqual(merchantProvidedUserId);
+  describe('eventToFpti', () => {
+    it('should map generic event to FPTI input', () => {
+      const fptiEvent = eventConverters.eventToFpti('productView', productView);
+      expect(fptiEvent.eventName).toEqual('productView');
+      expect(fptiEvent.eventType).toEqual('productView');
+      expect(fptiEvent.eventData).toEqual(JSON.stringify(productView));
+      expect(fptiEvent.shopperId).toEqual(generatedUserId);
+    });
+
+    it('should map merchantProvidedUserId to FPTI input when user_id is set', () => {
+      const userId = '123';
+      const payload = {
+        user_id: userId,
+        id: 'HOME'
+      };
+      const eventDataPayload = { ...payload };
+      delete eventDataPayload.user_id;
+      const fptiEvent = eventConverters.eventToFpti('page_view', payload);
+      expect(fptiEvent.eventName).toEqual('page_view');
+      expect(fptiEvent.eventType).toEqual('page_view');
+      expect(fptiEvent.eventData).toEqual(JSON.stringify(eventDataPayload));
+      expect(fptiEvent.shopperId).toEqual(generatedUserId);
+      expect(fptiEvent.merchantProvidedUserId).toEqual(userId);
+    });
+
+    it('should not map merchantProvidedUserId to FPTI input when user_id is not set', () => {
+      const payload = { id: 'HOME' };
+      const eventDataPayload = { ...payload };
+      delete eventDataPayload.user_id;
+      const fptiEvent = eventConverters.eventToFpti('page_view', payload);
+      expect(fptiEvent.eventName).toEqual('page_view');
+      expect(fptiEvent.eventType).toEqual('page_view');
+      expect(fptiEvent.eventData).toEqual(JSON.stringify(eventDataPayload));
+      expect(fptiEvent.shopperId).toEqual(generatedUserId);
+      expect(fptiEvent.merchantProvidedUserId).toEqual(undefined);
+    });
   });
 
-  it('should map generic event to FPTI input', () => {
-    const fptiEvent = eventConverters.eventToFpti('productView', productView);
-    expect(fptiEvent.eventName).toEqual('productView');
-    expect(fptiEvent.eventType).toEqual('productView');
-    expect(fptiEvent.eventData).toEqual(JSON.stringify(productView));
-    expect(fptiEvent.shopperId).toEqual(generatedUserId);
-    expect(fptiEvent.merchantProvidedUserId).toEqual(merchantProvidedUserId);
-  });
 });
