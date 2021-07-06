@@ -14,9 +14,12 @@ import { IframeManager } from './iframe-manager';
  *
  * Store the result from VPNS in the local storage.
  */
+
+function noop() {}
 export class IdentityManager extends IframeManager {
-  constructor(config) {
+  constructor(config, completionListener? = noop) {
     let iframeUrl;
+
 
     if (config.paramsToIdentityUrl) {
       iframeUrl = config.paramsToIdentityUrl();
@@ -25,9 +28,9 @@ export class IdentityManager extends IframeManager {
     }
 
     super({ src: iframeUrl });
-
     this.addMessageListener(this.storeIdentity);
     this.addMessageListener(this.logIframeError);
+    this.completionListener = completionListener;
   }
 
   onIframeLoad = () => {
@@ -38,7 +41,7 @@ export class IdentityManager extends IframeManager {
     if (e.data.type !== 'fetch_identity_error') {
       return;
     }
-
+    this.completionListener(null, e);
     logger.error('identity iframe error:', e.data.payload);
   }
 
@@ -50,6 +53,7 @@ export class IdentityManager extends IframeManager {
     const identity = e.data.payload;
 
     setIdentity(identity);
+    this.completionListener(identity, null);
   }
 
   fetchIdentity = () => {
@@ -58,6 +62,7 @@ export class IdentityManager extends IframeManager {
     /* Do not fetch if identity data
     has recently be cached. */
     if (cachedIdentity) {
+      this.completionListener(cachedIdentity, null);
       return;
     }
 

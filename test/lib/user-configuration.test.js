@@ -23,7 +23,17 @@ describe('sets up user details', () => {
   it('should set up user details for empty configuration', () => {
     const config = {};
     setupUserDetails(config);
-    expect(IdentityManager).toBeCalledWith(config);
+    expect(IdentityManager).toBeCalledWith(config, undefined);
+    expect(getOrCreateValidUserId).toHaveBeenCalledTimes(1);
+    expect(setMerchantProvidedUserId).toHaveBeenCalledTimes(0);
+    expect(config.user.id).toEqual(mockedUserId);
+  });
+
+  it('should create identityManager with callback', () => {
+    const noop = () => {};
+    const config = {};
+    setupUserDetails(config, noop);
+    expect(IdentityManager).toBeCalledWith(config, noop);
     expect(getOrCreateValidUserId).toHaveBeenCalledTimes(1);
     expect(setMerchantProvidedUserId).toHaveBeenCalledTimes(0);
     expect(config.user.id).toEqual(mockedUserId);
@@ -32,7 +42,7 @@ describe('sets up user details', () => {
   it('should set up user details for configuration with user details', () => {
     const config = { user: { id: 'test_user' } };
     setupUserDetails(config);
-    expect(IdentityManager).toBeCalledWith(config);
+    expect(IdentityManager).toBeCalledWith(config, undefined);
     expect(getOrCreateValidUserId).toHaveBeenCalledTimes(1);
     expect(config.user.id).toEqual(mockedUserId);
     expect(setMerchantProvidedUserId).toBeCalledWith('test_user');
