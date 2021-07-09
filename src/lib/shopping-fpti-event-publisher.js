@@ -1,7 +1,7 @@
 /* @flow */
 import type { FptiInput, Config, ContainerSummary } from '../types';
 
-import { trackFptiV2 } from './fpti';
+import { trackFpti } from './shopping-fpti';
 import { fetchContainerSettings } from './get-property-id';
 import { logger } from './logger';
 
@@ -52,7 +52,7 @@ export const ShoppingEventPublisher = (config : Config) => {
    */
   function publishFptiEvent(fptiEvent : FptiInput) {
     if (isAllowedToPublishEvent()) {
-      trackFptiV2(config, fptiEvent);
+      trackFpti(config, fptiEvent);
     } else {
       enqueueFptiEvent(fptiEvent);
     }
