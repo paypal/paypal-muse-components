@@ -1,9 +1,9 @@
 /* @flow */
-import type { FptiInput, Config, ContainerSummary } from '../types';
+import type { FptiInput, Config, ContainerSummary } from '../../types';
+import { fetchContainerSettings } from '../get-property-id';
+import { logger } from '../logger';
 
 import { trackFpti } from './shopping-fpti';
-import { fetchContainerSettings } from './get-property-id';
-import { logger } from './logger';
 
 /**
  * The FPTI event may only be published if merchant XO container is setup and fetched from tagmanager service.
@@ -52,7 +52,7 @@ export const ShoppingEventPublisher = (config : Config) => {
    */
   function publishFptiEvent(fptiEvent : FptiInput) {
     if (isAllowedToPublishEvent()) {
-      trackFpti(config, fptiEvent);
+      trackFpti(fptiEvent);
     } else {
       enqueueFptiEvent(fptiEvent);
     }

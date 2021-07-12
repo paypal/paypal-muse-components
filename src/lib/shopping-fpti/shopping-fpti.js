@@ -1,14 +1,24 @@
 /* @flow */
-import { getClientID, getMerchantID, getPartnerAttributionID } from '@paypal/sdk-client/src';
+import {
+  getClientID,
+  getMerchantID,
+  getPartnerAttributionID
+} from '@paypal/sdk-client/src';
 
-import type {
-  FptiInput,
-  FptiVariables,
-  Config
-} from '../types';
+import type { FptiVariables } from '../../types';
+import { sendBeacon } from '../fpti';
 
-import { sendBeacon, filterFalsyValues, resolveTrackingData } from './fpti';
+export const filterFalsyValues = (source : Object) : FptiVariables  => {
+  Object.keys(source).forEach(key => {
+    const val = source[key];
 
+    if (val === '' || val === undefined || val === null || Number.isNaN(val)) {
+      delete source[key];
+    }
+  });
+
+  return source;
+};
 
 export const resolveTrackingVariables = (data : any) : FptiVariables => ({
   // Device height
@@ -42,7 +52,7 @@ export const resolveTrackingVariables = (data : any) : FptiVariables => ({
   rosetta_language: data.rosettaLanguage,
 
   // Page domain & path
-  ru: data.location,
+  completeurl: data.location,
 
   // Identification confidence score
   unsc: data.confidenceScore,
@@ -57,19 +67,16 @@ export const resolveTrackingVariables = (data : any) : FptiVariables => ({
   item: data.propertyId,
 
   // Merchant encrypted account number
-  mrid: getMerchantID()[0],
+  mrid: data.mrid || getMerchantID()[0],
 
   // ClientID
   client_id: getClientID(),
-    
+
   // Partner AttributionId
   bn_code: getPartnerAttributionID(),
 
   // Event Name
   event_name: data.eventName,
-
-  // Event Type
-  event_type: data.eventType,
 
   // Event Data
   sinfo: JSON.stringify(data.eventData),
@@ -81,7 +88,7 @@ export const resolveTrackingVariables = (data : any) : FptiVariables => ({
   pgrp: data.page,
 
   // Application name
-  comp: 'ppshoppingsdk_v2',
+  comp: 'tagmanagernodeweb',
 
   // Legacy impression event
   // TODO: currently hard-coded to 'im'. When additional events (add-to-cart, purchase, etc)
@@ -100,13 +107,21 @@ export const resolveTrackingVariables = (data : any) : FptiVariables => ({
 
   merchant_cart_id: data.cartId,
 
-  product: 'ppshopping_v2'
+  product: 'ppshopping_v2',
+
+  es: data.es,
+
+  fltp: data.fltp,
+
+  offer_id: data.offer_id,
+
+  sub_component: data.sub_component,
+
+  sub_flow: data.sub_flow
 });
 
-
-export const trackFpti = (config : Config, data : FptiInput) => {
+export const trackFpti = (data : any) => {
   const fptiServer = 'https://t.paypal.com/ts';
-  const trackingVariables = resolveTrackingVariables(resolveTrackingData(config, data, 'ppshopping_v2', 'ppshoppingsdk_v2'));
-
-  sendBeacon(fptiServer, filterFalsyValues(trackingVariables));
+  const trackingVariables = resolveTrackingVariables(data);
+  sendBeacon(fptiServer,  filterFalsyValues(trackingVariables));
 };
