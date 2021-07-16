@@ -161,6 +161,7 @@ export const Tracker = (config? : Config = {}) => {
   try {
     new IdentityManager(config);
     getOrCreateValidCartId();
+    // $FlowFixMe
     userId = getOrCreateValidUserId().userId;
 
     if (config && config.user && config.user.merchantProvidedUserId) {
@@ -169,12 +170,11 @@ export const Tracker = (config? : Config = {}) => {
   } catch (err) {
     logger.error('cart_or_shopper_id', err);
     createNewCartId();
+    // $FlowFixMe
     userId = setGeneratedUserId().userId;
   }
 
-  // $FlowFixMe
   config = { ...defaultTrackerConfig, ...config };
-  config.user = config.user || {};
   config.user.id = userId;
   config.currencyCode = config.currencyCode || getCurrency();
 

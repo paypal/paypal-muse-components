@@ -7,7 +7,6 @@ import {
   setMerchantProvidedUserId,
   createNewCartId
 } from '../../src/lib/local-storage';
-import { IdentityManager } from '../../src/lib/iframe-tools/identity-manager';
 
 const mockedUserId = 'ee964537-1c7b-403e-b978-ea29babc5aed';
 jest.mock('../../src/lib/local-storage');
@@ -54,8 +53,8 @@ describe('sets up user details', () => {
       throw new Error('test error');
     });
     setGeneratedUserId.mockReturnValue({ userId: mockedUserId });
-    const config = {user: {}};
-    setupUserDetails(config)
+    const config = { user: {} };
+    setupUserDetails(config);
 
     expect(createNewCartId).toHaveBeenCalledTimes(1);
     expect(setGeneratedUserId).toHaveBeenCalledTimes(1);
