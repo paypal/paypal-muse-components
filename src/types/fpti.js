@@ -80,11 +80,15 @@ export type FptiVariables = {|
   // Page domain & path
   ru : ?string,
   // Identification confidence score
-  confidence_score : ?number,
+  confidence_score? : number,
+  // Identification confidence score
+  unsc? : number,
   // Identification type returned by VPNS
   identifier_used : ?string,
   // Unverified encrypted customer account number
-  unverified_cust_id : ?string,
+  unverified_cust_id? : string,
+  // encrypted customer account number
+  cust? : string,
   // Analytics identifier associated with the merchant site. XO container id.
   item : ?string,
   // Merchant encrypted account number
