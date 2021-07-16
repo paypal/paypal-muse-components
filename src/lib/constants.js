@@ -1,4 +1,19 @@
 /* @flow */
+export const defaultTrackerConfig = {
+  user: {
+    id: '',
+    email: '',
+    name: '',
+    country: ''
+  }
+};
+
+export const IDENTITY_MESSAGES = {
+  FETCH_ERROR: 'fetch_identity_error',
+  USER_INFO_REQUEST: 'fetch_identity_request',
+  USER_COUNTRY_MESSAGE: 'fetch_identity_country'
+};
+
 export default {
   'oneHour': 1000 * 60 * 60,
   'sevenDays': 1000 * 60 * 60 * 24 * 7,
@@ -12,11 +27,5 @@ export default {
     'paypalCrContainer': 'paypal-cr-container',
     'paypalSDKIdentity': 'paypal-sdk-identity'
   },
-  'defaultTrackerConfig': {
-    'user': {
-      'id': null,
-      'email': null,
-      'name': null
-    }
-  }
+  defaultTrackerConfig
 };
