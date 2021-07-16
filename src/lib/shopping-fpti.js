@@ -4,58 +4,13 @@ import { getClientID, getMerchantID, getPartnerAttributionID } from '@paypal/sdk
 import type {
   FptiInput,
   FptiVariables,
-  LegacyVariables,
   Config
 } from '../types';
 
-import { getDeviceInfo } from './get-device-info';
-import { getIdentity } from './local-storage';
+import { sendBeacon, filterFalsyValues, resolveTrackingData } from './fpti';
 
 
-export const sendBeacon = (src : string, data : FptiVariables | LegacyVariables) => {
-  let query = Object.keys(data).map(key => {
-    // $FlowFixMe
-    return `${ encodeURIComponent(key) }=${ encodeURIComponent(data[key]) }`;
-  });
-
-  query = query.join('&');
-
-  const beaconImage = document.createElement('img');
-  beaconImage.src = `${ src }?${ query }`;
-};
-
-// removes empty strings, `undefined`, `null`, and `NaN` from fpti event
-export const filterFalsyValues = (source : Object) : FptiVariables | LegacyVariables => {
-  Object.keys(source).forEach(key => {
-    const val = source[key];
-
-    if (val === '' || val === undefined || val === null || Number.isNaN(val)) {
-      delete source[key];
-    }
-  });
-
-  return source;
-};
-
-export const resolveTrackingData = (config : Config, data : FptiInput, product? : string = 'ppshopping', comp? : string = 'ppshoppingsdk') : any => {
-  const deviceInfo = getDeviceInfo();
-  const identity = getIdentity() || {};
-
-  return {
-    product,
-    e: 'im',
-    comp,
-    page: `${ product }:${ data.eventName }`,
-    t: new Date().getTime(),
-    g: new Date().getTimezoneOffset(),
-    ...deviceInfo,
-    ...config,
-    ...data,
-    ...identity
-  };
-};
-
-const resolveTrackingVariables = (data : any) : FptiVariables => ({
+export const resolveTrackingVariables = (data : any) : FptiVariables => ({
   // Device height
   dh: data.deviceHeight,
 
@@ -90,13 +45,13 @@ const resolveTrackingVariables = (data : any) : FptiVariables => ({
   ru: data.location,
 
   // Identification confidence score
-  confidence_score: data.confidenceScore,
+  unsc: data.confidenceScore,
 
   // Identification type returned by VPNS
   identifier_used: data.identificationType,
 
   // Unverified encrypted customer account number
-  unverified_cust_id: data.encryptedAccountNumber,
+  cust: data.encryptedAccountNumber,
 
   // Analytics identifier associated with the merchant site. XO container id.
   item: data.propertyId,
@@ -126,7 +81,7 @@ const resolveTrackingVariables = (data : any) : FptiVariables => ({
   pgrp: data.page,
 
   // Application name
-  comp: data.comp,
+  comp: 'ppshoppingsdk_v2',
 
   // Legacy impression event
   // TODO: currently hard-coded to 'im'. When additional events (add-to-cart, purchase, etc)
@@ -145,12 +100,13 @@ const resolveTrackingVariables = (data : any) : FptiVariables => ({
 
   merchant_cart_id: data.cartId,
 
-  product: data.product
+  product: 'ppshopping_v2'
 });
+
 
 export const trackFpti = (config : Config, data : FptiInput) => {
   const fptiServer = 'https://t.paypal.com/ts';
-  const trackingVariables = resolveTrackingVariables(resolveTrackingData(config, data));
+  const trackingVariables = resolveTrackingVariables(resolveTrackingData(config, data, 'ppshopping_v2', 'ppshoppingsdk_v2'));
 
   sendBeacon(fptiServer, filterFalsyValues(trackingVariables));
 };
