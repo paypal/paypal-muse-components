@@ -1,5 +1,6 @@
 [ignore]
 .*/node_modules/babel-plugin-flow-runtime
+.*/node_modules/@paypal/sdk-client
 .*/node_modules/npm
 .*/node_modules/jsonlint
 .*/dist/module
