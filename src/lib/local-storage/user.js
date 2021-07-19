@@ -2,31 +2,36 @@
 import constants from '../constants';
 import generate from '../generate-id';
 import { logger } from '../logger';
+import type { UserStorage } from '../../types';
 
 const { storage } = constants;
 
-export const getUserStorage = () => {
-  let userStorage = window.localStorage.getItem(storage.paypalCrUser) || '{}';
+export const getUserStorage = () : UserStorage => {
+  const userStorage : string = window.localStorage.getItem(storage.paypalCrUser);
+  let userData = {};
 
   try {
-    userStorage = JSON.parse(userStorage);
+    if (userStorage) {
+      userData = JSON.parse(userStorage);
+    }
   } catch (err) {
     logger.error('getUserStorage', err);
-    userStorage = {};
   }
 
-  return userStorage;
+  return userData;
 };
 
-export const setUserStorage = (userStorage : Object) => {
-  window.localStorage.setItem(storage.paypalCrUser, JSON.stringify(userStorage));
+export const setUserStorage = (userData : UserStorage) => {
+  window.localStorage.setItem(storage.paypalCrUser, JSON.stringify(userData));
 };
 
 // Generates a random user ID.
 // Further cache the generated userId in LocalStorage.
 export const setGeneratedUserId = () => {
-  const userStorage = getUserStorage();
+  // TODO: userStorage should be typeof UserData
+  const userStorage : UserStorage = getUserStorage();
 
+  // $FlowFixMe
   userStorage.userId = generate.generateId();
 
   setUserStorage(userStorage);
@@ -38,7 +43,7 @@ export const setGeneratedUserId = () => {
 // the merchantProvidedUserId field.
 export const setMerchantProvidedUserId = (id : string) => {
   const userStorage = getUserStorage();
-
+  // $FlowFixMe
   userStorage.merchantProvidedUserId = id;
 
   setUserStorage(userStorage);

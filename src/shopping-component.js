@@ -1,12 +1,9 @@
 /* @flow */
 import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
-import constants from './lib/constants';
-import { setupUserDetails } from './lib/user-configuration';
+import { defaultTrackerConfig } from './lib/constants';
 import { shoppingAnalyticsSetup } from './lib/shopping-analytics';
 import type { Config } from './types';
-
-const { defaultTrackerConfig } = constants;
 
 /**
  *  Parse merchant provided config and cache the user details passed
@@ -17,12 +14,9 @@ const { defaultTrackerConfig } = constants;
  * @returns {{viewPage: function(Object): void}}
  * @constructor
  */
-// $FlowFixMe
-export const ShoppingAnalytics = (config? : Config = {}) => {
-  // $FlowFixMe
+export const ShoppingAnalytics = (config? : Config) => {
   config = { ...defaultTrackerConfig, ...config };
   const shoppingAnalytics = shoppingAnalyticsSetup(config);
-  setupUserDetails(config, shoppingAnalytics.onUserIdentityFetch);
 
   window.__pp__trackers__ = window.__pp__trackers__ || [];
   window.__pp__trackers__.push(shoppingAnalytics);
