@@ -92,7 +92,6 @@ export class IdentityManager extends IframeManager {
       return;
     }
 
-    // TODO: check for cached country
     this.fetchCountry().then((country) => {
       this.fetchUserInfo(country);
     });

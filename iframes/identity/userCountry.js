@@ -6,8 +6,6 @@ export const fetchUserCountry = () => {
     .then(res => {
       // we need this function to workaround a chrome issue
       // https://stackoverflow.com/questions/45816743/how-to-solve-this-caution-request-is-not-finished-yet-in-chrome
-      // First brought up by Bed Bath and Beyond asserting this breaks their SEO
-      // https://engineering.paypalcorp.com/jira/browse/DTSHOPCASH-1316
       const bodyNoOp = () => {
       };
       res.text().then(bodyNoOp);
