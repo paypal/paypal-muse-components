@@ -3,11 +3,11 @@ import type { FptiInput, Config } from '../types';
 import type { EventType } from '../types/shopping-events';
 
 import autoGenerateProductPayload from './utils';
-import { ShoppingEventPublisher } from './shopping-fpti-event-publisher';
+import { ShoppingEventPublisher } from './shopping-fpti/shopping-fpti-event-publisher';
 import {
   eventToFptiConverters,
   type EventToFptiInputMapping
-} from './shopping-event-conversions';
+} from './shopping-fpti/shopping-event-conversions';
 import { shoppingAttributes } from './shopping-attributes';
 
 
@@ -26,8 +26,7 @@ function initGenericEventPublisher(config : Config) : Object {
   const convertEvent = eventToFptiConverters(config).eventToFpti;
   return {
     publishEvent: (event : EventType, payload : Object) => {
-      const extendedPayload = { ...payload, ...config.shoppingAttributes };
-      const fptiInput : FptiInput = convertEvent(event, extendedPayload);
+      const fptiInput : FptiInput = convertEvent(event, payload);
       fptiEventPubisher.publishFptiEvent(fptiInput);
     }
   };
@@ -52,8 +51,7 @@ export const setupTrackers = (config : Config) => {
   const eventPublisher = initEventPublisher(config);
   const converters = eventToFptiConverters(config);
   const viewPage = eventPublisher(converters.viewPageToFpti);
-  const viewProduct = eventPublisher(converters.viewProductToFpti);
   const send = initGenericEventPublisher(config).publishEvent;
   const set = shoppingAttributes(config).updateShoppingAttributes;
-  return { viewPage, viewProduct, send, set, autoGenerateProductPayload };
+  return { viewPage, send, set, autoGenerateProductPayload };
 };

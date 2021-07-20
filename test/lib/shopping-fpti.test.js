@@ -1,10 +1,9 @@
 /* globals jest expect */
 /* @flow */
 import {
-  resolveTrackingVariables,
-  trackFpti
-} from '../../src/lib/shopping-fpti';
-import { resolveTrackingData, sendBeacon, filterFalsyValues } from '../../src/lib/fpti';
+  resolveTrackingVariables, trackFpti
+} from '../../src/lib/shopping-fpti/shopping-fpti';
+import { sendBeacon } from '../../src/lib/fpti';
 
 jest.mock('../../src/lib/fpti');
 
@@ -31,7 +30,10 @@ const fptiInput = {
   t: 1625011681839,
   g: 420,
   merchantProvidedUserId: '78f83452-550b-447d-8043-44e836608810',
-  shopperId: '8b44b326-9885-4e0c-bf0c-36c64d6a8521'
+  shopperId: '8b44b326-9885-4e0c-bf0c-36c64d6a8521',
+  sub_component: 'smart_incentives',
+  sub_flow: 'store-cash',
+  offer_id: 'KASTDGDHFTQF8'
 };
 
 describe('should map tracking data', () => {
@@ -39,7 +41,7 @@ describe('should map tracking data', () => {
     const trackingData = resolveTrackingVariables(fptiInput);
     expect(trackingData.product).toEqual('ppshopping_v2');
     expect(trackingData.e).toEqual('im');
-    expect(trackingData.comp).toEqual('ppshoppingsdk_v2');
+    expect(trackingData.comp).toEqual('tagmanagernodeweb');
     expect(trackingData.page).toEqual('ppshopping::page_view');
 
     expect(trackingData.dh).toEqual(fptiInput.deviceHeight);
@@ -52,39 +54,32 @@ describe('should map tracking data', () => {
     expect(trackingData.dvis).toEqual(fptiInput.deviceType);
     expect(trackingData.btyp).toEqual(fptiInput.browserType);
     expect(trackingData.rosetta_language).toEqual(fptiInput.rosettaLanguage);
-    expect(trackingData.ru).toEqual(fptiInput.location);
+    expect(trackingData.completeurl).toEqual(fptiInput.location);
     expect(trackingData.unsc).toEqual(fptiInput.confidenceScore);
     expect(trackingData.identifier_used).toEqual(fptiInput.identificationType);
     expect(trackingData.cust).toEqual(fptiInput.encryptedAccountNumber);
     expect(trackingData.event_name).toEqual(fptiInput.eventName);
-    expect(trackingData.event_type).toEqual(fptiInput.eventType);
     expect(trackingData.sinfo).toEqual(JSON.stringify(fptiInput.eventData));
     expect(trackingData.page).toEqual(fptiInput.page);
     expect(trackingData.pgrp).toEqual(fptiInput.page);
     expect(trackingData.external_id).toEqual(fptiInput.merchantProvidedUserId);
     expect(trackingData.shopper_id).toEqual(fptiInput.shopperId);
     expect(trackingData.dh).toEqual(fptiInput.deviceHeight);
+    expect(trackingData.sub_component).toEqual(fptiInput.sub_component);
+    expect(trackingData.sub_flow).toEqual(fptiInput.sub_flow);
+    expect(trackingData.offer_id).toEqual(fptiInput.offer_id);
   });
 });
 
 describe('trackFpti should send FPTI event', () => {
-  const config = { container: 123 };
-  const data = { em: 'im' };
-
   beforeEach(() => {
-    resolveTrackingData.mockClear();
     sendBeacon.mockClear();
   });
   it('trackFpti should send FPTI event', () => {
     const fptiPayload = resolveTrackingVariables(fptiInput);
 
-    resolveTrackingData.mockReturnValue(fptiInput);
-    filterFalsyValues.mockReturnValue(fptiPayload);
-    
-    trackFpti(config, data);
+    trackFpti(fptiInput);
 
-    expect(resolveTrackingData).toBeCalledWith(config, data, 'ppshopping_v2', 'ppshoppingsdk_v2');
-    expect(filterFalsyValues).toBeCalledWith(fptiPayload);
     expect(sendBeacon).toBeCalledWith('https://t.paypal.com/ts', fptiPayload);
   });
 });

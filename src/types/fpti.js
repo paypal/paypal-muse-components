@@ -53,7 +53,15 @@ export type FptiInput = {|
   // SDK generated user ID
   shopperId? : string,
   // Merchant provided user ID
-  merchantProvidedUserId? : string
+  merchantProvidedUserId? : string,
+  
+  es? : string,
+
+  fltp? : string,
+
+  offer_id? : string,
+
+  sub_flow? : string
 |};
 
 export type FptiVariables = {|
@@ -78,7 +86,7 @@ export type FptiVariables = {|
   // Rosetta language
   rosetta_language : ?string,
   // Page domain & path
-  ru : ?string,
+  ru? : string,
   // Identification confidence score
   confidence_score? : number,
   // Identification confidence score
@@ -100,7 +108,7 @@ export type FptiVariables = {|
   // Event Name
   event_name : ?string,
   // Event Type
-  event_type : ?string,
+  event_type? : string,
   // Event Data
   sinfo : ?string,
   // Legacy value for filtering events in Herald
@@ -123,7 +131,19 @@ export type FptiVariables = {|
   external_id : string,
 
   // Constant: ppshopping (switchboard filter)
-  product : string
+  product : string,
+
+  es? : string,
+
+  fltp? : string,
+
+  offer_id? : string,
+
+  completeurl? : string,
+
+  sub_component? : string,
+
+  sub_flow? : string
 |};
 
 /* Workaround for the sake of supporting legacy analytics implementation.

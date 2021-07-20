@@ -45,7 +45,6 @@ export const shoppingAnalyticsSetup = (config : Config) => {
   return {
     onUserIdentityFetch,
     viewPage: shoppingTracker.viewPage,
-    viewProduct: shoppingTracker.viewProduct,
     send: sendOrEnqueue,
     set: shoppingTracker.set,
     autoGenerateProductPayload: shoppingTracker.autoGenerateProductPayload

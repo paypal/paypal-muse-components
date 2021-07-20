@@ -3,9 +3,9 @@
 
 // import { v4 as uuidv4 } from 'uuid';
 
-import { trackFpti } from '../../src/lib/shopping-fpti';
-import { ShoppingEventPublisher } from '../../src/lib/shopping-fpti-event-publisher';
+import { ShoppingEventPublisher } from '../../src/lib/shopping-fpti/shopping-fpti-event-publisher';
 import { fetchContainerSettings } from '../../src/lib/get-property-id';
+import { trackFpti } from '../../src/lib/shopping-fpti/shopping-fpti';
 
 const fptiInput = {
   eventName: 'pageView',
@@ -21,7 +21,7 @@ const containerSummary = {
   jlAccessToken: 'true'
 };
 
-jest.mock('../../src/lib/shopping-fpti');
+jest.mock('../../src/lib/shopping-fpti/shopping-fpti');
 jest.mock('../../src/lib/get-property-id');
 
 describe('test ShoppingEventPublisher publish fpti events', () => {
@@ -36,7 +36,7 @@ describe('test ShoppingEventPublisher publish fpti events', () => {
     const publisher = ShoppingEventPublisher(config);
     publisher.publishFptiEvent(fptiInput);
     setTimeout(
-      () => expect(trackFpti).toBeCalledWith(config, fptiInput),
+      () => expect(trackFpti).toBeCalledWith(fptiInput),
       1000
     );
   });
@@ -46,56 +46,7 @@ describe('test ShoppingEventPublisher publish fpti events', () => {
     fetchContainerSettings.mockReturnValue(Promise.resolve(null));
     const publisher = ShoppingEventPublisher(config);
     publisher.publishFptiEvent(fptiInput);
-    expect(trackFpti).toBeCalledWith(config, fptiInput);
+    expect(trackFpti).toBeCalledWith(fptiInput);
   });
 
-  it('should NOT publish FPTI event failed to fetch container summary', () => {
-    const config = {};
-    fetchContainerSettings.mockReturnValue(Promise.reject(new Error('test error')));
-    const publisher = ShoppingEventPublisher(config);
-    publisher.publishFptiEvent(fptiInput);
-    setTimeout(() => expect(trackFpti).toHaveBeenCalledTimes(0), 1000);
-  });
-
-  it('should NOT publish FPTI event when container summary is NOT found', () => {
-    const config = {};
-    fetchContainerSettings.mockReturnValue(Promise.resolve(null));
-    const publisher = ShoppingEventPublisher(config);
-    publisher.publishFptiEvent(fptiInput);
-    setTimeout(() => expect(trackFpti).toHaveBeenCalledTimes(0), 1000);
-  });
-
-  it('should NOT publish FPTI event when container summary is empty', () => {
-    const config = {};
-    fetchContainerSettings.mockReturnValue(Promise.resolve({}));
-    const publisher = ShoppingEventPublisher(config);
-    publisher.publishFptiEvent(fptiInput);
-    setTimeout(() => expect(trackFpti).toHaveBeenCalledTimes(0), 1000);
-  });
-
-  // temporarily disable container check, until look up by client is is added.
-  
-  // it('should enqueue message if container is missing', () => {
-  //   const config = {};
-  //   fetchContainerSettings.mockReturnValue(Promise.resolve({}));
-  //   const publisher = ShoppingEventPublisher(config);
-  //   publisher.publishFptiEvent(fptiInput);
-  //   const queue = publisher.getFptiEventsQueue();
-  //   expect(queue).toEqual([ fptiInput ]);
-  //   setTimeout(() => expect(trackFptiV2).toHaveBeenCalledTimes(0), 1000);
-  // });
-
-  // it('should have limit of 100 events to enqueue', () => {
-  //   const config = {};
-  //   fetchContainerSettings.mockReturnValue(Promise.resolve({}));
-  //   const publisher = ShoppingEventPublisher(config);
-    
-  //   for (let i = 0; i < 150; i++) {
-  //     const fptiEvent = generateRandomFPTIInput();
-  //     publisher.publishFptiEvent(fptiEvent);
-  //   }
-    
-  //   const queue = publisher.getFptiEventsQueue();
-  //   expect(queue.length).toEqual(100);
-  // });
 });
