@@ -1,6 +1,6 @@
 /* @flow */
 /* global afterAll expect jest */
-import { fetchContainerSettings } from '../src/lib/get-property-id';
+import { fetchContainerSettings, getContainerRequestUrl } from '../src/lib/get-property-id';
 import { getPropertyId, getValidContainer, setContainer } from '../src/lib/local-storage';
 
 import { mockContainer1 } from './mocks';
@@ -13,7 +13,10 @@ global.fetch = jest.fn().mockImplementation(async () => {
 });
 
 jest.mock('@paypal/sdk-client/src', () => {
-  return { getMerchantID: jest.fn().mockImplementation(() => [ mockContainer1.owner_id ]) };
+  return {
+    getMerchantID: jest.fn().mockImplementation(() => [ mockContainer1.owner_id ]),
+    getSDKQueryParam: jest.fn()
+  };
 });
 
 describe('get-property-id', () => {
@@ -98,7 +101,7 @@ describe('get-property-id', () => {
       expect(result).toEqual(expected);
       done();
     });
-    
+
     it('will return a container summary from localstorage if it exists and is less than one hour old', async (done) => {
       const expected = {
         id: 'a-totally-new-id',
@@ -113,6 +116,44 @@ describe('get-property-id', () => {
 
       expect(result).toEqual(expected);
       done();
+    });
+  });
+
+  describe.only('getContainerRequestUrl', () => {
+    it('should return mrid based URL if mrid was defined', () => {
+      const params = {
+        merchantId: 'mrid',
+        clientId: null,
+        paramsToPropertyIdUrl: null
+      };
+
+      const output = getContainerRequestUrl(params);
+
+      expect(output).toBe('https://www.paypal.com/tagmanager/containers/xo?mrid=mrid&url=http%3A%2F%2Flocalhost&jlAccessToken=true');
+    });
+
+    it('should return client_id based URL if client_id was defined', () => {
+      const params = {
+        merchantId: '',
+        clientId: 'client_id',
+        paramsToPropertyIdUrl: null
+      };
+
+      const output = getContainerRequestUrl(params);
+
+      expect(output).toBe('https://www.paypal.com/tagmanager/containers/xo?client_id=client_id&url=http%3A%2F%2Flocalhost&jlAccessToken=true');
+    });
+
+    it('should use paramsToPropertyIdUrl if it isn`t null', () => {
+      const params = {
+        merchantId: '',
+        clientId: 'client_id',
+        paramsToPropertyIdUrl: () => 'fictionalurl.com/'
+      };
+
+      const output = getContainerRequestUrl(params);
+
+      expect(output).toBe('fictionalurl.com/?client_id=client_id&url=http%3A%2F%2Flocalhost&jlAccessToken=true');
     });
   });
 });

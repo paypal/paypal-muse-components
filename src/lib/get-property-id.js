@@ -40,7 +40,7 @@ const emptyContainer : Container = {
   jlAccessToken: ''
 };
 
-const getContainerRequestUrl = ({
+export const getContainerRequestUrl = ({
   merchantId,
   clientId,
   paramsToPropertyIdUrl
