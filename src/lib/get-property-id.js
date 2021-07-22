@@ -6,6 +6,7 @@ import type {
   Container,
   ContainerSummary
 } from '../types';
+import type { ParamsToPropertyIdUrl } from '../types/util';
 
 import { getPropertyId, setPropertyId, setContainer, getValidContainer } from './local-storage';
 import { logger } from './logger';
@@ -40,11 +41,7 @@ const emptyContainer : Container = {
   jlAccessToken: ''
 };
 
-export const getContainerRequestUrl = ({
-  merchantId,
-  clientId,
-  paramsToPropertyIdUrl
-}) => {
+export const getContainerRequestUrl = (merchantId : string, clientId : string, paramsToPropertyIdUrl? : ParamsToPropertyIdUrl) : string => {
   const merchantWebsite = `${ window.location.protocol }//${ window.location.host }`;
   const baseUrl = paramsToPropertyIdUrl ? paramsToPropertyIdUrl() : 'https://www.paypal.com/tagmanager/containers/xo';
 
@@ -60,7 +57,7 @@ const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> =>
   const clientId : string = getSDKQueryParam<string>('client-id');
 
   if (merchantId || clientId) {
-    return fetch(getContainerRequestUrl({ clientId, merchantId, paramsToPropertyIdUrl }))
+    return fetch(getContainerRequestUrl(merchantId, clientId, paramsToPropertyIdUrl))
       .then(res => {
         if (res.status !== 200) {
           throw new Error(`Failed to fetch propertyId: status ${ res.status }`);

@@ -119,39 +119,21 @@ describe('get-property-id', () => {
     });
   });
 
-  describe.only('getContainerRequestUrl', () => {
+  describe('getContainerRequestUrl', () => {
     it('should return mrid based URL if mrid was defined', () => {
-      const params = {
-        merchantId: 'mrid',
-        clientId: null,
-        paramsToPropertyIdUrl: null
-      };
-
-      const output = getContainerRequestUrl(params);
+      const output = getContainerRequestUrl('mrid', '', null);
 
       expect(output).toBe('https://www.paypal.com/tagmanager/containers/xo?mrid=mrid&url=http%3A%2F%2Flocalhost&jlAccessToken=true');
     });
 
     it('should return client_id based URL if client_id was defined', () => {
-      const params = {
-        merchantId: '',
-        clientId: 'client_id',
-        paramsToPropertyIdUrl: null
-      };
-
-      const output = getContainerRequestUrl(params);
+      const output = getContainerRequestUrl('', 'client_id', null);
 
       expect(output).toBe('https://www.paypal.com/tagmanager/containers/xo?client_id=client_id&url=http%3A%2F%2Flocalhost&jlAccessToken=true');
     });
 
     it('should use paramsToPropertyIdUrl if it isn`t null', () => {
-      const params = {
-        merchantId: '',
-        clientId: 'client_id',
-        paramsToPropertyIdUrl: () => 'fictionalurl.com/'
-      };
-
-      const output = getContainerRequestUrl(params);
+      const output = getContainerRequestUrl('', 'client_id', () => 'fictionalurl.com/');
 
       expect(output).toBe('fictionalurl.com/?client_id=client_id&url=http%3A%2F%2Flocalhost&jlAccessToken=true');
     });
