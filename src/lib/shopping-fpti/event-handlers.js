@@ -2,9 +2,14 @@
 import type { Config } from '../../types';
 import type { EventType } from '../../types/shopping-events';
 
+function findConfigurationAttribute(config : Config, payload : Object = {}, attribName : string) : ?string {
+  const shopperConfig = config.shoppingAttributes || {};
+  return shopperConfig[attribName] || payload[attribName];
+}
+
 export function eventSinfoBuilderInit(config : Config) : Object {
   function filterAttributesForSinfoPayload(event : Object) : Object {
-    const excluded_attributes = [ 'user_id' ];
+    const excluded_attributes = [ 'user_id', 'disable_storecash' ];
     const filteredAttributes = Object.keys(event)
       .filter((key) => !excluded_attributes.includes(key))
       .reduce((obj, key) => {
@@ -32,10 +37,11 @@ export function eventSinfoBuilderInit(config : Config) : Object {
 }
 
 export function customEventMappingInit(config : Config) : Object {
-  function enrichPageViewEvent() : Object {
+  function enrichPageViewEvent(payload : Object) : Object {
+    const disableStoreCash = findConfigurationAttribute(config, payload, 'disable_storecash') || 'false';
     const containerSummary = config.containerSummary || {};
     const offerId = containerSummary.programId;
-    if (offerId) {
+    if ((disableStoreCash === 'false') && offerId) {
       return {
         fltp: 'analytics',
         offer_id: offerId,
@@ -84,10 +90,9 @@ export function eventToFptiMapperInit(config : Config) : Object {
     eventType : EventType,
     payload : Object = {}
   ) : Object {
-    const shopperConfig = config.shoppingAttributes || {};
-    const user_id = shopperConfig.user_id || payload.user_id;
+    const user_id = findConfigurationAttribute(config, payload, 'user_id');
     const eventSpecificAttributes = customEventMapper.getEventSpecificFptiAttributes(
-      eventType
+      eventType, payload
     );
     return {
       eventName: eventType,

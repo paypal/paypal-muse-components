@@ -7,7 +7,7 @@ import {
   setMerchantProvidedUserId,
   createNewCartId
 } from '../../src/lib/local-storage';
-import {IdentityManager} from "../../src/lib/iframe-tools/identity-manager";
+import { IdentityManager } from '../../src/lib/iframe-tools/identity-manager';
 
 const mockedUserId = 'ee964537-1c7b-403e-b978-ea29babc5aed';
 jest.mock('../../src/lib/local-storage');
