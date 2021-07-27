@@ -2,7 +2,6 @@
 import { setIdentity, getIdentity } from '../local-storage';
 import { getDeviceInfo } from '../get-device-info';
 import { logger } from '../logger';
-import { IDENTITY_MESSAGES } from '../constants';
 
 import { IframeManager } from './iframe-manager';
 
@@ -18,8 +17,9 @@ import { IframeManager } from './iframe-manager';
 
 function noop() {}
 export class IdentityManager extends IframeManager {
-  constructor(config, completionListener = noop) {
+  constructor(config, completionListener? = noop) {
     let iframeUrl;
+
 
     if (config.paramsToIdentityUrl) {
       iframeUrl = config.paramsToIdentityUrl();
@@ -28,7 +28,8 @@ export class IdentityManager extends IframeManager {
     }
 
     super({ src: iframeUrl });
-
+    this.addMessageListener(this.storeIdentity);
+    this.addMessageListener(this.logIframeError);
     this.completionListener = completionListener;
   }
 
@@ -44,56 +45,36 @@ export class IdentityManager extends IframeManager {
     logger.error('identity iframe error:', e.data.payload);
   }
 
-  fetchCountry = () => {
-    return new Promise((resolve) => {
-      this.addMessageListener(({ data: { type, payload } }) => {
-        if (type === IDENTITY_MESSAGES.USER_COUNTRY_MESSAGE) {
-          resolve(payload);
-        }
-      });
+  storeIdentity = (e) => {
+    if (e.data.type !== 'fetch_identity_response') {
+      return;
+    }
 
-      this.iframe.contentWindow.postMessage({
-        type: IDENTITY_MESSAGES.USER_COUNTRY_MESSAGE
-      }, this.url.origin);
-    });
-  }
+    const identity = e.data.payload;
 
-  fetchUserInfo = (country) => {
-    /* Do not fetch if identity data
-    has recently be cached. */
-    this.addMessageListener(({ data: { type, payload } }) => {
-      if (type !== IDENTITY_MESSAGES.USER_INFO_REQUEST) {
-        return;
-      }
-
-      const identity = { ...payload, country };
-
-      setIdentity(identity);
-      this.completionListener(identity, null);
-    });
-
-    const deviceInfo = getDeviceInfo();
-
-    this.iframe.contentWindow.postMessage({
-      type: IDENTITY_MESSAGES.USER_INFO_REQUEST,
-      payload: {
-        deviceInfo,
-        country
-      }
-    }, this.url.origin);
+    setIdentity(identity);
+    this.completionListener(identity, null);
   }
 
   fetchIdentity = () => {
     const cachedIdentity = getIdentity();
 
+    /* Do not fetch if identity data
+    has recently be cached. */
     if (cachedIdentity) {
       this.completionListener(cachedIdentity, null);
-
       return;
     }
 
-    this.fetchCountry().then((country) => {
-      this.fetchUserInfo(country);
-    });
+    const deviceInfo = getDeviceInfo();
+    const country = 'US';
+
+    this.iframe.contentWindow.postMessage({
+      type: 'fetch_identity_request',
+      payload: {
+        deviceInfo,
+        country
+      }
+    }, this.url.origin);
   }
 }
