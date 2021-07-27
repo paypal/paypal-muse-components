@@ -21,33 +21,28 @@ describe('sets up user details', () => {
   });
 
   it('should set up user details for empty configuration', () => {
-    const config = {
-      user: {}
-    };
+    const config = {};
     setupUserDetails(config);
-    expect(IdentityManager).toBeCalledWith(config, expect.any(Function));
+    expect(IdentityManager).toBeCalledWith(config, undefined);
     expect(getOrCreateValidUserId).toHaveBeenCalledTimes(1);
     expect(setMerchantProvidedUserId).toHaveBeenCalledTimes(0);
     expect(config.user.id).toEqual(mockedUserId);
   });
 
   it('should create identityManager with callback', () => {
-    const config = {
-      user: {}
-    };
-
-    setupUserDetails(config);
-    expect(IdentityManager).toBeCalledWith(config, expect.any(Function));
+    const noop = () => {};
+    const config = {};
+    setupUserDetails(config, noop);
+    expect(IdentityManager).toBeCalledWith(config, noop);
     expect(getOrCreateValidUserId).toHaveBeenCalledTimes(1);
     expect(setMerchantProvidedUserId).toHaveBeenCalledTimes(0);
     expect(config.user.id).toEqual(mockedUserId);
   });
 
-  // TODO: fix it
-  it.skip('should set up user details for configuration with user details', () => {
+  it('should set up user details for configuration with user details', () => {
     const config = { user: { id: 'test_user' } };
     setupUserDetails(config);
-    expect(IdentityManager).toBeCalledWith(config, expect.any(Function));
+    expect(IdentityManager).toBeCalledWith(config, undefined);
     expect(getOrCreateValidUserId).toHaveBeenCalledTimes(1);
     expect(config.user.id).toEqual(mockedUserId);
     expect(setMerchantProvidedUserId).toBeCalledWith('test_user');
@@ -59,9 +54,8 @@ describe('sets up user details', () => {
       throw new Error('test error');
     });
     setGeneratedUserId.mockReturnValue({ userId: mockedUserId });
-    const config = { user: {} };
+    const config = {};
     setupUserDetails(config);
-
     expect(createNewCartId).toHaveBeenCalledTimes(1);
     expect(setGeneratedUserId).toHaveBeenCalledTimes(1);
     expect(config.user.id).toEqual(mockedUserId);

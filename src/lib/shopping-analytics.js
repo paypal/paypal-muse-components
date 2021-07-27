@@ -2,17 +2,14 @@
 import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
 import type { Config } from '../types/config';
-import type { UserData } from '../types';
 
 import { setupTrackers } from './shopping-trackers';
-import { setupUserDetails } from './user-configuration';
 
-type AnalyticsEvent = [string, Object];
-
-export const shoppingAnalyticsSetup = (config : Config) => {
+// $FlowFixMe
+export const shoppingAnalyticsSetup = (config? : Config = {}) => {
   const shoppingTracker = setupTrackers(config);
   let identityFetchCompleted : boolean = false;
-  let eventQueue : Array<AnalyticsEvent> = [];
+  let eventQueue = [];
 
   function flushEventQueue () {
     for (const params of eventQueue) {
@@ -21,18 +18,19 @@ export const shoppingAnalyticsSetup = (config : Config) => {
     eventQueue = [];
   }
 
-  function onUserIdentityFetch(user : UserData) {
-    config.user = { ...config.user, ...user };
-
+  // $FlowFixMe
+  function onUserIdentityFetch() {
     identityFetchCompleted = true;
     flushEventQueue();
   }
 
-  function enqueueEvent(...args : AnalyticsEvent) {
+  // $FlowFixMe
+  function enqueueEvent(...args) {
     eventQueue.push(args);
   }
 
-  function sendOrEnqueue(...args : AnalyticsEvent) {
+  // $FlowFixMe
+  function sendOrEnqueue(...args) {
     if (!identityFetchCompleted) {
       enqueueEvent(...args);
     } else {
@@ -40,7 +38,6 @@ export const shoppingAnalyticsSetup = (config : Config) => {
     }
   }
 
-  setupUserDetails(config).then(onUserIdentityFetch);
 
   return {
     onUserIdentityFetch,

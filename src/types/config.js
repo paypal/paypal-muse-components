@@ -9,7 +9,7 @@ import type {
 } from './util';
 
 export type Config = {|
-    user : UserData,
+    user? : UserData,
     propertyId? : string,
     paramsToBeaconUrl? : ParamsToBeaconUrl,
     paramsToIdentityUrl? : ParamsToIdentityUrl,
