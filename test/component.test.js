@@ -19,7 +19,7 @@ describe('muse', () => {
     // $FlowFixMe
     afterEach(() => {
       const script = document.getElementById(component.PPTM_ID);
-
+    
       if (script && script.parentNode) {
         script.parentNode.removeChild(script);
       }
@@ -34,7 +34,7 @@ describe('muse', () => {
       const expected = expect.stringContaining(expectedUrl);
 
       let src = '';
-
+    
       if (script) {
         // $FlowFixMe
         src = script.src;
@@ -61,7 +61,7 @@ describe('muse', () => {
       beforeEach(() => {
         isDebug = false;
       });
-
+    
       // $FlowFixMe
       it('should not insert pptms.js if in sandbox environment but not in debug mode', () => {
         component.insertPptm(ENV.SANDBOX, isDebug);

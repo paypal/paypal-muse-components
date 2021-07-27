@@ -40,26 +40,21 @@ function processMerchantProvidedId(config : Config) {
  * 2) In any case, make a call to VPNS by loading the identity iframe and
  * try to do our own identifying of the user. Store this in the local storage.
  * **/
-export const setupUserDetails = (config : Config) : Promise<any> => {
-  return new Promise((resolve : Function) => {
-    const callback : Function = resolve;
-
-    let userId : string = '';
-    try {
-      // $FlowFixMe
-      userId = fetchOrSetupUserIdInLocalStorage().userId;
-      processMerchantProvidedId(config);
-      fetchUserIdentity(config, callback);
-    } catch (err) {
-      logger.error('cart_or_shopper_id', err);
-      createNewCartId();
-      // $FlowFixMe
-      userId = setGeneratedUserId().userId;
-    }
-
-    if (!config.user.id) {
-      // $FlowFixMe
-      config.user.id = userId;
-    }
-  });
+export const setupUserDetails = (config : Config, callback : Function) => {
+  let userId;
+  try {
+    config.user = config.user || {};
+    userId = fetchOrSetupUserIdInLocalStorage().userId;
+    processMerchantProvidedId(config);
+    fetchUserIdentity(config, callback);
+  } catch (err) {
+    logger.error('cart_or_shopper_id', err);
+    createNewCartId();
+    userId = setGeneratedUserId().userId;
+  }
+  // $FlowFixMe
+  if (!config.user.id) {
+  // $FlowFixMe
+    config.user.id = userId;
+  }
 };
