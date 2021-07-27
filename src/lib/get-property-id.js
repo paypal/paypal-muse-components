@@ -1,11 +1,12 @@
 /* @flow */
-import { getMerchantID } from '@paypal/sdk-client/src';
+import { getMerchantID, getSDKQueryParam } from '@paypal/sdk-client/src';
 
 import type {
   Config,
   Container,
   ContainerSummary
 } from '../types';
+import type { ParamsToPropertyIdUrl } from '../types/util';
 
 import { getPropertyId, setPropertyId, setContainer, getValidContainer } from './local-storage';
 import { logger } from './logger';
@@ -40,14 +41,23 @@ const emptyContainer : Container = {
   jlAccessToken: ''
 };
 
+export const getContainerRequestUrl = (merchantId : string, clientId : string, paramsToPropertyIdUrl? : ParamsToPropertyIdUrl) : string => {
+  const merchantWebsite = `${ window.location.protocol }//${ window.location.host }`;
+  const baseUrl = paramsToPropertyIdUrl ? paramsToPropertyIdUrl() : 'https://www.paypal.com/tagmanager/containers/xo';
+
+  const requestId = merchantId ? `mrid=${ merchantId }` : `client_id=${ clientId }`;
+
+  return `${ baseUrl }?${ requestId }&url=${ encodeURIComponent(merchantWebsite) }&jlAccessToken=true`;
+};
+
 const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> => {
   const merchantId = getMerchantID()[0];
 
-  if (merchantId) {
-    const currentLocation = `${ window.location.protocol }//${ window.location.host }`;
-    const url = paramsToPropertyIdUrl ? paramsToPropertyIdUrl() : 'https://www.paypal.com/tagmanager/containers/xo';
+  // $FlowFixMe
+  const clientId : string = getSDKQueryParam<string>('client-id');
 
-    return fetch(`${ url }?mrid=${ merchantId }&url=${ encodeURIComponent(currentLocation) }&jlAccessToken=true`)
+  if (merchantId || clientId) {
+    return fetch(getContainerRequestUrl(merchantId, clientId, paramsToPropertyIdUrl))
       .then(res => {
         if (res.status !== 200) {
           throw new Error(`Failed to fetch propertyId: status ${ res.status }`);
@@ -55,9 +65,9 @@ const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> =>
 
         return res.json();
       });
-  } else {
-    return Promise.resolve(emptyContainer);
   }
+
+  return Promise.resolve(emptyContainer);
 };
 
 export const fetchPropertyId = ({ paramsToPropertyIdUrl, propertyId } : Config) : Promise<string> => {
