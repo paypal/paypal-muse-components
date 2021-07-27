@@ -50,6 +50,40 @@ describe('test FPTI attribute mappings for page_view', () => {
       sub_flow: 'store-cash'
     });
   });
+
+  it('store-cash. disable_storecash=true should not include offer', () => {
+    const config = {
+      containerSummary: {
+        programId: 'LB8HB8WNMLNU6',
+        mrid: 'JTJ8GTMKP7V3A'
+      },
+      shoppingAttributes: {
+        disable_storecash: 'true'
+      }
+    };
+    const eventFpti = eventToFptiMapperInit(config).eventToFptiAttributes(
+      eventName,
+      eventPayload
+    );
+    expect(eventFpti.sub_flow).toEqual(undefined);
+  });
+
+  it('store-cash. disable_storecash=false should not include offer', () => {
+    const config = {
+      containerSummary: {
+        programId: 'LB8HB8WNMLNU6',
+        mrid: 'JTJ8GTMKP7V3A'
+      },
+      shoppingAttributes: {
+        disable_storecash: 'false'
+      }
+    };
+    const eventFpti = eventToFptiMapperInit(config).eventToFptiAttributes(
+      eventName,
+      eventPayload
+    );
+    expect(eventFpti.sub_flow).toEqual('store-cash');
+  });
 });
 
 describe('test FPTI attribute mappings for purchase event', () => {
