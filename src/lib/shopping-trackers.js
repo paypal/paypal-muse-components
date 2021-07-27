@@ -11,8 +11,7 @@ import {
 import { shoppingAttributes } from './shopping-attributes';
 
 
-const initEventPublisher = (config : Config) => {
-  const fptiEventPubisher = ShoppingEventPublisher(config);
+const initEventPublisher = (config : Config, fptiEventPubisher) => {
   return (converterToFpti : EventToFptiInputMapping) => {
     return (event : Object) => {
       const fptiInput : FptiInput = converterToFpti(event);
@@ -21,8 +20,7 @@ const initEventPublisher = (config : Config) => {
   };
 };
 
-function initGenericEventPublisher(config : Config) : Object {
-  const fptiEventPubisher = ShoppingEventPublisher(config);
+function initGenericEventPublisher(config : Config, fptiEventPubisher) : Object {
   const convertEvent = eventToFptiConverters(config).eventToFpti;
   return {
     publishEvent: (event : EventType, payload : Object) => {
@@ -48,10 +46,11 @@ function initGenericEventPublisher(config : Config) : Object {
  * @returns {{viewPage: (function(...[*]=))}}
  */
 export const setupTrackers = (config : Config) => {
-  const eventPublisher = initEventPublisher(config);
+  const fptiEventPubisher = ShoppingEventPublisher(config);
+  const eventPublisher = initEventPublisher(config, fptiEventPubisher);
   const converters = eventToFptiConverters(config);
   const viewPage = eventPublisher(converters.viewPageToFpti);
-  const send = initGenericEventPublisher(config).publishEvent;
+  const send = initGenericEventPublisher(config, fptiEventPubisher).publishEvent;
   const set = shoppingAttributes(config).updateShoppingAttributes;
   return { viewPage, send, set, autoGenerateProductPayload };
 };
