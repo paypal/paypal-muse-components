@@ -67,7 +67,7 @@ export const Messaging = (...args : $ReadOnlyArray<{ cartRecovery : { userId : s
       showExitModal(...args);
     }
   }, 100);
-    
+
   const resetIdle = debounce(() => {
     showExitModal(...args);
   }, checkIfMobile() ? 30000 : 300000);

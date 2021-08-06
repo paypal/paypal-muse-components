@@ -31,7 +31,7 @@ import {
 } from './lib/legacy-analytics';
 import getJetlore from './lib/jetlore';
 import { trackFpti } from './lib/fpti';
-import constants from './lib/constants';
+import constants, { defaultTrackerConfig } from './lib/constants';
 import type {
   UserData,
   IdentityData,
@@ -42,8 +42,7 @@ import type {
 } from './types';
 
 const {
-  accessTokenUrl,
-  defaultTrackerConfig
+  accessTokenUrl
 } = constants;
 
 const getAccessToken = (url : string, mrid : string) : Promise<Object> => {
@@ -147,7 +146,7 @@ export const Tracker = (config? : Config = {}) => {
 
     delete config.user.id;
   }
-    
+
   const currentUrl = new URL(window.location.href);
   // use the param ?ppDebug=true to see logs
   const debug = currentUrl.searchParams.get('ppDebug');
@@ -162,6 +161,7 @@ export const Tracker = (config? : Config = {}) => {
   try {
     new IdentityManager(config);
     getOrCreateValidCartId();
+    // $FlowFixMe
     userId = getOrCreateValidUserId().userId;
 
     if (config && config.user && config.user.merchantProvidedUserId) {
@@ -170,12 +170,11 @@ export const Tracker = (config? : Config = {}) => {
   } catch (err) {
     logger.error('cart_or_shopper_id', err);
     createNewCartId();
+    // $FlowFixMe
     userId = setGeneratedUserId().userId;
   }
 
-  // $FlowFixMe
   config = { ...defaultTrackerConfig, ...config };
-  config.user = config.user || {};
   config.user.id = userId;
   config.currencyCode = config.currencyCode || getCurrency();
 
@@ -206,7 +205,7 @@ export const Tracker = (config? : Config = {}) => {
           eventName,
           eventType: 'noop'
         };
-  
+
         trackFpti(config, fptiInput);
       } catch (err) {
         // continue regardless of error

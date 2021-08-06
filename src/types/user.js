@@ -5,8 +5,19 @@ export type UserData = {|
   email? : string,
   name? : string,
   first_visit? : boolean,
-  user_tags? : $ReadOnlyArray<string>
+  user_tags? : $ReadOnlyArray<string>,
+  country? : string
 |};
+
+export type UserStorage= {|
+  merchantProvidedUserId? : string,
+  userId? : string,
+  email? : string | null,
+  name? : string | null,
+  first_visit? : boolean,
+  user_tags? : $ReadOnlyArray<string>,
+  country? : string
+|} | {||};
 
 export type IdentityData = {|
     mrid : string,
