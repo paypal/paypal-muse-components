@@ -125,7 +125,8 @@ describe('test FPTI attribute mappings for store_cash exclusion event', () => {
       eventName: 'store_cash_exclusion',
       page: `ppshopping:store_cash_exclusion`,
       fltp: 'analytics',
-      es: 'merchantRecognizedUser'
+      es: 'merchantRecognizedUser',
+      mru: 'true'
     });
   });
 });
