@@ -43,8 +43,7 @@ describe('sets up user details', () => {
     expect(config.user.id).toEqual(mockedUserId);
   });
 
-  // TODO: fix it
-  it.skip('should set up user details for configuration with user details', () => {
+  it('should set up user details for configuration with user details', () => {
     const config = { user: { id: 'test_user' } };
     setupUserDetails(config);
     expect(IdentityManager).toBeCalledWith(config, expect.any(Function));
