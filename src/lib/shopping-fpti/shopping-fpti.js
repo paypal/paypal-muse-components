@@ -117,7 +117,9 @@ export const resolveTrackingVariables = (data : any) : FptiVariables => ({
 
   sub_component: data.sub_component,
 
-  sub_flow: data.sub_flow
+  sub_flow: data.sub_flow,
+
+  mru: data.mru
 });
 
 export const trackFpti = (data : any) => {

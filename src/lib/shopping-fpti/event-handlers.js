@@ -62,6 +62,7 @@ export function customEventMappingInit(config : Config) : Object {
   function enrichStoreCashExcusionEvent() : Object {
     return {
       fltp: 'analytics',
+      mru: 'true',
       es: 'merchantRecognizedUser'
     };
   }
