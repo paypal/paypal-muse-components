@@ -24,7 +24,7 @@ export class IdentityManager extends IframeManager {
     if (config.paramsToIdentityUrl) {
       iframeUrl = config.paramsToIdentityUrl();
     } else {
-      iframeUrl = 'https://www.paypal.com/muse/identity/index.html';
+      iframeUrl = 'https://www.paypal.com/muse/identity/v2/index.html';
     }
 
     super({ src: iframeUrl });
