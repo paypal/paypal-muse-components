@@ -1,3 +1,3 @@
 /* @flow */
 
-export { ShoppingAnalytics } from './shopping-component';
+export { ShoppingAnalytics, setup } from './shopping-component';
