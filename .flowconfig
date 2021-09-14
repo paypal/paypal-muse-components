@@ -5,6 +5,8 @@
 .*/dist/module
 ./build-identity-iframe.js
 ./iframes/identity/identity.js
+.*/src/lib/tag-parsers/.*
+.*/test/lib/tag-parsers/.*
 .*/test/tracker/set-user.test.js
 .*/test/tracker/custom-event.test.js
 .*/test/tracker/remove-from-cart.test.js
