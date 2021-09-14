@@ -3,32 +3,31 @@
 import fs from 'fs';
 import path from 'path';
 
-import parse from '../../../src/lib/tag-parsers/jsonld-parser';
+import parse from '../../../src/lib/tag-parsers/og-parser';
 
-import nikeProductldjson_result from './res/nike_product_ldjson.res.json';
-import fanaticsProductldjson_result from './res/fanatics_product_ldjson.res.json';
+import nikeProductOG_result from './res/nike_product_og.res.json';
+import fanaticsProductOG_result from './res/fanatics_product_og.res.json';
 
-
-describe('test jsonld tag parser', () => {
-  it('should parse jsonld tags as expected', () => {
+describe('test open graph tag parser', () => {
+  it('should parse open graph tags as expected for nike product', () => {
     const nikeProductHtml = fs.readFileSync(path.resolve(__dirname, 'res/nike_product.html'), 'utf8'); /* eslint-disable-line no-sync */
 
     document.documentElement.innerHTML = nikeProductHtml;
     const result = parse();
 
-    expect(JSON.stringify(result)).toBe(JSON.stringify(nikeProductldjson_result));
+    expect(JSON.stringify(result)).toBe(JSON.stringify(nikeProductOG_result));
   });
 
-  it('should parse jsonld tags as expected for fanatics product', () => {
+  it('should parse open graph tags as expected for fanatics product', () => {
     const fanaticsHTML = fs.readFileSync(path.resolve(__dirname, 'res/fanatics_product.html'), 'utf8'); /* eslint-disable-line no-sync */
 
     document.documentElement.innerHTML = fanaticsHTML;
     const result = parse();
 
-    expect(JSON.stringify(result)).toBe(JSON.stringify(fanaticsProductldjson_result));
+    expect(JSON.stringify(result)).toBe(JSON.stringify(fanaticsProductOG_result));
   });
 
-  it('should return empty array when no jsonld tag', () => {
+  it('should return empty array when no og tags', () => {
     const noParseHTML = fs.readFileSync(path.resolve(__dirname, 'res/no_parse.html'), 'utf8'); /* eslint-disable-line no-sync */
 
     document.documentElement.innerHTML = noParseHTML;
@@ -42,8 +41,8 @@ describe('test jsonld tag parser', () => {
 
     document.documentElement.innerHTML = fanaticsHTML;
 
-    JSON.parse = jest.fn().mockImplementation(() => {
-      throw new Error('failed parsing JSON!!');
+    document.querySelectorAll = jest.fn().mockImplementation(() => {
+      throw new Error('error parsing OG tags !!');
     });
 
     expect(parse).not.toThrow();
@@ -52,5 +51,5 @@ describe('test jsonld tag parser', () => {
 
     expect(result).toBe(undefined);
   });
-
 });
+
