@@ -34,7 +34,8 @@ const fptiInput = {
   sub_component: 'smart_incentives',
   sub_flow: 'store-cash',
   offer_id: 'KASTDGDHFTQF8',
-  mru: 'true'
+  mru: 'true',
+  flag_consume: 'yes'
 };
 
 describe('should map tracking data', () => {
@@ -70,6 +71,7 @@ describe('should map tracking data', () => {
     expect(trackingData.sub_flow).toEqual(fptiInput.sub_flow);
     expect(trackingData.offer_id).toEqual(fptiInput.offer_id);
     expect(trackingData.mru).toEqual(fptiInput.mru);
+    expect(trackingData.flag_consume).toEqual(fptiInput.flag_consume);
   });
 });
 
