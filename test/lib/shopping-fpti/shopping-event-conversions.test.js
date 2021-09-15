@@ -63,6 +63,7 @@ describe('test event converters to FPTI input', () => {
     verifyFptiDeviceInfoMappings(fptiEvent, deviceInfo);
     expect(fptiEvent.mrid).toEqual(config.containerSummary.mrid);
     expect(fptiEvent.e).toEqual('im');
+    expect(fptiEvent.flag_consume).toEqual('yes');
 
     expect(getIdentity).toHaveBeenCalledTimes(1);
     expect(getDeviceInfo).toHaveBeenCalledTimes(1);
