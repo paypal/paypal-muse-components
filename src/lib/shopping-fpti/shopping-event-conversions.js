@@ -41,6 +41,7 @@ export const eventToFptiConverters = (config : Config) => {
     const fptiInput  =   {
       ...eventFptiAttributes,
       e: 'im',
+      flag_consume: 'yes',
       mrid: containerSummary.mrid,
       shopperId: storedUserIds.shopperId,
       t: new Date().getTime(),
