@@ -55,3 +55,11 @@ export const tryAndLog = (fn : Function) => {
     }
   };
 };
+
+// https://gist.github.com/harish2704/d0ee530e6ee75bad6fd30c98e5ad9dab#gistcomment-3148552
+export const _get = (object, path, value) => {
+  const pathArray = Array.isArray(path) ? path : path.split('.').filter(key => key);
+  const pathArrayFlat = pathArray.flatMap(part => typeof part === 'string' ? part.split('.') : part);
+  const checkValue = pathArrayFlat.reduce((obj, key) => obj && obj[key], object);
+  return  checkValue === undefined ? value : checkValue
+}
