@@ -4,6 +4,7 @@ import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 import type { Config } from '../types/config';
 
 import { setupTrackers } from './shopping-trackers';
+import { generatePageAutoData } from "./tag-parsers/generate-page-auto-data";
 
 // $FlowFixMe
 export const shoppingAnalyticsSetup = (config? : Config = {}) => {
@@ -44,6 +45,7 @@ export const shoppingAnalyticsSetup = (config? : Config = {}) => {
     viewPage: shoppingTracker.viewPage,
     send: sendOrEnqueue,
     set: shoppingTracker.set,
-    autoGenerateProductPayload: shoppingTracker.autoGenerateProductPayload
+    autoGenerateProductPayload: shoppingTracker.autoGenerateProductPayload,
+    parsePageData: generatePageAutoData
   };
 };
