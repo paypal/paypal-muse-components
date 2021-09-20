@@ -2,7 +2,7 @@
 import type { FptiInput, Config } from '../types';
 import type { EventType } from '../types/shopping-events';
 
-import autoGenerateProductPayload from './utils';
+import { autoGenerateProductPayload } from './utils';
 import { ShoppingEventPublisher } from './shopping-fpti/shopping-fpti-event-publisher';
 import {
   eventToFptiConverters,

@@ -1,0 +1,34 @@
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "@id": "https://www.fanatics.com/nba/los-angeles-lakers/lebron-james-los-angeles-lakers-jordan-brand-2021/22-number-6-swingman-player-jersey-purple-statement-edition/o-3536+t-58252968+p-60467601075+z-9-1901122059",
+    "brand": "Jordan Brand",
+    "category": "Jerseys &gt; Swingman",
+    "description": "This Jordan Brand LeBron James Swingman Player Jersey will make any loyal Los Angeles Lakers fan feel like a part of the team. It features crisp Los Angeles Lakers graphics and Dri-FIT technology to provide a bold yet comfortable look. This LeBron James gear will get you pumped up and ready for game day.",
+    "image": [
+      "https://fanatics.frgimages.com/FFImage/thumb.aspx?i=/productimages/_4291000/ff_4291740-ffd05487a208f9d387d4_full.jpg&w=600",
+      "https://fanatics.frgimages.com/FFImage/thumb.aspx?i=/productimages/_4291000/altimages/ff_4291740-ffd05487a208f9d387d4alt1_full.jpg&w=600",
+      "https://fanatics.frgimages.com/FFImage/thumb.aspx?i=/productimages/_4291000/altimages/ff_4291740-ffd05487a208f9d387d4alt2_full.jpg&w=600",
+      "https://fanatics.frgimages.com/FFImage/thumb.aspx?i=/productimages/_4291000/altimages/ff_4291740-ffd05487a208f9d387d4alt3_full.jpg&w=600"
+    ],
+    "itemCondition": "http://schema.org/NewCondition",
+    "name": "LeBron James Los Angeles Lakers Jordan Brand 2021/22 #6 Swingman Player Jersey Purple - Statement Edition",
+    "offers": [
+      {
+        "@type": "Offer",
+        "availability": "http://schema.org/InStock",
+        "category": "Jerseys &gt; Swingman",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "priceCurrency": "USD",
+          "price": "109.99"
+        },
+        "serialNumber": "4291740",
+        "url": "https://www.fanatics.com/nba/los-angeles-lakers/lebron-james-los-angeles-lakers-jordan-brand-2021/22-number-6-swingman-player-jersey-purple-statement-edition/o-3536+t-58252968+p-60467601075+z-9-1901122059"
+      }
+    ],
+    "productID": "4291740",
+    "url": "https://www.fanatics.com/nba/los-angeles-lakers/lebron-james-los-angeles-lakers-jordan-brand-2021/22-number-6-swingman-player-jersey-purple-statement-edition/o-3536+t-58252968+p-60467601075+z-9-1901122059"
+  }
+]

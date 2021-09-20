@@ -3,6 +3,7 @@ import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
 import { defaultTrackerConfig } from './lib/constants';
 import { shoppingAnalyticsSetup } from './lib/shopping-analytics';
+import { setupShoppingDDL, DDL_NAME } from './lib/ddl/shopping-ddl';
 import type { Config } from './types';
 
 /**
@@ -23,3 +24,15 @@ export const ShoppingAnalytics = (config? : Config) => {
 
   return shoppingAnalytics;
 };
+
+function init() {
+  if (window[DDL_NAME]) {
+    const analytics = new ShoppingAnalytics();
+    setupShoppingDDL(window, analytics);
+  }
+}
+
+
+export function setup() {
+  init();
+}
