@@ -1,6 +1,6 @@
 import parseOgTags from './og-parser';
 import parseJsonLd from './jsonld-parser';
-import { _get } from "../utils";
+import parseMicroData from './microdata-parser'
 
 const generateOgData = () => {
     const ogTags = parseOgTags();
@@ -13,16 +13,33 @@ const generateOgData = () => {
 }
 
 const generateJSONldData = () => {
+    let tags = [];
+
     const ldTags = parseJsonLd();
+    const productMicroData = parseMicroData({schemaType: "Product"});
+    const breadcrumbMicroData = parseMicroData({schemaType: "BreadcrumbList"});
+
     const hasLdTags = Array.isArray(ldTags) && ldTags.length > 0
-    return hasLdTags ? {
+    if (hasLdTags) {
+        tags = tags.concat(ldTags);
+    }
+
+    if (productMicroData) {
+        tags.push(productMicroData);
+    }
+
+    if (breadcrumbMicroData) {
+        tags.push(breadcrumbMicroData);
+    }
+
+    return Array.isArray(tags) && tags.length > 0 ? {
         type: "schema.org/ld+json",
         version: 1,
-        data: ldTags
+        data: tags
     }  : null;
 }
 
-export const generatePageAutoData = () => {
+export const capturePageData = () => {
     const autoData = [];
 
     const ogTagsData = generateOgData();
