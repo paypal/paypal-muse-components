@@ -10,14 +10,27 @@ const setProperty = (prop, value, jsonResult) => {
 
 function parseMicrodata (schemaNode, jsonResult) {
     for (let child of schemaNode.children) {
-        if (child.hasAttribute("itemprop") && child.hasAttribute("itemscope")) {
+        if (!child.hasAttribute("itemprop")) {
+            continue;
+        }
+
+        const itemprop = child.getAttribute("itemprop");
+
+        if (child.hasAttribute("itemscope")) {
             const valueObj = {"@type": child.getAttribute("itemtype")};
-            setProperty(child.getAttribute("itemprop"), valueObj, jsonResult)
+            setProperty(itemprop, valueObj, jsonResult)
 
             parseMicrodata(child, valueObj)
         }
-        else if (child.hasAttribute("itemprop")) {
-            setProperty(child.getAttribute("itemprop"),
+        else if (itemprop === 'item') { // special handling for Breadcrumb items
+            // 'item' is a special case as it behaves like a itemscope but doesn't have the itemscope attribute
+            // It also has a different object format
+            const itemObj = { '@id': child.getAttribute("href") }
+            setProperty(itemprop, itemObj, jsonResult)
+            parseMicrodata(child, itemObj)
+        }
+        else {
+            setProperty(itemprop,
                 child.getAttribute("content") || child.getAttribute("src") || child.getAttribute("href") || child.textContent,
                 jsonResult)
         }

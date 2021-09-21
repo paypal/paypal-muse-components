@@ -67,12 +67,18 @@
     "itemListElement": [
       {
         "@type": "https://schema.org/ListItem",
-        "item": "https://example.com/dresses",
+        "item": {
+          "@id": "https://example.com/dresses",
+          "name":"Dresses"
+        },
         "position": "1"
       },
       {
         "@type": "https://schema.org/ListItem",
-        "item": "https://example.com/dresses/real",
+        "item": {
+          "@id": "https://example.com/dresses/real",
+          "name":"Real Dresses"
+        },
         "position": "2"
       }
     ]
