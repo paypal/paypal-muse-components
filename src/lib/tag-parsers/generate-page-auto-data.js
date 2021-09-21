@@ -23,10 +23,6 @@ const generateJSONldData = () => {
 }
 
 export const generatePageAutoData = () => {
-    if (Array.isArray(_get(window, "__pp__shopping__.parsed_data"))) {
-        return window.__pp__shopping__.parsed_data;
-    }
-
     const autoData = [];
 
     const ogTagsData = generateOgData();
@@ -38,6 +34,5 @@ export const generatePageAutoData = () => {
         autoData.push(ldTagsData);
     }
 
-    window.__pp__shopping__ = window.__pp__shopping__ || {};
-    window.__pp__shopping__.parsed_data = autoData;
+    return autoData;
 }
