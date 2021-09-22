@@ -1,55 +1,56 @@
+/* @flow */
 import parseOgTags from './og-parser';
 import parseJsonLd from './jsonld-parser';
-import parseMicroData from './microdata-parser'
+import parseMicroData from './microdata-parser';
 
 const generateOgData = () => {
-    const ogTags = parseOgTags();
-    const hasOgTags = Array.isArray(ogTags) && ogTags.length > 0
-    return hasOgTags ? {
-        type: "open_graph",
-        version: 1,
-        data: ogTags
-    } : null;
-}
+  const ogTags = parseOgTags();
+  const hasOgTags = Array.isArray(ogTags) && ogTags.length > 0;
+  return hasOgTags ? {
+    type: 'open_graph',
+    version: 1,
+    data: ogTags
+  } : null;
+};
 
 const generateJSONldData = () => {
-    let tags = [];
+  let tags = [];
 
-    const ldTags = parseJsonLd();
-    const productMicroData = parseMicroData({schemaType: "Product"});
-    const breadcrumbMicroData = parseMicroData({schemaType: "BreadcrumbList"});
+  const ldTags = parseJsonLd();
+  const productMicroData = parseMicroData({ schemaType: 'Product' });
+  const breadcrumbMicroData = parseMicroData({ schemaType: 'BreadcrumbList' });
 
-    const hasLdTags = Array.isArray(ldTags) && ldTags.length > 0
-    if (hasLdTags) {
-        tags = tags.concat(ldTags);
-    }
+  const hasLdTags = Array.isArray(ldTags) && ldTags.length > 0;
+  if (hasLdTags) {
+    tags = tags.concat(ldTags);
+  }
 
-    if (productMicroData) {
-        tags.push(productMicroData);
-    }
+  if (productMicroData) {
+    tags.push(productMicroData);
+  }
 
-    if (breadcrumbMicroData) {
-        tags.push(breadcrumbMicroData);
-    }
+  if (breadcrumbMicroData) {
+    tags.push(breadcrumbMicroData);
+  }
 
-    return Array.isArray(tags) && tags.length > 0 ? {
-        type: "schema.org/ld+json",
-        version: 1,
-        data: tags
-    }  : null;
-}
+  return Array.isArray(tags) && tags.length > 0 ? {
+    type: 'schema.org/ld+json',
+    version: 1,
+    data: tags
+  }  : null;
+};
 
 export const capturePageData = () => {
-    const autoData = [];
+  const autoData = [];
 
-    const ogTagsData = generateOgData();
-    if (ogTagsData) {
-        autoData.push(ogTagsData);
-    }
-    const ldTagsData = generateJSONldData();
-    if (ldTagsData) {
-        autoData.push(ldTagsData);
-    }
+  const ogTagsData = generateOgData();
+  if (ogTagsData) {
+    autoData.push(ogTagsData);
+  }
+  const ldTagsData = generateJSONldData();
+  if (ldTagsData) {
+    autoData.push(ldTagsData);
+  }
 
-    return autoData;
-}
+  return autoData;
+};

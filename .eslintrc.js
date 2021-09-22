@@ -253,7 +253,7 @@ module.exports = {
         'max-lines-per-function': 'off',
         'multiline-comment-style': 'off',
         'prefer-object-spread': 'error',
-        
+
 
         // ES6
 
@@ -507,7 +507,7 @@ module.exports = {
         'getter-return': 'off',
         'line-comment-position': 'off',
         'max-lines': 0,
-        'max-statements-per-line': [ 'error', { 'max': 1 } ],
+        'max-statements-per-line': [ 'error', { 'max': 3 } ],
         'multiline-ternary': 'off',
         'no-await-in-loop': 'off',
         'no-buffer-constructor': 'off',

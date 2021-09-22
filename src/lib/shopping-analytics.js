@@ -4,7 +4,7 @@ import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 import type { Config } from '../types/config';
 
 import { setupTrackers } from './shopping-trackers';
-import { capturePageData } from "./tag-parsers/capture-page-data";
+import { capturePageData } from './tag-parsers/capture-page-data';
 
 // $FlowFixMe
 export const shoppingAnalyticsSetup = (config? : Config = {}) => {
