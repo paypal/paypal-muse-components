@@ -8,9 +8,13 @@ const setProperty = (prop, value, jsonResult) => {
     if (Array.isArray(jsonResult[prop])) return jsonResult[prop].push(value)
 }
 
+/**
+ * This is implements a DFS walking of the DOM to find itemprops
+ */
 function parseMicrodata (schemaNode, jsonResult) {
     for (let child of schemaNode.children) {
         if (!child.hasAttribute("itemprop")) {
+            parseMicrodata(child, jsonResult); // descend into it's children
             continue;
         }
 
@@ -19,7 +23,6 @@ function parseMicrodata (schemaNode, jsonResult) {
         if (child.hasAttribute("itemscope")) {
             const valueObj = {"@type": child.getAttribute("itemtype")};
             setProperty(itemprop, valueObj, jsonResult)
-
             parseMicrodata(child, valueObj)
         }
         else if (itemprop === 'item') { // special handling for Breadcrumb items
@@ -30,9 +33,9 @@ function parseMicrodata (schemaNode, jsonResult) {
             parseMicrodata(child, itemObj)
         }
         else {
-            setProperty(itemprop,
-                child.getAttribute("content") || child.getAttribute("src") || child.getAttribute("href") || child.textContent,
-                jsonResult)
+            const itemContent = child.getAttribute("content") || child.getAttribute("src") ||
+                child.getAttribute("href") || child.textContent;
+            setProperty(itemprop, itemContent, jsonResult)
         }
     }
 }
@@ -43,7 +46,7 @@ const parseTags = ({schemaType}) => {
         "@type": schemaType
     };
 
-    const schemaNodes = document.querySelectorAll(`[itemtype="https://schema.org/${schemaType}"]`)
+    const schemaNodes = document.querySelectorAll(`[itemtype$="schema.org/${schemaType}"]`)
 
     if (!schemaNodes || schemaNodes.length === 0) {
         return;

@@ -8,6 +8,7 @@ import parse from '../../../src/lib/tag-parsers/microdata-parser';
 import result1 from './res/microdata_result1.json';
 import result2 from './res/microdata2_result.json';
 import result3 from './res/microdata3_result.json';
+import zazzleResult from './res/zazzle_microdata_result.json';
 
 describe('test micordata parser', () => {
     it('should parse microdata tags as expected for product', () => {
@@ -38,6 +39,17 @@ describe('test micordata parser', () => {
         const result = [product, breadcrumb];
 
         expect(JSON.stringify(result)).toBe(JSON.stringify(result3));
+    });
+
+    it('should parse microdata tags as expected for zazzle product that has deeply nested elements', () => {
+        const zazzleHTML = fs.readFileSync(path.resolve(__dirname, 'res/zazzle_product.html'), 'utf8'); /* eslint-disable-line no-sync */
+
+        document.documentElement.innerHTML = zazzleHTML;
+        const productResult = parse({schemaType: "Product"});
+        const breadcrumbResult = parse({schemaType: "BreadcrumbList"});
+        const result = [productResult, breadcrumbResult];
+
+        expect(JSON.stringify(result)).toBe(JSON.stringify(zazzleResult));
     });
 
     it('should silently swallow errors', () => {
