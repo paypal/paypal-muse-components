@@ -47,11 +47,12 @@ export const autoGenerateProductPayload = () : ?GeneratedProductPayload => {
 };
 
 export const tryAndLog = (fn : Function) => {
-  return () => {
+  return (argObj : Object) => {
     try {
-      return fn();
+      return fn(argObj);
     } catch (err) {
-      console.log(err); /* eslint-disable-line no-console */
+      (() => {})(); // noop
     }
   };
 };
+

@@ -1,0 +1,68 @@
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "itemListElement": [
+      {
+        "@type": "http://schema.org/ListItem",
+        "item": {
+          "@id": "https://www.zazzle.com/c/home+gifts",
+          "name": "Home & Living",
+          "position": "1"
+        }
+      },
+      {
+        "@type": "http://schema.org/ListItem",
+        "item": {
+          "@id": "https://www.zazzle.com/c/personal+care+products",
+          "name": "Health & Personal Care",
+          "position": "2"
+        }
+      },
+      {
+        "@type": "http://schema.org/ListItem",
+        "item": {
+          "@id": "https://www.zazzle.com/c/face+masks",
+          "name": "Face Masks",
+          "position": "3"
+        }
+      }
+    ],
+    "offers": {
+      "@type": "http://schema.org/Offer",
+      "priceCurrency": "USD",
+      "price": "16.95"
+    },
+    "image": "https://rlv.zcache.com/colorful_butterflies_watercolor_painting_premium_face_mask-rb9c006da8c0241b4b4e1943a7bda30f9_qde1z_540.webp?rlvnet=1"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "http://schema.org/ListItem",
+        "item": {
+          "@id": "https://www.zazzle.com/c/home+gifts",
+          "name": "Home & Living",
+          "position": "1"
+        }
+      },
+      {
+        "@type": "http://schema.org/ListItem",
+        "item": {
+          "@id": "https://www.zazzle.com/c/personal+care+products",
+          "name": "Health & Personal Care",
+          "position": "2"
+        }
+      },
+      {
+        "@type": "http://schema.org/ListItem",
+        "item": {
+          "@id": "https://www.zazzle.com/c/face+masks",
+          "name": "Face Masks",
+          "position": "3"
+        }
+      }
+    ]
+  }
+]
