@@ -1,3 +1,4 @@
+import { capturePageData } from '../tag-parsers/capture-page-data';
 /* @flow */
 import type { Config } from '../../types';
 import type { EventType } from '../../types/shopping-events';
@@ -23,9 +24,12 @@ export function eventSinfoBuilderInit(config : Config) : Object {
   function constructSinfoPayload(payload : Object) : ?string {
     const shopperConfig = config.shoppingAttributes || {};
 
+    const capturedData = capturePageData();
+
     const enrichedPayload = filterAttributesForSinfoPayload({
       ...payload,
-      ...shopperConfig
+      ...shopperConfig,
+      ...capturedData
     });
     const json = JSON.stringify(enrichedPayload);
     return json === '{}' ? null : json;

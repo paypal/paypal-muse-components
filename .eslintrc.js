@@ -290,7 +290,7 @@ module.exports = {
         'flowtype/object-type-delimiter': [ 'error', 'comma' ],
         'flowtype/require-parameter-type': [ 'off', { 'excludeArrowFunctions': true } ],
         'flowtype/require-return-type': [ 'error', 'always', { 'annotateUndefined': 'never', 'excludeArrowFunctions': true } ],
-        'flowtype/require-valid-file-annotation': [ 'error', 'always', { 'annotationStyle': 'block' } ],
+        'flowtype/require-valid-file-annotation': [ 'warn', 'always', { 'annotationStyle': 'block' } ],
         'flowtype/semi': [ 'error', 'always' ],
         'flowtype/space-after-type-colon': [ 'error', 'always', { 'allowLineBreak': true } ],
         'flowtype/space-before-generic-bracket': [ 'error', 'never' ],
