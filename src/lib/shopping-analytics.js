@@ -38,7 +38,6 @@ export const shoppingAnalyticsSetup = (config? : Config = {}) => {
     }
   }
 
-
   return {
     onUserIdentityFetch,
     viewPage: shoppingTracker.viewPage,
