@@ -24,7 +24,9 @@ export function eventSinfoBuilderInit(config : Config) : Object {
   function constructSinfoPayload(payload : Object) : ?string {
     const shopperConfig = config.shoppingAttributes || {};
 
-    const capturedData = capturePageData();
+    const shouldCaptureData = window.__pp__shopping__ && window.__pp__shopping__.capturePageData;
+
+    const capturedData = shouldCaptureData ? capturePageData() : {};
 
     const enrichedPayload = filterAttributesForSinfoPayload({
       ...payload,
