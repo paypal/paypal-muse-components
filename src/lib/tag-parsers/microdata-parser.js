@@ -55,6 +55,9 @@ const parseTags = ({ schemaType }) => {
 
   const schemaNode = schemaNodes[0]; // we are only interested in the first as our payload size is limited
   parseMicrodata(schemaNode, jsonResult);
+
+  delete jsonResult.review;
+
   return jsonResult;
 };
 

@@ -11,7 +11,7 @@ import result3 from './res/microdata3_result.json';
 import zazzleResult from './res/zazzle_microdata_result.json';
 
 describe('test micordata parser', () => {
-  it('should parse microdata tags as expected for product', () => {
+  it('should parse microdata tags as expected for product (without `review` attributes)', () => {
     const fanaticsHTML = fs.readFileSync(path.resolve(__dirname, 'res/fanatics_product.html'), 'utf8'); /* eslint-disable-line no-sync */
 
     document.documentElement.innerHTML = fanaticsHTML;
