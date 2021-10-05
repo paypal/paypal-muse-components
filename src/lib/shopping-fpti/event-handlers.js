@@ -24,15 +24,17 @@ export function eventSinfoBuilderInit(config : Config) : Object {
   function constructSinfoPayload(payload : Object) : ?string {
     const shopperConfig = config.shoppingAttributes || {};
 
-    const shouldCaptureData = window.__pp__shopping__ && window.__pp__shopping__.capturePageData;
-
-    const capturedData = shouldCaptureData ? capturePageData() : {};
-
     const enrichedPayload = filterAttributesForSinfoPayload({
       ...payload,
       ...shopperConfig,
-      ...capturedData
     });
+
+    const shouldCaptureData = window.__pp__shopping__ && window.__pp__shopping__.capturePageData;
+    const capturedData = shouldCaptureData ? capturePageData() : {};
+    if (shouldCaptureData) {
+      enrichedPayload.capturedData = capturedData;
+    }
+
     const json = JSON.stringify(enrichedPayload);
     return json === '{}' ? null : json;
   }
