@@ -10,7 +10,7 @@ import fanaticsProductldjson_result from './res/fanatics_product_ldjson.res.json
 
 
 describe('test jsonld tag parser', () => {
-  it('should parse jsonld tags as expected', () => {
+  it('should parse jsonld tags as expected (with no `review` attribute)', () => {
     const nikeProductHtml = fs.readFileSync(path.resolve(__dirname, 'res/nike_product.html'), 'utf8'); /* eslint-disable-line no-sync */
 
     document.documentElement.innerHTML = nikeProductHtml;

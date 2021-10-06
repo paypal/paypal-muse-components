@@ -62,47 +62,6 @@
       "reviewCount": "35",
       "bestRating": "5",
       "worstRating": "1"
-    },
-    "review": [
-      {
-        "@type": "Review",
-        "author": "G L.",
-        "datePublished": "2021-08-09T12:47:19-04:00",
-        "name": "Great fit, fun style!",
-        "reviewBody": "Great fit, cool look and fun style. Getting them to teach in all day.",
-        "reviewRating": {
-          "@type": "Rating",
-          "bestRating": 5,
-          "ratingValue": 5,
-          "worstRating": 1
-        }
-      },
-      {
-        "@type": "Review",
-        "author": "A L.",
-        "datePublished": "2021-07-25T14:06:14-04:00",
-        "name": "Dope",
-        "reviewBody": "Absolutely love the feel.   Trying to think of a great comparison (an upgraded Roshe Run?).  I own three pair of these space hippies and have used them to work out in, run errands, and even out on a date.  Super versatile, super stylish, and super comfortable.",
-        "reviewRating": {
-          "@type": "Rating",
-          "bestRating": 5,
-          "ratingValue": 5,
-          "worstRating": 1
-        }
-      },
-      {
-        "@type": "Review",
-        "author": "T W.",
-        "datePublished": "2021-07-19T01:43:28-04:00",
-        "name": "",
-        "reviewBody": "Great look cool breathable and very comfortable",
-        "reviewRating": {
-          "@type": "Rating",
-          "bestRating": 5,
-          "ratingValue": 5,
-          "worstRating": 1
-        }
-      }
-    ]
+    }
   }
 ]
