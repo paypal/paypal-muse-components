@@ -134,3 +134,15 @@ export const fetchContainerSettings = ({ paramsToPropertyIdUrl, propertyId } : C
       return '';
     });
 };
+
+export function setupContainer(
+  config : Config,
+  callback : Function
+) {
+  const cachedContainer = getValidContainer();
+  if (cachedContainer) {
+    callback(cachedContainer);
+  } else {
+    fetchContainerSettings(config).then(container => callback(container));
+  }
+}

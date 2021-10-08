@@ -1,9 +1,9 @@
 /* global expect jest */
 /* @flow */
 import { setupTrackers } from '../../src/lib/shopping-trackers';
+import { trackFpti } from '../../src/lib/shopping-fpti/shopping-fpti';
 import { PageView } from '../../src/types/shopping-events';
 import { eventToFptiConverters } from '../../src/lib/shopping-fpti/shopping-event-conversions';
-import { ShoppingEventPublisher } from '../../src/lib/shopping-fpti/shopping-fpti-event-publisher';
 
 const config = {};
 
@@ -18,37 +18,29 @@ const pageView : PageView = {
 
 const mockFptiInput = { eventData: JSON.stringify(pageView) };
 
-jest.mock('../../src/lib/shopping-fpti/shopping-fpti-event-publisher');
 jest.mock('../../src/lib/shopping-fpti/shopping-event-conversions');
+jest.mock('../../src/lib/shopping-fpti/shopping-fpti');
 
-const viewPageToFptiMock = jest.fn();
 const eventToFptiMock = jest.fn();
-const fptiPublishMock = jest.fn();
 
 describe('test eventTracker setup', () => {
   beforeEach(() => {
     eventToFptiConverters.mockClear();
     eventToFptiConverters.mockReturnValue({
-      viewPageToFpti: viewPageToFptiMock,
       eventToFpti: eventToFptiMock
     });
-
-    ShoppingEventPublisher.mockClear();
-    ShoppingEventPublisher.mockReturnValue({ publishFptiEvent: fptiPublishMock });
-
-    viewPageToFptiMock.mockClear();
-    viewPageToFptiMock.mockReturnValue(mockFptiInput);
 
     eventToFptiMock.mockClear();
     eventToFptiMock.mockReturnValue(mockFptiInput);
 
+    trackFpti.mockClear();
   });
   
   it('should event trackers include pageView tracker', () => {
     const trackers = setupTrackers(config);
-    trackers.viewPage(pageView);
-    expect(viewPageToFptiMock).toBeCalledWith(pageView);
-    expect(fptiPublishMock).toBeCalledWith(mockFptiInput);
+    trackers.send('page_view', pageView);
+    expect(eventToFptiMock).toBeCalledWith('page_view', pageView);
+    expect(trackFpti).toBeCalledWith(mockFptiInput);
   });
 
 
