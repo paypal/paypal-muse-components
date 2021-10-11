@@ -1,5 +1,7 @@
 /* @flow */
 /* global afterAll expect jest */
+import { getPayPalDomain } from '@paypal/sdk-client/src';
+
 import { fetchContainerSettings, getContainerRequestUrl } from '../src/lib/get-property-id';
 import { getPropertyId, getValidContainer, setContainer } from '../src/lib/local-storage';
 
@@ -15,11 +17,17 @@ global.fetch = jest.fn().mockImplementation(async () => {
 jest.mock('@paypal/sdk-client/src', () => {
   return {
     getMerchantID: jest.fn().mockImplementation(() => [ mockContainer1.owner_id ]),
-    getSDKQueryParam: jest.fn()
+    getSDKQueryParam: jest.fn(),
+    getPayPalDomain: jest.fn()
   };
 });
 
+
 describe('get-property-id', () => {
+  beforeEach(() => {
+    getPayPalDomain.mockClear();
+    getPayPalDomain.mockImplementation(() => 'https://www.paypal.com');
+  });
   afterEach(() => {
     window.localStorage.clear();
   });
@@ -30,11 +38,23 @@ describe('get-property-id', () => {
 
   describe('fetchContainerSettings', () => {
     beforeEach(() => {
+      global.fetch.mockClear();
+      getPayPalDomain.mockClear();
       window.localStorage.clear();
     });
 
     it('requests a container using merchantId and browser location', async (done) => {
       const expectedUrl = 'https://www.paypal.com/tagmanager/containers/xo?mrid=759SBALRW3ZTY&url=http%3A%2F%2Flocalhost&jlAccessToken=true';
+      await fetchContainerSettings({});
+
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(global.fetch).toHaveBeenCalledWith(expectedUrl);
+      done();
+    });
+
+    it('requests a container using merchantId and browser location for stage', async (done) => {
+      getPayPalDomain.mockImplementation(() => 'https://msmaster.paypal.com');
+      const expectedUrl = 'https://msmaster.paypal.com/tagmanager/containers/xo?mrid=759SBALRW3ZTY&url=http%3A%2F%2Flocalhost&jlAccessToken=true';
       await fetchContainerSettings({});
 
       expect(global.fetch).toHaveBeenCalledTimes(1);

@@ -2,8 +2,10 @@
 import {
   getClientID,
   getMerchantID,
-  getPartnerAttributionID
+  getPartnerAttributionID,
+  getEnv
 } from '@paypal/sdk-client/src';
+import { ENV } from '@paypal/sdk-constants/src';
 
 import type { FptiVariables } from '../../types';
 import { sendBeacon } from '../fpti';
@@ -124,8 +126,16 @@ export const resolveTrackingVariables = (data : any) : FptiVariables => ({
   flag_consume: data.flag_consume
 });
 
+const getFptiBaseUrl = () => {
+  if (getEnv() === ENV.PRODUCTION) {
+    return 'https://t.paypal.com/ts';
+  } else {
+    return 'https://tracking.qa.paypal.com/webapps/tracking/ts';
+  }
+};
+
 export const trackFpti = (data : any) => {
-  const fptiServer = 'https://t.paypal.com/ts';
+  const fptiServer = getFptiBaseUrl();
   const trackingVariables = resolveTrackingVariables(data);
   sendBeacon(fptiServer,  filterFalsyValues(trackingVariables));
 };
