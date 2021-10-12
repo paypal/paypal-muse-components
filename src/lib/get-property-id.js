@@ -1,5 +1,5 @@
 /* @flow */
-import { getMerchantID, getSDKQueryParam, getPayPalDomain } from '@paypal/sdk-client/src';
+import { getMerchantID, getSDKQueryParam } from '@paypal/sdk-client/src';
 
 import type {
   Config,
@@ -43,8 +43,7 @@ const emptyContainer : Container = {
 
 export const getContainerRequestUrl = (merchantId : string, clientId : string, paramsToPropertyIdUrl? : ParamsToPropertyIdUrl) : string => {
   const merchantWebsite = `${ window.location.protocol }//${ window.location.host }`;
-  const paypalDomain = getPayPalDomain();
-  const baseUrl = paramsToPropertyIdUrl ? paramsToPropertyIdUrl() : `${ paypalDomain }/tagmanager/containers/xo`;
+  const baseUrl = paramsToPropertyIdUrl ? paramsToPropertyIdUrl() : 'https://www.paypal.com/tagmanager/containers/xo';
 
   const requestId = merchantId ? `mrid=${ merchantId }` : `client_id=${ clientId }`;
 

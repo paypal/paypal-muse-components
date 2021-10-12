@@ -1,13 +1,11 @@
 /* globals beforeAll afterAll expect jest */
 /* @flow */
-
 import { Tracker } from '../src/tracker-component';
 import { logger } from '../src/lib/logger';
 import constants from '../src/lib/constants';
 // $FlowFixMe
 import generateIdModule from '../src/lib/generate-id';
 import { getUserId, getCartId } from '../src/lib/local-storage';
-
 
 const { sevenDays, storage } = constants;
 
@@ -69,7 +67,6 @@ describe('paypal.Tracker', () => {
   const originalDocumentCreateElement = document.createElement;
   const originalAppendChild = document.body.appendChild;
   const originalGenerateId = generateIdModule.generateId;
-  
   beforeAll(() => {
     const deviceLib = require('../src/lib/get-device-info');
     // $FlowFixMe
@@ -283,7 +280,7 @@ describe('paypal.Tracker', () => {
 
     expect(createElementCalls).toBe(1);
     expect(fetchCalls.length).toBe(1);
-    expect(fetchCalls[0][0]).toBe('https://localhost.paypal.com:9001/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost&jlAccessToken=true');
+    expect(fetchCalls[0][0]).toBe('https://www.paypal.com/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost&jlAccessToken=true');
   });
 
   it('should gracefully fail in the event that malformed data exists in local storage', () => {

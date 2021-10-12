@@ -1,19 +1,11 @@
 /* globals jest expect */
 /* @flow */
 import {
-  getEnv, getMerchantID
-} from '@paypal/sdk-client/src';
-import { ENV } from '@paypal/sdk-constants/src';
-
-import {
   resolveTrackingVariables, trackFpti
 } from '../../src/lib/shopping-fpti/shopping-fpti';
 import { sendBeacon } from '../../src/lib/fpti';
 
 jest.mock('../../src/lib/fpti');
-jest.mock('@paypal/sdk-client/src');
-
-getMerchantID.mockImplementation(() => [ '123' ]);
 
 const fptiInput = {
   deviceHeight: 134,
@@ -86,8 +78,6 @@ describe('should map tracking data', () => {
 describe('trackFpti should send FPTI event', () => {
   beforeEach(() => {
     sendBeacon.mockClear();
-    getEnv.mockClear();
-    getEnv.mockImplementation(() => ENV.PRODUCTION);
   });
   it('trackFpti should send FPTI event', () => {
     const fptiPayload = resolveTrackingVariables(fptiInput);
@@ -95,15 +85,5 @@ describe('trackFpti should send FPTI event', () => {
     trackFpti(fptiInput);
 
     expect(sendBeacon).toBeCalledWith('https://t.paypal.com/ts', fptiPayload);
-  });
-
-  it('trackFpti should send FPTI event, stage', () => {
-    getEnv.mockImplementation(() => ENV.STAGE);
-
-    const fptiPayload = resolveTrackingVariables(fptiInput);
-
-    trackFpti(fptiInput);
-
-    expect(sendBeacon).toBeCalledWith('https://tracking.qa.paypal.com/webapps/tracking/ts', fptiPayload);
   });
 });
