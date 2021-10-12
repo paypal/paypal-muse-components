@@ -1,6 +1,4 @@
 /* @flow */
-import { getPayPalDomain } from '@paypal/sdk-client/src';
-
 import { setIdentity, getIdentity } from '../local-storage';
 import { getDeviceInfo } from '../get-device-info';
 import { logger } from '../logger';
@@ -19,7 +17,6 @@ import { IframeManager } from './iframe-manager';
 
 function noop() {}
 export class IdentityManager extends IframeManager {
-
   constructor(config, completionListener? = noop) {
     let iframeUrl;
 
@@ -27,7 +24,7 @@ export class IdentityManager extends IframeManager {
     if (config.paramsToIdentityUrl) {
       iframeUrl = config.paramsToIdentityUrl();
     } else {
-      iframeUrl = `${ getPayPalDomain() }/muse/identity/index.html`;
+      iframeUrl = 'https://www.paypal.com/muse/identity/index.html';
     }
 
     super({ src: iframeUrl });
