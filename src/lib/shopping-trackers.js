@@ -3,29 +3,18 @@ import type { FptiInput, Config } from '../types';
 import type { EventType } from '../types/shopping-events';
 
 import { autoGenerateProductPayload } from './utils';
-import { ShoppingEventPublisher } from './shopping-fpti/shopping-fpti-event-publisher';
+import { trackFpti } from './shopping-fpti/shopping-fpti';
 import {
-  eventToFptiConverters,
-  type EventToFptiInputMapping
+  eventToFptiConverters
 } from './shopping-fpti/shopping-event-conversions';
 import { shoppingAttributes } from './shopping-attributes';
 
-
-const initEventPublisher = (config : Config, fptiEventPubisher) => {
-  return (converterToFpti : EventToFptiInputMapping) => {
-    return (event : Object) => {
-      const fptiInput : FptiInput = converterToFpti(event);
-      fptiEventPubisher.publishFptiEvent(fptiInput);
-    };
-  };
-};
-
-function initGenericEventPublisher(config : Config, fptiEventPubisher) : Object {
+function initGenericEventPublisher(config : Config) : Object {
   const convertEvent = eventToFptiConverters(config).eventToFpti;
   return {
     publishEvent: (event : EventType, payload : Object) => {
       const fptiInput : FptiInput = convertEvent(event, payload);
-      fptiEventPubisher.publishFptiEvent(fptiInput);
+      trackFpti(fptiInput);
     }
   };
 }
@@ -46,11 +35,7 @@ function initGenericEventPublisher(config : Config, fptiEventPubisher) : Object 
  * @returns {{viewPage: (function(...[*]=))}}
  */
 export const setupTrackers = (config : Config) => {
-  const fptiEventPubisher = ShoppingEventPublisher(config);
-  const eventPublisher = initEventPublisher(config, fptiEventPubisher);
-  const converters = eventToFptiConverters(config);
-  const viewPage = eventPublisher(converters.viewPageToFpti);
-  const send = initGenericEventPublisher(config, fptiEventPubisher).publishEvent;
+  const send = initGenericEventPublisher(config).publishEvent;
   const set = shoppingAttributes(config).updateShoppingAttributes;
-  return { viewPage, send, set, autoGenerateProductPayload };
+  return { send, set, autoGenerateProductPayload };
 };
