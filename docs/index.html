@@ -1,9 +1,68 @@
 <!doctype html>
 <html>
-    <head>
-        <title>Hello, World!</title>
-    </head>
-    <body>
-        <h1>Hello, World!</h1>
-    </body>
+  <head>
+    <title>PayPal Shopping SDK Test Site</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
+    <!-- Google Tag Manager -->
+    <!-- <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-TD38HVQ');</script> -->
+    <!-- End Google Tag Manager -->
+  </head>
+  <body>
+    <div class="container">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/configure/">
+            <img src="/images/logo.png" width="40px" />
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/cats/">Cats</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/dogs/">Dogs</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/fish/">Fish</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/reptiles/">Reptiles</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/marsupials/">Marsupials</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <h2>Welcome to our test site!</h2>
+
+      <p>Click around to see different SDK events being triggered.</p>
+
+      <p>Currently this page supports "page view", "product view", "conversion", and "exclusion" events (more info on how to trigger below).
+
+      <p>To see a page view event simply click around to different pages. You should see a page view event fired off each time you switch pages (except when you land on the home page -- this is to allow you to configure your settings before events are fired off).</p>
+
+      <p>To see a product view event simply click the picture associated with the product from the products pages (e.g. cats, dogs, etc).</p>
+
+      <p>To test OG tags, visit the marsupials page and trigger a product view event by clicking on a product. OG tags are set per product, then read automatically by the product_view event.</p>
+
+      <p>To see a conversion or exclusion event, click the buttons on the product pages that say "purchase product" or "exclude user" respectively. Purchase event will be sent with last product you viewed (clicked).</p>
+
+      <p>If you would like to configure where the SDK is loaded from please click the icon of the dog to the left of home. By default we load from production.</p>
+      
+    </div>
+  </body>
 </html>
