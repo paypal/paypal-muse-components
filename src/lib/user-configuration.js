@@ -5,7 +5,8 @@ import {
   getOrCreateValidUserId as fetchOrSetupUserIdInLocalStorage,
   setMerchantProvidedUserId,
   createNewCartId,
-  setGeneratedUserId
+  setGeneratedUserId,
+  getIdentity
 } from './local-storage';
 import { IdentityManager } from './iframe-tools/identity-manager';
 import { logger } from './logger';
@@ -17,8 +18,23 @@ import { logger } from './logger';
  * @returns {IdentityManager}
  */
 
-function fetchUserIdentity(config : Config, callback : Function) : IdentityManager {
+function fetchUserIdentity(
+  config : Config,
+  callback : Function
+) : IdentityManager {
   return new IdentityManager(config, callback);
+}
+
+function setupUserIdentity(
+  config : Config,
+  callback : Function
+) {
+  const identity = getIdentity();
+  if (identity) {
+    callback(identity, null);
+  } else {
+    fetchUserIdentity(config, callback);
+  }
 }
 
 /** If the merchant passes in a userId,
@@ -46,7 +62,7 @@ export const setupUserDetails = (config : Config, callback : Function) => {
     config.user = config.user || {};
     userId = fetchOrSetupUserIdInLocalStorage().userId;
     processMerchantProvidedId(config);
-    fetchUserIdentity(config, callback);
+    setupUserIdentity(config, callback);
   } catch (err) {
     logger.error('cart_or_shopper_id', err);
     createNewCartId();
@@ -54,7 +70,7 @@ export const setupUserDetails = (config : Config, callback : Function) => {
   }
   // $FlowFixMe
   if (!config.user.id) {
-  // $FlowFixMe
+    // $FlowFixMe
     config.user.id = userId;
   }
 };

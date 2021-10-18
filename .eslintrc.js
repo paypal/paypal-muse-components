@@ -253,7 +253,7 @@ module.exports = {
         'max-lines-per-function': 'off',
         'multiline-comment-style': 'off',
         'prefer-object-spread': 'error',
-        
+
 
         // ES6
 
@@ -290,7 +290,7 @@ module.exports = {
         'flowtype/object-type-delimiter': [ 'error', 'comma' ],
         'flowtype/require-parameter-type': [ 'off', { 'excludeArrowFunctions': true } ],
         'flowtype/require-return-type': [ 'error', 'always', { 'annotateUndefined': 'never', 'excludeArrowFunctions': true } ],
-        'flowtype/require-valid-file-annotation': [ 'error', 'always', { 'annotationStyle': 'block' } ],
+        'flowtype/require-valid-file-annotation': [ 'warn', 'always', { 'annotationStyle': 'block' } ],
         'flowtype/semi': [ 'error', 'always' ],
         'flowtype/space-after-type-colon': [ 'error', 'always', { 'allowLineBreak': true } ],
         'flowtype/space-before-generic-bracket': [ 'error', 'never' ],
@@ -507,7 +507,7 @@ module.exports = {
         'getter-return': 'off',
         'line-comment-position': 'off',
         'max-lines': 0,
-        'max-statements-per-line': [ 'error', { 'max': 1 } ],
+        'max-statements-per-line': [ 'error', { 'max': 3 } ],
         'multiline-ternary': 'off',
         'no-await-in-loop': 'off',
         'no-buffer-constructor': 'off',

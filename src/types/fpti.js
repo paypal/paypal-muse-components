@@ -61,7 +61,9 @@ export type FptiInput = {|
 
   offer_id? : string,
 
-  sub_flow? : string
+  sub_flow? : string,
+
+  flag_consume? : string
 |};
 
 export type FptiVariables = {|
@@ -143,7 +145,12 @@ export type FptiVariables = {|
 
   sub_component? : string,
 
-  sub_flow? : string
+  sub_flow? : string,
+
+  mru? : string,
+
+  flag_consume? : string
+  
 |};
 
 /* Workaround for the sake of supporting legacy analytics implementation.

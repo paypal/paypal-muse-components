@@ -1,0 +1,67 @@
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Nike Space Hippie 01 Shoes",
+    "image": "https://static.nike.com/a/images/t_default/71b14567-7b83-47f2-a0dc-dea4a8d88311/space-hippie-01-shoes-14Tq8r.png",
+    "description": "Find the Nike Space Hippie 01 at Nike.com. ",
+    "brand": {
+      "@type": "Thing",
+      "name": "Nike"
+    },
+    "logo": "https://www.nike.com/Nike_Swoosh_Logo_Black_original.jpg",
+    "offers": {
+      "@type": "AggregateOffer",
+      "lowPrice": "117.97",
+      "highPrice": "130",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "offerCount": "2",
+      "offers": [
+        {
+          "@type": "Offer",
+          "url": "https://www.nike.com/t/space-hippie-01-shoes-14Tq8r",
+          "price": 117.97,
+          "priceCurrency": "USD",
+          "itemOffered": {
+            "@type": "IndividualProduct",
+            "name": "Nike Space Hippie 01 Shoes",
+            "model": "13449099",
+            "releaseDate": "2021-06-30T14:00:00.000Z",
+            "color": "Vast Grey/Melon Tint/Psychic Blue/Summit White"
+          },
+          "seller": {
+            "@type": "Organization",
+            "name": "Nike"
+          },
+          "availability": "https://schema.org/InStock"
+        },
+        {
+          "@type": "Offer",
+          "url": "https://www.nike.com/t/space-hippie-01-shoes-14Tq8r",
+          "price": 130,
+          "priceCurrency": "USD",
+          "itemOffered": {
+            "@type": "IndividualProduct",
+            "name": "Nike Space Hippie 01 Shoes",
+            "model": "13448945",
+            "releaseDate": "2021-06-30T14:00:00.000Z",
+            "color": "Obsidian/Psychic Blue/White/Signal Blue"
+          },
+          "seller": {
+            "@type": "Organization",
+            "name": "Nike"
+          },
+          "availability": "https://schema.org/InStock"
+        }
+      ]
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.6",
+      "reviewCount": "35",
+      "bestRating": "5",
+      "worstRating": "1"
+    }
+  }
+]

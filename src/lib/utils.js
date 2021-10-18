@@ -8,7 +8,7 @@ type GeneratedProductPayload = {|
   currency? : string, // ISO code
   url? : string
 |};
-const autoGenerateProductPayload = () : ?GeneratedProductPayload => {
+export const autoGenerateProductPayload = () : ?GeneratedProductPayload => {
   type OpenGraphTag = 'og:title' | 'product:price:amount' | 'product:price:currency' | 'og:url';
   type PayloadAttribute = 'product_name' | 'price' | 'currency' | 'url';
   type _tags = {
@@ -46,4 +46,13 @@ const autoGenerateProductPayload = () : ?GeneratedProductPayload => {
   return Object.keys(attributes).length > 0 ? attributes : null;
 };
 
-export default autoGenerateProductPayload;
+export const tryAndLog = (fn : Function) => {
+  return (argObj : Object) => {
+    try {
+      return fn(argObj);
+    } catch (err) {
+      (() => {})(); // noop
+    }
+  };
+};
+

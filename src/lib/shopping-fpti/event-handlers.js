@@ -1,3 +1,4 @@
+import { capturePageData } from '../tag-parsers/capture-page-data';
 /* @flow */
 import type { Config } from '../../types';
 import type { EventType } from '../../types/shopping-events';
@@ -25,8 +26,15 @@ export function eventSinfoBuilderInit(config : Config) : Object {
 
     const enrichedPayload = filterAttributesForSinfoPayload({
       ...payload,
-      ...shopperConfig
+      ...shopperConfig,
     });
+
+    const shouldCaptureData = window.__pp__shopping__ && window.__pp__shopping__.capturePageData;
+    const capturedData = shouldCaptureData ? capturePageData() : {};
+    if (shouldCaptureData) {
+      enrichedPayload.capturedData = capturedData;
+    }
+
     const json = JSON.stringify(enrichedPayload);
     return json === '{}' ? null : json;
   }
@@ -62,6 +70,7 @@ export function customEventMappingInit(config : Config) : Object {
   function enrichStoreCashExcusionEvent() : Object {
     return {
       fltp: 'analytics',
+      mru: 'true',
       es: 'merchantRecognizedUser'
     };
   }

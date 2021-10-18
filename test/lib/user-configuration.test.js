@@ -5,18 +5,31 @@ import {
   getOrCreateValidUserId,
   setGeneratedUserId,
   setMerchantProvidedUserId,
-  createNewCartId
+  createNewCartId,
+  getIdentity
 } from '../../src/lib/local-storage';
 import { IdentityManager } from '../../src/lib/iframe-tools/identity-manager';
 
 const mockedUserId = 'ee964537-1c7b-403e-b978-ea29babc5aed';
 jest.mock('../../src/lib/local-storage');
 jest.mock('../../src/lib/iframe-tools/identity-manager');
+const postUserFetchCallback = jest.fn();
+const userIdentity = {
+  'encryptedAccountNumber': '759SBALRW3ZTY',
+  'confidenceScore': 100,
+  'identificationType': 'RMUC'
+};
 
 describe('sets up user details', () => {
   beforeEach(() => {
     getOrCreateValidUserId.mockClear();
+    getIdentity.mockClear();
+    getIdentity.mockReturnValue(null);
+    postUserFetchCallback.mockClear();
+    IdentityManager.mockClear();
     setMerchantProvidedUserId.mockClear();
+    createNewCartId.mockClear();
+    setGeneratedUserId.mockClear();
     getOrCreateValidUserId.mockReturnValue({ userId: mockedUserId });
   });
 
@@ -29,7 +42,7 @@ describe('sets up user details', () => {
     expect(config.user.id).toEqual(mockedUserId);
   });
 
-  it('should create identityManager with callback', () => {
+  it('should fetch visitor info via identityManager', () => {
     const noop = () => {};
     const config = {};
     setupUserDetails(config, noop);
@@ -39,10 +52,18 @@ describe('sets up user details', () => {
     expect(config.user.id).toEqual(mockedUserId);
   });
 
+  it('should fetch visitor from local storage and skip IdentityManager load', () => {
+    const config = {};
+    getIdentity.mockReturnValue(userIdentity);
+    setupUserDetails(config, postUserFetchCallback);
+    expect(IdentityManager).toHaveBeenCalledTimes(0);
+    expect(postUserFetchCallback).toBeCalledWith(userIdentity, null);
+  });
+
   it('should set up user details for configuration with user details', () => {
     const config = { user: { id: 'test_user' } };
-    setupUserDetails(config);
-    expect(IdentityManager).toBeCalledWith(config, undefined);
+    setupUserDetails(config, postUserFetchCallback);
+    expect(IdentityManager).toBeCalledWith(config, postUserFetchCallback);
     expect(getOrCreateValidUserId).toHaveBeenCalledTimes(1);
     expect(config.user.id).toEqual(mockedUserId);
     expect(setMerchantProvidedUserId).toBeCalledWith('test_user');

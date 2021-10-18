@@ -1,0 +1,58 @@
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Kenmore White 17\" Microwave",
+    "image": "kenmore-microwave-17in.jpg",
+    "aggregateRating": {
+      "@type": "https://schema.org/AggregateRating",
+      "ratingValue": "3.5",
+      "reviewCount": "11"
+    },
+    "offers": {
+      "@type": "https://schema.org/Offer",
+      "priceCurrency": "USD",
+      "price": "1000.00",
+      "availability": "https://schema.org/InStock"
+    },
+    "aggOffers": {
+      "@type": "https://schema.org/AggregateOffer",
+      "lowPrice": "$1250",
+      "highPrice": "$1495",
+      "offerCount": "8",
+      "offers": [
+        {
+          "@type": "https://schema.org/Offer",
+          "url": "save-a-lot-monitors.com/dell-30.html"
+        },
+        {
+          "@type": "https://schema.org/Offer",
+          "url": "jondoe-gadgets.com/dell-30.html"
+        }
+      ]
+    },
+    "description": "0.7 cubic feet countertop microwave.\n  Has six preset cooking categories and convenience features like\n  Add-A-Minute and Child Lock."
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "https://schema.org/ListItem",
+        "item": {
+          "@id": "https://example.com/dresses",
+          "name":"Dresses"
+        },
+        "position": "1"
+      },
+      {
+        "@type": "https://schema.org/ListItem",
+        "item": {
+          "@id": "https://example.com/dresses/real",
+          "name":"Real Dresses"
+        },
+        "position": "2"
+      }
+    ]
+  }
+]
