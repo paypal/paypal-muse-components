@@ -7,13 +7,13 @@
     <script src="/javascript/load-sdk-and-config-methods.js"></script>
     <script>
       const PAGE_NAME = 'marsupial-1';
+      window.__pp__shopping__ = { capturePageData: true };
       pptag.send('product_view', {
         id: PAGE_NAME,
       });
     </script>
   </head>
   <body>
-    <div id="og-tags"></div>
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -59,6 +59,75 @@
         <div class="center">
           Aliquam sit amet dolor velit. Donec non fermentum velit. Vestibulum viverra, elit ac porttitor feugiat, turpis tortor ultrices est, at vulputate mauris libero vel elit. Nam dolor lectus, viverra malesuada tortor eget, congue mollis lectus. Morbi eget eros feugiat, feugiat nunc nec, ornare ipsum. Maecenas egestas lectus scelerisque nulla lacinia, nec sollicitudin lectus dapibus. Cras vitae felis sit amet ex porttitor pharetra ac nec odio. Integer ut cursus orci.
         </div>
+      </div>
+
+      <div style="display:none;">
+        <p>
+          <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a itemprop="item" href="https://paypal.github.io/paypal-muse-components/">
+                <span itemprop="name">Animals</span>
+              </a>
+              <meta itemprop="position" content="1" />
+            </li>
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a itemprop="item" href="https://paypal.github.io/paypal-muse-components/marsupials/">
+                <span itemprop="name">Marsupials</span>
+              </a>
+              <meta itemprop="position" content="2" />
+            </li>
+          </ol>
+        </p>
+
+        <p>
+          <div itemscope itemtype="https://schema.org/Product">
+            <img itemprop="image" src="/images/marsupial-1.jpeg" alt='2019 Possum' />
+            <span itemprop="name">2019 Possum</span>
+            <div itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
+              Rated <span itemprop="ratingValue">1.5</span>/5
+              based on <span itemprop="reviewCount">11</span> customer reviews
+            </div>
+
+            <div itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+
+            <!--price is 1000, a number, with locale-specific thousands separator
+            and decimal mark, and the $ character is marked up with the
+            machine-readable code "USD" -->
+            <span itemprop="priceCurrency" content="USD">$</span>
+            <span itemprop="price" content="45.00">45.00</span>
+            <link itemprop="availability" href="https://schema.org/InStock" />In stock
+          </div>
+
+          Product description:
+          <span itemprop="description">Rabies-free possum.</span>
+
+          Customer reviews:
+
+          <div itemprop="review" itemscope itemtype="https://schema.org/Review">
+            <span itemprop="name">Not a happy camper</span> -
+            by <span itemprop="author">Ellie</span>,
+            <meta itemprop="datePublished" content="2011-04-01">April 1, 2011
+            <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+              <meta itemprop="worstRating" content = "1">
+              <span itemprop="ratingValue">1</span>/
+              <span itemprop="bestRating">5</span>stars
+            </div>
+            <span itemprop="reviewBody">Does not like being pet.</span>
+          </div>
+
+          <div itemprop="review" itemscope itemtype="https://schema.org/Review">
+            <span itemprop="name">Value purchase</span> -
+            by <span itemprop="author">Lucas</span>,
+            <meta itemprop="datePublished" content="2011-03-25">March 25, 2011
+            <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+              <meta itemprop="worstRating" content = "1"/>
+              <span itemprop="ratingValue">4</span>/
+              <span itemprop="bestRating">5</span>stars
+            </div>
+            <span itemprop="reviewBody">Pretty cool, but not very social.</span>
+          </div>
+        </div>
+        </p>
       </div>
 
       <hr />
