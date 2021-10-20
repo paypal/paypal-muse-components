@@ -53,6 +53,8 @@ const updateStoreCashToggle = () => {
 
 const manuallySendStoreCashEvent = (pageId) => {
   pptag.set({ 'disable_storecash': 'false' });
-  pptag.send('page_view', `${pageId}_MANUAL-STORE-CASH-SEND`);
+  pptag.send('page_view', {
+    id: `${pageId}_MANUAL-STORE-CASH-SEND`
+  });
   pptag.set({ 'disable_storecash': 'true' });
 };
