@@ -2,7 +2,7 @@
   text-align: center;
 }
 
-.product img {
+.product .row img {
   max-width: 500px;
   margin: 0 auto;
 }
