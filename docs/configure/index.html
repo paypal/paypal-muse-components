@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+  <head>
+    <title>SDK Test Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
+    <script src="/paypal-muse-components/javascript/load-sdk-and-config-methods.js"></script>
+  </head>
+  <body>
+    <div class="container">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/paypal-muse-components/configure/">
+            <img src="/paypal-muse-components/images/logo.png" width="40px" />
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/cats/">Cats</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/dogs/">Dogs</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/fish/">Fish</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/reptiles/">Reptiles</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/marsupials/">Marsupials</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <h2>Config</h2>
+
+      <hr />
+
+      <form>
+        <div class="mb-3">
+          <label for="formGroupExampleInput" class="form-label">SDK Base URL</label>
+          <input type="text" class="form-control" id="sdk-base-url" placeholder="https://www.paypal.com">
+        </div>
+        <div class="mb-3">
+          <label for="formGroupExampleInput2" class="form-label">SDK Port</label>
+          <input type="text" class="form-control" id="sdk-port" placeholder="443">
+        </div>
+        <div class="mb-3">
+          <label for="formGroupExampleInput2" class="form-label">Client ID</label>
+          <input type="text" class="form-control" id="sdk-client-id" placeholder="AY09zHPojjoschuPgNWj1imd648hlwyX0aZnQRhncc0ALfqS8wZCaG5sxUoceQxo72cD1GvnEfS5EGZT">
+        </div>
+        <div class="mb-3">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="sdk-send-store-cash-events" value="true" onchange="updateStoreCashToggle()">
+                <label class="form-check-label" for="sdk-send-store-cash-events">Send store cash events automatically</label>
+              </div>
+          </div>
+        
+        <button type="button" class="btn btn-primary" onclick="setSdkConfig()">
+          Set Config
+        </button>
+      </form>
+
+      <hr />
+      
+    </div>
+    <script>
+        const storeCashToggleValue = localStorage.getItem('sdk-send-store-cash-automatically');
+        const storeCashToggleValueSaved = storeCashToggleValue !== null;
+				const toggleInput = document.getElementById('sdk-send-store-cash-events');
+        if (storeCashToggleValueSaved) {
+					if (storeCashToggleValue === 'false') {
+						toggleInput.checked = undefined;
+					} else {
+						toggleInput.checked = storeCashToggleValue;
+					}
+        } else {
+					toggleInput.checked = 'true';
+				}
+    </script>
+  </body>
+</html>

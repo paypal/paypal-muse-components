@@ -14,7 +14,8 @@
     "flow:build": "flow gen-flow-files ./src/index.js --out-dir ./dist/module",
     "lint": "eslint src/ test/ *.js --fix",
     "test": "npm run lint && npm run flow-typed && npm run flow && jest",
-    "test:dev": "jest --watchAll"
+    "test:dev": "jest --watchAll",
+    "start:test-site": "node ./test-site-server.js"
   },
   "files": [
     "src",
@@ -41,6 +42,7 @@
     "babel-loader": "^8.0.6",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
+    "express": "^4.17.1",
     "flow-bin": "^0.100.0",
     "flow-typed": "3.3.1",
     "grumbler-scripts": "^3",

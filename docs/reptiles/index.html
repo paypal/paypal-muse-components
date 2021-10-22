@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+  <head>
+    <title>SDK Test Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/paypal-muse-components/styles/style.css" />
+    <script src="/paypal-muse-components/javascript/load-sdk-and-config-methods.js"></script>
+    <script>
+      const PAGE_NAME = 'REPTILES';
+      pptag.send('page_view', {
+        id: PAGE_NAME,
+        page_type: 'CATEGORY'
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/paypal-muse-components/configure/">
+            <img src="/paypal-muse-components/images/logo.png" width="40px" />
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/cats/">Cats</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/dogs/">Dogs</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/fish/">Fish</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/paypal-muse-components/reptiles/">Reptiles</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/marsupials/">Marsupials</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <h2>Reptiles!</h2>
+
+      <hr />
+
+      <div class="row g-3">
+        <div class="col">
+            <h6>Nala</h6>
+            <a href="/paypal-muse-components/reptiles/reptile-1.html">
+              <img src="/paypal-muse-components/images/reptile-1.webp" width="300px" />
+            </a>
+        </div>
+        <div class="col">
+            <h6>Scales</h6>
+            <a href="/paypal-muse-components/reptiles/reptile-2.html">
+              <img src="/paypal-muse-components/images/reptile-2.jpeg" width="300px" />
+            </a>
+        </div>
+        <div class="col">
+            <h6>Johnny</h6>
+            <a href="/paypal-muse-components/reptiles/reptile-3.html">
+              <img src="/paypal-muse-components/images/reptile-3.jpg" width="300px" />
+            </a>
+        </div>
+      </div>
+      
+    </div>
+  </body>
+</html>

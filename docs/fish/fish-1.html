@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <title>SDK Test Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/paypal-muse-components/styles/style.css" />
+    <script src="/paypal-muse-components/javascript/load-sdk-and-config-methods.js"></script>
+    <script>
+      const PAGE_NAME = 'fish-1';
+      pptag.send('product_view', {
+        id: PAGE_NAME,
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/paypal-muse-components/configure/">
+            <img src="/paypal-muse-components/images/logo.png" width="40px" />
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/cats/">Cats</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/dogs/">Dogs</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/paypal-muse-components/fish/">Fish</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/reptiles/">Reptiles</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/paypal-muse-components/marsupials/">Marsupials</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <h2>Nemo</h2>
+
+      <hr />
+
+      <div class="product">
+        <div class="row">
+          <img src="/paypal-muse-components/images/fish-1.jpeg" />
+        </div>
+        <div class="center">
+          Aliquam sit amet dolor velit. Donec non fermentum velit. Vestibulum viverra, elit ac porttitor feugiat, turpis tortor ultrices est, at vulputate mauris libero vel elit. Nam dolor lectus, viverra malesuada tortor eget, congue mollis lectus. Morbi eget eros feugiat, feugiat nunc nec, ornare ipsum. Maecenas egestas lectus scelerisque nulla lacinia, nec sollicitudin lectus dapibus. Cras vitae felis sit amet ex porttitor pharetra ac nec odio. Integer ut cursus orci.
+        </div>
+      </div>
+
+      <hr />
+
+      <p>
+        <button type="button" class="btn btn-secondary" onclick="pptag.send('store_cash_exclusion')">
+          Exclude User
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="pptag.send('purchase', { id: PAGE_NAME })">
+          Purchase Product
+        </button>
+      </p>
+
+      <p>
+        <button type="button" class="btn btn-primary" onclick="manuallySendStoreCashEvent(PAGE_NAME)">
+          Send Store Cash
+        </button>
+      </p>
+      
+    </div>
+  </body>
+</html>
