@@ -2,6 +2,7 @@
 import parseOgTags from './og-parser';
 import parseJsonLd from './jsonld-parser';
 import parseMicroData from './microdata-parser';
+import { debugLogger } from '../debug-console-logger';
 
 const generateOgData = () => {
   const ogTags = parseOgTags();
@@ -52,5 +53,7 @@ export const capturePageData = () => {
     autoData.push(ldTagsData);
   }
 
+  debugLogger.log('[capture-page-data:capturePageData]. Captured page data: ', autoData);
+  
   return autoData;
 };

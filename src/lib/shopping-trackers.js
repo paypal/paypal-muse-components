@@ -1,6 +1,7 @@
 /* @flow */
 import type { FptiInput, Config } from '../types';
 import type { EventType } from '../types/shopping-events';
+import { debugLogger } from './debug-console-logger';
 
 import { trackFpti } from './shopping-fpti/shopping-fpti';
 import {
@@ -13,6 +14,7 @@ function initGenericEventPublisher(config : Config) : Object {
   return {
     publishEvent: (event : EventType, payload : Object) => {
       const fptiInput : FptiInput = convertEvent(event, payload);
+      debugLogger.log('[shopping-tracker:publishEvent] Publishing FPTI event:', fptiInput);
       trackFpti(fptiInput);
     }
   };
