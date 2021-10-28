@@ -1,8 +1,8 @@
 /* @flow */
 import type { FptiInput, Config } from '../types';
 import type { EventType } from '../types/shopping-events';
-import { debugLogger } from './debug-console-logger';
 
+import { debugLogger } from './debug-console-logger';
 import { trackFpti } from './shopping-fpti/shopping-fpti';
 import {
   eventToFptiConverters

@@ -150,7 +150,7 @@ export const Tracker = (config? : Config = {}) => {
     
   const currentUrl = new URL(window.location.href);
   // use the param ?ppDebug=true to see logs
-  const debug = currentUrl.searchParams.get('ppDebug');
+  const debug = currentUrl.searchParams.get('ppDebug') === 'true';
 
   if (debug) {
     // eslint-disable-next-line no-console

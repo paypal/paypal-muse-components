@@ -2,10 +2,9 @@
 import { setIdentity, getIdentity } from '../local-storage';
 import { getDeviceInfo } from '../get-device-info';
 import { logger } from '../logger';
+import { debugLogger } from '../debug-console-logger';
 
 import { IframeManager } from './iframe-manager';
-import { debugLogger } from '../debug-console-logger';
-debugLogger.log('[identity:fetchUserIdentity] Triggering identity discovery.');
 
 /**
  * Make a call to VPNS by loading the identity iframe and
@@ -66,6 +65,7 @@ export class IdentityManager extends IframeManager {
     /* Do not fetch if identity data
     has recently be cached. */
     if (cachedIdentity) {
+      debugLogger.log('[identity-manager:fetchIdentity] Fetch identity found in cache:', cachedIdentity);
       this.completionListener(cachedIdentity, null);
       return;
     }

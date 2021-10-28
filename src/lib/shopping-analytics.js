@@ -62,7 +62,7 @@ export const shoppingAnalyticsSetup = (config? : Config = {}) => {
       shoppingTracker.send(...args);
     }
   }
-  debugLogger.init();
+  
   debugLogger.log('[shopping-analytics:shoppingAnalyticsSetup] Initialized shopping analytics with the following configuration', config);
 
   setupUserDetails(config, onUserIdentityFetch);
