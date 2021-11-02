@@ -6,6 +6,8 @@ import type { Config } from '../types/config';
 import { setupTrackers } from './shopping-trackers';
 import { setupUserDetails } from './user-configuration';
 import { setupContainer } from './get-property-id';
+// $FlowFixMe
+import { capturePageData } from './tag-parsers/capture-page-data';
 
 // $FlowFixMe
 export const shoppingAnalyticsSetup = (config? : Config = {}) => {
@@ -15,12 +17,12 @@ export const shoppingAnalyticsSetup = (config? : Config = {}) => {
   let eventQueue = [];
   const queue_limit = 100;
 
-  function isReadyToPubish() : boolean {
+  function isReadyToPublish() : boolean {
     return identityFetchCompleted && containerFetchCompleted;
   }
 
   function flushEventQueueIfReady () {
-    if (isReadyToPubish()) {
+    if (isReadyToPublish()) {
       for (const params of eventQueue) {
         shoppingTracker.send(...params);
       }
@@ -28,7 +30,6 @@ export const shoppingAnalyticsSetup = (config? : Config = {}) => {
     }
   }
 
-  // $FlowFixMe
   function onUserIdentityFetch() {
     identityFetchCompleted = true;
     flushEventQueueIfReady();
@@ -42,7 +43,6 @@ export const shoppingAnalyticsSetup = (config? : Config = {}) => {
     flushEventQueueIfReady();
   }
 
-  // $FlowFixMe
   function enqueueEvent(...args) {
     eventQueue.push(args);
     if (eventQueue.length > queue_limit) {
@@ -52,7 +52,7 @@ export const shoppingAnalyticsSetup = (config? : Config = {}) => {
 
   // $FlowFixMe
   function sendOrEnqueue(...args) {
-    if (!isReadyToPubish()) {
+    if (!isReadyToPublish()) {
       enqueueEvent(...args);
     } else {
       shoppingTracker.send(...args);
@@ -66,6 +66,7 @@ export const shoppingAnalyticsSetup = (config? : Config = {}) => {
     send: sendOrEnqueue,
     set: shoppingTracker.set,
     autoGenerateProductPayload: shoppingTracker.autoGenerateProductPayload,
+    getPageSkuData: capturePageData,
     onUserIdentityFetch,
     onContainerFetch
   };
