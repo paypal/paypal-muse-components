@@ -8,7 +8,7 @@ function findConfigurationAttribute(config : Config, payload : Object = {}, attr
   return shopperConfig[attribName] || payload[attribName];
 }
 
-export const includedAttributes = [
+export const allowedAttributes = [
   // page view
   'page_type',
   'page_name',
@@ -38,7 +38,7 @@ export const includedAttributes = [
 export function eventSinfoBuilderInit(config : Config) : Object {
   function filterAttributesForSinfoPayload(event : Object) : Object {
     const filteredAttributes = Object.keys(event)
-      .filter((key) => includedAttributes.includes(key))
+      .filter((key) => allowedAttributes.includes(key))
       .reduce((obj, key) => {
         obj[key] = event[key];
         return obj;

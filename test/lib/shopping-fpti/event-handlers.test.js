@@ -1,7 +1,7 @@
 /* @flow */
 import {
   eventToFptiMapperInit,
-  includedAttributes
+  allowedAttributes
 } from '../../../src/lib/shopping-fpti/event-handlers';
 
 const { expect } = global;
@@ -190,7 +190,7 @@ describe('IF ANY OF THESE FAIL, UPDATE DOC WHEN YOU FIX -- https://go/shopping-s
 
 describe('IF THIS FAILS, UPDATE DOC WHEN YOU FIX -- https://go/shopping-sinfo-props', () => {
   it('included attributes in sinfo builder should match what is documented.', () => {
-    expect(includedAttributes).toEqual([
+    expect(allowedAttributes).toEqual([
       // page view
       'page_type',
       'page_name',
