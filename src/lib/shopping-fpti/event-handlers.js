@@ -8,16 +8,41 @@ function findConfigurationAttribute(config : Config, payload : Object = {}, attr
   return shopperConfig[attribName] || payload[attribName];
 }
 
+export const allowedAttributes = [
+  // page view
+  'page_type',
+  'page_name',
+  'page_id',
+  'page_category_name',
+  'page_category_id',
+  'deal_id',
+  'deal_name',
+  'deal_value',
+  'search_results_count',
+  'cart_products',
+  // product view
+  'product_id',
+  'product_name',
+  'product_url',
+  'product_price',
+  'product_brand',
+  'product_category_name',
+  'product_category_id',
+  'product_discount',
+  // purchase
+  'amount',
+  // set properties
+  'currency',
+];
+
 export function eventSinfoBuilderInit(config : Config) : Object {
   function filterAttributesForSinfoPayload(event : Object) : Object {
-    const excluded_attributes = [ 'user_id', 'disable_storecash' ];
     const filteredAttributes = Object.keys(event)
-      .filter((key) => !excluded_attributes.includes(key))
+      .filter((key) => allowedAttributes.includes(key))
       .reduce((obj, key) => {
         obj[key] = event[key];
         return obj;
       }, {});
-
     return filteredAttributes;
   }
 
