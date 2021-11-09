@@ -63,7 +63,9 @@ export type FptiInput = {|
 
   sub_flow? : string,
 
-  flag_consume? : string
+  flag_consume? : string,
+
+  item? : string
 |};
 
 export type FptiVariables = {|
