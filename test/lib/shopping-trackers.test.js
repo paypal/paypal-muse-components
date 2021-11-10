@@ -43,10 +43,4 @@ describe('test eventTracker setup', () => {
     expect(trackFpti).toBeCalledWith(mockFptiInput);
   });
 
-
-  it('should include autoGenerateProductPayload', () => {
-    const trackers = setupTrackers(config);
-    expect(trackers.autoGenerateProductPayload).toBeInstanceOf(Function);
-  });
-
 });

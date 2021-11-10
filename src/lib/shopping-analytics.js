@@ -65,7 +65,6 @@ export const shoppingAnalyticsSetup = (config? : Config = {}) => {
   return {
     send: sendOrEnqueue,
     set: shoppingTracker.set,
-    autoGenerateProductPayload: shoppingTracker.autoGenerateProductPayload,
     getPageSkuData: capturePageData,
     onUserIdentityFetch,
     onContainerFetch
