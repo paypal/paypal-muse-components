@@ -4,7 +4,8 @@ const { expect } = global;
 export const config = {
   containerSummary: {
     programId: 'A87KPP4KFVC8J',
-    mrid: 'JTJ8GTMKP7V3A'
+    mrid: 'JTJ8GTMKP7V3A',
+    id: '91388d62-3964-43be-a022-a5ff76d43798'
   }
 };
 

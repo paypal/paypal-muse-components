@@ -64,7 +64,7 @@ export const resolveTrackingVariables = (data : any) : FptiVariables => ({
   cust: data.encryptedAccountNumber,
 
   // Analytics identifier associated with the merchant site. XO container id.
-  item: data.propertyId,
+  item: data.item,
 
   // Merchant encrypted account number
   mrid: data.mrid || getMerchantID()[0],

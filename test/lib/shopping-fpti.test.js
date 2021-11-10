@@ -35,7 +35,8 @@ const fptiInput = {
   sub_flow: 'store-cash',
   offer_id: 'KASTDGDHFTQF8',
   mru: 'true',
-  flag_consume: 'yes'
+  flag_consume: 'yes',
+  item: '91388d62-3964-43be-a022-a5ff76d43798'
 };
 
 describe('should map tracking data', () => {
@@ -72,6 +73,7 @@ describe('should map tracking data', () => {
     expect(trackingData.offer_id).toEqual(fptiInput.offer_id);
     expect(trackingData.mru).toEqual(fptiInput.mru);
     expect(trackingData.flag_consume).toEqual(fptiInput.flag_consume);
+    expect(trackingData.item).toEqual(fptiInput.item);
   });
 });
 
