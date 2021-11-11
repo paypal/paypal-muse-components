@@ -3,9 +3,9 @@ import { tryAndLog } from '../utils';
 
 const parseJSON = (jsonString) => {
   const result = JSON.parse(jsonString);
-  delete result.review
+  delete result.review;
   return result;
-}
+};
 
 const parseTags = () => {
   const result = [];

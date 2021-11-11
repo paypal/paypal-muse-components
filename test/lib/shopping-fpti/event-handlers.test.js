@@ -214,7 +214,7 @@ describe('IF THIS FAILS, UPDATE DOC WHEN YOU FIX -- https://go/shopping-sinfo-pr
       // purchase
       'amount',
       // set properties
-      'currency',
-    ])
+      'currency'
+    ]);
   });
 });

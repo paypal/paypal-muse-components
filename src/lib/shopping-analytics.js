@@ -62,11 +62,10 @@ export const shoppingAnalyticsSetup = (config? : Config = {}) => {
   setupUserDetails(config, onUserIdentityFetch);
   setupContainer(config, onContainerFetch);
 
+  // return publicly accessible
   return {
     send: sendOrEnqueue,
     set: shoppingTracker.set,
-    getPageSkuData: capturePageData,
-    onUserIdentityFetch,
-    onContainerFetch
+    getPageSkuData: capturePageData
   };
 };

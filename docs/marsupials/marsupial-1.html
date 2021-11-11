@@ -1,15 +1,16 @@
 <!doctype html>
 <html>
   <head>
-    <title>SDK Test Page</title>
+    <title>SDK Test Page with microdata</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/paypal-muse-components/styles/style.css" />
     <script src="/paypal-muse-components/javascript/load-sdk-and-config-methods.js"></script>
     <script>
       const PAGE_NAME = 'marsupial-1';
-      window.__pp__shopping__ = { capturePageData: true };
+      pptag.set({'parse_page': 'true'});
       pptag.send('product_view', {
-        id: PAGE_NAME,
+        'page_id': PAGE_NAME,
+
       });
     </script>
   </head>
@@ -48,7 +49,7 @@
         </div>
       </nav>
 
-      <h2>Teddy</h2>
+      <h2>Teddy (microdata)</h2>
 
       <hr />
 
