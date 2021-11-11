@@ -10,3 +10,7 @@ export const tryAndLog = (fn : Function) => {
   };
 };
 
+export const isConfigFalse = (configAttribute : Object) => {
+  return configAttribute === undefined || configAttribute === 'false' || configAttribute === false;
+};
+

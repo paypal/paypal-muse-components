@@ -1,14 +1,14 @@
 <!doctype html>
 <html>
   <head>
-    <title>SDK Test Page</title>
+    <title>SDK Test Page for page parser</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/paypal-muse-components/styles/style.css" />
     <script src="/paypal-muse-components/javascript/load-sdk-and-config-methods.js"></script>
     <script>
       const PAGE_NAME = 'MARSUPIALS';
       pptag.send('page_view', {
-        id: PAGE_NAME,
+        page_id: PAGE_NAME,
         page_type: 'CATEGORY'
       });
     </script>
@@ -55,21 +55,18 @@
 
       <div class="row g-3">
         <div class="col">
-          <h6>Teddy (microdata)</h6>
           <a href="/paypal-muse-components/marsupials/marsupial-1.html">
-            <img src="/paypal-muse-components/images/marsupial-1.jpeg" width="300px" />
-          </a>
+            <h3>Test microdata</h3>
+          </a>          
         </div>
         <div class="col">
-          <h6>Jack (ldjson)</h6>
           <a href="/paypal-muse-components/marsupials/marsupial-2.html">
-            <img src="/paypal-muse-components/images/marsupial-2.jpeg" width="300px" />
+            <h3>Test ld+json</h3>
           </a>
         </div>
         <div class="col">
-          <h6>Rufus (og tags)</h6>
           <a href="/paypal-muse-components/marsupials/marsupial-3.html">
-            <img src="/paypal-muse-components/images/marsupial-3.jpeg" width="300px" />
+            <h3>Test ogtags</h3>
           </a>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { capturePageData } from '../tag-parsers/capture-page-data';
 /* @flow */
 import type { Config } from '../../types';
 import type { EventType } from '../../types/shopping-events';
+import { isConfigFalse } from '../utils';
 
 function findConfigurationAttribute(config : Config, payload : Object = {}, attribName : string) : ?string {
   const shopperConfig = config.shoppingAttributes || {};
@@ -32,7 +33,7 @@ export const allowedAttributes = [
   // purchase
   'amount',
   // set properties
-  'currency',
+  'currency'
 ];
 
 export function eventSinfoBuilderInit(config : Config) : Object {
@@ -51,10 +52,9 @@ export function eventSinfoBuilderInit(config : Config) : Object {
 
     const enrichedPayload = filterAttributesForSinfoPayload({
       ...payload,
-      ...shopperConfig,
+      ...shopperConfig
     });
-
-    const shouldCaptureData = window.__pp__shopping__ && window.__pp__shopping__.capturePageData;
+    const shouldCaptureData = !isConfigFalse(shopperConfig.parse_page);
     const capturedData = shouldCaptureData ? capturePageData() : {};
     if (shouldCaptureData) {
       enrichedPayload.capturedData = capturedData;
