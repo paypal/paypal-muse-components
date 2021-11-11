@@ -3,10 +3,10 @@ import type {
   EventType
 } from './events';
 
-export type ParamsToBeaconUrl = ({
+export type ParamsToBeaconUrl = ({|
     trackingType : EventType,
     data : any
-}) => string;
+|}) => string;
 
 export type ParamsToTokenUrl = () => string;
 

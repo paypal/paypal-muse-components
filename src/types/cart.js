@@ -25,7 +25,7 @@ export type RemoveFromCartData = {|
     cartTotal? : string,
     total? : string,
     currencyCode? : string,
-    items : $ReadOnlyArray<{ id : string }>
+    items : $ReadOnlyArray<{| id : string |}>
 |};
 
 export type PurchaseData = {|
