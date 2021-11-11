@@ -30,19 +30,9 @@ export const buildEventHandlers = (shoppingAnalytics : any) : $ReadOnlyArray<Eve
     }
   };
 
-  const autoGenerateProductPayloadEventHandler : EventHandlerType = {
-    id: 'autoGenerateProductPayload_handler',
-    predicate: (e) => {
-      return e.autoGenerateProductPayload !== undefined;
-    },
-    handle: (e) => {
-      shoppingAnalytics.autoGenerateProductPayload(e);
-    }
-  };
   return [
     shoppingSendEventHandler,
-    configurationEventHandler,
-    autoGenerateProductPayloadEventHandler
+    configurationEventHandler
   ];
 };
 

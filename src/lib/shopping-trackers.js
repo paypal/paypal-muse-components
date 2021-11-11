@@ -2,7 +2,6 @@
 import type { FptiInput, Config } from '../types';
 import type { EventType } from '../types/shopping-events';
 
-import { autoGenerateProductPayload } from './utils';
 import { trackFpti } from './shopping-fpti/shopping-fpti';
 import {
   eventToFptiConverters
@@ -37,5 +36,5 @@ function initGenericEventPublisher(config : Config) : Object {
 export const setupTrackers = (config : Config) => {
   const send = initGenericEventPublisher(config).publishEvent;
   const set = shoppingAttributes(config).updateShoppingAttributes;
-  return { send, set, autoGenerateProductPayload };
+  return { send, set };
 };

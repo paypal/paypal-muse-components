@@ -3,3 +3,4 @@ dist
 coverage
 flow-typed
 npm-debug.log
+.idea
