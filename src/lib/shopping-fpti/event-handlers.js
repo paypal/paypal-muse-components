@@ -2,22 +2,48 @@ import { capturePageData } from '../tag-parsers/capture-page-data';
 /* @flow */
 import type { Config } from '../../types';
 import type { EventType } from '../../types/shopping-events';
+import { isConfigFalse } from '../utils';
 
 function findConfigurationAttribute(config : Config, payload : Object = {}, attribName : string) : ?string {
   const shopperConfig = config.shoppingAttributes || {};
   return shopperConfig[attribName] || payload[attribName];
 }
 
+export const allowedAttributes = [
+  // page view
+  'page_type',
+  'page_name',
+  'page_id',
+  'page_category_name',
+  'page_category_id',
+  'deal_id',
+  'deal_name',
+  'deal_value',
+  'search_results_count',
+  'cart_products',
+  // product view
+  'product_id',
+  'product_name',
+  'product_url',
+  'product_price',
+  'product_brand',
+  'product_category_name',
+  'product_category_id',
+  'product_discount',
+  // purchase
+  'amount',
+  // set properties
+  'currency'
+];
+
 export function eventSinfoBuilderInit(config : Config) : Object {
   function filterAttributesForSinfoPayload(event : Object) : Object {
-    const excluded_attributes = [ 'user_id', 'disable_storecash' ];
     const filteredAttributes = Object.keys(event)
-      .filter((key) => !excluded_attributes.includes(key))
+      .filter((key) => allowedAttributes.includes(key))
       .reduce((obj, key) => {
         obj[key] = event[key];
         return obj;
       }, {});
-
     return filteredAttributes;
   }
 
@@ -26,10 +52,9 @@ export function eventSinfoBuilderInit(config : Config) : Object {
 
     const enrichedPayload = filterAttributesForSinfoPayload({
       ...payload,
-      ...shopperConfig,
+      ...shopperConfig
     });
-
-    const shouldCaptureData = window.__pp__shopping__ && window.__pp__shopping__.capturePageData;
+    const shouldCaptureData = !isConfigFalse(shopperConfig.parse_page);
     const capturedData = shouldCaptureData ? capturePageData() : {};
     if (shouldCaptureData) {
       enrichedPayload.capturedData = capturedData;
