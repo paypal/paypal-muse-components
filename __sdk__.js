@@ -2,24 +2,20 @@
 /* eslint import/no-commonjs: 0 */
 
 module.exports = {
-  'messaging': {
-    entry: './src/messaging',
-    staticNamespace: '__messaging__',
-    automatic: false
+  messaging: {
+    entry: "./src/messaging",
+    automatic: false,
   },
-  'muse': {
-    entry: './src/index',
-    staticNamespace: '__muse__',
-    automatic: true
+  muse: {
+    entry: "./src/index",
+    automatic: true,
   },
-  'tracker': {
-    entry: './src/tracker',
-    staticNamespace: '__tracker__',
-    automatic: false
+  tracker: {
+    entry: "./src/tracker",
+    automatic: false,
   },
-  'shopping': {
-    entry: './src/shopping',
-    staticNamespace: '__shopping__',
-    automatic: false
-  }
+  shopping: {
+    entry: "./src/shopping",
+    automatic: false,
+  },
 };
