@@ -2,6 +2,7 @@
 import { setIdentity, getIdentity } from '../local-storage';
 import { getDeviceInfo } from '../get-device-info';
 import { logger } from '../logger';
+import { debugLogger } from '../debug-console-logger';
 
 import { IframeManager } from './iframe-manager';
 
@@ -26,7 +27,7 @@ export class IdentityManager extends IframeManager {
     } else {
       iframeUrl = 'https://www.paypal.com/muse/identity/index.html';
     }
-
+    debugLogger.log('[identity-manager:constructor] Using iframe url:', iframeUrl);
     super({ src: iframeUrl });
     this.addMessageListener(this.storeIdentity);
     this.addMessageListener(this.logIframeError);
@@ -34,6 +35,7 @@ export class IdentityManager extends IframeManager {
   }
 
   onIframeLoad = () => {
+    debugLogger.log('[identity-manager:onIframeLoad] Iframe loaded.');
     this.fetchIdentity();
   }
 
@@ -42,6 +44,7 @@ export class IdentityManager extends IframeManager {
       return;
     }
     this.completionListener(null, e);
+    debugLogger.log('[identity-manager:logIframeError] Identity iframe error:', e.data.payload);
     logger.error('identity iframe error:', e.data.payload);
   }
 
@@ -51,7 +54,7 @@ export class IdentityManager extends IframeManager {
     }
 
     const identity = e.data.payload;
-
+    debugLogger.log('[identity-manager:storeIdentity] Fetch identity response. Received: ', identity);
     setIdentity(identity);
     this.completionListener(identity, null);
   }
@@ -62,6 +65,7 @@ export class IdentityManager extends IframeManager {
     /* Do not fetch if identity data
     has recently be cached. */
     if (cachedIdentity) {
+      debugLogger.log('[identity-manager:fetchIdentity] Fetch identity found in cache:', cachedIdentity);
       this.completionListener(cachedIdentity, null);
       return;
     }
@@ -69,6 +73,7 @@ export class IdentityManager extends IframeManager {
     const deviceInfo = getDeviceInfo();
     const country = 'US';
 
+    debugLogger.log('[identity-manager:fetchIdentity] Fetch identity request.');
     this.iframe.contentWindow.postMessage({
       type: 'fetch_identity_request',
       payload: {

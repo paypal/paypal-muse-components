@@ -195,6 +195,7 @@ describe('IF THIS FAILS, UPDATE DOC WHEN YOU FIX -- https://go/shopping-sinfo-pr
       'page_type',
       'page_name',
       'page_id',
+      'page_path',
       'page_category_name',
       'page_category_id',
       'deal_id',

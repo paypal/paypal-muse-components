@@ -3,6 +3,7 @@ import { capturePageData } from '../tag-parsers/capture-page-data';
 import type { Config } from '../../types';
 import type { EventType } from '../../types/shopping-events';
 import { isConfigFalse } from '../utils';
+import { debugLogger } from '../debug-console-logger';
 
 function findConfigurationAttribute(config : Config, payload : Object = {}, attribName : string) : ?string {
   const shopperConfig = config.shoppingAttributes || {};
@@ -14,6 +15,7 @@ export const allowedAttributes = [
   'page_type',
   'page_name',
   'page_id',
+  'page_path',
   'page_category_name',
   'page_category_id',
   'deal_id',
@@ -44,6 +46,18 @@ export function eventSinfoBuilderInit(config : Config) : Object {
         obj[key] = event[key];
         return obj;
       }, {});
+
+    const excludedAttributes = Object.keys(event)
+      .filter((key) => !allowedAttributes.includes(key))
+      .reduce((obj, key) => {
+        obj[key] = event[key];
+        return obj;
+      }, {});
+
+    if (Object.keys(excludedAttributes).length) {
+      debugLogger.log('[event-handler:filterAttributesForSinfoPayload] Following attributes will be excluded from event sinfo payload:', excludedAttributes);
+    }
+
     return filteredAttributes;
   }
 

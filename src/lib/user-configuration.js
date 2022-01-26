@@ -10,6 +10,7 @@ import {
 } from './local-storage';
 import { IdentityManager } from './iframe-tools/identity-manager';
 import { logger } from './logger';
+import { debugLogger } from './debug-console-logger';
 
 /**
  * Make a call to VPNS by loading the identity iframe and
@@ -31,8 +32,10 @@ function setupUserIdentity(
 ) {
   const identity = getIdentity();
   if (identity) {
+    debugLogger.log('[identity:fetchUserIdentity] Loaded user identity from storage:', identity);
     callback(identity, null);
   } else {
+    debugLogger.log('[identity:fetchUserIdentity] Triggering identity discovery.');
     fetchUserIdentity(config, callback);
   }
 }
@@ -61,6 +64,7 @@ export const setupUserDetails = (config : Config, callback : Function) => {
   try {
     config.user = config.user || {};
     userId = fetchOrSetupUserIdInLocalStorage().userId;
+    debugLogger.log('[user-configuration:setupUserDetails] User Id from local storage:', userId);
     processMerchantProvidedId(config);
     setupUserIdentity(config, callback);
   } catch (err) {
