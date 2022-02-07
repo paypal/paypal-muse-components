@@ -11,7 +11,7 @@ import { capturePageData } from './tag-parsers/capture-page-data';
 import { debugLogger } from './debug-console-logger';
 
 // $FlowFixMe
-export const shoppingAnalyticsSetup = (config? : Config = {}) => {
+export const shoppingAnalyticsSetup = (config : Config = {}) => {
   const shoppingTracker = setupTrackers(config);
   let identityFetchCompleted : boolean = false;
   let containerFetchCompleted : boolean = false;
@@ -64,7 +64,7 @@ export const shoppingAnalyticsSetup = (config? : Config = {}) => {
   }
   
   debugLogger.log('[shopping-analytics:shoppingAnalyticsSetup] Initialized shopping analytics with the following configuration', config);
-
+  // TODO: promisify setupUserDetails, setupContainer
   setupUserDetails(config, onUserIdentityFetch);
   setupContainer(config, onContainerFetch);
 
