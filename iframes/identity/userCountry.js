@@ -1,5 +1,8 @@
+import constants from '../../src/lib/constants';
+
+const { defaultCountry } = constants;
+
 export const fetchUserCountry = () => {
-    const US = 'US';
     const geoLocationUrl = 'https://www.paypalobjects.com/muse/noop.js';
 
     return fetch(geoLocationUrl, { mode: 'no-cors' })
@@ -14,13 +17,13 @@ export const fetchUserCountry = () => {
             // This can happen if Akamai header 'x-client-location' is missing in noop.js response
             const country = res.headers.get('x-client-location');
             if (country === null) {
-                return US;
+                return defaultCountry;
             }
 
             return country;
         })
         .catch(() => {
             // Fallback to US in case noop.js request blocked
-            return US;
+            return defaultCountry;
         });
 }

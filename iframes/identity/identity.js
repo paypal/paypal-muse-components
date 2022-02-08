@@ -2,13 +2,25 @@ import {fetchVisitorInfo} from './userInfo'
 import {fetchUserCountry} from './userCountry'
 import constants from "../../src/lib/constants";
 
-const {IDENTITY_MESSAGES} = constants;
+const {IDENTITY_MESSAGES, defaultCountry} = constants;
 
 window.addEventListener('message', async (e) => {
-  if (e.data.type !== IDENTITY_MESSAGES.USER_INFO_REQUEST) {
-    return
-  }
+  switch (e.data.type) {
+    case IDENTITY_MESSAGES.USER_INFO_REQUEST: {
+      await userInfoRequest(e)
+      break
+    }
 
+    case IDENTITY_MESSAGES.USER_COUNTRY_MESSAGE: {
+      await userCountryRequest()
+      break
+    }
+    default:
+      return
+  }
+})
+
+const userInfoRequest = async (e) => {
   try {
     const visitorInfo = await fetchVisitorInfo(e.data.payload)
     window.parent.postMessage({
@@ -27,14 +39,10 @@ window.addEventListener('message', async (e) => {
       payload: {}
     }, '*')
   }
-})
+}
 
-window.addEventListener('message', async (e) => {
-  const eventName = IDENTITY_MESSAGES.USER_COUNTRY_MESSAGE
-  if (e.data.type !== eventName) {
-    return
-  }
-  let country = 'US';
+const userCountryRequest = async () => {
+  let country = defaultCountry;
   try {
     country = await fetchUserCountry()
 
@@ -47,7 +55,7 @@ window.addEventListener('message', async (e) => {
   }
 
   window.parent.postMessage({
-    type: eventName,
+    type: IDENTITY_MESSAGES.USER_COUNTRY_MESSAGE,
     payload: country
   }, '*')
-})
+}

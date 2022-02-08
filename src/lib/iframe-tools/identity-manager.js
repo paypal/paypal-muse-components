@@ -119,28 +119,4 @@ export class IdentityManager extends IframeManager {
       }
     }, this.url.origin);
   }
-
-  // fetchIdentity = () => {
-  //   const cachedIdentity = getIdentity();
-  //
-  //   /* Do not fetch if identity data
-  //   has recently be cached. */
-  //   if (cachedIdentity) {
-  //     debugLogger.log('[identity-manager:fetchIdentity] Fetch identity found in cache:', cachedIdentity);
-  //     this.completionListener(cachedIdentity, null);
-  //     return;
-  //   }
-  //
-  //   const deviceInfo = getDeviceInfo();
-  //   const country = 'US';
-  //
-  //   debugLogger.log('[identity-manager:fetchIdentity] Fetch identity request.');
-  //   this.iframe.contentWindow.postMessage({
-  //     type: 'fetch_identity_request',
-  //     payload: {
-  //       deviceInfo,
-  //       country
-  //     }
-  //   }, this.url.origin);
-  // }
 }
