@@ -1,54 +1,61 @@
-const fetchVisitorInfo = ({ deviceInfo, country }) => {
-  const encodedDeviceInfo = encodeURIComponent(JSON.stringify(deviceInfo))
+import {fetchVisitorInfo} from './userInfo'
+import {fetchUserCountry} from './userCountry'
+import constants from "../../src/lib/constants";
 
-  const fetchOptions = {
-    method: 'POST',
-    credentials: 'include',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      query: `{ visitorInfo(
-        country: "${country}",
-        deviceInfo: "${encodedDeviceInfo}"
-      ) }`
-    })
-  }
-
-  return fetch('/targeting/graphql', fetchOptions)
-    .then(res => {
-      if (res.status !== 200) {
-        throw new Error(`targeting responded with statuscode ${res.status}`)
-      }
-
-      return res.json()
-    })
-    .then(json => {
-      if (!json || !json.data || !json.data.visitorInfo) {
-        throw new Error('response missing required fields')
-      }
-
-      return json.data.visitorInfo
-    })
-}
+const {IDENTITY_MESSAGES, defaultCountry} = constants;
 
 window.addEventListener('message', async (e) => {
-  if (e.data.type !== 'fetch_identity_request') {
-    return
-  }
+  switch (e.data.type) {
+    case IDENTITY_MESSAGES.USER_INFO_REQUEST: {
+      await userInfoRequest(e)
+      break
+    }
 
+    case IDENTITY_MESSAGES.USER_COUNTRY_MESSAGE: {
+      await userCountryRequest()
+      break
+    }
+    default:
+      return
+  }
+})
+
+const userInfoRequest = async (e) => {
   try {
     const visitorInfo = await fetchVisitorInfo(e.data.payload)
     window.parent.postMessage({
-      type: 'fetch_identity_response',
+      type: IDENTITY_MESSAGES.USER_INFO_REQUEST,
       payload: visitorInfo
     }, '*')
   } catch (err) {
     // surface error to parent window
     window.parent.postMessage({
-      type: 'fetch_identity_error',
+      type: IDENTITY_MESSAGES.FETCH_ERROR,
+      payload: err
+    }, '*')
+
+    window.parent.postMessage({
+      type: IDENTITY_MESSAGES.USER_INFO_REQUEST,
+      payload: {}
+    }, '*')
+  }
+}
+
+const userCountryRequest = async () => {
+  let country = defaultCountry;
+  try {
+    country = await fetchUserCountry()
+
+  } catch (err) {
+    // surface error to parent window
+    window.parent.postMessage({
+      type: IDENTITY_MESSAGES.FETCH_ERROR,
       payload: err
     }, '*')
   }
-})
+
+  window.parent.postMessage({
+    type: IDENTITY_MESSAGES.USER_COUNTRY_MESSAGE,
+    payload: country
+  }, '*')
+}

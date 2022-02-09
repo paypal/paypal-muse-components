@@ -1,6 +1,6 @@
 {
   "name": "@paypal/muse-components",
-  "version": "1.3.72",
+  "version": "1.3.73",
   "description": "MUSE component for unified PayPal/Braintree web sdk",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,8 @@
     "lint": "eslint src/ test/ *.js --fix",
     "test": "npm run lint && npm run flow-typed && npm run flow && jest",
     "test:dev": "jest --watchAll",
-    "start:test-site": "node ./test-site-server.js"
+    "start:test-site": "node ./test-site-server.js",
+    "identity:dev": "webpack serve --config ./webpack.dev.mjs"
   },
   "files": [
     "src",
@@ -49,7 +50,8 @@
     "html-webpack-plugin": "^3.2.0",
     "html-webpack-template": "^6.2.0",
     "jest": "^24.9.0",
-    "webpack": "^4.41.2"
+    "webpack": "^4.41.2",
+    "webpack-cli": "^4.7.2"
   },
   "dependencies": {
     "@paypal/sdk-client": "^4.0.1",

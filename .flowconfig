@@ -15,6 +15,7 @@
 .*/test/local-storage/local-storage-utils.test.js
 .*/test/tracker-component.test.js
 .*/test/.*
+<PROJECT_ROOT>/webpack.dev.mjs
 [untyped]
 .*/src/lib/jetlore
 .*/src/storeCash.js

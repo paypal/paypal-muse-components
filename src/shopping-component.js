@@ -18,7 +18,7 @@ const { defaultTrackerConfig } = constants;
  * @constructor
  */
 // $FlowFixMe
-export const ShoppingAnalytics = (config? : Config = {}) => {
+export const ShoppingAnalytics = (config : Config = {}) => {
   // $FlowFixMe
   config = { ...defaultTrackerConfig, ...config };
   const shoppingAnalytics = shoppingAnalyticsSetup(config);

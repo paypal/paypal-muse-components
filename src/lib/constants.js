@@ -19,5 +19,11 @@ export default {
       'email': null,
       'name': null
     }
+  },
+  'defaultCountry': 'US',
+  'IDENTITY_MESSAGES': {
+    FETCH_ERROR: 'fetch_identity_error',
+    USER_INFO_REQUEST: 'fetch_identity_request',
+    USER_COUNTRY_MESSAGE: 'fetch_identity_country'
   }
 };
