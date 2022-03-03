@@ -44,7 +44,8 @@
     "webpack-cli": "^4.7.2"
   },
   "dependencies": {
-    "@paypal/sdk-client": "^4.0.1",
+    "@krakenjs/belter": "^2.0.1",
+    "@paypal/sdk-client": "^4.0.166",
     "whatwg-fetch": "^3.0.0"
   },
   "jest": {

@@ -1,5 +1,5 @@
 /* @flow */
-import { uniqueID } from 'belter/src';
+import { uniqueID } from '@krakenjs/belter/src';
 
 /*
 ** the reason this is exported as a default object is to get rid of error
