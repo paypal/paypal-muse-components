@@ -87,12 +87,27 @@ export class IdentityManager extends IframeManager {
       return;
     }
 
-    debugLogger.log('[identity-manager:fetchIdentity] Fetch country request.');
-    this.fetchCountry().then((country) => {
+    const localStorageKey = 'pp-sdk-shouldReallyCheckCountry';
+    const LS = window.localStorage;
+    if (LS.getItem(localStorageKey) === null) {
+      const randomChance = Math.floor(Math.random() * 100);
+      const shouldCheckCountry = randomChance < 50;
+      LS.setItem(localStorageKey, shouldCheckCountry);
+    }
 
-      debugLogger.log('[identity-manager:fetchIdentity] Fetch identity request. Country:', country);
-      this.fetchUserInfo(country);
-    });
+    const shouldReallyCheckCountry = LS.getItem(localStorageKey);
+
+    debugLogger.log(`[identity-manager:fetchIdentity] Fetching Identity`);
+
+    if (shouldReallyCheckCountry) {
+      this.fetchCountry().then((country) => {
+        debugLogger.log('[identity-manager:fetchIdentity] Fetch identity request. Country:', country);
+        this.fetchUserInfo(country);
+      });
+    } else {
+      debugLogger.log('[identity-manager:fetchIdentity] Fetch identity request. Country not fetched.');
+      this.fetchUserInfo('ALL');
+    }
   }
 
   fetchUserInfo = (country) => {
