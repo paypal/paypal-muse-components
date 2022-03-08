@@ -42,7 +42,7 @@ export class IdentityManager extends IframeManager {
   onIframeLoad = () => {
     debugLogger.log('[identity-manager:onIframeLoad] Iframe loaded.');
     this.fetchIdentity();
-  }
+  };
 
   logIframeError = (e) => {
     if (e.data.type !== 'fetch_identity_error') {
@@ -51,7 +51,7 @@ export class IdentityManager extends IframeManager {
     this.completionListener(null, e);
     debugLogger.log('[identity-manager:logIframeError] Identity iframe error:', e.data.payload);
     logger.error('identity iframe error:', e.data.payload);
-  }
+  };
 
   storeIdentity = (e) => {
     if (e.data.type !== 'fetch_identity_response') {
@@ -62,7 +62,7 @@ export class IdentityManager extends IframeManager {
     debugLogger.log('[identity-manager:storeIdentity] Fetch identity response. Received: ', identity);
     setIdentity(identity);
     this.completionListener(identity, null);
-  }
+  };
 
   fetchCountry = () => {
     return new Promise((resolve) => {
@@ -76,7 +76,7 @@ export class IdentityManager extends IframeManager {
         type: IDENTITY_MESSAGES.USER_COUNTRY_MESSAGE
       }, this.url.origin);
     });
-  }
+  };
 
   fetchIdentity = () => {
     const cachedIdentity = getIdentity();
@@ -113,7 +113,7 @@ export class IdentityManager extends IframeManager {
       debugLogger.log('[identity-manager:fetchIdentity] Fetch identity request. Country not fetched.');
       this.fetchUserInfo('ALL');
     }
-  }
+  };
 
   fetchUserInfo = (country) => {
     /* Do not fetch if identity data
@@ -138,5 +138,5 @@ export class IdentityManager extends IframeManager {
         country
       }
     }, this.url.origin);
-  }
+  };
 }

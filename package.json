@@ -16,7 +16,8 @@
     "test": "npm run lint && npm run flow && jest",
     "test:dev": "jest --watchAll",
     "start:test-site": "node ./test-site-server.js",
-    "identity:dev": "webpack serve --config ./webpack.dev.mjs"
+    "identity:dev": "webpack serve --config ./webpack.dev.mjs",
+    "jest": "jest"
   },
   "files": [
     "src",
@@ -33,23 +34,12 @@
   },
   "homepage": "https://github.com/paypal/paypal-muse-components#readme",
   "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/plugin-proposal-decorators": "^7.4.4",
-    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-    "@babel/plugin-transform-for-of": "^7.4.4",
-    "@babel/plugin-transform-runtime": "^7.5.5",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^24.9.0",
-    "babel-loader": "^8.0.6",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
-    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "express": "^4.17.1",
     "flow-bin": "^0.100.0",
     "flow-typed": "3.3.1",
     "grumbler-scripts": "^5",
     "html-webpack-plugin": "^3.2.0",
     "html-webpack-template": "^6.2.0",
-    "jest": "^24.9.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^4.7.2"
   },

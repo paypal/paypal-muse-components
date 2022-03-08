@@ -33,16 +33,15 @@ describe('get-property-id', () => {
       window.localStorage.clear();
     });
 
-    it('requests a container using merchantId and browser location', async (done) => {
+    it('requests a container using merchantId and browser location', async () => {
       const expectedUrl = 'https://www.paypal.com/tagmanager/containers/xo?mrid=759SBALRW3ZTY&url=http%3A%2F%2Flocalhost&jlAccessToken=true';
       await fetchContainerSettings({});
 
       expect(global.fetch).toHaveBeenCalledTimes(1);
       expect(global.fetch).toHaveBeenCalledWith(expectedUrl);
-      done();
     });
 
-    it('returns an abridged summary of a merchant container', async (done) => {
+    it('returns an abridged summary of a merchant container', async () => {
       const expected = {
         id: mockContainer1.id,
         integrationType: mockContainer1.integration_type,
@@ -53,10 +52,9 @@ describe('get-property-id', () => {
       const result = await fetchContainerSettings({});
 
       expect(result).toEqual(expected);
-      done();
     });
 
-    it('will use the merchant-provided propertyId if one is provided', async (done) => {
+    it('will use the merchant-provided propertyId if one is provided', async () => {
       const expectedPropertyId = 'arglebargleflimflam';
       const expectedSummary = {
         id: mockContainer1.id,
@@ -71,10 +69,9 @@ describe('get-property-id', () => {
 
       expect(resultSummary).toEqual(expectedSummary);
       expect(resultPropertyId).toBe(expectedPropertyId);
-      done();
     });
 
-    it('saves the container summary to localstorage', async (done) => {
+    it('saves the container summary to localstorage', async () => {
       const expected = {
         id: mockContainer1.id,
         integrationType: mockContainer1.integration_type,
@@ -87,10 +84,9 @@ describe('get-property-id', () => {
       const result = getValidContainer();
 
       expect(result).toEqual(expected);
-      done();
     });
 
-    it('saves the containerId to localstorage as a propertyId', async (done) => {
+    it('saves the containerId to localstorage as a propertyId', async () => {
       const expected = mockContainer1.id;
 
       await fetchContainerSettings({});
@@ -99,10 +95,9 @@ describe('get-property-id', () => {
       result = result && result.propertyId;
 
       expect(result).toEqual(expected);
-      done();
     });
 
-    it('will return a container summary from localstorage if it exists and is less than one hour old', async (done) => {
+    it('will return a container summary from localstorage if it exists and is less than one hour old', async () => {
       const expected = {
         id: 'a-totally-new-id',
         integrationType: 'manual',
@@ -115,7 +110,6 @@ describe('get-property-id', () => {
       const result = await fetchContainerSettings({});
 
       expect(result).toEqual(expected);
-      done();
     });
   });
 
