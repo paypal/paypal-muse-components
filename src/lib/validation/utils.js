@@ -27,6 +27,7 @@ export const checkKeys = (input : any, expectedInput : any) => {
     throw new Error(`Input error: expected ${ getType(input) } to be object`);
   }
 
+  // eslint-disable-next-line guard-for-in
   for (const key in expectedInput) {
     const expected = expectedInput[key];
     const actual = getType(input[key]);

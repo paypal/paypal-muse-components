@@ -1,8 +1,9 @@
 /* @flow */
+import { debugLogger } from '../debug-console-logger';
+
 import parseOgTags from './og-parser';
 import parseJsonLd from './jsonld-parser';
 import parseMicroData from './microdata-parser';
-import { debugLogger } from '../debug-console-logger';
 
 const generateOgData = () => {
   const ogTags = parseOgTags();
@@ -54,6 +55,6 @@ export const capturePageData = () => {
   }
 
   debugLogger.log('[capture-page-data:capturePageData]. Captured page data: ', autoData);
-  
+
   return autoData;
 };

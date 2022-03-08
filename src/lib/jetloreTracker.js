@@ -79,9 +79,11 @@ const JL_UTIL = {
     for (let i = 0; i < ca.length; i++) {
       let c = ca[i];
       while (c.charAt(0) === ' ') {
+        // eslint-disable-next-line unicorn/prefer-string-slice
         c = c.substring(1);
       }
       if (c.indexOf(name) === 0) {
+        // eslint-disable-next-line unicorn/prefer-string-slice
         return c.substring(name.length, c.length);
       }
     }
@@ -278,6 +280,7 @@ Tracker.prototype.urlQuery = function urlQuery() : any {
   // This function is anonymous, is executed immediately and
   // the return value is assigned to QueryString!
   const query_string = {};
+  // eslint-disable-next-line unicorn/prefer-string-slice
   const query = window.location.search.substring(1);
   const vars = query.split('&');
   for (let i = 0; i < vars.length; i++) {

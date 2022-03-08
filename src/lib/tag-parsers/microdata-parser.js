@@ -2,10 +2,13 @@
 import { tryAndLog } from '../utils';
 
 const setProperty = (prop, value, jsonResult) => {
+  // eslint-disable-next-line max-statements-per-line
   if (!jsonResult[prop]) { jsonResult[prop] = value; return; }
 
   // if a property on the object exists, then convert the property into an Array before pushing our value
+  // eslint-disable-next-line max-statements-per-line
   if (!Array.isArray(jsonResult[prop])) { jsonResult[prop] = [ jsonResult[prop] ]; }
+  // eslint-disable-next-line max-statements-per-line
   if (Array.isArray(jsonResult[prop])) { return jsonResult[prop].push(value); }
 };
 

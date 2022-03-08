@@ -11,7 +11,7 @@ const { sevenDays, storage } = constants;
 
 const queryToObject = (src : string) => {
   const search = src.split('?')[1];
-
+  // eslint-disable-next-line prefer-regex-literals
   return JSON.parse(`{"${ decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(new RegExp('=', 'g'), '":"') }"}`);
 };
 
@@ -59,6 +59,7 @@ describe('paypal.Tracker', () => {
 
   const createElement = () => {
     // $FlowFixMe
+    // eslint-disable-next-line no-plusplus
     createElementCalls++;
     return imgMock;
   };
@@ -131,7 +132,7 @@ describe('paypal.Tracker', () => {
   it('should clear stored cart content if cart is expired', () => {
     const beforeStorage = window.localStorage.getItem(storage.paypalCrCart);
     const twoWeeksAgo = (Date.now() - (sevenDays * 2));
-    
+
     expect(beforeStorage).toBe(null);
     window.localStorage.setItem(storage.paypalCrCart, JSON.stringify({
       cartId: 'arglebargleflimflam',
