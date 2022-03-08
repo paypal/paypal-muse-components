@@ -13,7 +13,7 @@
     "flow": "flow",
     "flow:build": "flow gen-flow-files ./src/index.js --out-dir ./dist/module",
     "lint": "eslint src/ test/ *.js --fix",
-    "test": "npm run lint && npm run flow-typed && npm run flow && jest",
+    "test": "npm run lint && npm run flow && jest",
     "test:dev": "jest --watchAll",
     "start:test-site": "node ./test-site-server.js",
     "identity:dev": "webpack serve --config ./webpack.dev.mjs"
