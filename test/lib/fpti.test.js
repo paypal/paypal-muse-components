@@ -32,6 +32,7 @@ jest.mock('../../src/lib/get-device-info');
 jest.mock('../../src/lib/local-storage');
 
 function verifyCopy (targetObject : Object, sourceObject : Object) {
+  // eslint-disable-next-line guard-for-in
   for (const property in sourceObject) {
     expect(targetObject[property]).toEqual(sourceObject[property]);
   }
@@ -44,11 +45,11 @@ describe('should map tracking data', () => {
     getDeviceInfo.mockReturnValue(deviceInfoMock);
     getIdentity.mockReturnValue(identityMock);
   });
-  
+
   it('should map tracking data with default values', () => {
     const config = { user: { id: 123 } };
     const trackingData = resolveTrackingData(config, fptiInput);
-      
+
     expect(trackingData.product).toEqual('ppshopping');
     expect(trackingData.e).toEqual('im');
     expect(trackingData.comp).toEqual('ppshoppingsdk');
@@ -64,7 +65,7 @@ describe('should map tracking data', () => {
   it('should map tracking data with parameters', () => {
     const config = { user: { id: 123 } };
     const trackingData = resolveTrackingData(config, fptiInput, 'ppshopping_v2', 'ppshoppingsdk_v2');
-    
+
     expect(trackingData.product).toEqual('ppshopping_v2');
     expect(trackingData.e).toEqual('im');
     expect(trackingData.comp).toEqual('ppshoppingsdk_v2');

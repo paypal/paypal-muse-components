@@ -18,7 +18,7 @@ export class IframeManager {
     if (this.onIframeLoad) {
       this.onIframeLoad(e);
     }
-  }
+  };
 
   _onMessage = (e) => {
     if (e.source.window !== this.iframe.contentWindow) {
@@ -36,7 +36,7 @@ export class IframeManager {
         logger.error(err, listener, e);
       }
     });
-  }
+  };
 
   addMessageListener = (listener) => {
     if (typeof listener !== 'function') {
@@ -45,5 +45,5 @@ export class IframeManager {
     }
 
     this.messageListeners.push(listener);
-  }
+  };
 }

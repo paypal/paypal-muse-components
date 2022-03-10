@@ -3,19 +3,19 @@
 
 module.exports = {
   messaging: {
-    entry: "./src/messaging",
-    automatic: false,
+    entry: './src/messaging',
+    automatic: false
   },
   muse: {
-    entry: "./src/index",
-    automatic: true,
+    entry: './src/index',
+    automatic: true
   },
   tracker: {
-    entry: "./src/tracker",
-    automatic: false,
+    entry: './src/tracker',
+    automatic: false
   },
   shopping: {
-    entry: "./src/shopping",
-    automatic: false,
-  },
+    entry: './src/shopping',
+    automatic: false
+  }
 };

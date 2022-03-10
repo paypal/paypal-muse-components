@@ -1,10 +1,12 @@
-import { capturePageData } from '../tag-parsers/capture-page-data';
 /* @flow */
+// $FlowFixMe
+import { capturePageData } from '../tag-parsers/capture-page-data';
 import type { Config } from '../../types';
 import type { EventType } from '../../types/shopping-events';
 import { isConfigFalse } from '../utils';
 import { debugLogger } from '../debug-console-logger';
 
+// eslint-disable-next-line default-param-last
 function findConfigurationAttribute(config : Config, payload : Object = {}, attribName : string) : ?string {
   const shopperConfig = config.shoppingAttributes || {};
   return shopperConfig[attribName] || payload[attribName];

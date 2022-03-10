@@ -1,7 +1,6 @@
 /* @flow */
 /* global afterAll expect jest */
 import { Tracker } from '../../src/tracker-component';
-import { fetchPropertyId } from '../../src/lib/get-property-id';
 import { getUserId } from '../../src/lib/local-storage';
 import constants from '../../src/lib/constants';
 import { mockContainerSummary1 } from '../mocks';
@@ -26,7 +25,6 @@ describe('setUser', () => {
   });
 
   afterAll(() => {
-    fetchPropertyId.mockRestore();
     window.localStorage.removeItem(storage.paypalCrUser);
   });
 
@@ -52,7 +50,7 @@ describe('setUser', () => {
     const oldUser = { userId: 'oldvalue', createdAt: Date.now() };
     window.localStorage.setItem(storage.paypalCrUser, JSON.stringify(oldUser));
     Tracker({ user: { id: 'newvalue' } });
-    
+
     const newUser = getUserId().merchantProvidedUserId;
     expect(newUser).toBe('newvalue');
     expect(newUser).not.toBe(oldUser.merchantProvidedUserId);

@@ -49,7 +49,6 @@ describe('customEvent', () => {
 
   afterAll(() => {
     window.localStorage.clear();
-    jest.mockRestore();
   });
 
   it('should trigger a call to fpit', (done) => {

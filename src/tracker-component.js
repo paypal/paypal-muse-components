@@ -1,4 +1,5 @@
 /* @flow */
+/* eslint no-fallthrough: off */
 import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
 import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src';
@@ -87,6 +88,7 @@ export const trackEvent = (config : Config, trackingType : EventType, trackingDa
   case 'view':
   case 'customEvent':
     if (programExists) {
+      // eslint-disable-next-line default-case
       switch (trackingData.eventName) {
       case 'analytics-init':
         analyticsInit(config);
@@ -147,7 +149,7 @@ export const Tracker = (config? : Config = {}) => {
 
     delete config.user.id;
   }
-    
+
   const currentUrl = new URL(window.location.href);
   // use the param ?ppDebug=true to see logs
   const debug = currentUrl.searchParams.get('ppDebug') === 'true';
@@ -160,6 +162,7 @@ export const Tracker = (config? : Config = {}) => {
   let userId;
 
   try {
+    // eslint-disable-next-line no-new
     new IdentityManager(config);
     getOrCreateValidCartId();
     userId = getOrCreateValidUserId().userId;
@@ -206,7 +209,7 @@ export const Tracker = (config? : Config = {}) => {
           eventName,
           eventType: 'noop'
         };
-  
+
         trackFpti(config, fptiInput);
       } catch (err) {
         // continue regardless of error

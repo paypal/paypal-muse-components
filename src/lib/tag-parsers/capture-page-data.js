@@ -1,8 +1,9 @@
 /* @flow */
+import { debugLogger } from '../debug-console-logger';
+
 import parseOgTags from './og-parser';
 import parseJsonLd from './jsonld-parser';
 import parseMicroData from './microdata-parser';
-import { debugLogger } from '../debug-console-logger';
 
 const generateOgData = () => {
   const ogTags = parseOgTags();
@@ -23,6 +24,7 @@ const generateJSONldData = () => {
 
   const hasLdTags = Array.isArray(ldTags) && ldTags.length > 0;
   if (hasLdTags) {
+    // eslint-disable-next-line unicorn/prefer-spread
     tags = tags.concat(ldTags);
   }
 
@@ -54,6 +56,6 @@ export const capturePageData = () => {
   }
 
   debugLogger.log('[capture-page-data:capturePageData]. Captured page data: ', autoData);
-  
+
   return autoData;
 };
