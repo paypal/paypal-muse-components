@@ -67,6 +67,7 @@
     "moduleDirectories": [
       "node_modules"
     ],
+    "collectCoverage": true,
     "testEnvironment": "jsdom",
     "setupFiles": [
       "<rootDir>/test/paypal.js"
