@@ -18,7 +18,7 @@ type tag = {|
 |};
 
 /* A JSON description of the different products/tags that are
-loaded on a merchant site when pptm is pulled from a script tag. */
+loaded on a merchant site when container loaded from tag-manager. */
 export type Container = {|
   /* container id is used as propertyId */
   id : string,
@@ -29,7 +29,11 @@ export type Container = {|
   owner_id : string,
   /* Array containing different elements to load. */
   tags : $ReadOnlyArray<tag>,
-  jlAccessToken : string | null
+  jlAccessToken : string | null,
+  application_context : {|
+    limit_url_capture : boolean | void,
+    disable_pptm_bundle : boolean | void
+  |}
 |};
 
 export type ContainerSummary = {|
@@ -37,5 +41,9 @@ export type ContainerSummary = {|
   integrationType : string,
   mrid : string,
   programId : string | null,
-  jlAccessToken : string | null
+  jlAccessToken : string | null,
+  applicationContext : {|
+    limitUrlCapture : boolean,
+    disablePptmBundle : boolean
+  |}
 |};

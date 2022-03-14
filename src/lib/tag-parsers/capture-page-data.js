@@ -24,7 +24,6 @@ const generateJSONldData = () => {
 
   const hasLdTags = Array.isArray(ldTags) && ldTags.length > 0;
   if (hasLdTags) {
-    // eslint-disable-next-line unicorn/prefer-spread
     tags = tags.concat(ldTags);
   }
 

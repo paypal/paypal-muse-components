@@ -38,7 +38,13 @@ export const eventToFptiConverters = (config : Config) => {
     const storedUserIds = getStoredUserIds();
     const eventFptiAttributes = eventToFptiMapper.eventToFptiAttributes(eventType, event);
 
-    const fptiInput  =   {
+    let { location } = deviceInfo;
+
+    if (containerSummary.applicationContext.limitUrlCapture) {
+      location = document.location.host;
+    }
+
+    return {
       ...eventFptiAttributes,
       e: 'im',
       flag_consume: 'yes',
@@ -53,7 +59,7 @@ export const eventToFptiConverters = (config : Config) => {
       screenHeight: deviceInfo.screenHeight,
       colorDepth: deviceInfo.colorDepth,
       rosettaLanguage: deviceInfo.rosettaLanguage,
-      location: deviceInfo.location,
+      location,
       deviceType: deviceInfo.deviceType,
       browserHeight: deviceInfo.browserHeight,
       browserWidth: deviceInfo.browserWidth,
@@ -61,8 +67,6 @@ export const eventToFptiConverters = (config : Config) => {
       encryptedAccountNumber: identity.encryptedAccountNumber,
       identificationType: identity.identificationType
     };
-
-    return fptiInput;
   }
   
   return {

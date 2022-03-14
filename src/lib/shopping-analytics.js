@@ -2,6 +2,7 @@
 import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
 import type { Config } from '../types/config';
+import type { ContainerSummary } from '../types';
 
 import { setupTrackers } from './shopping-trackers';
 import { setupUserDetails } from './user-configuration';
@@ -38,7 +39,7 @@ export const shoppingAnalyticsSetup = (config : Config = {}) => {
   }
 
   // $FlowFixMe
-  function onContainerFetch(containerSummary) {
+  function onContainerFetch(containerSummary : ContainerSummary) : void  {
     debugLogger.log('[shopping-analytics:onUserIdentityFetch] Received container fetch notification. Container summary: ', containerSummary);
     config.propertyId = config.propertyId || (containerSummary && containerSummary.id);
     config.containerSummary = containerSummary;
