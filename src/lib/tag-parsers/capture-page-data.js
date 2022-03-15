@@ -24,7 +24,7 @@ const generateJSONldData = () => {
 
   const hasLdTags = Array.isArray(ldTags) && ldTags.length > 0;
   if (hasLdTags) {
-    tags = tags.concat(ldTags);
+    tags = [ ...tags, ...ldTags ];
   }
 
   if (productMicroData) {
