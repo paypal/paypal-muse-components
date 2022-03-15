@@ -24,7 +24,8 @@ const generateJSONldData = () => {
 
   const hasLdTags = Array.isArray(ldTags) && ldTags.length > 0;
   if (hasLdTags) {
-    tags = [ ...tags, ...ldTags ];
+    // eslint-disable-next-line unicorn/prefer-spread
+    tags = tags.concat(ldTags);
   }
 
   if (productMicroData) {
