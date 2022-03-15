@@ -46,7 +46,11 @@ describe('get-property-id', () => {
         id: mockContainer1.id,
         integrationType: mockContainer1.integration_type,
         mrid: mockContainer1.owner_id,
-        programId: 'C4ENKKFUEUJ4J'
+        programId: 'C4ENKKFUEUJ4J',
+        applicationContext: {
+          disablePptmBundle: false,
+          limitUrlCapture: false
+        }
       };
 
       const result = await fetchContainerSettings({});
@@ -60,7 +64,11 @@ describe('get-property-id', () => {
         id: mockContainer1.id,
         integrationType: mockContainer1.integration_type,
         mrid: mockContainer1.owner_id,
-        programId: 'C4ENKKFUEUJ4J'
+        programId: 'C4ENKKFUEUJ4J',
+        applicationContext: {
+          disablePptmBundle: false,
+          limitUrlCapture: false
+        }
       };
 
       const resultSummary = await fetchContainerSettings({ propertyId: 'arglebargleflimflam' });
@@ -76,7 +84,11 @@ describe('get-property-id', () => {
         id: mockContainer1.id,
         integrationType: mockContainer1.integration_type,
         mrid: mockContainer1.owner_id,
-        programId: 'C4ENKKFUEUJ4J'
+        programId: 'C4ENKKFUEUJ4J',
+        applicationContext: {
+          disablePptmBundle: false,
+          limitUrlCapture: false
+        }
       };
 
       await fetchContainerSettings({});

@@ -15,13 +15,18 @@ import { logger } from './logger';
 a format better suited for use by the SDK */
 const parseContainer = (container : Container) : ContainerSummary => {
   const offerTag = container.tags.filter(tag => tag.tag_definition_id === 'offers')[0];
-  let programId;
+  let limitUrlCapture = false;
+  let disablePptmBundle = false;
+  let programId = null;
 
   if (offerTag && offerTag.configuration) {
-    programId = offerTag.configuration.filter(config => config.id === 'offer-program-id')[0];
-    programId = programId ? programId.value : null;
-  } else {
-    programId = null;
+    const programIdTag = offerTag.configuration.filter(config => config.id === 'offer-program-id')[0];
+    programId = programIdTag ? programIdTag.value : null;
+  }
+
+  if (container.application_context) {
+    limitUrlCapture = container.application_context.limit_url_capture || false;
+    disablePptmBundle = container.application_context.disable_pptm_bundle || false;
   }
 
   return {
@@ -29,7 +34,11 @@ const parseContainer = (container : Container) : ContainerSummary => {
     integrationType: container.integration_type,
     mrid: container.owner_id,
     programId,
-    jlAccessToken: container.jlAccessToken
+    jlAccessToken: container.jlAccessToken,
+    applicationContext: {
+      limitUrlCapture,
+      disablePptmBundle
+    }
   };
 };
 
@@ -38,7 +47,11 @@ const emptyContainer : Container = {
   integration_type: '',
   owner_id: '',
   tags: [],
-  jlAccessToken: ''
+  jlAccessToken: '',
+  application_context: {
+    limit_url_capture: undefined,
+    disable_pptm_bundle: undefined
+  }
 };
 
 export const getContainerRequestUrl = (merchantId : string, clientId : string, paramsToPropertyIdUrl? : ParamsToPropertyIdUrl) : string => {
@@ -116,7 +129,7 @@ export const fetchContainerSettings = ({ paramsToPropertyIdUrl, propertyId } : C
 
   return getContainer(paramsToPropertyIdUrl)
     .then(parseContainer)
-    .then(containerSummary => {
+    .then((containerSummary : ContainerSummary) => {
       // save to localstorage
       setContainer(containerSummary);
 
