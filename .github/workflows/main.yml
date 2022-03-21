@@ -1,10 +1,8 @@
 name: build
 on:
-  # run on push but only for the main branch
   push:
     branches:
-      - master
-  # run for every pull request
+      - main
   pull_request: {}
 jobs:
   main:
@@ -28,6 +26,6 @@ jobs:
 
       - name: ▶️ Run test script
         run: npm run test
-        
+
       - name: ⬆️ Upload jest coverage report
         uses: codecov/codecov-action@v2
