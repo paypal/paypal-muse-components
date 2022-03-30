@@ -32,6 +32,7 @@ export const eventToFptiConverters = (config : Config) => {
     event : Object
   ) : Object {
     const containerSummary = config.containerSummary || {};
+    const applicationContext = containerSummary.applicationContext || {};
     const deviceInfo : any  = getDeviceInfo() || {};
     const identity : any = getIdentity() || {};
 
@@ -40,7 +41,7 @@ export const eventToFptiConverters = (config : Config) => {
 
     let { location } = deviceInfo;
 
-    if (containerSummary.applicationContext.limitUrlCapture) {
+    if (applicationContext.limitUrlCapture) {
       location = document.location.host;
     }
 
