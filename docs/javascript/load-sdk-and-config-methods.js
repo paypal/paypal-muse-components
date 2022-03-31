@@ -3,7 +3,7 @@ const sdkBaseUrl =
 const sdkPort = localStorage.getItem('sdk-port') || '443';
 const clientId =
   localStorage.getItem('sdk-client-id') ||
-  'AY09zHPojjoschuPgNWj1imd648hlwyX0aZnQRhncc0ALfqS8wZCaG5sxUoceQxo72cD1GvnEfS5EGZT';
+  'AdAFmWh28oHwazzpuMUsTroiBu4SfqZUIGEi3dqgNsXlqOPDLwDYiUre5fJLdJbfl0-SPl8gfOqmjkiq';
 
 ; (function (a, t, o, m, i) { a[m] = a[m] || [];
   a[m].push({ t: new Date().getTime(), event:
