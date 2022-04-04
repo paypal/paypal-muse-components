@@ -1,6 +1,6 @@
 /* @flow */
 import { getLogger } from '@paypal/sdk-client/src/logger';
-import { noop, stringifyError, stringifyErrorMessage } from 'belter/src';
+import { noop, stringifyError, stringifyErrorMessage } from '@krakenjs/belter/src';
 import { FPTI_KEY } from '@paypal/sdk-constants/src';
 
 export const logger = {
