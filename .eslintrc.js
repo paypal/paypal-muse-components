@@ -2,7 +2,7 @@
 /* eslint-disable import/no-commonjs */
 
 module.exports = {
-    'extends': './node_modules/grumbler-scripts/config/.eslintrc-browser.js',
+    'extends': './node_modules/@krakenjs/grumbler-scripts/config/.eslintrc-browser.js',
     'rules': {
         'no-empty-function': 'off',
         'no-restricted-globals': 'off',
