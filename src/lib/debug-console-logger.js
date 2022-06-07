@@ -19,10 +19,17 @@ function _initDebugTracker() {
       // eslint-disable-next-line no-console
       console.log(`${ _getTimeLabel()  }[debug-console-logger:init] PayPal Shopping: debug mode on. Based on URL parameter.`);
     } else {
-      debug = window.localStorage.getItem(storage.paypalSDKConsoleDebug) === 'true';
-      if (debug) {
-        // eslint-disable-next-line no-console
-        console.log(`${ _getTimeLabel()  }[debug-console-logger:init] PayPal Shopping: debug mode on. Based on local storage.`);
+      try {
+        debug = window.localStorage.getItem(storage.paypalSDKConsoleDebug) === 'true';
+        if (debug) {
+          // eslint-disable-next-line no-console
+          console.log(`${ _getTimeLabel() }[debug-console-logger:init] PayPal Shopping: debug mode on. Based on local storage.`);
+        }
+      } catch (e) {
+        if (debug) {
+          // eslint-disable-next-line no-console
+          console.log(`${ _getTimeLabel() }[debug-console-logger:init] Init Exception. ${ e }`);
+        }
       }
     }
     global.debugLogEnabled = debug;

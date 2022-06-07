@@ -48,10 +48,14 @@ export const setMerchantProvidedUserId = (id : string) => {
 
 /* Returns a userId if one exists */
 export const getUserId = () => {
-  const storedValue = window.localStorage.getItem(storage.paypalCrUser);
+  try {
+    const storedValue = window.localStorage.getItem(storage.paypalCrUser);
 
-  if (storedValue) {
-    return JSON.parse(storedValue);
+    if (storedValue) {
+      return JSON.parse(storedValue);
+    }
+  } catch (e) {
+    return null;
   }
 
   return null;
