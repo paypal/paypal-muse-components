@@ -26,11 +26,11 @@ export const getValidContainer = () : ContainerSummary | null => {
 
       return null;
     }
+
+    return storedValue.containerSummary;
   } catch (e) {
     return null;
   }
-
-  return storedValue.containerSummary;
 };
 
 export const setContainer = (containerSummary : ContainerSummary) => {

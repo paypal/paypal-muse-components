@@ -55,6 +55,7 @@ export const getUserId = () => {
       return JSON.parse(storedValue);
     }
   } catch (e) {
+    return null;
   }
 
   return null;

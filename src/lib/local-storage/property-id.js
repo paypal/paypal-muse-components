@@ -11,7 +11,7 @@ export const getPropertyId = () : Object | null => {
       return JSON.parse(storedValue);
     }
   } catch (e) {
-
+    return null;
   }
 
   return null;
