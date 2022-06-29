@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/paypal/paypal-muse-components#readme",
   "devDependencies": {
-    "@krakenjs/grumbler-scripts": "^6.0.2",
+    "@krakenjs/grumbler-scripts": "^7.0.0",
     "express": "^4.17.1",
     "flow-bin": "^0.100.0",
     "flow-typed": "3.3.1",
