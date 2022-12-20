@@ -4,7 +4,7 @@ MUSE Component
 [![build status][build-badge]][build]
 [![code coverage][coverage-badge]][coverage]
 
-[build-badge]: https://img.shields.io/github/workflow/status/paypal/paypal-muse-components/build?logo=github&style=flat-square
+[build-badge]: https://img.shields.io/github/actions/workflow/status/paypal/paypal-muse-components/main.yml?branch=main&logo=github&style=flat-square
 [build]: https://github.com/paypal/paypal-muse-components/actions?query=workflow%3Abuild
 [coverage-badge]: https://img.shields.io/codecov/c/github/paypal/paypal-muse-components.svg?style=flat-square
 [coverage]: https://codecov.io/github/paypal/paypal-muse-components/
