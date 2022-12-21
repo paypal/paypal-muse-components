@@ -1,3 +1,4 @@
+/* eslint import/no-commonjs: 0 */
 const zoidGlobals = require('@krakenjs/zoid/globals');
 const postRobotGlobals = require('@krakenjs/post-robot/globals');
 
