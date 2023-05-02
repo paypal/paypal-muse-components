@@ -21,6 +21,10 @@ export class IframeManager {
   };
 
   _onMessage = (e) => {
+    if (!e || !e.source) {
+      return;
+    }
+
     if (e.source.window !== this.iframe.contentWindow) {
       return;
     }
