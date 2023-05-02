@@ -1,6 +1,7 @@
 /* @flow */
 
 import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain, getEventEmitter, getDebug, getEnv, getVault, getSDKQueryParam } from '@paypal/sdk-client/src';
+// $FlowFixMe
 import { UNKNOWN, ENV } from '@paypal/sdk-constants/src';
 
 import { logger } from './lib/logger';
