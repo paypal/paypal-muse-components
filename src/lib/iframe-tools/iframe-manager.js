@@ -21,6 +21,11 @@ export class IframeManager {
   };
 
   _onMessage = (e) => {
+    // We are doing extra check here, because iframe could be detached from window, rare but possible case
+    if (!e || !e.source) {
+      return;
+    }
+
     if (e.source.window !== this.iframe.contentWindow) {
       return;
     }

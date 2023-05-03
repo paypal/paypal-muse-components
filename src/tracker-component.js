@@ -1,5 +1,6 @@
 /* @flow */
 /* eslint no-fallthrough: off */
+// $FlowFixMe
 import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
 import { getClientID, getMerchantID, getCurrency } from '@paypal/sdk-client/src';

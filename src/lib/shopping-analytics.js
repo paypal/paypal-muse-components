@@ -1,4 +1,5 @@
 /* @flow */
+// $FlowFixMe
 import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
 import type { Config } from '../types/config';
