@@ -49,7 +49,7 @@ export function getPptmScriptSrc(paypalDomain : string, mrid : ?string, clientId
 
   // This is a temporary param that will allow us to ramp changes for the cookie remediation effort.
   if (getDisableSetCookie()) {
-    src += "disableSetCookie=true"
+    src += 'disableSetCookie=true';
   }
   
   /*
