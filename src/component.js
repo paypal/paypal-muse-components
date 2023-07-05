@@ -20,7 +20,7 @@ export function getPptmScriptSrc(paypalDomain : string, mrid : ?string, clientId
   
   // We send this so that we know what version of the Payments SDK the request originated from.
   const version = getVersion();
-  
+
   const source = 'payments_sdk';
 
   const baseUrl = `${ paypalDomain }/tagmanager/pptm.js`;
