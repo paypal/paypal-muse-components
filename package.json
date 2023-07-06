@@ -68,7 +68,9 @@
       "__WEB__": true,
       "__CORRELATION_ID__": "abc123",
       "__SDK_HOST__": "test.paypal.com",
-      "__PAYPAL_DOMAIN__": "https://localhost.paypal.com:9001"
+      "__PAYPAL_DOMAIN__": "https://localhost.paypal.com:9001",
+      "__COMPONENTS__": [],
+      "__DISABLE_SET_COOKIE__": true
     },
     "moduleDirectories": [
       "node_modules"
