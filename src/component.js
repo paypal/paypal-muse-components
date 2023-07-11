@@ -1,6 +1,6 @@
 /* @flow */
 
-import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain, getEventEmitter, getDebug, getEnv, getVault, getSDKQueryParam } from '@paypal/sdk-client/src';
+import { getClientID, getMerchantID, getPayPalDomain, getVersion, isPayPalDomain, getEventEmitter, getDebug, getEnv, getVault, getSDKQueryParam, getDisableSetCookie } from '@paypal/sdk-client/src';
 // $FlowFixMe
 import { UNKNOWN, ENV } from '@paypal/sdk-constants/src';
 
@@ -45,6 +45,11 @@ export function getPptmScriptSrc(paypalDomain : string, mrid : ?string, clientId
   */
   if (getSDKQueryParam('components')) {
     src += `&comp=${ String(getSDKQueryParam('components')) }`;
+  }
+
+  // This is a temporary param that will allow us to ramp changes for the cookie remediation effort.
+  if (getDisableSetCookie()) {
+    src += '&disableSetCookie=true';
   }
   
   /*
