@@ -124,27 +124,27 @@ export const mockContainer1 = {
   'links': [
     {
       'rel': 'get',
-      'href': 'https://msmaster.qa.paypal.com:22469/v1/offers/containers/475d4fff-dc57-4fd3-a6e2-ae1aa2f1f079',
+      'href': 'https://sandbox.paypal.com:22469/v1/offers/containers/475d4fff-dc57-4fd3-a6e2-ae1aa2f1f079',
       'method': 'GET'
     },
     {
       'rel': 'update',
-      'href': 'https://msmaster.qa.paypal.com:22469/v1/offers/containers/475d4fff-dc57-4fd3-a6e2-ae1aa2f1f079',
+      'href': 'https://sandbox.paypal.com:22469/v1/offers/containers/475d4fff-dc57-4fd3-a6e2-ae1aa2f1f079',
       'method': 'PUT'
     },
     {
       'rel': 'delete',
-      'href': 'https://msmaster.qa.paypal.com:22469/v1/offers/containers/475d4fff-dc57-4fd3-a6e2-ae1aa2f1f079',
+      'href': 'https://sandbox.paypal.com:22469/v1/offers/containers/475d4fff-dc57-4fd3-a6e2-ae1aa2f1f079',
       'method': 'DELETE'
     },
     {
       'rel': 'add-tag',
-      'href': 'https://msmaster.qa.paypal.com:22469/v1/offers/containers/475d4fff-dc57-4fd3-a6e2-ae1aa2f1f079/tags',
+      'href': 'https://sandbox.paypal.com:22469/v1/offers/containers/475d4fff-dc57-4fd3-a6e2-ae1aa2f1f079/tags',
       'method': 'POST'
     },
     {
       'rel': 'get-tags',
-      'href': 'https://msmaster.qa.paypal.com:22469/v1/offers/containers/475d4fff-dc57-4fd3-a6e2-ae1aa2f1f079/tags',
+      'href': 'https://sandbox.paypal.com:22469/v1/offers/containers/475d4fff-dc57-4fd3-a6e2-ae1aa2f1f079/tags',
       'method': 'GET'
     }
   ],
