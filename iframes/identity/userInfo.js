@@ -1,5 +1,3 @@
-import { getDisableSetCookie } from "@paypal/sdk-client/src";
-
 export const fetchVisitorInfo = ({ deviceInfo, country }) => {
     const encodedDeviceInfo = encodeURIComponent(JSON.stringify(deviceInfo))
 
