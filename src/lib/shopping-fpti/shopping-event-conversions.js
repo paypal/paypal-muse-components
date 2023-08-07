@@ -31,7 +31,7 @@ export const eventToFptiConverters = (config : Config) => {
   function constructFptiInput(
     eventType : EventType,
     event : Object,
-    inMemoryIdentity: VisitorInfo
+    inMemoryIdentity: ?VisitorInfo
   ) : Object {
     const containerSummary = config.containerSummary || {};
     const applicationContext = containerSummary.applicationContext || {};

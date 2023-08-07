@@ -4,7 +4,7 @@ import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
 import type { Config } from '../types/config';
 import type { ContainerSummary } from '../types';
-import { VisitorInfo } from '../types/user';
+import type { VisitorInfo } from '../types/user';
 
 import { setupTrackers } from './shopping-trackers';
 import { setupUserDetails } from './user-configuration';

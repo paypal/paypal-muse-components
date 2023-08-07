@@ -19,4 +19,4 @@ export type VisitorInfo= {|
   encryptedAccountNumber: string,
   identificationType: string,
   country: string
-|}
+|} | null
