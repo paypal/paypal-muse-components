@@ -18,9 +18,7 @@ export const fetchVisitorInfo = ({ deviceInfo, country }) => {
         })
     }
 
-    const cookieQueryParams = getDisableSetCookie() ? '?disableSetCookie=true' : ''
-
-    return fetch(`/targeting/graphql${cookieQueryParams}`, fetchOptions)
+    return fetch(`/targeting/graphql}`, fetchOptions)
         .then(res => {
             if (res.status !== 200) {
                 throw new Error(`targeting responded with statuscode ${res.status}`)
