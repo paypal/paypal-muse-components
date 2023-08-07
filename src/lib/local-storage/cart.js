@@ -2,14 +2,20 @@
 import constants from '../constants';
 import generate from '../generate-id';
 
+import { readFromLocalStorage, writeInLocalStorage } from './local-storage-manager';
+
 const { storage, sevenDays } = constants;
 
 /* Returns an existing cartId or null */
 export const getCartId = () => {
-  const storedValue = window.localStorage.getItem(storage.paypalCrCart);
+  const storedValue = readFromLocalStorage(storage.paypalCrCart);
 
   if (storedValue) {
-    return JSON.parse(storedValue);
+    try {
+      return JSON.parse(storedValue);
+    } catch (e) {
+      return null;
+    }
   }
 
   return null;
@@ -22,7 +28,7 @@ export const setCartId = (cartId : string) => {
     createdAt: Date.now()
   };
 
-  window.localStorage.setItem(storage.paypalCrCart, JSON.stringify(storedValue));
+  writeInLocalStorage(storage.paypalCrCart, storedValue);
 
   return storedValue;
 };

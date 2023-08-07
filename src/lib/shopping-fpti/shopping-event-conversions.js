@@ -6,6 +6,7 @@ import type {
 import type { FptiInput, Config } from '../../types';
 import { getDeviceInfo } from '../get-device-info';
 import { getIdentity, getUserId } from '../local-storage';
+import type { VisitorInfo } from '../../types/user';
 
 import { eventToFptiMapperInit } from './event-handlers';
 
@@ -29,12 +30,13 @@ export const eventToFptiConverters = (config : Config) => {
   
   function constructFptiInput(
     eventType : EventType,
-    event : Object
+    event : Object,
+    inMemoryIdentity: VisitorInfo
   ) : Object {
     const containerSummary = config.containerSummary || {};
     const applicationContext = containerSummary.applicationContext || {};
     const deviceInfo : any  = getDeviceInfo() || {};
-    const identity : any = getIdentity() || {};
+    const identity : any = inMemoryIdentity || getIdentity() || {};
 
     const storedUserIds = getStoredUserIds();
     const eventFptiAttributes = eventToFptiMapper.eventToFptiAttributes(eventType, event);

@@ -14,6 +14,13 @@ jest.mock('../../src/lib/get-property-id', () => {
   };
 });
 
+jest.mock('@paypal/sdk-client/src', () => {
+  return {
+    getCurrency: () => 'mockUSD',
+    getDisableSetCookie: () => false
+  };
+});
+
 describe('customEvent', () => {
   const mockUserId = setGeneratedUserId().userId;
   logger.error = jest.fn();
@@ -85,7 +92,7 @@ describe('customEvent', () => {
 
     const expectedConfig = {
       ...customConfig,
-      'currencyCode': 'USD',
+      'currencyCode': 'mockUSD',
       'containerSummary': mockContainerSummary1
     };
 

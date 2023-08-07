@@ -39,7 +39,7 @@ describe('test eventTracker setup', () => {
   it('should event trackers include pageView tracker', () => {
     const trackers = setupTrackers(config);
     trackers.send('page_view', pageView);
-    expect(eventToFptiMock).toBeCalledWith('page_view', pageView);
+    expect(eventToFptiMock).toBeCalledWith('page_view', pageView, undefined);
     expect(trackFpti).toBeCalledWith(mockFptiInput);
   });
 

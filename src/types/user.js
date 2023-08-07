@@ -13,3 +13,10 @@ export type IdentityData = {|
     onIdentification : Function,
     onError? : Function
 |};
+
+export type VisitorInfo= {|
+  confidenceScore: number,
+  encryptedAccountNumber: string,
+  identificationType: string,
+  country: string
+|}

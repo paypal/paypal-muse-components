@@ -3,10 +3,12 @@ import constants from '../constants';
 import generate from '../generate-id';
 import { logger } from '../logger';
 
+import { writeInLocalStorage, readFromLocalStorage } from './local-storage-manager';
+
 const { storage } = constants;
 
 export const getUserStorage = () => {
-  let userStorage = window.localStorage.getItem(storage.paypalCrUser) || '{}';
+  let userStorage = readFromLocalStorage(storage.paypalCrUser) || '{}';
 
   try {
     userStorage = JSON.parse(userStorage);
@@ -19,7 +21,7 @@ export const getUserStorage = () => {
 };
 
 export const setUserStorage = (userStorage : Object) => {
-  window.localStorage.setItem(storage.paypalCrUser, JSON.stringify(userStorage));
+  writeInLocalStorage(storage.paypalCrUser, userStorage);
 };
 
 // Generates a random user ID.
@@ -49,7 +51,7 @@ export const setMerchantProvidedUserId = (id : string) => {
 /* Returns a userId if one exists */
 export const getUserId = () => {
   try {
-    const storedValue = window.localStorage.getItem(storage.paypalCrUser);
+    const storedValue = readFromLocalStorage(storage.paypalCrUser);
 
     if (storedValue) {
       return JSON.parse(storedValue);

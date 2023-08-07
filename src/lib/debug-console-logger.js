@@ -1,5 +1,6 @@
 /* @flow */
 import constants from './constants';
+import { writeInLocalStorage, readFromLocalStorage } from './local-storage/local-storage-manager';
 
 const { storage } = constants;
 const timeOutOptions = { hour12: false };
@@ -20,7 +21,7 @@ function _initDebugTracker() {
       console.log(`${ _getTimeLabel()  }[debug-console-logger:init] PayPal Shopping: debug mode on. Based on URL parameter.`);
     } else {
       try {
-        debug = window.localStorage.getItem(storage.paypalSDKConsoleDebug) === 'true';
+        debug = readFromLocalStorage(storage.paypalSDKConsoleDebug) === 'true';
         if (debug) {
           // eslint-disable-next-line no-console
           console.log(`${ _getTimeLabel() }[debug-console-logger:init] PayPal Shopping: debug mode on. Based on local storage.`);
@@ -53,7 +54,7 @@ export const debugLogger = {
     }
   },
   setDebugEnabled: (enabled : boolean) => {
-    window.localStorage.setItem(storage.paypalSDKConsoleDebug, enabled);
+    writeInLocalStorage(storage.paypalSDKConsoleDebug, enabled);
     if (enabled) {
       // eslint-disable-next-line no-console
       console.log(`${ _getTimeLabel()  }[debug-console-logger:setDebugEnabled] PayPal Shopping: debug mode on. Mode ON saved to local storage.`);

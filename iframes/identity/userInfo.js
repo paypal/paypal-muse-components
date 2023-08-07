@@ -1,3 +1,5 @@
+import { getDisableSetCookie } from "@paypal/sdk-client/src";
+
 export const fetchVisitorInfo = ({ deviceInfo, country }) => {
     const encodedDeviceInfo = encodeURIComponent(JSON.stringify(deviceInfo))
 
@@ -16,7 +18,9 @@ export const fetchVisitorInfo = ({ deviceInfo, country }) => {
         })
     }
 
-    return fetch(`/targeting/graphql`, fetchOptions)
+    const cookieQueryParams = getDisableSetCookie() ? '?disableSetCookie=true' : ''
+
+    return fetch(`/targeting/graphql${cookieQueryParams}`, fetchOptions)
         .then(res => {
             if (res.status !== 200) {
                 throw new Error(`targeting responded with statuscode ${res.status}`)

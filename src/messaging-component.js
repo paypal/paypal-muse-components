@@ -5,6 +5,7 @@ import { Tracker } from './tracker-component';
 import { checkIfMobile } from './lib/mobile-check';
 import { loadJavascript } from './lib/load-js';
 import { getCookie, setCookie } from './lib/cookie-utils';
+import { readFromLocalStorage } from './lib/local-storage/local-storage-manager';
 
 const museSdkUrl = 'https://www.paypalobjects.com/muse/cart-recovery-0.3/sdk.js';
 let userId = '';
@@ -31,7 +32,7 @@ const showExitModal = ({ cartRecovery }) => {
   }
   // don't show modal if user has no cart items
   // Prefer localStorage first, fallback to cookie (backwards compatibility -- this check can be removed a couple weeks after deploy).
-  const cart = JSON.parse(window.localStorage.getItem('paypal-cr-cart') || getCookie('paypal-cr-cart') || '{}');
+  const cart = JSON.parse(readFromLocalStorage('paypal-cr-cart') || getCookie('paypal-cr-cart') || '{}');
   if (!cart.items) {
     return false;
   }

@@ -4,6 +4,15 @@ import { Tracker } from '../src/tracker-component';
 import getJetlore from '../src/lib/jetlore';
 import { logger } from '../src/lib/logger';
 
+
+jest.mock('@paypal/sdk-client/src', () => {
+  return {
+    getCurrency: jest.fn(),
+    getSDKQueryParam: jest.fn(),
+    getMerchantID: () => [ 'mockGetMerchantID' ],
+    getDisableSetCookie: () => false
+  };
+});
 /*
 ** moved into it's own file due to eslint max file size rule
 ** - had to mock everything manually because sinon/rewire cannot be imported.

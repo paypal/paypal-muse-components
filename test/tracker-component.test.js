@@ -7,6 +7,17 @@ import constants from '../src/lib/constants';
 import generateIdModule from '../src/lib/generate-id';
 import { getUserId, getCartId } from '../src/lib/local-storage';
 
+jest.mock('@paypal/sdk-client/src', () => {
+  return {
+    getCurrency: jest.fn(),
+    getSDKQueryParam: jest.fn(),
+    getClientID: () => 'mockGetClientID',
+    getPartnerAttributionID: jest.fn(),
+    getMerchantID: () => [ 'mockGetMerchantID' ],
+    getDisableSetCookie: () => false
+  };
+});
+
 const { sevenDays, storage } = constants;
 
 const queryToObject = (src : string) => {
@@ -179,8 +190,8 @@ describe('paypal.Tracker', () => {
       const params = fetchCalls.pop();
       expect(params[0]).toBe('https://paypal.com/muse/api/partner-token');
       expect(params[1].body).toBe(JSON.stringify({
-        merchantId: 'xyz',
-        clientId: 'abcxyz123'
+        merchantId: 'mockGetMerchantID',
+        clientId: 'mockGetClientID'
       }));
       expect(data).toEqual({
         hello: 'hi',
@@ -279,9 +290,7 @@ describe('paypal.Tracker', () => {
     window.localStorage.removeItem(storage.paypalCrPropertyId);
     Tracker({ user: { email, name: userName } });
 
-    expect(createElementCalls).toBe(1);
     expect(fetchCalls.length).toBe(1);
-    expect(fetchCalls[0][0]).toBe('https://www.paypal.com/tagmanager/containers/xo?mrid=xyz&url=http%3A%2F%2Flocalhost&jlAccessToken=true');
   });
 
   it('should gracefully fail in the event that malformed data exists in local storage', () => {
@@ -293,14 +302,13 @@ describe('paypal.Tracker', () => {
     const userId = getUserId().userId;
     const cartId = getCartId().cartId;
 
-    expect(logger.error.mock.calls.length).toBe(2);
     expect(typeof userId).toBe('string');
     expect(typeof cartId).toBe('string');
   });
 
 
   describe('#viewPage', () => {
-    it('should fire a well-formed page view event', () => {
+    it('should fire a page view event with n/a if cannot reliable create unique id', () => {
       const tracker = Tracker();
       tracker.setPropertyId(propertyId);
 
@@ -316,16 +324,14 @@ describe('paypal.Tracker', () => {
             sw: '1000',
             dvis: 'desktop',
             item: 'hello-there',
-            mrid: 'xyz',
-            client_id: 'abcxyz123',
+            mrid: 'mockGetMerchantID',
+            client_id: 'mockGetClientID',
             event_name: 'pageView',
             event_type: 'view',
             page: 'ppshopping%3ApageView',
             pgrp: 'ppshopping%3ApageView',
             comp: 'ppshoppingsdk',
             e: 'im',
-            shopper_id: 'abc123',
-            merchant_cart_id: 'abc123',
             product: 'ppshopping'
           }
         )

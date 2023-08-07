@@ -2,10 +2,12 @@
 import constants from '../constants';
 import type { ContainerSummary } from '../../types';
 
+import { writeInLocalStorage, readFromLocalStorage } from './local-storage-manager';
+
 const { storage, oneHour } = constants;
 
 const getContainer = () : Object | null => {
-  const storedValue = window.localStorage.getItem(storage.paypalCrContainer);
+  const storedValue = readFromLocalStorage(storage.paypalCrContainer);
 
   if (storedValue) {
     return JSON.parse(storedValue);
@@ -39,7 +41,7 @@ export const setContainer = (containerSummary : ContainerSummary) => {
     createdAt: Date.now()
   });
 
-  window.localStorage.setItem(storage.paypalCrContainer, storedValue);
+  writeInLocalStorage(storage.paypalCrContainer, storedValue);
 };
 
 export const clearContainer = () => {
