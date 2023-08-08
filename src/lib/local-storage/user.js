@@ -1,23 +1,13 @@
 /* @flow */
 import constants from '../constants';
 import generate from '../generate-id';
-import { logger } from '../logger';
 
 import { writeInLocalStorage, readFromLocalStorage } from './local-storage-manager';
 
 const { storage } = constants;
 
 export const getUserStorage = () => {
-  let userStorage = readFromLocalStorage(storage.paypalCrUser) || '{}';
-
-  try {
-    userStorage = JSON.parse(userStorage);
-  } catch (err) {
-    logger.error('getUserStorage', err);
-    userStorage = {};
-  }
-
-  return userStorage;
+  return readFromLocalStorage(storage.paypalCrUser) || {};
 };
 
 export const setUserStorage = (userStorage : Object) => {
@@ -50,17 +40,7 @@ export const setMerchantProvidedUserId = (id : string) => {
 
 /* Returns a userId if one exists */
 export const getUserId = () => {
-  try {
-    const storedValue = readFromLocalStorage(storage.paypalCrUser);
-
-    if (storedValue) {
-      return JSON.parse(storedValue);
-    }
-  } catch (e) {
-    return null;
-  }
-
-  return null;
+  return readFromLocalStorage(storage.paypalCrUser);
 };
 
 /** Returns an existing, valid userId cached in localStorage

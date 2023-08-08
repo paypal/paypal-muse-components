@@ -13,7 +13,15 @@ const serializeData = (data: Object | string) => {
   }
 };
 
-export const readFromLocalStorage = (key: string) => window.localStorage.getItem(key);
+export const readFromLocalStorage = (key: string) => {
+  const value =  window.localStorage.getItem(key);
+
+  try {
+    return JSON.parse(value);
+  } catch (e) {
+    return null;
+  }
+};
 
 export const writeInLocalStorage = (key: string, data: Object) => {
   if (getDisableSetCookie()) {

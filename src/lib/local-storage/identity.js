@@ -10,12 +10,10 @@ export const clearIdentity = () => {
 };
 
 export const getIdentity = () => {
-  let storedValue = readFromLocalStorage(storage.paypalSDKIdentity);
+  const storedValue = readFromLocalStorage(storage.paypalSDKIdentity);
   const now = Date.now();
 
-  try {
-    storedValue = JSON.parse(storedValue);
-  } catch (err) {
+  if (!storedValue) {
     clearIdentity();
     return null;
   }

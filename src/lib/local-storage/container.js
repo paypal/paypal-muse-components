@@ -7,13 +7,7 @@ import { writeInLocalStorage, readFromLocalStorage } from './local-storage-manag
 const { storage, oneHour } = constants;
 
 const getContainer = () : Object | null => {
-  const storedValue = readFromLocalStorage(storage.paypalCrContainer);
-
-  if (storedValue) {
-    return JSON.parse(storedValue);
-  }
-
-  return null;
+  return readFromLocalStorage(storage.paypalCrContainer);
 };
 
 /* Returns an existing, non-expired container. Removes a container

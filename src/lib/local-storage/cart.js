@@ -8,17 +8,7 @@ const { storage, sevenDays } = constants;
 
 /* Returns an existing cartId or null */
 export const getCartId = () => {
-  const storedValue = readFromLocalStorage(storage.paypalCrCart);
-
-  if (storedValue) {
-    try {
-      return JSON.parse(storedValue);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  return null;
+  return  readFromLocalStorage(storage.paypalCrCart);
 };
 
 /* Sets a new cartId to expire in 7 days */

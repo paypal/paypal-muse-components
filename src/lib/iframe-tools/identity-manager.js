@@ -96,7 +96,7 @@ export class IdentityManager extends IframeManager {
         shouldCheckCountry = randomChance < 50;
         writeInLocalStorage(localStorageKey, shouldCheckCountry);
       } else {
-        shouldCheckCountry = JSON.parse(readFromLocalStorage(localStorageKey));
+        shouldCheckCountry = readFromLocalStorage(localStorageKey);
       }
     } catch (e) {
       debugLogger.log('[identity-manager:fetchIdentity] Error while accessing local storage for key :', localStorageKey);

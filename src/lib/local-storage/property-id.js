@@ -6,17 +6,7 @@ import { writeInLocalStorage, readFromLocalStorage } from './local-storage-manag
 const { storage } = constants;
 
 export const getPropertyId = () : Object | null => {
-  try {
-    const storedValue = readFromLocalStorage(storage.paypalCrPropertyId);
-
-    if (storedValue) {
-      return JSON.parse(storedValue);
-    }
-  } catch (e) {
-    return null;
-  }
-
-  return null;
+  return readFromLocalStorage(storage.paypalCrPropertyId);
 };
 
 export const setPropertyId = (propertyId : string) : void => {

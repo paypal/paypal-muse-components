@@ -21,7 +21,7 @@ function _initDebugTracker() {
       console.log(`${ _getTimeLabel()  }[debug-console-logger:init] PayPal Shopping: debug mode on. Based on URL parameter.`);
     } else {
       try {
-        debug = readFromLocalStorage(storage.paypalSDKConsoleDebug) === 'true';
+        debug = readFromLocalStorage(storage.paypalSDKConsoleDebug) === true;
         if (debug) {
           // eslint-disable-next-line no-console
           console.log(`${ _getTimeLabel() }[debug-console-logger:init] PayPal Shopping: debug mode on. Based on local storage.`);
