@@ -1,5 +1,5 @@
 /* @flow */
-import { getMerchantID, getSDKQueryParam } from '@paypal/sdk-client/src';
+import { getDisableSetCookie, getMerchantID, getSDKQueryParam } from '@paypal/sdk-client/src';
 
 import type {
   Config,
@@ -59,8 +59,9 @@ export const getContainerRequestUrl = (merchantId : string, clientId : string, p
   const baseUrl = paramsToPropertyIdUrl ? paramsToPropertyIdUrl() : 'https://www.paypal.com/tagmanager/containers/xo';
 
   const requestId = merchantId ? `mrid=${ merchantId }` : `client_id=${ clientId }`;
+  const cookieQueryParams = getDisableSetCookie() ? '&disableSetCookie=true' : '';
 
-  return `${ baseUrl }?${ requestId }&url=${ encodeURIComponent(merchantWebsite) }&jlAccessToken=true`;
+  return `${ baseUrl }?${ requestId }&url=${ encodeURIComponent(merchantWebsite) }&jlAccessToken=true${cookieQueryParams}`;
 };
 
 const getContainer = (paramsToPropertyIdUrl? : Function) : Promise<Container> => {

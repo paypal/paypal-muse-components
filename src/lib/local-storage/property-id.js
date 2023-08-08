@@ -1,20 +1,12 @@
 /* @flow */
 import constants from '../constants';
 
+import { writeInLocalStorage, readFromLocalStorage } from './local-storage-manager';
+
 const { storage } = constants;
 
 export const getPropertyId = () : Object | null => {
-  try {
-    const storedValue = window.localStorage.getItem(storage.paypalCrPropertyId);
-
-    if (storedValue) {
-      return JSON.parse(storedValue);
-    }
-  } catch (e) {
-    return null;
-  }
-
-  return null;
+  return readFromLocalStorage(storage.paypalCrPropertyId);
 };
 
 export const setPropertyId = (propertyId : string) : void => {
@@ -23,5 +15,7 @@ export const setPropertyId = (propertyId : string) : void => {
     createdAt: Date.now()
   };
 
-  window.localStorage.setItem(storage.paypalCrPropertyId, JSON.stringify(storedValue));
+  writeInLocalStorage(storage.paypalCrPropertyId, storedValue);
 };
+
+// TODO: removeFromLocal storage `window.localStorage.removeItem(key);`

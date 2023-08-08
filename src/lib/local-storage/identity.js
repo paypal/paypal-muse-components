@@ -1,6 +1,8 @@
 /* @flow */
 import constants from '../constants';
 
+import { writeInLocalStorage, readFromLocalStorage } from './local-storage-manager';
+
 const { storage, oneHour } = constants;
 
 export const clearIdentity = () => {
@@ -8,12 +10,10 @@ export const clearIdentity = () => {
 };
 
 export const getIdentity = () => {
-  let storedValue = window.localStorage.getItem(storage.paypalSDKIdentity);
+  const storedValue = readFromLocalStorage(storage.paypalSDKIdentity);
   const now = Date.now();
 
-  try {
-    storedValue = JSON.parse(storedValue);
-  } catch (err) {
+  if (!storedValue) {
     clearIdentity();
     return null;
   }
@@ -33,7 +33,7 @@ export const setIdentity = identity => {
     createdAt: Date.now()
   };
 
-  window.localStorage.setItem(storage.paypalSDKIdentity, JSON.stringify(storedValue));
+  writeInLocalStorage(storage.paypalSDKIdentity, storedValue);
 
   return storedValue;
 };

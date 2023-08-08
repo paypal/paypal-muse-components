@@ -15,7 +15,8 @@ global.fetch = jest.fn().mockImplementation(async () => {
 jest.mock('@paypal/sdk-client/src', () => {
   return {
     getMerchantID: jest.fn().mockImplementation(() => [ mockContainer1.owner_id ]),
-    getSDKQueryParam: jest.fn()
+    getSDKQueryParam: jest.fn(),
+    getDisableSetCookie: () => false
   };
 });
 

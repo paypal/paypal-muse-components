@@ -8,6 +8,12 @@ import constants from '../../src/lib/constants';
 
 const { storage, oneHour } = constants;
 
+jest.mock('@paypal/sdk-client/src', () => {
+  return {
+    getDisableSetCookie: () => false
+  };
+});
+
 /* Mock post message response */
 const mockIdentityResponse = {
   'encryptedAccountNumber': '759SBALRW3ZTY',

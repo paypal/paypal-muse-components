@@ -2,16 +2,12 @@
 import constants from '../constants';
 import type { ContainerSummary } from '../../types';
 
+import { writeInLocalStorage, readFromLocalStorage } from './local-storage-manager';
+
 const { storage, oneHour } = constants;
 
 const getContainer = () : Object | null => {
-  const storedValue = window.localStorage.getItem(storage.paypalCrContainer);
-
-  if (storedValue) {
-    return JSON.parse(storedValue);
-  }
-
-  return null;
+  return readFromLocalStorage(storage.paypalCrContainer);
 };
 
 /* Returns an existing, non-expired container. Removes a container
@@ -39,7 +35,7 @@ export const setContainer = (containerSummary : ContainerSummary) => {
     createdAt: Date.now()
   });
 
-  window.localStorage.setItem(storage.paypalCrContainer, storedValue);
+  writeInLocalStorage(storage.paypalCrContainer, storedValue);
 };
 
 export const clearContainer = () => {

@@ -4,6 +4,7 @@ import { getDeviceInfo } from '../get-device-info';
 import { logger } from '../logger';
 import { debugLogger } from '../debug-console-logger';
 import constants from '../constants';
+import { readFromLocalStorage, writeInLocalStorage } from '../local-storage/local-storage-manager';
 
 import { IframeManager } from './iframe-manager';
 
@@ -90,13 +91,12 @@ export class IdentityManager extends IframeManager {
     let shouldCheckCountry = true; // default to how it works currently
     const localStorageKey = 'pp-sdk-shouldReallyCheckCountry';
     try {
-      const LS = window.localStorage;
-      if (LS.getItem(localStorageKey) === null) {
+      if (readFromLocalStorage(localStorageKey) === null) {
         const randomChance = Math.floor(Math.random() * 100);
         shouldCheckCountry = randomChance < 50;
-        LS.setItem(localStorageKey, JSON.stringify(shouldCheckCountry));
+        writeInLocalStorage(localStorageKey, shouldCheckCountry);
       } else {
-        shouldCheckCountry = JSON.parse(LS.getItem(localStorageKey));
+        shouldCheckCountry = readFromLocalStorage(localStorageKey);
       }
     } catch (e) {
       debugLogger.log('[identity-manager:fetchIdentity] Error while accessing local storage for key :', localStorageKey);

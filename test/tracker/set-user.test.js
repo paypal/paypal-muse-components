@@ -12,6 +12,16 @@ jest.mock('../../src/lib/get-property-id', () => {
   };
 });
 
+jest.mock('@paypal/sdk-client/src', () => {
+  return {
+    getDisableSetCookie: () => false,
+    getMerchantID: () => 'mockGetMerchantID(set-user.test.js)',
+    getClientID: () => 'mockGetClientID(set-user.test.js)',
+    getPartnerAttributionID: () => 'mockGetPartnerAttributionID(set-user.test.js)',
+    getCurrency: jest.fn()
+  };
+});
+
 describe('setUser', () => {
   const { storage } = constants;
 
@@ -33,7 +43,7 @@ describe('setUser', () => {
     Tracker();
     const newUser = getUserId().userId;
 
-    expect(oldUser).toBe(null);
+    expect(oldUser).toStrictEqual(null);
     expect(typeof newUser).toBe('string');
   });
 

@@ -1,4 +1,4 @@
-/* globals expect */
+/* globals jest expect */
 /* @flow */
 import constants from '../../src/lib/constants';
 import {
@@ -9,6 +9,12 @@ import {
 } from '../../src/lib/local-storage';
 
 const { storage } = constants;
+
+jest.mock('@paypal/sdk-client/src', () => {
+  return {
+    getDisableSetCookie: () => false
+  };
+});
 
 describe('local-storage-utils', () => {
   describe('createNewCartId', () => {

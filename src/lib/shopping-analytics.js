@@ -4,6 +4,7 @@ import 'whatwg-fetch'; // eslint-disable-line import/no-unassigned-import
 
 import type { Config } from '../types/config';
 import type { ContainerSummary } from '../types';
+import type { VisitorInfo } from '../types/user';
 
 import { setupTrackers } from './shopping-trackers';
 import { setupUserDetails } from './user-configuration';
@@ -18,6 +19,7 @@ export const shoppingAnalyticsSetup = (config : Config = {}) => {
   let identityFetchCompleted : boolean = false;
   let containerFetchCompleted : boolean = false;
   let eventQueue = [];
+  let inMemoryIdentity: VisitorInfo = null;
   const queue_limit = 100;
 
   function isReadyToPublish() : boolean {
@@ -27,13 +29,14 @@ export const shoppingAnalyticsSetup = (config : Config = {}) => {
   function flushEventQueueIfReady () {
     if (isReadyToPublish()) {
       for (const params of eventQueue) {
-        shoppingTracker.send(...params);
+        shoppingTracker.send(...params, inMemoryIdentity);
       }
       eventQueue = [];
     }
   }
 
-  function onUserIdentityFetch() {
+  function onUserIdentityFetch(identity: VisitorInfo) {
+    inMemoryIdentity = identity;
     debugLogger.log('[shopping-analytics:onUserIdentityFetch] Received identity fetch notification.');
     identityFetchCompleted = true;
     flushEventQueueIfReady();
