@@ -1,5 +1,3 @@
-import { getDisableSetCookie } from '@paypal/sdk-client/src';
-
 export const fetchVisitorInfo = ({ deviceInfo, country }) => {
     const encodedDeviceInfo = encodeURIComponent(JSON.stringify(deviceInfo))
 
@@ -18,9 +16,7 @@ export const fetchVisitorInfo = ({ deviceInfo, country }) => {
         })
     }
 
-    if (getDisableSetCookie()) {
-        fetchOptions.headers["disable-set-cookie"] = true
-    }
+    fetchOptions.headers["disable-set-cookie"] = true
 
     return fetch(`/targeting/graphql`, fetchOptions)
         .then(res => {
