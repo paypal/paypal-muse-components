@@ -45,6 +45,7 @@ const babelConfig = {
 const webpackConfig = {
     mode: 'development',
     entry: path.resolve(__dirname, 'iframes/identity/identity.js'),
+    devtool: "source-map",
     output: {
         path: path.resolve(__dirname, 'dist/identity'),
         filename: 'identity.js',
@@ -65,7 +66,7 @@ const webpackConfig = {
         } ]
     },
     devServer: {
-        disableHostCheck: true
+      allowedHosts: ['paypal.com', 'localhost.paypal.com']
     }
 };
 
