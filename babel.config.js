@@ -21,7 +21,7 @@ module.exports = {
     '@babel/flow'
   ],
   'plugins': [
-    'babel-plugin-transform-es2015-modules-commonjs',
+    '@babel/plugin-transform-modules-commonjs',
     [ '@babel/plugin-syntax-dynamic-import', { 'loose': true } ],
     [ '@babel/plugin-proposal-decorators', { 'loose': true, 'legacy': true } ],
     [ '@babel/plugin-proposal-class-properties', { 'loose': true } ],

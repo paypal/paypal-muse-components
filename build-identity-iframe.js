@@ -1,4 +1,3 @@
-/* @flow */
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -67,6 +66,19 @@ const compiler = webpack(webpackConfig);
 compiler.run((err, stats) => {
   if (err) {
     console.error(err);
+  }
+  if (stats.hasErrors()) {
+    console.log(stats.toString({
+      colors: true,
+      stats: 'errors-only'
+    }));
+  } else {
+    console.log(stats.toString({
+      colors: true,
+      outputPath: true
+    }));
+    console.log()
+    console.log('Identity iframe build succeed');
   }
 });
 

@@ -16,6 +16,8 @@ export const fetchVisitorInfo = ({ deviceInfo, country }) => {
         })
     }
 
+    fetchOptions.headers["disable-set-cookie"] = true
+
     return fetch(`/targeting/graphql`, fetchOptions)
         .then(res => {
             if (res.status !== 200) {
