@@ -99,10 +99,8 @@ export function insertPptm(env : string = getEnv(), isDebug : boolean = getDebug
 
     // We do not want to load pptm.js for shopping component. Merchant may always add muse, checkout button  to load pptms.js if neeeded.
     // However, shopping component will be a replacement of pptm.js. Some merchant may use it to publish store cash events.
-    // https://engineering.paypalcorp.com/jira/browse/DTSHOPSDK-295
-    
+
     if ((!_isPayPalDomain()) && (!_isShoppingSdkComponent())) {
-      // https://engineering.paypalcorp.com/jira/browse/PPPLMER-79439
       // When merchants test the SDK using a sandbox client ID, it pulls in tagmanager/pptm.js
       // and that code makes calls to QA FPTI since it infers the environment as sandbox.
       // These calls fail on the public internet, so we only want to make these calls
