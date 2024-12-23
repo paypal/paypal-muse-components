@@ -1,11 +1,12 @@
 /* globals jest expect */
 /* @flow */
+import { insertMockSDKScript } from '@paypal/sdk-client/src';
+import { SDK_QUERY_KEYS } from '@paypal/sdk-constants/src';
+
 import {
   resolveTrackingVariables, trackFpti
 } from '../../src/lib/shopping-fpti/shopping-fpti';
 import { sendBeacon } from '../../src/lib/fpti';
-import {insertMockSDKScript} from "@paypal/sdk-client/src";
-import { SDK_QUERY_KEYS } from '@paypal/sdk-constants/src';
 
 jest.mock('../../src/lib/fpti');
 
@@ -45,7 +46,7 @@ describe('should map tracking data', () => {
   it.skip('should map tracking data with default values', () => {
     insertMockSDKScript({
       query: {
-        [SDK_QUERY_KEYS.MERCHANT_ID]: "cypher",
+        [SDK_QUERY_KEYS.MERCHANT_ID]: 'cypher',
       },
     });
 
