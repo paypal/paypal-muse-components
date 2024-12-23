@@ -88,9 +88,9 @@ const getLocation = () => {
   return `${ window.location.origin }${ window.location.pathname }`;
 };
 
-export const getPageTitle = () => document.title;
+export const getPageTitle = (): string => document.title;
 
-export const getBrowserPlugins = () => {
+export const getBrowserPlugins = (): any => {
   const getPluginData = () => {
     return {
       director: 'application/x-director',
@@ -146,9 +146,9 @@ export const getBrowserPlugins = () => {
   }
 };
 
-export const getWindowLocation = () => window.location.href;
+export const getWindowLocation = (): any => window.location.href;
 
-export const getDeviceInfo = () => {
+export const getDeviceInfo = (): any => {
   try {
     const browserWidth = getBrowserWidth();
     const browserHeight = getBrowserHeight();

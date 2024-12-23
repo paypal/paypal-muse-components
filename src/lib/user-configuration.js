@@ -22,6 +22,7 @@ import { debugLogger } from './debug-console-logger';
 function fetchUserIdentity(
   config : Config,
   callback : Function
+  // $FlowFixMe
 ) : IdentityManager {
   return new IdentityManager(config, callback);
 }

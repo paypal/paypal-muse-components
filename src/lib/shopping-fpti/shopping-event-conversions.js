@@ -25,7 +25,7 @@ function getStoredUserIds() : Object {
 }
 
 
-export const eventToFptiConverters = (config : Config) => {
+export const eventToFptiConverters = (config : Config): any => {
   const eventToFptiMapper = eventToFptiMapperInit(config);
   
   function constructFptiInput(

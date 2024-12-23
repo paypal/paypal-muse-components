@@ -7,12 +7,12 @@ import { readFromLocalStorage, writeInLocalStorage } from './local-storage-manag
 const { storage, sevenDays } = constants;
 
 /* Returns an existing cartId or null */
-export const getCartId = () => {
+export const getCartId = (): any => {
   return  readFromLocalStorage(storage.paypalCrCart);
 };
 
 /* Sets a new cartId to expire in 7 days */
-export const setCartId = (cartId : string) => {
+export const setCartId = (cartId : string): any => {
   const storedValue = {
     cartId,
     createdAt: Date.now()
@@ -24,14 +24,14 @@ export const setCartId = (cartId : string) => {
 };
 
 /* Generates a random cartId that expires in 7 days */
-export const createNewCartId = () => {
+export const createNewCartId = (): any => {
   const cartId = `${ generate.generateId() }`;
 
   return setCartId(cartId);
 };
 
 /* Returns an existing, valid cartId or creates a new one */
-export const getOrCreateValidCartId = () => {
+export const getOrCreateValidCartId = (): any => {
   const storedValue = getCartId();
   const now = Date.now();
 

@@ -14,7 +14,7 @@ const _getDDL = (w) => {
   return ddl;
 };
 
-export const setupShoppingDDL = (w : any, shoppingAnalytics : any) => {
+export const setupShoppingDDL = (w : any, shoppingAnalytics : any): any => {
   const unprocessedEvents = [];
   const eventHandler = createEventHandler(shoppingAnalytics);
 
@@ -26,9 +26,11 @@ export const setupShoppingDDL = (w : any, shoppingAnalytics : any) => {
   };
 
   const shoppingDDL = _getDDL(w);
+  // $FlowFixMe
   unprocessedEvents.push.apply(unprocessedEvents, shoppingDDL);
   // $FlowFixMe
   shoppingDDL.push = (...args) => {
+    // $FlowFixMe
     unprocessedEvents.push(...args);
     processEvents();
   };

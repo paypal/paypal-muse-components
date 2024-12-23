@@ -10,6 +10,7 @@
     "release:major": "./publish.sh major",
     "build-identity-iframe": "node build-identity-iframe.js",
     "flow-typed": "rm -rf ./flow-typed && flow-typed install",
+    "flow-typed": "rm -rf ./flow-typed && flow-typed install",
     "flow": "flow",
     "flow:build": "flow gen-flow-files ./src/index.js --out-dir ./dist/module",
     "lint": "eslint src/ test/ *.js --fix",
@@ -51,7 +52,7 @@
     "@krakenjs/belter": "^2.0.1",
     "@krakenjs/zoid": "^10.0.0",
     "@krakenjs/post-robot": "^11.0.0",
-    "@paypal/sdk-client": "^4.0.166",
+    "@paypal/sdk-client": "^4.0.194",
     "whatwg-fetch": "^3.0.0"
   },
   "jest": {

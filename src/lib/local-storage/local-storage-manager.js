@@ -13,7 +13,7 @@ const serializeData = (data: Object | string) => {
   }
 };
 
-export const readFromLocalStorage = (key: string) => {
+export const readFromLocalStorage = (key: string):any => {
   const value =  window.localStorage.getItem(key);
 
   try {

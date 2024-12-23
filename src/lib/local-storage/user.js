@@ -6,7 +6,7 @@ import { writeInLocalStorage, readFromLocalStorage } from './local-storage-manag
 
 const { storage } = constants;
 
-export const getUserStorage = () => {
+export const getUserStorage = (): any => {
   return readFromLocalStorage(storage.paypalCrUser) || {};
 };
 
@@ -16,7 +16,7 @@ export const setUserStorage = (userStorage : Object) => {
 
 // Generates a random user ID.
 // Further cache the generated userId in LocalStorage.
-export const setGeneratedUserId = () => {
+export const setGeneratedUserId = (): any => {
   const userStorage = getUserStorage();
 
   userStorage.userId = generate.generateId();
@@ -28,7 +28,7 @@ export const setGeneratedUserId = () => {
 
 // Set the merchant provided user ID to the userId field and
 // the merchantProvidedUserId field.
-export const setMerchantProvidedUserId = (id : string) => {
+export const setMerchantProvidedUserId = (id : string): any => {
   const userStorage = getUserStorage();
 
   userStorage.merchantProvidedUserId = id;
@@ -39,13 +39,13 @@ export const setMerchantProvidedUserId = (id : string) => {
 };
 
 /* Returns a userId if one exists */
-export const getUserId = () => {
+export const getUserId = (): any => {
   return readFromLocalStorage(storage.paypalCrUser);
 };
 
 /** Returns an existing, valid userId cached in localStorage
 or creates a new one if one doesn't exist **/
-export const getOrCreateValidUserId = () => {
+export const getOrCreateValidUserId = (): any => {
   const storedValue = getUserId();
 
   if (!storedValue) {

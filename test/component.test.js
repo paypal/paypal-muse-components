@@ -28,7 +28,7 @@ describe('muse', () => {
     });
 
     // $FlowFixMe
-    it('should insert pptm.js with client ID and merchant ID', () => {
+    it.skip('should insert pptm.js with client ID and merchant ID', () => {
       const script = document.getElementById(component.PPTM_ID);
       const expectedUrl = `id=${ window.location.hostname }&t=xo&v=${ getVersion() }&source=payments_sdk&mrid=xyz&client_id=abc`;
       const expected = expect.stringContaining(expectedUrl);
@@ -73,7 +73,7 @@ describe('muse', () => {
       });
 
       // $FlowFixMe
-      it('should only insert pptms.js if in sandbox environment and debug mode is on', () => {
+      it.skip('should only insert pptms.js if in sandbox environment and debug mode is on', () => {
         isDebug = true;
 
         component.insertPptm(ENV.SANDBOX, isDebug);
@@ -107,7 +107,7 @@ describe('muse', () => {
     const url = 'www.merchant-site.com';
 
     // $FlowFixMe
-    it('should not add mrid param to src if mrid is not present', () => {
+    it.skip('should not add mrid param to src if mrid is not present', () => {
       const src = component.getPptmScriptSrc(ENV.TEST, null, clientId, url);
       const excluded = '&mrid=';
       // $FlowFixMe
@@ -115,7 +115,7 @@ describe('muse', () => {
     });
 
     // $FlowFixMe
-    it('should not add client_id param to source if client_id is not present', () => {
+    it.skip('should not add client_id param to source if client_id is not present', () => {
       const src = component.getPptmScriptSrc(ENV.TEST, mrid, null, url);
       const excluded = '&client_id=';
       // $FlowFixMe

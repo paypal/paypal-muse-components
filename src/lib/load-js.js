@@ -1,5 +1,5 @@
 /* @flow */
-export const loadJavascript = (url : string) => {
+export const loadJavascript = (url : string): any => {
   // eslint-disable-next-line func-names, max-params
   return !(function (window, document, global, tag, src, newScriptEl, firstScriptEl) {
     window.PaypalOffersObject = global;

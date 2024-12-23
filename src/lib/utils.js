@@ -1,6 +1,6 @@
 /* @flow */
 
-export const tryAndLog = (fn : Function) => {
+export const tryAndLog = (fn : Function) :Function => {
   return (argObj : Object) => {
     try {
       return fn(argObj);
@@ -10,7 +10,7 @@ export const tryAndLog = (fn : Function) => {
   };
 };
 
-export const isConfigFalse = (configAttribute : Object) => {
+export const isConfigFalse = (configAttribute : Object): boolean => {
   return configAttribute === undefined || configAttribute === 'false' || configAttribute === false;
 };
 

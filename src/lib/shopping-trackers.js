@@ -36,7 +36,7 @@ function initGenericEventPublisher(config : Config) : Object {
  * @param config
  * @returns {{viewPage: (function(...[*]=))}}
  */
-export const setupTrackers = (config : Config) => {
+export const setupTrackers = (config : Config): any => {
   const send = initGenericEventPublisher(config).publishEvent;
   const set = shoppingAttributes(config).updateShoppingAttributes;
   return { send, set };
