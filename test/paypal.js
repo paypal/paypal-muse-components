@@ -1,7 +1,7 @@
 /* @flow */
 
-import { insertMockSDKScript } from '@paypal/sdk-client/src';
-import { SDK_QUERY_KEYS } from '@paypal/sdk-constants/src';
+// import { insertMockSDKScript } from '@paypal/sdk-client/src';
+// import { SDK_QUERY_KEYS } from '@paypal/sdk-constants/src';
 
 // eslint-disable-next-line import/no-namespace
 import * as muse from '../src';
