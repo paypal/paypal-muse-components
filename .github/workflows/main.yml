@@ -21,11 +21,14 @@ jobs:
         with:
           useLockFile: false
 
-      - name: ▶️ Run flow-typed script
-        run: npm run flow-typed
+      - name: ▶️ Run lint
+        run: npm run lint
+
+      - name: ▶️ Run flow type check
+        run: npm run flow
 
       - name: ▶️ Run test script
-        run: npm run test
+        run: npm run jest
 
       - name: ⬆️ Upload jest coverage report
         uses: codecov/codecov-action@v2

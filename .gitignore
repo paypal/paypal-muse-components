@@ -1,7 +1,6 @@
 node_modules
 dist
 coverage
-flow-typed
 npm-debug.log
 .idea
 .vscode

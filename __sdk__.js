@@ -10,7 +10,7 @@ module.exports = {
   },
   muse: {
     entry: './src/index',
-    automatic: true
+    automatic: false
   },
   tracker: {
     entry: './src/tracker',
