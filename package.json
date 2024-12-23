@@ -10,7 +10,6 @@
     "release:major": "./publish.sh major",
     "build-identity-iframe": "node build-identity-iframe.js",
     "flow-typed": "rm -rf ./flow-typed && flow-typed install",
-    "flow-typed": "rm -rf ./flow-typed && flow-typed install",
     "flow": "flow",
     "flow:build": "flow gen-flow-files ./src/index.js --out-dir ./dist/module",
     "lint": "eslint src/ test/ *.js --fix",
