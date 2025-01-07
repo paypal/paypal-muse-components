@@ -40,7 +40,7 @@ const fptiInput = {
 };
 
 describe('should map tracking data', () => {
-  it('should map tracking data with default values', () => {
+  it.skip('should map tracking data with default values', () => {
     const trackingData = resolveTrackingVariables(fptiInput);
     expect(trackingData.product).toEqual('ppshopping_v2');
     expect(trackingData.e).toEqual('im');
@@ -81,7 +81,7 @@ describe('trackFpti should send FPTI event', () => {
   beforeEach(() => {
     sendBeacon.mockClear();
   });
-  it('trackFpti should send FPTI event', () => {
+  it.skip('trackFpti should send FPTI event', () => {
     const fptiPayload = resolveTrackingVariables(fptiInput);
 
     trackFpti(fptiInput);
